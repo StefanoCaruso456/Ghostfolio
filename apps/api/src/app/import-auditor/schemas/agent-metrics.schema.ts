@@ -31,7 +31,15 @@ export const AgentMetricsSchema = z.object({
   success: z.boolean().default(false),
   error: z.string().optional(),
   guardrailTriggered: z
-    .enum(['max_iterations', 'timeout', 'cost_limit', 'circuit_breaker'])
+    .enum([
+      'max_iterations',
+      'timeout',
+      'cost_limit',
+      'circuit_breaker',
+      'payload_limit',
+      'tool_failure_backoff',
+      'verification_gate'
+    ])
     .optional(),
   thoughtLog: z.array(z.string()).default([]),
   actionLog: z.array(z.string()).default([]),

@@ -3,12 +3,14 @@ import { z } from 'zod';
 /**
  * VerificationResult — AgentForge-grade verification layer.
  *
- * Supports all 5 verification types:
- * 1. Fact Checking — cross-reference authoritative sources
- * 2. Hallucination Detection — flag unsupported claims
- * 3. Confidence Scoring — 0-1 scale per result
- * 4. Domain Constraints — hard business rules (trade limits, valid codes, etc.)
- * 5. Human-in-the-Loop — escalation flag for low-confidence + high-stakes
+ * Implemented verification types:
+ * 1. Confidence Scoring — 0-1 scale per result (all tools)
+ * 2. Domain Constraints — hard business rules (validateTransactions, generateImportPreview)
+ * 3. Human-in-the-Loop — escalation flag for low-confidence + high-stakes (detectBrokerFormat, generateImportPreview)
+ * 4. Hallucination Detection — flags low-confidence broker claims as hallucination risk (detectBrokerFormat)
+ *
+ * Not yet implemented (schema-only, ready for future use):
+ * 5. Fact Checking — cross-reference authoritative sources (requires external API)
  */
 
 export const VerificationSourceSchema = z.object({

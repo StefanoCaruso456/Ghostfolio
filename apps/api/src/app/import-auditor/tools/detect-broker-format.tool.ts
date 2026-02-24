@@ -204,6 +204,30 @@ export function detectBrokerFormat(
       ? `Could not confidently detect broker format. Best guess: ${bestMatch?.broker ?? 'none'} (confidence: ${(confidence * 100).toFixed(0)}%). Using generic format.`
       : `Detected ${detectedBroker} format with ${(confidence * 100).toFixed(0)}% confidence. Matched signatures: ${bestMatch.matchedSignatures.join(', ')}.`;
 
+  // Hallucination detection: if the model claims a specific broker but
+  // confidence is below the hallucination threshold, flag it.
+  // This is a real check — not schema-only.
+  const HALLUCINATION_CONFIDENCE_THRESHOLD = 0.6;
+  const hallucinationFlags: string[] = [];
+
+  if (
+    detectedBroker !== 'generic' &&
+    confidence < HALLUCINATION_CONFIDENCE_THRESHOLD
+  ) {
+    hallucinationFlags.push(
+      `Broker "${detectedBroker}" detected with only ${(confidence * 100).toFixed(0)}% confidence — may be hallucinated`
+    );
+  }
+
+  // If we fell back to generic but had a best guess, that's also a risk
+  if (detectedBroker === 'generic' && bestMatch && bestMatch.confidence > 0) {
+    hallucinationFlags.push(
+      `No confident broker match. Best guess "${bestMatch.broker}" at ${(bestMatch.confidence * 100).toFixed(0)}% is below threshold`
+    );
+  }
+
+  const requiresHumanReview = confidence < 0.5 || hallucinationFlags.length > 0;
+
   return {
     status: 'success',
     data: {
@@ -221,11 +245,15 @@ export function detectBrokerFormat(
           : [],
       sources: ['broker-pattern-matching'],
       verificationType: 'confidence_scoring',
-      requiresHumanReview: confidence < 0.5,
-      escalationReason:
-        confidence < 0.5
-          ? 'Broker format could not be confidently detected'
-          : undefined
+      hallucinationFlags:
+        hallucinationFlags.length > 0 ? hallucinationFlags : undefined,
+      allClaimsSupported: hallucinationFlags.length === 0,
+      requiresHumanReview,
+      escalationReason: requiresHumanReview
+        ? hallucinationFlags.length > 0
+          ? `Hallucination risk: ${hallucinationFlags.join('; ')}`
+          : 'Broker format could not be confidently detected'
+        : undefined
     })
   };
 }

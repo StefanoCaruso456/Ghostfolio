@@ -23,6 +23,7 @@ class ChatRequestDto {
   sessionId: string;
   message: string;
   csvContent?: string;
+  history?: { role: 'user' | 'assistant'; content: string }[];
 }
 
 @Controller('import-auditor')
@@ -56,6 +57,7 @@ export class ImportAuditorController {
     try {
       return await this.importAuditorService.chat({
         csvContent: body.csvContent,
+        history: body.history,
         message: body.message,
         sessionId: body.sessionId,
         userId: this.request.user.id
