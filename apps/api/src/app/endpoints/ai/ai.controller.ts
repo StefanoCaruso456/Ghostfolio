@@ -1,15 +1,18 @@
 import { HasPermission } from '@ghostfolio/api/decorators/has-permission.decorator';
 import { HasPermissionGuard } from '@ghostfolio/api/guards/has-permission.guard';
 import { ApiService } from '@ghostfolio/api/services/api/api.service';
-import { AiPromptResponse } from '@ghostfolio/common/interfaces';
+import { AiChatDto } from '@ghostfolio/common/dtos';
+import { AiChatResponse, AiPromptResponse } from '@ghostfolio/common/interfaces';
 import { permissions } from '@ghostfolio/common/permissions';
 import type { AiPromptMode, RequestWithUser } from '@ghostfolio/common/types';
 
 import {
+  Body,
   Controller,
   Get,
   Inject,
   Param,
+  Post,
   Query,
   UseGuards
 } from '@nestjs/common';
@@ -25,6 +28,20 @@ export class AiController {
     private readonly apiService: ApiService,
     @Inject(REQUEST) private readonly request: RequestWithUser
   ) {}
+
+  @Post('chat')
+  @HasPermission(permissions.readAiPrompt)
+  @UseGuards(AuthGuard('jwt'), HasPermissionGuard)
+  public async chat(@Body() body: AiChatDto): Promise<AiChatResponse> {
+    return this.aiService.chat({
+      history: body.history ?? [],
+      message: body.message,
+      conversationId: body.conversationId,
+      languageCode: this.request.user.settings.settings.language,
+      userCurrency: this.request.user.settings.settings.baseCurrency,
+      userId: this.request.user.id
+    });
+  }
 
   @Get('prompt/:mode')
   @HasPermission(permissions.readAiPrompt)

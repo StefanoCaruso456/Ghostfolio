@@ -50,6 +50,18 @@
           transform: rotate(90deg);
         }
       }
+
+      &.ai-trigger-btn {
+        ion-icon {
+          color: rgba(var(--gf-theme-primary-500-rgb), 0.85);
+          font-size: 1.35rem;
+          transition: color 0.15s ease;
+        }
+
+        &:hover ion-icon {
+          color: rgba(var(--gf-theme-primary-500-rgb), 1);
+        }
+      }
     }
   }
 }

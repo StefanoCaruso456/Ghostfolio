@@ -25,6 +25,7 @@ import {
   AccountsResponse,
   ActivitiesResponse,
   ActivityResponse,
+  AiChatResponse,
   AiPromptResponse,
   ApiKeyResponse,
   AssetProfileIdentifier,
@@ -85,6 +86,22 @@ import { map } from 'rxjs/operators';
 })
 export class DataService {
   public constructor(private http: HttpClient) {}
+
+  public chatWithAi({
+    conversationId,
+    history,
+    message
+  }: {
+    conversationId?: string;
+    history?: { content: string; role: 'assistant' | 'user' }[];
+    message: string;
+  }) {
+    return this.http.post<AiChatResponse>('/api/v1/ai/chat', {
+      conversationId,
+      history,
+      message
+    });
+  }
 
   public buildFiltersAsQueryParams({ filters }: { filters?: Filter[] }) {
     let params = new HttpParams();
