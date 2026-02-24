@@ -15,7 +15,7 @@ import type { StrategyOptions } from 'passport-openidconnect';
 import { ApiKeyStrategy } from './api-key.strategy';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { GoogleStrategy } from './google.strategy';
+// GoogleStrategy commented out — re-enable for Google OAuth (see google.strategy.ts)
 import { JwtStrategy } from './jwt.strategy';
 import { OidcStrategy } from './oidc.strategy';
 
@@ -37,7 +37,7 @@ import { OidcStrategy } from './oidc.strategy';
     ApiKeyStrategy,
     AuthDeviceService,
     AuthService,
-    GoogleStrategy,
+    // GoogleStrategy, // Uncomment to re-enable Google OAuth
     JwtStrategy,
     {
       inject: [AuthService, ConfigurationService],
