@@ -23,7 +23,7 @@ const FIELD_KEY_MAP: Record<
   fee: ['commission', 'fee', 'ibcommission'],
   quantity: ['qty', 'quantity', 'shares', 'units'],
   symbol: ['code', 'symbol', 'ticker'],
-  type: ['action', 'buy/sell', 'type'],
+  type: ['action', 'activitytype', 'buy/sell', 'type'],
   unitPrice: ['price', 'tradeprice', 'unitprice', 'value']
 };
 
@@ -77,9 +77,7 @@ export function mapBrokerFields(
     }
   }
 
-  const unmappedHeaders = headers.filter(
-    (h) => !mappedSourceHeaders.has(h)
-  );
+  const unmappedHeaders = headers.filter((h) => !mappedSourceHeaders.has(h));
 
   const unmappedRequiredFields = REQUIRED_TARGET_FIELDS.filter(
     (field) => !mappedTargetFields.has(field)
@@ -129,9 +127,10 @@ export function mapBrokerFields(
     verification: createVerificationResult({
       passed: allRequiredMapped,
       confidence: overallConfidence,
-      warnings: unmappedHeaders.length > 0
-        ? [`${unmappedHeaders.length} headers not mapped`]
-        : [],
+      warnings:
+        unmappedHeaders.length > 0
+          ? [`${unmappedHeaders.length} headers not mapped`]
+          : [],
       errors: unmappedRequiredFields.map(
         (f) => `Required field "${f}" could not be mapped`
       ),
