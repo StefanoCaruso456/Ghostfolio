@@ -35,9 +35,16 @@ export const FieldMappingSchema = z.object({
 export type FieldMapping = z.infer<typeof FieldMappingSchema>;
 
 export const MapBrokerFieldsInputSchema = z.object({
-  headers: z.array(z.string()).min(1),
-  sampleRows: z.array(z.record(z.unknown())).min(1).max(5),
-  brokerHint: z.string().optional()
+  headers: z.array(z.string()).min(1).describe('CSV column headers to map'),
+  sampleRows: z
+    .array(z.record(z.unknown()))
+    .min(1)
+    .max(5)
+    .describe('1-5 sample data rows for context'),
+  brokerHint: z
+    .string()
+    .optional()
+    .describe('Optional hint about the broker (e.g., "Interactive Brokers")')
 });
 
 export type MapBrokerFieldsInput = z.infer<typeof MapBrokerFieldsInputSchema>;
@@ -56,6 +63,4 @@ export const MapBrokerFieldsOutputSchema = z.object({
   verification: VerificationResultSchema
 });
 
-export type MapBrokerFieldsOutput = z.infer<
-  typeof MapBrokerFieldsOutputSchema
->;
+export type MapBrokerFieldsOutput = z.infer<typeof MapBrokerFieldsOutputSchema>;

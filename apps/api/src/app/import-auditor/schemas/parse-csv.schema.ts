@@ -3,8 +3,11 @@ import { z } from 'zod';
 import { VerificationResultSchema } from './verification.schema';
 
 export const ParseCsvInputSchema = z.object({
-  csvContent: z.string().min(1),
-  delimiter: z.enum([',', ';', '\t', '|']).default(',')
+  csvContent: z.string().min(1).describe('The raw CSV content to parse'),
+  delimiter: z
+    .enum([',', ';', '\t', '|'])
+    .default(',')
+    .describe('CSV delimiter character')
 });
 
 export type ParseCsvInput = z.infer<typeof ParseCsvInputSchema>;

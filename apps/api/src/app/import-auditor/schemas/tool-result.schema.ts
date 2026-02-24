@@ -12,7 +12,16 @@ import { VerificationResultSchema } from './verification.schema';
  * - executionTimeMs: wall-clock execution duration
  * - error: structured error (code + message + optional details)
  * - verification: VerificationResult for high-stakes domains
+ * - schemaVersion: contract version for forward compatibility
  */
+
+/**
+ * Schema version for all tool results.
+ * Increment when the ToolResult contract changes to support
+ * backward-compatible evolution without breaking clients/tests.
+ */
+export const TOOL_RESULT_SCHEMA_VERSION = '1.0';
+
 export const ToolErrorSchema = z.object({
   code: z.string(),
   message: z.string(),
@@ -27,7 +36,8 @@ export const ToolResultSchema = z.object({
   message: z.string(),
   executionTimeMs: z.number(),
   error: ToolErrorSchema.optional(),
-  verification: VerificationResultSchema
+  verification: VerificationResultSchema,
+  schemaVersion: z.string().default(TOOL_RESULT_SCHEMA_VERSION)
 });
 
 export interface ToolResult<T = unknown> {
@@ -43,6 +53,7 @@ export interface ToolResult<T = unknown> {
     errors: string[];
     sources: string[];
   };
+  schemaVersion: string;
 }
 
 /**
@@ -59,7 +70,8 @@ export function createSuccessResult<T>(
     data,
     message,
     executionTimeMs,
-    verification
+    verification,
+    schemaVersion: TOOL_RESULT_SCHEMA_VERSION
   };
 }
 
@@ -88,6 +100,7 @@ export function createErrorResult(
       warnings: [],
       errors: [errorMessage],
       sources: []
-    }
+    },
+    schemaVersion: TOOL_RESULT_SCHEMA_VERSION
   };
 }
