@@ -20,7 +20,6 @@ import helmet from 'helmet';
 
 import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
-import { StagingPasswordMiddleware } from './middlewares/staging-password.middleware';
 
 async function bootstrap() {
   const configApp = await NestFactory.create(AppModule);
@@ -67,20 +66,7 @@ async function bootstrap() {
   app.useBodyParser('json', { limit: '10mb' });
   app.useBodyParser('urlencoded', { limit: '10mb', extended: true } as any);
 
-  // Cookie parser must be registered before staging middleware
   app.use(cookieParser());
-
-  // Register staging middleware at Express level so it runs before
-  // ServeStaticModule (which registers during onModuleInit, before NestJS
-  // configure() middleware). Without this, express.static() would serve the
-  // Angular SPA shell for /staging-login, resulting in a blank page.
-  if (process.env.STAGING_PASSWORD) {
-    const stagingMiddleware = new StagingPasswordMiddleware();
-
-    app.use((req: Request, res: Response, next: NextFunction) => {
-      stagingMiddleware.use(req, res, next);
-    });
-  }
 
   if (configService.get<string>('ENABLE_FEATURE_SUBSCRIPTION') === 'true') {
     app.use((req: Request, res: Response, next: NextFunction) => {
