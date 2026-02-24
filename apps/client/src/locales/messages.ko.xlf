@@ -1621,7 +1621,7 @@
       </trans-unit>
       <trans-unit id="2115592966120408375" datatype="html">
         <source>Copied</source>
-        <target state="new">Copied</target>
+        <target state="translated">복사됨</target>
         <context-group purpose="location">
           <context context-type="sourcefile">apps/client/src/app/components/ai-chat-sidebar/ai-chat-sidebar.component.html</context>
           <context context-type="linenumber">132</context>
@@ -3061,7 +3061,7 @@
       </trans-unit>
       <trans-unit id="7273159470081128202" datatype="html">
         <source>Analyze my portfolio</source>
-        <target state="new">Analyze my portfolio</target>
+        <target state="translated">내 포트폴리오 분석</target>
         <context-group purpose="location">
           <context context-type="sourcefile">apps/client/src/app/components/ai-chat-sidebar/ai-chat-sidebar.component.ts</context>
           <context context-type="linenumber">89</context>
@@ -4654,7 +4654,7 @@
       </trans-unit>
       <trans-unit id="5100176812634900502" datatype="html">
         <source>Ghostfolio AI</source>
-        <target state="new">Ghostfolio AI</target>
+        <target state="translated">Ghostfolio AI</target>
         <context-group purpose="location">
           <context context-type="sourcefile">apps/client/src/app/components/header/header.component.html</context>
           <context context-type="linenumber">131</context>
@@ -6243,7 +6243,7 @@
       </trans-unit>
       <trans-unit id="8206940638567425435" datatype="html">
         <source>Sorry, I encountered an error. Please try again.</source>
-        <target state="new">Sorry, I encountered an error. Please try again.</target>
+        <target state="translated">죄송합니다. 오류가 발생했습니다. 다시 시도해 주세요.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">apps/client/src/app/components/ai-chat-sidebar/ai-chat-sidebar.component.ts</context>
           <context context-type="linenumber">243</context>
@@ -7810,7 +7810,7 @@
       </trans-unit>
       <trans-unit id="7561734099312878563" datatype="html">
         <source>Diversification check</source>
-        <target state="new">Diversification check</target>
+        <target state="translated">분산투자 점검</target>
         <context-group purpose="location">
           <context context-type="sourcefile">apps/client/src/app/components/ai-chat-sidebar/ai-chat-sidebar.component.ts</context>
           <context context-type="linenumber">94</context>
@@ -7963,7 +7963,7 @@
       </trans-unit>
       <trans-unit id="3915469942305054421" datatype="html">
         <source>Ask about your portfolio...</source>
-        <target state="new">Ask about your portfolio...</target>
+        <target state="translated">포트폴리오에 대해 질문하세요...</target>
         <context-group purpose="location">
           <context context-type="sourcefile">apps/client/src/app/components/ai-chat-sidebar/ai-chat-sidebar.component.html</context>
           <context context-type="linenumber">171</context>
@@ -8846,7 +8846,7 @@
       </trans-unit>
       <trans-unit id="3385369590791558584" datatype="html">
         <source>No conversations yet</source>
-        <target state="new">No conversations yet</target>
+        <target state="translated">대화 내역이 없습니다</target>
         <context-group purpose="location">
           <context context-type="sourcefile">apps/client/src/app/components/ai-chat-sidebar/ai-chat-sidebar.component.html</context>
           <context context-type="linenumber">35</context>
