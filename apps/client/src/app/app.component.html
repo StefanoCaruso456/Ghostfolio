@@ -1,53 +1,70 @@
-<header>
-  @if (canCreateAccount || user?.systemMessage) {
-    <div class="info-message-container">
-      <div class="info-message-inner-container position-fixed w-100">
-        <div class="align-items-center d-flex h-100 justify-content-center">
-          @if (canCreateAccount) {
-            <a class="text-center" [routerLink]="routerLinkRegister">
-              <div
-                class="cursor-pointer d-inline-block info-message"
-                (click)="onCreateAccount()"
-              >
-                <span i18n>You are using the Live Demo.</span>
-                <span class="a ml-2 p-1" i18n>Create Account</span>
-              </div>
-            </a>
-          }
-          @if (!canCreateAccount && user?.systemMessage) {
+<div class="app-layout" [class.sidebar-open]="isAiSidebarOpen">
+  <div class="main-content">
+    <header>
+      @if (canCreateAccount || user?.systemMessage) {
+        <div class="info-message-container">
+          <div class="info-message-inner-container position-fixed w-100">
             <div
-              class="cursor-pointer d-inline-block info-message text-truncate"
-              (click)="onClickSystemMessage()"
+              class="align-items-center d-flex h-100 justify-content-center"
             >
-              {{ user.systemMessage.message }}
+              @if (canCreateAccount) {
+                <a class="text-center" [routerLink]="routerLinkRegister">
+                  <div
+                    class="cursor-pointer d-inline-block info-message"
+                    (click)="onCreateAccount()"
+                  >
+                    <span i18n>You are using the Live Demo.</span>
+                    <span class="a ml-2 p-1" i18n>Create Account</span>
+                  </div>
+                </a>
+              }
+              @if (!canCreateAccount && user?.systemMessage) {
+                <div
+                  class="cursor-pointer d-inline-block info-message text-truncate"
+                  (click)="onClickSystemMessage()"
+                >
+                  {{ user.systemMessage.message }}
+                </div>
+              }
             </div>
-          }
+          </div>
         </div>
-      </div>
-    </div>
+      }
+
+      <gf-header
+        class="position-fixed w-100"
+        [class.header-with-sidebar]="isAiSidebarOpen"
+        [currentRoute]="currentRoute"
+        [deviceType]="deviceType"
+        [hasPermissionToChangeDateRange]="hasPermissionToChangeDateRange"
+        [hasPermissionToChangeFilters]="hasPermissionToChangeFilters"
+        [hasPromotion]="hasPromotion"
+        [hasTabs]="hasTabs"
+        [info]="info"
+        [pageTitle]="pageTitle"
+        [user]="user"
+        (signOut)="onSignOut()"
+        (toggleAiSidebar)="onToggleAiSidebar()"
+      />
+    </header>
+
+    <main role="main">
+      <router-outlet />
+    </main>
+
+    @if (showFooter) {
+      <footer class="justify-content-center overflow-hidden w-100">
+        <gf-footer class="py-4" [info]="info" [user]="user" />
+      </footer>
+    }
+  </div>
+
+  @if (isAiSidebarOpen && user) {
+    <aside class="ai-sidebar">
+      <gf-ai-chat-sidebar
+        [user]="user"
+        (closed)="onToggleAiSidebar()"
+      />
+    </aside>
   }
-
-  <gf-header
-    class="position-fixed w-100"
-    [currentRoute]="currentRoute"
-    [deviceType]="deviceType"
-    [hasPermissionToChangeDateRange]="hasPermissionToChangeDateRange"
-    [hasPermissionToChangeFilters]="hasPermissionToChangeFilters"
-    [hasPromotion]="hasPromotion"
-    [hasTabs]="hasTabs"
-    [info]="info"
-    [pageTitle]="pageTitle"
-    [user]="user"
-    (signOut)="onSignOut()"
-  />
-</header>
-
-<main role="main">
-  <router-outlet />
-</main>
-
-@if (showFooter) {
-  <footer class="justify-content-center overflow-hidden w-100">
-    <gf-footer class="py-4" [info]="info" [user]="user" />
-  </footer>
-}
+</div>

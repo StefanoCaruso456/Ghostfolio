@@ -4,12 +4,13 @@ import {
   PROPERTY_API_KEY_OPENROUTER,
   PROPERTY_OPENROUTER_MODEL
 } from '@ghostfolio/common/config';
-import { Filter } from '@ghostfolio/common/interfaces';
+import { AiChatResponse, Filter } from '@ghostfolio/common/interfaces';
 import type { AiPromptMode } from '@ghostfolio/common/types';
 
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { createOpenRouter } from '@openrouter/ai-sdk-provider';
 import { generateText } from 'ai';
+import { randomUUID } from 'node:crypto';
 import type { ColumnDescriptor } from 'tablemark';
 
 @Injectable()
@@ -39,6 +40,87 @@ export class AiService {
     private readonly portfolioService: PortfolioService,
     private readonly propertyService: PropertyService
   ) {}
+
+  public async chat({
+    conversationId,
+    history,
+    languageCode,
+    message,
+    userCurrency,
+    userId
+  }: {
+    conversationId?: string;
+    history: { content: string; role: 'assistant' | 'user' }[];
+    languageCode: string;
+    message: string;
+    userCurrency: string;
+    userId: string;
+  }): Promise<AiChatResponse> {
+    const openRouterApiKey = await this.propertyService.getByKey<string>(
+      PROPERTY_API_KEY_OPENROUTER
+    );
+
+    const openRouterModel = await this.propertyService.getByKey<string>(
+      PROPERTY_OPENROUTER_MODEL
+    );
+
+    const openRouterService = createOpenRouter({
+      apiKey: openRouterApiKey
+    });
+
+    let portfolioContext = '';
+
+    try {
+      const portfolioPrompt = await this.getPrompt({
+        filters: [],
+        impersonationId: undefined,
+        languageCode,
+        mode: 'portfolio',
+        userCurrency,
+        userId
+      });
+
+      portfolioContext = `\n\nThe user's current portfolio (base currency: ${userCurrency}):\n${portfolioPrompt}`;
+    } catch (error) {
+      Logger.warn(
+        'Could not fetch portfolio for AI chat context',
+        'AiService'
+      );
+    }
+
+    const systemMessage = [
+      'You are Ghostfolio AI, a knowledgeable and helpful financial assistant integrated into the Ghostfolio portfolio management application.',
+      'You help users understand their portfolio, answer financial questions, and provide investment insights.',
+      'Be concise but thorough. Use markdown formatting for better readability.',
+      'When discussing the user\'s portfolio, reference specific holdings by name and symbol.',
+      'Always provide balanced, neutral financial guidance. Never give specific buy/sell recommendations.',
+      `Respond in the following language: ${languageCode}.`,
+      portfolioContext
+    ].join('\n');
+
+    const messages: { content: string; role: 'assistant' | 'system' | 'user' }[] = [
+      { content: systemMessage, role: 'system' },
+      ...history.map((msg) => ({
+        content: msg.content,
+        role: msg.role as 'assistant' | 'user'
+      })),
+      { content: message, role: 'user' as const }
+    ];
+
+    const result = await generateText({
+      messages,
+      model: openRouterService.chat(openRouterModel)
+    });
+
+    return {
+      conversationId: conversationId || randomUUID(),
+      message: {
+        content: result.text,
+        role: 'assistant',
+        timestamp: new Date().toISOString()
+      }
+    };
+  }
 
   public async generateText({ prompt }: { prompt: string }) {
     const openRouterApiKey = await this.propertyService.getByKey<string>(
@@ -156,7 +238,7 @@ export class AiService {
       `You are a neutral financial assistant. Please analyze the following investment portfolio (base currency being ${userCurrency}) in simple words.`,
       holdingsTableString,
       'Structure your answer with these sections:',
-      'Overview: Briefly summarize the portfolio’s composition and allocation rationale.',
+      "Overview: Briefly summarize the portfolio's composition and allocation rationale.",
       'Risk Assessment: Identify potential risks, including market volatility, concentration, and sectoral imbalances.',
       'Advantages: Highlight strengths, focusing on growth potential, diversification, or other benefits.',
       'Disadvantages: Point out weaknesses, such as overexposure or lack of defensive assets.',

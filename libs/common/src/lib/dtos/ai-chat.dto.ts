@@ -1,0 +1,14 @@
+import { IsArray, IsOptional, IsString } from 'class-validator';
+
+export class AiChatDto {
+  @IsString()
+  message: string;
+
+  @IsOptional()
+  @IsString()
+  conversationId?: string;
+
+  @IsOptional()
+  @IsArray()
+  history?: { content: string; role: 'assistant' | 'user' }[];
+}

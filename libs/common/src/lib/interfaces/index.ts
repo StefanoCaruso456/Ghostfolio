@@ -1,4 +1,8 @@
 import type { Access } from './access.interface';
+import type {
+  AiChatMessage,
+  AiChatResponse
+} from './responses/ai-chat-response.interface';
 import type { AccountBalance } from './account-balance.interface';
 import type { Activity, ActivityError } from './activities.interface';
 import type { AdminData } from './admin-data.interface';
@@ -116,6 +120,8 @@ export {
   AdminUser,
   AdminUserResponse,
   AdminUsersResponse,
+  AiChatMessage,
+  AiChatResponse,
   AiPromptResponse,
   ApiKeyResponse,
   AssertionCredentialJSON,

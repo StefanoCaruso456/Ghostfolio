@@ -36,6 +36,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router, RouterModule } from '@angular/router';
 import { IonIcon } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
@@ -46,7 +47,8 @@ import {
   optionsOutline,
   personCircleOutline,
   radioButtonOffOutline,
-  radioButtonOnOutline
+  radioButtonOnOutline,
+  sparklesOutline
 } from 'ionicons/icons';
 import { EMPTY, Subject } from 'rxjs';
 import { catchError, takeUntil } from 'rxjs/operators';
@@ -63,6 +65,7 @@ import { catchError, takeUntil } from 'rxjs/operators';
     MatButtonModule,
     MatMenuModule,
     MatToolbarModule,
+    MatTooltipModule,
     RouterModule
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -98,6 +101,7 @@ export class GfHeaderComponent implements OnChanges {
   @Input() user: User;
 
   @Output() signOut = new EventEmitter<void>();
+  @Output() toggleAiSidebar = new EventEmitter<void>();
 
   @ViewChild('assistant') assistantElement: GfAssistantComponent;
   @ViewChild('assistantTrigger') assistentMenuTriggerElement: MatMenuTrigger;
@@ -159,7 +163,8 @@ export class GfHeaderComponent implements OnChanges {
       optionsOutline,
       personCircleOutline,
       radioButtonOffOutline,
-      radioButtonOnOutline
+      radioButtonOnOutline,
+      sparklesOutline
     });
   }
 
