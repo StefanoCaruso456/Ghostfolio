@@ -63,6 +63,7 @@ async function bootstrap() {
 
   // Support 10mb csv/json files for importing activities
   app.useBodyParser('json', { limit: '10mb' });
+  app.useBodyParser('urlencoded', { limit: '10mb', extended: true } as any);
 
   if (configService.get<string>('ENABLE_FEATURE_SUBSCRIPTION') === 'true') {
     app.use((req: Request, res: Response, next: NextFunction) => {
