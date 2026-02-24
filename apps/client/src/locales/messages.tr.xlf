@@ -270,6 +270,14 @@
           <context context-type="linenumber">113</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="8268261550403279858" datatype="html">
+        <source>AI can make mistakes. Verify important financial information.</source>
+        <target state="translated">Yapay zeka hata yapabilir. Önemli finansal bilgileri doğrulayın.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/client/src/app/components/ai-chat-sidebar/ai-chat-sidebar.component.html</context>
+          <context context-type="linenumber">193</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="4029903570030679337" datatype="html">
         <source>Cash Balance</source>
         <target state="translated">Nakit Bakiye</target>
@@ -404,6 +412,14 @@
         <context-group purpose="location">
           <context context-type="sourcefile">libs/ui/src/lib/activities-table/activities-table.component.html</context>
           <context context-type="linenumber">283</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4328279212105654383" datatype="html">
+        <source>Sector breakdown</source>
+        <target state="translated">Sektör dağılımı</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/client/src/app/components/ai-chat-sidebar/ai-chat-sidebar.component.ts</context>
+          <context context-type="linenumber">106</context>
         </context-group>
       </trans-unit>
       <trans-unit id="6555318547274416232" datatype="html">
@@ -606,6 +622,14 @@
           <context context-type="linenumber">49</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="1080625167689547614" datatype="html">
+        <source>How can I help you?</source>
+        <target state="translated">Size nasıl yardımcı olabilirim?</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/client/src/app/components/ai-chat-sidebar/ai-chat-sidebar.component.html</context>
+          <context context-type="linenumber">67</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="1089827441260039381" datatype="html">
         <source>Delete Jobs</source>
         <target state="translated">İşleri Sil</target>
@@ -624,6 +648,14 @@
         <context-group purpose="location">
           <context context-type="sourcefile">libs/ui/src/lib/assistant/assistant.html</context>
           <context context-type="linenumber">140</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="306264684515764619" datatype="html">
+        <source><x id="INTERPOLATION" equiv-text="{{ showHistory ? &apos;Hide&apos; : &apos;Show&apos; }}"/> History</source>
+        <target state="translated"><x id="INTERPOLATION" equiv-text="{{ showHistory ? &apos;Hide&apos; : &apos;Show&apos; }}"/> Geçmiş</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/client/src/app/components/ai-chat-sidebar/ai-chat-sidebar.component.html</context>
+          <context context-type="linenumber">158</context>
         </context-group>
       </trans-unit>
       <trans-unit id="8530249987193962636" datatype="html">
@@ -1199,7 +1231,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">apps/client/src/app/components/header/header.component.html</context>
-          <context context-type="linenumber">231</context>
+          <context context-type="linenumber">242</context>
         </context-group>
       </trans-unit>
       <trans-unit id="2395205455607568422" datatype="html">
@@ -1287,7 +1319,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">apps/client/src/app/components/header/header.component.html</context>
-          <context context-type="linenumber">258</context>
+          <context context-type="linenumber">269</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">apps/client/src/app/pages/resources/personal-finance-tools/product-page.component.ts</context>
@@ -1323,7 +1355,7 @@
         <target state="translated">Ghostfolio Hakkında</target>
         <context-group purpose="location">
           <context context-type="sourcefile">apps/client/src/app/components/header/header.component.html</context>
-          <context context-type="linenumber">326</context>
+          <context context-type="linenumber">337</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">apps/client/src/app/pages/about/overview/about-overview-page.html</context>
@@ -1335,11 +1367,11 @@
         <target state="translated">Giriş</target>
         <context-group purpose="location">
           <context context-type="sourcefile">apps/client/src/app/components/header/header.component.html</context>
-          <context context-type="linenumber">422</context>
+          <context context-type="linenumber">433</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">apps/client/src/app/components/header/header.component.ts</context>
-          <context context-type="linenumber">297</context>
+          <context context-type="linenumber">302</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">apps/client/src/app/components/login-with-access-token-dialog/login-with-access-token-dialog.html</context>
@@ -1359,7 +1391,7 @@
         <target state="translated">Hay Allah! Güvenlik anahtarı yanlış.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">apps/client/src/app/components/header/header.component.ts</context>
-          <context context-type="linenumber">312</context>
+          <context context-type="linenumber">317</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">apps/client/src/app/components/user-account-access/user-account-access.component.ts</context>
@@ -1428,6 +1460,14 @@
         <context-group purpose="location">
           <context context-type="sourcefile">apps/client/src/app/components/home-overview/home-overview.html</context>
           <context context-type="linenumber">11</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2115592966120408375" datatype="html">
+        <source>Copied</source>
+        <target state="translated">Kopyalandı</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/client/src/app/components/ai-chat-sidebar/ai-chat-sidebar.component.html</context>
+          <context context-type="linenumber">132</context>
         </context-group>
       </trans-unit>
       <trans-unit id="6985929993180330131" datatype="html">
@@ -1935,7 +1975,7 @@
         <target state="translated">Üyeliğinizi Yükseltin</target>
         <context-group purpose="location">
           <context context-type="sourcefile">apps/client/src/app/components/header/header.component.html</context>
-          <context context-type="linenumber">193</context>
+          <context context-type="linenumber">204</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">apps/client/src/app/components/subscription-interstitial-dialog/subscription-interstitial-dialog.html</context>
@@ -2091,7 +2131,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">apps/client/src/app/components/header/header.component.html</context>
-          <context context-type="linenumber">375</context>
+          <context context-type="linenumber">386</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">apps/client/src/app/pages/about/overview/about-overview-page.routes.ts</context>
@@ -2199,7 +2239,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">apps/client/src/app/components/header/header.component.html</context>
-          <context context-type="linenumber">268</context>
+          <context context-type="linenumber">279</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">apps/client/src/app/components/holding-detail-dialog/holding-detail-dialog.html</context>
@@ -2255,7 +2295,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">apps/client/src/app/components/header/header.component.html</context>
-          <context context-type="linenumber">289</context>
+          <context context-type="linenumber">300</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">libs/common/src/lib/routes/routes.ts</context>
@@ -2311,7 +2351,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">apps/client/src/app/components/header/header.component.html</context>
-          <context context-type="linenumber">248</context>
+          <context context-type="linenumber">259</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">apps/client/src/app/components/holding-detail-dialog/holding-detail-dialog.html</context>
@@ -2499,7 +2539,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">apps/client/src/app/components/header/header.component.html</context>
-          <context context-type="linenumber">361</context>
+          <context context-type="linenumber">372</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">apps/client/src/app/pages/features/features-page.html</context>
@@ -2556,6 +2596,14 @@
         <context-group purpose="location">
           <context context-type="sourcefile">apps/client/src/app/pages/features/features-page.html</context>
           <context context-type="linenumber">127</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7273159470081128202" datatype="html">
+        <source>Analyze my portfolio</source>
+        <target state="translated">Portföyümü analiz et</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/client/src/app/components/ai-chat-sidebar/ai-chat-sidebar.component.ts</context>
+          <context context-type="linenumber">89</context>
         </context-group>
       </trans-unit>
       <trans-unit id="7277907068479697489" datatype="html">
@@ -2631,7 +2679,7 @@
         <target state="translated">Başla</target>
         <context-group purpose="location">
           <context context-type="sourcefile">apps/client/src/app/components/header/header.component.html</context>
-          <context context-type="linenumber">433</context>
+          <context context-type="linenumber">444</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">apps/client/src/app/pages/features/features-page.html</context>
@@ -2711,7 +2759,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">apps/client/src/app/components/header/header.component.html</context>
-          <context context-type="linenumber">408</context>
+          <context context-type="linenumber">419</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">apps/client/src/app/components/home-market/home-market.html</context>
@@ -3294,6 +3342,14 @@
           <context context-type="linenumber">19</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="7175744259627966988" datatype="html">
+        <source>Ask me anything about your portfolio, investments, or financial questions.</source>
+        <target state="translated">Portföyünüz, yatırımlarınız veya finansal sorularınız hakkında bana her şeyi sorun.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/client/src/app/components/ai-chat-sidebar/ai-chat-sidebar.component.html</context>
+          <context context-type="linenumber">69</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="4347553215219271086" datatype="html">
         <source>Select File</source>
         <target state="translated">Dosya Seç</target>
@@ -3496,6 +3552,14 @@
         <context-group purpose="location">
           <context context-type="sourcefile">apps/client/src/app/pages/public/public-page.html</context>
           <context context-type="linenumber">210</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7934833136974560675" datatype="html">
+        <source>Retry</source>
+        <target state="translated">Tekrar dene</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/client/src/app/components/ai-chat-sidebar/ai-chat-sidebar.component.html</context>
+          <context context-type="linenumber">142</context>
         </context-group>
       </trans-unit>
       <trans-unit id="6966271594418371336" datatype="html">
@@ -3715,11 +3779,11 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">apps/client/src/app/components/header/header.component.html</context>
-          <context context-type="linenumber">313</context>
+          <context context-type="linenumber">324</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">apps/client/src/app/components/header/header.component.html</context>
-          <context context-type="linenumber">389</context>
+          <context context-type="linenumber">400</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">apps/client/src/app/pages/pricing/pricing-page.routes.ts</context>
@@ -3883,7 +3947,7 @@
         <target state="translated">Aboneliği Yenile</target>
         <context-group purpose="location">
           <context context-type="sourcefile">apps/client/src/app/components/header/header.component.html</context>
-          <context context-type="linenumber">191</context>
+          <context context-type="linenumber">202</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">apps/client/src/app/components/user-account-membership/user-account-membership.html</context>
@@ -3971,7 +4035,7 @@
         <target state="translated">Hesap Oluştur</target>
         <context-group purpose="location">
           <context context-type="sourcefile">apps/client/src/app/app.component.html</context>
-          <context context-type="linenumber">13</context>
+          <context context-type="linenumber">17</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">apps/client/src/app/pages/register/register-page.html</context>
@@ -4065,6 +4129,14 @@
         <context-group purpose="location">
           <context context-type="sourcefile">apps/client/src/app/pages/resources/personal-finance-tools/product-page.html</context>
           <context context-type="linenumber">8</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5100176812634900502" datatype="html">
+        <source>Ghostfolio AI</source>
+        <target state="translated">Ghostfolio AI</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/client/src/app/components/header/header.component.html</context>
+          <context context-type="linenumber">131</context>
         </context-group>
       </trans-unit>
       <trans-unit id="5100352603258735382" datatype="html">
@@ -4296,7 +4368,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">apps/client/src/app/components/header/header.component.html</context>
-          <context context-type="linenumber">301</context>
+          <context context-type="linenumber">312</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">apps/client/src/app/pages/resources/overview/resources-overview.component.html</context>
@@ -4328,7 +4400,7 @@
         <target state="translated">Benim Ghostfolio’m</target>
         <context-group purpose="location">
           <context context-type="sourcefile">apps/client/src/app/components/header/header.component.html</context>
-          <context context-type="linenumber">277</context>
+          <context context-type="linenumber">288</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">apps/client/src/app/pages/user-account/user-account-page.routes.ts</context>
@@ -4639,6 +4711,14 @@
           <context context-type="linenumber">424</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="4802350744753384880" datatype="html">
+        <source>Risk assessment</source>
+        <target state="translated">Risk değerlendirmesi</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/client/src/app/components/ai-chat-sidebar/ai-chat-sidebar.component.ts</context>
+          <context context-type="linenumber">100</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="4808589666930368915" datatype="html">
         <source>Draft</source>
         <target state="translated">Taslak</target>
@@ -4693,6 +4773,14 @@
         <context-group purpose="location">
           <context context-type="sourcefile">libs/ui/src/lib/benchmark/benchmark.component.html</context>
           <context context-type="linenumber">119</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="552642818921774648" datatype="html">
+        <source>Conversation History</source>
+        <target state="translated">Konuşma Geçmişi</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/client/src/app/components/ai-chat-sidebar/ai-chat-sidebar.component.html</context>
+          <context context-type="linenumber">32</context>
         </context-group>
       </trans-unit>
       <trans-unit id="5527159140597148286" datatype="html">
@@ -5360,7 +5448,7 @@
         <target state="translated">Canlı demoyu kullanmaktasınız.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">apps/client/src/app/app.component.html</context>
-          <context context-type="linenumber">12</context>
+          <context context-type="linenumber">16</context>
         </context-group>
       </trans-unit>
       <trans-unit id="4241619322959394210" datatype="html">
@@ -6118,6 +6206,14 @@
         <context-group purpose="location">
           <context context-type="sourcefile">apps/client/src/app/components/home-holdings/home-holdings.component.ts</context>
           <context context-type="linenumber">64</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8206940638567425435" datatype="html">
+        <source>Sorry, I encountered an error. Please try again.</source>
+        <target state="translated">Üzgünüm, bir hata oluştu. Lütfen tekrar deneyin.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/client/src/app/components/ai-chat-sidebar/ai-chat-sidebar.component.ts</context>
+          <context context-type="linenumber">243</context>
         </context-group>
       </trans-unit>
       <trans-unit id="7860418101283165917" datatype="html">
@@ -7351,7 +7447,7 @@
         <target state="translated">Ben</target>
         <context-group purpose="location">
           <context context-type="sourcefile">apps/client/src/app/components/header/header.component.html</context>
-          <context context-type="linenumber">213</context>
+          <context context-type="linenumber">224</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">apps/client/src/app/components/user-account-access/user-account-access.component.ts</context>
@@ -7662,6 +7758,14 @@
           <context context-type="linenumber">102</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="7561734099312878563" datatype="html">
+        <source>Diversification check</source>
+        <target state="translated">Çeşitlendirme kontrolü</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/client/src/app/components/ai-chat-sidebar/ai-chat-sidebar.component.ts</context>
+          <context context-type="linenumber">94</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="7571375880734710634" datatype="html">
         <source>Terms of Service</source>
         <target state="translated">Hükümler ve Koşullar</target>
@@ -7820,7 +7924,7 @@
         <target state="translated">Oturumu kapat</target>
         <context-group purpose="location">
           <context context-type="sourcefile">apps/client/src/app/components/header/header.component.html</context>
-          <context context-type="linenumber">329</context>
+          <context context-type="linenumber">340</context>
         </context-group>
       </trans-unit>
       <trans-unit id="5323883986770878166" datatype="html">
@@ -7846,6 +7950,14 @@
         <context-group purpose="location">
           <context context-type="sourcefile">libs/common/src/lib/routes/routes.ts</context>
           <context context-type="linenumber">183</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="3915469942305054421" datatype="html">
+        <source>Ask about your portfolio...</source>
+        <target state="translated">Portföyünüz hakkında sorun...</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/client/src/app/components/ai-chat-sidebar/ai-chat-sidebar.component.html</context>
+          <context context-type="linenumber">171</context>
         </context-group>
       </trans-unit>
       <trans-unit id="3920411961658116502" datatype="html">
@@ -8705,6 +8817,14 @@
         <context-group purpose="location">
           <context context-type="sourcefile">apps/client/src/app/pages/about/overview/about-overview-page.html</context>
           <context context-type="linenumber">128</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="3385369590791558584" datatype="html">
+        <source>No conversations yet</source>
+        <target state="translated">Henüz konuşma yok</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/client/src/app/components/ai-chat-sidebar/ai-chat-sidebar.component.html</context>
+          <context context-type="linenumber">35</context>
         </context-group>
       </trans-unit>
       <trans-unit id="339860602695747533" datatype="html">
