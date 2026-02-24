@@ -124,7 +124,6 @@ export class HtmlTemplateMiddleware implements NestMiddleware {
 
     if (
       path.startsWith('/api/') ||
-      path.startsWith('/staging-login') ||
       path.startsWith(STORYBOOK_PATH) ||
       this.isFileRequest(path) ||
       !environment.production
