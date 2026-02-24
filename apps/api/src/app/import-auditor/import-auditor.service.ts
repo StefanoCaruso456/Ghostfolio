@@ -12,6 +12,8 @@ import { z } from 'zod';
 
 import { CircuitBreaker } from './guardrails/circuit-breaker';
 import { CostLimiter } from './guardrails/cost-limiter';
+import { checkPayloadLimits } from './guardrails/payload-limiter';
+import { ToolFailureTracker } from './guardrails/tool-failure-tracker';
 import {
   AgentMetrics,
   createAgentMetrics,
@@ -27,15 +29,9 @@ import { generateImportPreview } from './tools/generate-import-preview.tool';
 import { mapBrokerFields } from './tools/map-broker-fields.tool';
 import { parseCsv } from './tools/parse-csv.tool';
 import { validateTransactions } from './tools/validate-transactions.tool';
+import { enforceVerificationGate } from './verification/enforce';
 
-// ─── Session Types ───────────────────────────────────────────────────
-
-interface SessionData {
-  csvContent?: string;
-  lastAccessedAt: number;
-  messages: { role: 'user' | 'assistant'; content: string }[];
-  toolResults: Record<string, unknown>;
-}
+// ─── Types ──────────────────────────────────────────────────────────
 
 interface ToolCallRecord {
   tool: string;
@@ -45,13 +41,20 @@ interface ToolCallRecord {
   durationMs: number;
 }
 
-interface ChatResponse {
+export interface ChatRequest {
+  csvContent?: string;
+  history?: { role: 'user' | 'assistant'; content: string }[];
+  message: string;
+  sessionId: string;
+  userId: string;
+}
+
+export interface ChatResponse {
   sessionId: string;
   response: string;
   toolCalls: ToolCallRecord[];
   canCommit: boolean;
   metrics: AgentMetrics;
-  stateHash?: string;
 }
 
 // ─── Production Guardrails (Non-Negotiable) ──────────────────────────
@@ -65,12 +68,6 @@ const TIMEOUT_MS = 45_000;
 /** COST_LIMIT: $1/query — prevent bill explosions */
 const COST_LIMIT_USD = 1.0;
 
-/** SESSION_TTL: 1 hour — auto-cleanup */
-const SESSION_TTL_MS = 60 * 60 * 1000;
-
-/** MAX_SESSIONS: hard cap on concurrent sessions */
-const MAX_SESSIONS = 100;
-
 /** CIRCUIT_BREAKER: same action 3x → abort */
 const CIRCUIT_BREAKER_MAX_REPETITIONS = 3;
 
@@ -79,7 +76,6 @@ const CIRCUIT_BREAKER_MAX_REPETITIONS = 3;
 @Injectable()
 export class ImportAuditorService {
   private readonly logger = new Logger(ImportAuditorService.name);
-  private readonly sessions = new Map<string, SessionData>();
 
   public constructor(private readonly propertyService: PropertyService) {}
 
@@ -87,53 +83,53 @@ export class ImportAuditorService {
     return { status: 'OK' };
   }
 
+  /**
+   * Stateless chat endpoint.
+   *
+   * The frontend sends the full conversation history + csvContent each call.
+   * No in-memory session map — safe for multi-instance / serverless deployments.
+   */
   public async chat({
     csvContent,
+    history,
     message,
     sessionId
-  }: {
-    csvContent?: string;
-    message: string;
-    sessionId: string;
-    userId: string;
-  }): Promise<ChatResponse> {
+  }: ChatRequest): Promise<ChatResponse> {
     // Initialize metrics for this run
     const metrics = createAgentMetrics(sessionId);
 
-    // Clean up expired sessions before processing
-    this.cleanupExpiredSessions();
+    // ─── Payload limit guardrail (early reject) ───────────────────
+    const payloadCheck = checkPayloadLimits(csvContent);
 
-    // Initialize or retrieve session
-    let session = this.sessions.get(sessionId);
+    if (!payloadCheck.ok) {
+      metrics.success = false;
+      metrics.guardrailTriggered = 'payload_limit';
+      metrics.error = payloadCheck.reason;
 
-    if (!session) {
-      session = {
-        lastAccessedAt: Date.now(),
-        messages: [],
-        toolResults: {}
+      return {
+        sessionId,
+        response: `I cannot process this CSV: ${payloadCheck.reason}. Please reduce the file size and try again.`,
+        toolCalls: [],
+        canCommit: false,
+        metrics: finalizeMetrics(metrics)
       };
-      this.sessions.set(sessionId, session);
-    } else {
-      session.lastAccessedAt = Date.now();
     }
 
-    // Store CSV content if provided
-    if (csvContent) {
-      session.csvContent = csvContent;
-    }
-
-    // Add user message to history
-    session.messages.push({ role: 'user', content: message });
+    // Build messages from history + current message
+    const messages: { role: 'user' | 'assistant'; content: string }[] = [
+      ...(history ?? []),
+      { role: 'user', content: message }
+    ];
 
     const toolCallRecords: ToolCallRecord[] = [];
     let canCommit = false;
-    let stateHash: string | undefined;
 
     // Initialize guardrails
     const circuitBreaker = new CircuitBreaker({
       maxRepetitions: CIRCUIT_BREAKER_MAX_REPETITIONS
     });
     const costLimiter = new CostLimiter({ maxCostUsd: COST_LIMIT_USD });
+    const failureTracker = new ToolFailureTracker();
 
     try {
       const openRouterApiKey = await this.propertyService.getByKey<string>(
@@ -151,20 +147,13 @@ export class ImportAuditorService {
         ));
 
       if (!openRouterApiKey || !openRouterModel) {
-        const response =
-          'The AI service is not configured. Please set the OpenRouter API key and model in the admin settings.';
-
-        session.messages.push({
-          role: 'assistant',
-          content: response
-        });
-
         metrics.success = false;
         metrics.error = 'AI service not configured';
 
         return {
           sessionId,
-          response,
+          response:
+            'The AI service is not configured. Please set the OpenRouter API key and model in the admin settings.',
           toolCalls: [],
           canCommit: false,
           metrics: finalizeMetrics(metrics)
@@ -175,11 +164,11 @@ export class ImportAuditorService {
         apiKey: openRouterApiKey
       });
 
-      const systemPrompt = this.buildSystemPrompt(session);
+      const systemPrompt = this.buildSystemPrompt(csvContent);
 
       // Log thought: starting ReAct loop
       metrics.thoughtLog.push(
-        `Starting ReAct loop for session ${sessionId}. CSV present: ${!!session.csvContent}`
+        `Starting ReAct loop for session ${sessionId}. CSV present: ${!!csvContent}`
       );
 
       // Create a timeout with proper cleanup
@@ -197,10 +186,12 @@ export class ImportAuditorService {
       });
 
       /**
-       * Helper to wrap tool execution with guardrails.
-       * Records metrics, checks circuit breaker, logs action/observation.
+       * Helper to wrap tool execution with guardrails:
+       * circuit breaker, cost limit, tool failure backoff, verification gate.
        */
-      const executeWithGuardrails = <T>(
+      const executeWithGuardrails = <
+        T extends { status: string; verification: VerificationResult }
+      >(
         toolName: string,
         args: Record<string, unknown>,
         executeFn: () => T
@@ -222,6 +213,14 @@ export class ImportAuditorService {
           throw new Error(`Guardrail: ${metrics.error}`);
         }
 
+        // Tool failure backoff check
+        if (failureTracker.isAborted()) {
+          metrics.guardrailTriggered = 'tool_failure_backoff';
+          metrics.error = failureTracker.getAbortReason();
+
+          throw new Error(`Guardrail: ${metrics.error}`);
+        }
+
         // Log action
         metrics.actionLog.push(
           `${toolName}(${JSON.stringify(args).slice(0, 200)})`
@@ -236,16 +235,41 @@ export class ImportAuditorService {
         metrics.observationLog.push(`${toolName} completed in ${durationMs}ms`);
         metrics.toolsCalled.push(toolName);
 
+        // Track tool failures for backoff
+        if (result.status === 'error') {
+          if (failureTracker.recordFailure(toolName)) {
+            metrics.guardrailTriggered = 'tool_failure_backoff';
+            metrics.error = failureTracker.getAbortReason();
+
+            throw new Error(`Guardrail: ${metrics.error}`);
+          }
+        }
+
+        // Central verification gate enforcement
+        const gate = enforceVerificationGate(result.verification, {
+          highStakes: true, // CSV import is always high-stakes (financial data)
+          minConfidence: 0.7
+        });
+
+        if (gate.decision === 'block') {
+          metrics.thoughtLog.push(
+            `Verification gate BLOCKED after ${toolName}: ${gate.reason}`
+          );
+          // Don't throw — the LLM should see the error and report it to the user.
+          // The block is informational: it prevents canCommit but lets the agent explain.
+        } else if (gate.decision === 'human_review') {
+          metrics.thoughtLog.push(
+            `Verification gate requires HUMAN REVIEW after ${toolName}: ${gate.reason}`
+          );
+        }
+
         return result;
       };
 
       const generatePromise = generateText({
         maxSteps: MAX_ITERATIONS,
         model: openRouterService.chat(openRouterModel),
-        messages: [
-          { role: 'system', content: systemPrompt },
-          ...session.messages
-        ],
+        messages: [{ role: 'system', content: systemPrompt }, ...messages],
         tools: {
           detectBrokerFormat: tool({
             description:
@@ -267,8 +291,6 @@ export class ImportAuditorService {
                 verification: result.verification,
                 durationMs
               });
-
-              session.toolResults['detectBrokerFormat'] = result;
 
               return result;
             }
@@ -303,8 +325,6 @@ export class ImportAuditorService {
                 verification: result.verification,
                 durationMs
               });
-
-              session.toolResults['parseCSV'] = result;
 
               return result;
             }
@@ -350,8 +370,6 @@ export class ImportAuditorService {
                 durationMs
               });
 
-              session.toolResults['mapBrokerFields'] = result;
-
               return result;
             }
           }),
@@ -383,8 +401,6 @@ export class ImportAuditorService {
                 verification: result.verification,
                 durationMs
               });
-
-              session.toolResults['validateTransactions'] = result;
 
               if (result.status === 'pass' || result.status === 'warnings') {
                 canCommit = true;
@@ -422,8 +438,6 @@ export class ImportAuditorService {
                 verification: result.verification,
                 durationMs
               });
-
-              session.toolResults['generateImportPreview'] = result;
 
               // Update canCommit based on preview
               if (result.data.canCommit) {
@@ -471,11 +485,6 @@ export class ImportAuditorService {
           result.text ||
           'I processed your request. Check the tool results for details.';
 
-        session.messages.push({
-          role: 'assistant',
-          content: responseText
-        });
-
         metrics.success = true;
         metrics.toolCallLog = toolCallRecords.map((tc) => ({
           tool: tc.tool,
@@ -502,8 +511,7 @@ export class ImportAuditorService {
           response: responseText,
           toolCalls: toolCallRecords,
           canCommit,
-          metrics: finalMetrics,
-          stateHash
+          metrics: finalMetrics
         };
       } finally {
         clearTimeout(timeoutId);
@@ -514,14 +522,8 @@ export class ImportAuditorService {
 
       this.logger.error(`Chat error for session ${sessionId}: ${errorMessage}`);
 
-      // Determine if this was a guardrail trigger
-      if (errorMessage.includes('Guardrail:')) {
-        metrics.success = false;
-        metrics.error = errorMessage;
-      } else {
-        metrics.success = false;
-        metrics.error = errorMessage;
-      }
+      metrics.success = false;
+      metrics.error = errorMessage;
 
       const finalMetrics = finalizeMetrics(metrics);
 
@@ -538,11 +540,6 @@ export class ImportAuditorService {
         ? `I stopped processing due to a safety guardrail: ${errorMessage}. Please try a simpler request or contact support.`
         : `I encountered an error: ${errorMessage}. Please try again.`;
 
-      session.messages.push({
-        role: 'assistant',
-        content: errorResponse
-      });
-
       return {
         sessionId,
         response: errorResponse,
@@ -555,16 +552,8 @@ export class ImportAuditorService {
 
   /**
    * Hardened system prompt with AgentForge guardrails.
-   *
-   * Includes:
-   * - ReAct workflow instructions
-   * - Tool descriptions with expected order
-   * - Safety guardrails (refuse when uncertain, cite sources)
-   * - Anti-hallucination instructions
-   * - Confidence-awareness
-   * - Escalation triggers
    */
-  private buildSystemPrompt(session: SessionData): string {
+  private buildSystemPrompt(csvContent?: string): string {
     const parts = [
       'You are the Ghostfolio CSV Import Auditor, a financial data validation assistant.',
       'You help users safely import broker CSV files into their Ghostfolio portfolio.',
@@ -607,7 +596,7 @@ export class ImportAuditorService {
       '',
       '## Confidence & Escalation',
       '- Report overall confidence after validation (from verification.confidence).',
-      '- If confidence < 0.5: "⚠ Low confidence — I recommend manual review before importing."',
+      '- If confidence < 0.5: "Warning: Low confidence — I recommend manual review before importing."',
       '- If there are validation errors: clearly list them with row numbers.',
       '- For large imports (50+ rows) or high-value imports: recommend the user reviews the preview carefully.',
       '',
@@ -618,39 +607,16 @@ export class ImportAuditorService {
       '- Report validation errors and warnings clearly with row numbers.'
     ];
 
-    if (session.csvContent) {
+    if (csvContent) {
       parts.push(
         '',
         `## Context`,
-        `The user has uploaded a CSV file (${session.csvContent.length} characters).`,
+        `The user has uploaded a CSV file (${csvContent.length} characters).`,
         'When you need to parse it, pass the CSV content to the parseCSV tool.',
         'Start with detectBrokerFormat to identify the broker, then proceed through the standard workflow.'
       );
     }
 
     return parts.join('\n');
-  }
-
-  private cleanupExpiredSessions(): void {
-    const now = Date.now();
-
-    for (const [sessionId, session] of this.sessions.entries()) {
-      if (now - session.lastAccessedAt > SESSION_TTL_MS) {
-        this.sessions.delete(sessionId);
-      }
-    }
-
-    // Hard cap: evict oldest sessions if over limit
-    if (this.sessions.size > MAX_SESSIONS) {
-      const sortedEntries = [...this.sessions.entries()].sort(
-        (a, b) => a[1].lastAccessedAt - b[1].lastAccessedAt
-      );
-
-      const toEvict = sortedEntries.slice(0, this.sessions.size - MAX_SESSIONS);
-
-      for (const [sessionId] of toEvict) {
-        this.sessions.delete(sessionId);
-      }
-    }
   }
 }

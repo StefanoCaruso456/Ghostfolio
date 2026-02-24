@@ -3,7 +3,11 @@
  *
  * AgentForge rule: If same action (tool + args signature) repeats 3x → abort.
  * Prevents infinite loops, token waste, and downstream service hammering.
+ *
+ * Signature normalization: args are sorted, strings trimmed+truncated,
+ * numbers bucketed — so slightly different args still match.
  */
+import crypto from 'crypto';
 
 export interface CircuitBreakerConfig {
   /** Max times the same action can repeat before tripping. Default: 3. */
@@ -13,6 +17,51 @@ export interface CircuitBreakerConfig {
 const DEFAULT_CONFIG: CircuitBreakerConfig = {
   maxRepetitions: 3
 };
+
+/**
+ * Normalize args for stable hashing: sort keys, trim+truncate strings,
+ * round numbers to 2 decimal places. This prevents the LLM from
+ * trivially evading the breaker with whitespace or precision changes.
+ */
+function normalizeArgs(args: unknown): unknown {
+  if (args === null || args === undefined) {
+    return {};
+  }
+
+  if (typeof args !== 'object' || Array.isArray(args)) {
+    return args;
+  }
+
+  const obj = args as Record<string, unknown>;
+  const sortedKeys = Object.keys(obj).sort();
+  const normalized: Record<string, unknown> = {};
+
+  for (const key of sortedKeys) {
+    const v = obj[key];
+
+    if (typeof v === 'string') {
+      normalized[key] = v.trim().slice(0, 200);
+    } else if (typeof v === 'number') {
+      normalized[key] = Math.round(v * 100) / 100;
+    } else if (Array.isArray(v)) {
+      normalized[key] = v.length; // bucket arrays by length
+    } else {
+      normalized[key] = v;
+    }
+  }
+
+  return normalized;
+}
+
+/**
+ * Create a stable SHA-256 signature for a tool + normalized args combination.
+ */
+export function createSignature(toolName: string, args: unknown): string {
+  const norm = normalizeArgs(args ?? {});
+  const raw = toolName + ':' + JSON.stringify(norm);
+
+  return crypto.createHash('sha256').update(raw).digest('hex');
+}
 
 export class CircuitBreaker {
   private readonly config: CircuitBreakerConfig;
@@ -32,7 +81,7 @@ export class CircuitBreaker {
       return true;
     }
 
-    const signature = this.createSignature(toolName, args);
+    const signature = createSignature(toolName, args);
     const count = (this.actionCounts.get(signature) ?? 0) + 1;
     this.actionCounts.set(signature, count);
 
@@ -62,23 +111,5 @@ export class CircuitBreaker {
 
   public getActionCounts(): Map<string, number> {
     return new Map(this.actionCounts);
-  }
-
-  /**
-   * Create a stable string signature for a tool + args combination.
-   * Uses sorted JSON to ensure deterministic comparison.
-   */
-  private createSignature(toolName: string, args: unknown): string {
-    try {
-      const sortedArgs = JSON.stringify(
-        args,
-        Object.keys(args as Record<string, unknown>).sort()
-      );
-
-      return `${toolName}::${sortedArgs}`;
-    } catch {
-      // Fallback for non-serializable args
-      return `${toolName}::${String(args)}`;
-    }
   }
 }
