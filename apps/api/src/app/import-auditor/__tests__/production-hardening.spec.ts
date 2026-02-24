@@ -27,6 +27,7 @@ import { createVerificationResult } from '../schemas/verification.schema';
 import { validateWithZod } from '../tooling/tool-helpers';
 import { detectBrokerFormat } from '../tools/detect-broker-format.tool';
 import { generateImportPreview } from '../tools/generate-import-preview.tool';
+import { normalizeToActivityDTO } from '../tools/normalize-to-activity-dto.tool';
 import { validateTransactions } from '../tools/validate-transactions.tool';
 import { enforceVerificationGate } from '../verification/enforce';
 
@@ -479,12 +480,20 @@ describe('Integration: Verification Gate + Real Tools', () => {
   });
 
   it('G031: high-value preview triggers human review gate', () => {
+    const highValueActivity = {
+      ...VALID_ACTIVITY,
+      quantity: 1000,
+      unitPrice: 500
+    }; // $500k
+    const normalized = normalizeToActivityDTO({
+      activities: [highValueActivity]
+    });
     const result = generateImportPreview({
-      validActivities: [
-        { ...VALID_ACTIVITY, quantity: 1000, unitPrice: 500 } // $500k
-      ],
+      validActivities: [highValueActivity],
       totalErrors: 0,
-      totalWarnings: 0
+      totalWarnings: 0,
+      normalizedDTOs: normalized.data.dtos,
+      dtoNormalizationErrors: normalized.data.totalFailed
     });
 
     // The tool itself flags requiresHumanReview

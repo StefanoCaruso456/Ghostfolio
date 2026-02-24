@@ -48,7 +48,10 @@ export const ValidationErrorSchema = z.object({
 export type ValidationError = z.infer<typeof ValidationErrorSchema>;
 
 export const ValidateTransactionsInputSchema = z.object({
-  activities: z.array(MappedActivitySchema).min(1)
+  activities: z
+    .array(MappedActivitySchema)
+    .min(1)
+    .describe('Array of mapped activities to validate')
 });
 
 export type ValidateTransactionsInput = z.infer<

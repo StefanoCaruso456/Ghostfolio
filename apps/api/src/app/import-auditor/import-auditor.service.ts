@@ -8,7 +8,7 @@ import {
 import { Injectable, Logger } from '@nestjs/common';
 import { createOpenRouter } from '@openrouter/ai-sdk-provider';
 import { generateText, tool } from 'ai';
-import { z } from 'zod';
+import type { ZodType } from 'zod';
 
 import { CircuitBreaker } from './guardrails/circuit-breaker';
 import { CostLimiter } from './guardrails/cost-limiter';
@@ -20,13 +20,39 @@ import {
   estimateCost,
   finalizeMetrics
 } from './schemas/agent-metrics.schema';
-import { DetectBrokerFormatInputSchema } from './schemas/detect-broker-format.schema';
-import { GenerateImportPreviewInputSchema } from './schemas/generate-import-preview.schema';
-import { MappedActivitySchema } from './schemas/validate-transactions.schema';
-import type { VerificationResult } from './schemas/verification.schema';
+import {
+  DetectBrokerFormatInputSchema,
+  DetectBrokerFormatOutputSchema
+} from './schemas/detect-broker-format.schema';
+import {
+  GenerateImportPreviewInputSchema,
+  GenerateImportPreviewOutputSchema
+} from './schemas/generate-import-preview.schema';
+import {
+  MapBrokerFieldsInputSchema,
+  MapBrokerFieldsOutputSchema
+} from './schemas/map-broker-fields.schema';
+import {
+  NormalizeActivitiesInputSchema,
+  NormalizeActivitiesOutputSchema
+} from './schemas/normalize-activities.schema';
+import {
+  ParseCsvInputSchema,
+  ParseCsvOutputSchema
+} from './schemas/parse-csv.schema';
+import { TOOL_RESULT_SCHEMA_VERSION } from './schemas/tool-result.schema';
+import {
+  ValidateTransactionsInputSchema,
+  ValidateTransactionsOutputSchema
+} from './schemas/validate-transactions.schema';
+import {
+  createVerificationResult,
+  type VerificationResult
+} from './schemas/verification.schema';
 import { detectBrokerFormat } from './tools/detect-broker-format.tool';
 import { generateImportPreview } from './tools/generate-import-preview.tool';
 import { mapBrokerFields } from './tools/map-broker-fields.tool';
+import { normalizeToActivityDTO } from './tools/normalize-to-activity-dto.tool';
 import { parseCsv } from './tools/parse-csv.tool';
 import { validateTransactions } from './tools/validate-transactions.tool';
 import { enforceVerificationGate } from './verification/enforce';
@@ -70,6 +96,22 @@ const COST_LIMIT_USD = 1.0;
 
 /** CIRCUIT_BREAKER: same action 3x → abort */
 const CIRCUIT_BREAKER_MAX_REPETITIONS = 3;
+
+// ─── Output Schema Registry (prevents schema drift) ──────────────────
+
+/**
+ * Maps tool names to their Zod output schemas.
+ * Used by executeWithGuardrails to validate tool outputs at runtime.
+ * If a tool's output doesn't match its schema, it's converted to an error.
+ */
+const OUTPUT_SCHEMA_REGISTRY: Record<string, ZodType> = {
+  detectBrokerFormat: DetectBrokerFormatOutputSchema,
+  parseCSV: ParseCsvOutputSchema,
+  mapBrokerFields: MapBrokerFieldsOutputSchema,
+  validateTransactions: ValidateTransactionsOutputSchema,
+  normalizeActivities: NormalizeActivitiesOutputSchema,
+  generateImportPreview: GenerateImportPreviewOutputSchema
+};
 
 // ─── Service ─────────────────────────────────────────────────────────
 
@@ -171,12 +213,16 @@ export class ImportAuditorService {
         `Starting ReAct loop for session ${sessionId}. CSV present: ${!!csvContent}`
       );
 
-      // Create a timeout with proper cleanup
+      // Create a timeout with AbortController for proper cancellation.
+      // When timeout fires, abortController.abort() cancels the generateText
+      // call, preventing orphaned background token consumption.
+      const abortController = new AbortController();
       let timeoutId: ReturnType<typeof setTimeout>;
 
       const timeoutPromise = new Promise<never>((_, reject) => {
         timeoutId = setTimeout(() => {
           metrics.guardrailTriggered = 'timeout';
+          abortController.abort();
           reject(
             new Error(
               `Guardrail: Request timed out after ${TIMEOUT_MS / 1000}s`
@@ -187,7 +233,8 @@ export class ImportAuditorService {
 
       /**
        * Helper to wrap tool execution with guardrails:
-       * circuit breaker, cost limit, tool failure backoff, verification gate.
+       * circuit breaker, cost limit, tool failure backoff,
+       * runtime output schema validation, verification gate, schemaVersion.
        */
       const executeWithGuardrails = <
         T extends { status: string; verification: VerificationResult }
@@ -195,7 +242,7 @@ export class ImportAuditorService {
         toolName: string,
         args: Record<string, unknown>,
         executeFn: () => T
-      ): T => {
+      ): T & { schemaVersion: string } => {
         // Circuit breaker check
         if (circuitBreaker.recordAction(toolName, args)) {
           metrics.guardrailTriggered = 'circuit_breaker';
@@ -228,12 +275,40 @@ export class ImportAuditorService {
         metrics.iterations++;
 
         const start = Date.now();
-        const result = executeFn();
+        let result = executeFn();
         const durationMs = Date.now() - start;
 
         // Log observation
         metrics.observationLog.push(`${toolName} completed in ${durationMs}ms`);
         metrics.toolsCalled.push(toolName);
+
+        // ─── Runtime output schema validation ─────────────────────────
+        const outputSchema = OUTPUT_SCHEMA_REGISTRY[toolName];
+
+        if (outputSchema) {
+          const validation = outputSchema.safeParse(result);
+
+          if (!validation.success) {
+            const zodErrors = validation.error.issues
+              .map((i) => i.message)
+              .join('; ');
+            metrics.observationLog.push(
+              `${toolName} OUTPUT SCHEMA VALIDATION FAILED: ${zodErrors}`
+            );
+
+            // Replace result with a structured error
+            result = {
+              status: 'error',
+              data: (result as Record<string, unknown>).data,
+              verification: createVerificationResult({
+                passed: false,
+                confidence: 0,
+                errors: [`Tool output schema validation failed: ${zodErrors}`],
+                sources: [toolName]
+              })
+            } as unknown as T;
+          }
+        }
 
         // Track tool failures for backoff
         if (result.status === 'error') {
@@ -252,6 +327,7 @@ export class ImportAuditorService {
         });
 
         if (gate.decision === 'block') {
+          canCommit = false;
           metrics.thoughtLog.push(
             `Verification gate BLOCKED after ${toolName}: ${gate.reason}`
           );
@@ -263,10 +339,12 @@ export class ImportAuditorService {
           );
         }
 
-        return result;
+        // Inject schemaVersion for contract evolution tracking
+        return { ...result, schemaVersion: TOOL_RESULT_SCHEMA_VERSION };
       };
 
       const generatePromise = generateText({
+        abortSignal: abortController.signal,
         maxSteps: MAX_ITERATIONS,
         model: openRouterService.chat(openRouterModel),
         messages: [{ role: 'system', content: systemPrompt }, ...messages],
@@ -298,13 +376,7 @@ export class ImportAuditorService {
           parseCSV: tool({
             description:
               'Parse raw CSV content into structured rows with headers. Use this when the user provides a CSV file or asks to import/parse a CSV.',
-            parameters: z.object({
-              csvContent: z.string().describe('The raw CSV content to parse'),
-              delimiter: z
-                .enum([',', ';', '\t', '|'])
-                .default(',')
-                .describe('CSV delimiter character')
-            }),
+            parameters: ParseCsvInputSchema,
             execute: async (args) => {
               const start = Date.now();
               const result = executeWithGuardrails(
@@ -332,22 +404,7 @@ export class ImportAuditorService {
           mapBrokerFields: tool({
             description:
               'Map CSV column headers to Ghostfolio activity fields using deterministic matching. Use this after parsing CSV to identify which columns correspond to date, symbol, quantity, price, etc.',
-            parameters: z.object({
-              headers: z
-                .array(z.string())
-                .describe('CSV column headers to map'),
-              sampleRows: z
-                .array(z.record(z.unknown()))
-                .min(1)
-                .max(5)
-                .describe('1-5 sample data rows for context'),
-              brokerHint: z
-                .string()
-                .optional()
-                .describe(
-                  'Optional hint about the broker (e.g., "Interactive Brokers")'
-                )
-            }),
+            parameters: MapBrokerFieldsInputSchema,
             execute: async (args) => {
               const start = Date.now();
               const result = executeWithGuardrails(
@@ -376,12 +433,7 @@ export class ImportAuditorService {
           validateTransactions: tool({
             description:
               'Validate mapped activities against financial rules: required fields, valid types, numeric invariants (fee >= 0, quantity >= 0), date validity, and currency codes. Use this after mapping broker fields.',
-            parameters: z.object({
-              activities: z
-                .array(MappedActivitySchema)
-                .min(1)
-                .describe('Array of mapped activities to validate')
-            }),
+            parameters: ValidateTransactionsInputSchema,
             execute: async (args) => {
               const start = Date.now();
               const result = executeWithGuardrails(
@@ -409,9 +461,43 @@ export class ImportAuditorService {
               return result;
             }
           }),
+          normalizeActivities: tool({
+            description:
+              'Normalize validated activities into Ghostfolio ActivityImportDTO format. Normalizes types (buy→BUY), dates (to YYYY-MM-DD), coerces numerics, uppercases currency, and optionally injects accountId. Use this AFTER validateTransactions and BEFORE generateImportPreview.',
+            parameters: NormalizeActivitiesInputSchema,
+            execute: async (args) => {
+              const start = Date.now();
+              const result = executeWithGuardrails(
+                'normalizeActivities',
+                { activitiesCount: args.activities.length } as Record<
+                  string,
+                  unknown
+                >,
+                () =>
+                  normalizeToActivityDTO({
+                    activities: args.activities,
+                    accountId: args.accountId
+                  })
+              );
+              const durationMs = Date.now() - start;
+
+              toolCallRecords.push({
+                tool: 'normalizeActivities',
+                args: {
+                  activitiesCount: args.activities.length,
+                  accountId: args.accountId
+                },
+                status: result.status,
+                verification: result.verification,
+                durationMs
+              });
+
+              return result;
+            }
+          }),
           generateImportPreview: tool({
             description:
-              'Generate a human-readable preview of what the import will produce. Use this AFTER validateTransactions to show the user a summary before committing. Includes total value, activity breakdown, and commit decision.',
+              'Generate a human-readable preview of what the import will produce. Use this AFTER normalizeActivities to show the user a summary before committing. Includes total value, activity breakdown, and commit decision. canCommit is only true when DTO normalization passed.',
             parameters: GenerateImportPreviewInputSchema,
             execute: async (args) => {
               const start = Date.now();
@@ -565,12 +651,13 @@ export class ImportAuditorService {
       '3. OBSERVE the tool result and verify it',
       '4. DECIDE whether to call another tool or finalize your answer',
       '',
-      '## Available Tools (5)',
+      '## Available Tools (6)',
       '1. detectBrokerFormat — Auto-detect which broker produced the CSV (use FIRST)',
       '2. parseCSV — Parse raw CSV content into structured rows',
       '3. mapBrokerFields — Map CSV headers to Ghostfolio fields (date, symbol, quantity, price, fee, currency, type)',
       '4. validateTransactions — Validate activities against financial rules',
-      '5. generateImportPreview — Generate a summary preview before committing (use LAST)',
+      '5. normalizeActivities — Normalize validated activities into Ghostfolio DTO format (types, dates, numerics, currency)',
+      '6. generateImportPreview — Generate a summary preview before committing (use LAST)',
       '',
       '## Standard Workflow for CSV Import',
       'When a user provides a CSV file, follow this exact sequence:',
@@ -578,7 +665,8 @@ export class ImportAuditorService {
       '2. parseCSV — parse the raw content into rows',
       '3. mapBrokerFields — map headers using the broker hint from step 1',
       '4. validateTransactions — check all activities against financial rules',
-      '5. generateImportPreview — show the user a summary before they commit',
+      '5. normalizeActivities — normalize valid activities to import DTO format',
+      '6. generateImportPreview — show the user a summary before they commit',
       '',
       '## Safety Guardrails (MUST FOLLOW)',
       '- NEVER fabricate or guess financial data. Only report what the tools return.',

@@ -24,6 +24,7 @@ import {
 import { detectBrokerFormat } from '../tools/detect-broker-format.tool';
 import { generateImportPreview } from '../tools/generate-import-preview.tool';
 import { mapBrokerFields } from '../tools/map-broker-fields.tool';
+import { normalizeToActivityDTO } from '../tools/normalize-to-activity-dto.tool';
 import { parseCsv } from '../tools/parse-csv.tool';
 import { validateTransactions } from '../tools/validate-transactions.tool';
 
@@ -155,13 +156,17 @@ describe('Evaluation: Happy Path', () => {
   });
 
   it('E004: Preview generation for clean import', () => {
+    const activities = [
+      VALID_ACTIVITY,
+      { ...VALID_ACTIVITY, symbol: 'AAPL', unitPrice: 150, quantity: 10 }
+    ];
+    const normalized = normalizeToActivityDTO({ activities });
     const result = generateImportPreview({
-      validActivities: [
-        VALID_ACTIVITY,
-        { ...VALID_ACTIVITY, symbol: 'AAPL', unitPrice: 150, quantity: 10 }
-      ],
+      validActivities: activities,
       totalErrors: 0,
-      totalWarnings: 0
+      totalWarnings: 0,
+      normalizedDTOs: normalized.data.dtos,
+      dtoNormalizationErrors: normalized.data.totalFailed
     });
 
     expect(result.status).toBe('success');
@@ -523,11 +528,19 @@ describe('Evaluation: Multi-Step', () => {
     const validate = validateTransactions({ activities });
     expect(validate.status).toBe('pass');
 
-    // Step 5: Preview
+    // Step 5: Normalize
+    const normalize = normalizeToActivityDTO({
+      activities: validate.data.validActivities
+    });
+    expect(normalize.status).toBe('success');
+
+    // Step 6: Preview
     const preview = generateImportPreview({
       validActivities: validate.data.validActivities,
       totalErrors: validate.data.totalErrors,
-      totalWarnings: validate.data.warnings.length
+      totalWarnings: validate.data.warnings.length,
+      normalizedDTOs: normalize.data.dtos,
+      dtoNormalizationErrors: normalize.data.totalFailed
     });
     expect(preview.data.canCommit).toBe(true);
 
@@ -537,6 +550,7 @@ describe('Evaluation: Multi-Step', () => {
       parse.verification,
       map.verification,
       validate.verification,
+      normalize.verification,
       preview.verification
     ]);
     expect(merged.passed).toBe(true);
@@ -601,10 +615,16 @@ describe('Evaluation: Multi-Step', () => {
       validate.data.warnings.some((w) => w.code === 'BATCH_DUPLICATE')
     ).toBe(true);
 
+    const normalize = normalizeToActivityDTO({
+      activities: validate.data.validActivities
+    });
+
     const preview = generateImportPreview({
       validActivities: validate.data.validActivities,
       totalErrors: 0,
-      totalWarnings: validate.data.warnings.length
+      totalWarnings: validate.data.warnings.length,
+      normalizedDTOs: normalize.data.dtos,
+      dtoNormalizationErrors: normalize.data.totalFailed
     });
 
     expect(preview.data.canCommit).toBe(true);
