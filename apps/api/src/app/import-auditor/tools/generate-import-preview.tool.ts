@@ -1,3 +1,4 @@
+import type { ActivityImportDTO } from '../schemas/activity-import-dto.schema';
 import type { GenerateImportPreviewOutput } from '../schemas/generate-import-preview.schema';
 import type { MappedActivity } from '../schemas/validate-transactions.schema';
 import { createVerificationResult } from '../schemas/verification.schema';
@@ -10,6 +11,10 @@ import { createVerificationResult } from '../schemas/verification.schema';
  * Documented: Outputs include summary stats, preview table, and commit decision.
  * Error-handled: Returns structured errors, never throws.
  * Verified: Human-in-the-loop escalation for large imports or mixed results.
+ *
+ * canCommit gate: Only true when ALL of:
+ *   1. totalErrors === 0
+ *   2. normalizedDTOs are provided AND dtoNormalizationErrors === 0
  */
 
 /** Threshold above which we flag as high-value and require review */
@@ -20,8 +25,18 @@ export function generateImportPreview(input: {
   validActivities: MappedActivity[];
   totalErrors: number;
   totalWarnings: number;
+  /** Normalized DTOs from normalizeToActivityDTO — required for canCommit */
+  normalizedDTOs?: ActivityImportDTO[];
+  /** Count of DTO normalization failures */
+  dtoNormalizationErrors?: number;
 }): GenerateImportPreviewOutput {
-  const { validActivities, totalErrors, totalWarnings } = input;
+  const {
+    validActivities,
+    totalErrors,
+    totalWarnings,
+    normalizedDTOs,
+    dtoNormalizationErrors = 0
+  } = input;
 
   if (!validActivities || validActivities.length === 0) {
     return {
@@ -114,11 +129,33 @@ export function generateImportPreview(input: {
     previewTable += `\n... and ${validActivities.length - 10} more rows`;
   }
 
-  // Commit decision
-  const canCommit = totalErrors === 0;
+  // Commit decision — requires both validation pass AND DTO normalization pass
+  const dtosProvided =
+    normalizedDTOs !== undefined && normalizedDTOs.length > 0;
+  const dtosClean = dtosProvided && dtoNormalizationErrors === 0;
+  const canCommit = totalErrors === 0 && dtosClean;
+
+  const commitBlockedReasons: string[] = [];
+
+  if (totalErrors > 0) {
+    commitBlockedReasons.push(
+      `${totalErrors} validation error(s) must be resolved before import`
+    );
+  }
+
+  if (!dtosProvided) {
+    commitBlockedReasons.push(
+      'Activities have not been normalized to import DTO format'
+    );
+  } else if (dtoNormalizationErrors > 0) {
+    commitBlockedReasons.push(
+      `${dtoNormalizationErrors} activity(s) failed DTO normalization`
+    );
+  }
+
   const commitBlockedReason =
-    totalErrors > 0
-      ? `${totalErrors} validation error(s) must be resolved before import`
+    commitBlockedReasons.length > 0
+      ? commitBlockedReasons.join('; ')
       : undefined;
 
   // Determine if human review is needed
@@ -146,13 +183,18 @@ export function generateImportPreview(input: {
   const domainRulesChecked = [
     'batch-size-limit',
     'high-value-detection',
-    'error-free-commit-gate'
+    'error-free-commit-gate',
+    'dto-normalization-gate'
   ];
 
   const domainRulesFailed: string[] = [];
 
   if (totalErrors > 0) {
     domainRulesFailed.push('error-free-commit-gate');
+  }
+
+  if (!dtosClean) {
+    domainRulesFailed.push('dto-normalization-gate');
   }
 
   const confidence =

@@ -27,6 +27,7 @@ import type { VerificationResult } from './schemas/verification.schema';
 import { detectBrokerFormat } from './tools/detect-broker-format.tool';
 import { generateImportPreview } from './tools/generate-import-preview.tool';
 import { mapBrokerFields } from './tools/map-broker-fields.tool';
+import { normalizeToActivityDTO } from './tools/normalize-to-activity-dto.tool';
 import { parseCsv } from './tools/parse-csv.tool';
 import { validateTransactions } from './tools/validate-transactions.tool';
 import { enforceVerificationGate } from './verification/enforce';
@@ -409,9 +410,54 @@ export class ImportAuditorService {
               return result;
             }
           }),
+          normalizeActivities: tool({
+            description:
+              'Normalize validated activities into Ghostfolio ActivityImportDTO format. Normalizes types (buy→BUY), dates (to YYYY-MM-DD), coerces numerics, uppercases currency, and optionally injects accountId. Use this AFTER validateTransactions and BEFORE generateImportPreview.',
+            parameters: z.object({
+              activities: z
+                .array(MappedActivitySchema)
+                .min(1)
+                .describe(
+                  'Validated activities to normalize into import DTO format'
+                ),
+              accountId: z
+                .string()
+                .optional()
+                .describe('Optional account ID to inject into all activities')
+            }),
+            execute: async (args) => {
+              const start = Date.now();
+              const result = executeWithGuardrails(
+                'normalizeActivities',
+                { activitiesCount: args.activities.length } as Record<
+                  string,
+                  unknown
+                >,
+                () =>
+                  normalizeToActivityDTO({
+                    activities: args.activities,
+                    accountId: args.accountId
+                  })
+              );
+              const durationMs = Date.now() - start;
+
+              toolCallRecords.push({
+                tool: 'normalizeActivities',
+                args: {
+                  activitiesCount: args.activities.length,
+                  accountId: args.accountId
+                },
+                status: result.status,
+                verification: result.verification,
+                durationMs
+              });
+
+              return result;
+            }
+          }),
           generateImportPreview: tool({
             description:
-              'Generate a human-readable preview of what the import will produce. Use this AFTER validateTransactions to show the user a summary before committing. Includes total value, activity breakdown, and commit decision.',
+              'Generate a human-readable preview of what the import will produce. Use this AFTER normalizeActivities to show the user a summary before committing. Includes total value, activity breakdown, and commit decision. canCommit is only true when DTO normalization passed.',
             parameters: GenerateImportPreviewInputSchema,
             execute: async (args) => {
               const start = Date.now();
@@ -565,12 +611,13 @@ export class ImportAuditorService {
       '3. OBSERVE the tool result and verify it',
       '4. DECIDE whether to call another tool or finalize your answer',
       '',
-      '## Available Tools (5)',
+      '## Available Tools (6)',
       '1. detectBrokerFormat — Auto-detect which broker produced the CSV (use FIRST)',
       '2. parseCSV — Parse raw CSV content into structured rows',
       '3. mapBrokerFields — Map CSV headers to Ghostfolio fields (date, symbol, quantity, price, fee, currency, type)',
       '4. validateTransactions — Validate activities against financial rules',
-      '5. generateImportPreview — Generate a summary preview before committing (use LAST)',
+      '5. normalizeActivities — Normalize validated activities into Ghostfolio DTO format (types, dates, numerics, currency)',
+      '6. generateImportPreview — Generate a summary preview before committing (use LAST)',
       '',
       '## Standard Workflow for CSV Import',
       'When a user provides a CSV file, follow this exact sequence:',
@@ -578,7 +625,8 @@ export class ImportAuditorService {
       '2. parseCSV — parse the raw content into rows',
       '3. mapBrokerFields — map headers using the broker hint from step 1',
       '4. validateTransactions — check all activities against financial rules',
-      '5. generateImportPreview — show the user a summary before they commit',
+      '5. normalizeActivities — normalize valid activities to import DTO format',
+      '6. generateImportPreview — show the user a summary before they commit',
       '',
       '## Safety Guardrails (MUST FOLLOW)',
       '- NEVER fabricate or guess financial data. Only report what the tools return.',

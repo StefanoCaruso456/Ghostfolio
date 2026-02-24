@@ -1,5 +1,6 @@
 import type { MappedActivity } from '../schemas/validate-transactions.schema';
 import { generateImportPreview } from '../tools/generate-import-preview.tool';
+import { normalizeToActivityDTO } from '../tools/normalize-to-activity-dto.tool';
 
 describe('generateImportPreview Tool', () => {
   const validActivity: MappedActivity = {
@@ -18,10 +19,15 @@ describe('generateImportPreview Tool', () => {
   // ─── Happy Path ────────────────────────────────────────────────────
 
   it('should generate a preview for valid activities', () => {
+    const normalized = normalizeToActivityDTO({
+      activities: [validActivity]
+    });
     const result = generateImportPreview({
       validActivities: [validActivity],
       totalErrors: 0,
-      totalWarnings: 0
+      totalWarnings: 0,
+      normalizedDTOs: normalized.data.dtos,
+      dtoNormalizationErrors: normalized.data.totalFailed
     });
 
     expect(result.status).toBe('success');
@@ -93,10 +99,15 @@ describe('generateImportPreview Tool', () => {
   });
 
   it('should allow commit with warnings but flag them', () => {
+    const normalized = normalizeToActivityDTO({
+      activities: [validActivity]
+    });
     const result = generateImportPreview({
       validActivities: [validActivity],
       totalErrors: 0,
-      totalWarnings: 2
+      totalWarnings: 2,
+      normalizedDTOs: normalized.data.dtos,
+      dtoNormalizationErrors: normalized.data.totalFailed
     });
 
     expect(result.data.canCommit).toBe(true);
@@ -237,10 +248,15 @@ describe('generateImportPreview Tool', () => {
   // ─── Domain Constraints ────────────────────────────────────────────
 
   it('should check domain rules and report them', () => {
+    const normalized = normalizeToActivityDTO({
+      activities: [validActivity]
+    });
     const result = generateImportPreview({
       validActivities: [validActivity],
       totalErrors: 0,
-      totalWarnings: 0
+      totalWarnings: 0,
+      normalizedDTOs: normalized.data.dtos,
+      dtoNormalizationErrors: normalized.data.totalFailed
     });
 
     expect(result.verification.domainRulesChecked).toContain(
@@ -251,6 +267,9 @@ describe('generateImportPreview Tool', () => {
     );
     expect(result.verification.domainRulesChecked).toContain(
       'error-free-commit-gate'
+    );
+    expect(result.verification.domainRulesChecked).toContain(
+      'dto-normalization-gate'
     );
     expect(result.verification.domainRulesFailed).toEqual([]);
   });
