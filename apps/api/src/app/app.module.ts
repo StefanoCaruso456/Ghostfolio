@@ -1,5 +1,6 @@
 import { EventsModule } from '@ghostfolio/api/events/events.module';
 import { HtmlTemplateMiddleware } from '@ghostfolio/api/middlewares/html-template.middleware';
+import { StagingPasswordMiddleware } from '@ghostfolio/api/middlewares/staging-password.middleware';
 import { ConfigurationModule } from '@ghostfolio/api/services/configuration/configuration.module';
 import { CronModule } from '@ghostfolio/api/services/cron/cron.module';
 import { DataProviderModule } from '@ghostfolio/api/services/data-provider/data-provider.module';
@@ -145,6 +146,12 @@ import { UserModule } from './user/user.module';
 })
 export class AppModule implements NestModule {
   public configure(consumer: MiddlewareConsumer) {
+    if (process.env.STAGING_PASSWORD) {
+      consumer
+        .apply(StagingPasswordMiddleware)
+        .forRoutes('*wildcard');
+    }
+
     consumer.apply(HtmlTemplateMiddleware).forRoutes('*wildcard');
   }
 }
