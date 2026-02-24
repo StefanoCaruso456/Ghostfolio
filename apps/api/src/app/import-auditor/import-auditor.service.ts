@@ -1,7 +1,8 @@
 import { PropertyService } from '@ghostfolio/api/services/property/property.service';
 import {
   PROPERTY_API_KEY_OPENROUTER,
-  PROPERTY_OPENROUTER_MODEL
+  PROPERTY_OPENROUTER_MODEL,
+  PROPERTY_OPENROUTER_MODEL_LIGHT
 } from '@ghostfolio/common/config';
 
 import { Injectable, Logger } from '@nestjs/common';
@@ -100,10 +101,16 @@ export class ImportAuditorService {
           PROPERTY_API_KEY_OPENROUTER
         );
 
-      const openRouterModel =
+      const openRouterModelLight =
         await this.propertyService.getByKey<string>(
-          PROPERTY_OPENROUTER_MODEL
+          PROPERTY_OPENROUTER_MODEL_LIGHT
         );
+
+      const openRouterModel =
+        openRouterModelLight ??
+        (await this.propertyService.getByKey<string>(
+          PROPERTY_OPENROUTER_MODEL
+        ));
 
       if (!openRouterApiKey || !openRouterModel) {
         const response =
