@@ -4,6 +4,23 @@
   <div class="align-items-center d-flex flex-column">
     <form class="w-100">
       @if (data.hasPermissionToUseAuthToken) {
+        <div class="demo-token-box mb-3">
+          <div class="demo-token-label">Paste this token below to sign in:</div>
+          <div class="demo-token-value-row">
+            <code class="demo-token-value">{{ demoToken }}</code>
+            <button
+              class="demo-token-copy-btn"
+              mat-icon-button
+              type="button"
+              (click)="onCopyToken()"
+            >
+              <ion-icon
+                [name]="isTokenCopied ? 'checkmark-outline' : 'copy-outline'"
+              />
+            </button>
+          </div>
+        </div>
+
         <mat-form-field appearance="outline" class="without-hint w-100">
           <mat-label i18n>Security Token</mat-label>
           <input
@@ -37,7 +54,7 @@
         >
           <div class="google-oauth-label">
             <span class="google-oauth-arrow">&#10145;</span>
-            <strong>USE THIS TO SIGN IN</strong>
+            <strong>DON'T use the Google</strong>
             <span class="google-oauth-arrow">&#10145;</span>
           </div>
           <a
