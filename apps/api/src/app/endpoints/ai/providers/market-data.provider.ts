@@ -9,6 +9,8 @@
  */
 import { Logger } from '@nestjs/common';
 
+import { CachedMarketDataProvider } from './cached-market-data.provider';
+import { CoinGeckoMarketDataProvider } from './coingecko-market-data.provider';
 import type {
   FundamentalsResult,
   HistoryResult,
@@ -332,12 +334,60 @@ let providerInstance: MarketDataProvider | null = null;
 export function getMarketDataProvider(): MarketDataProvider {
   if (!providerInstance) {
     const providerName = process.env.MARKET_DATA_PROVIDER || 'yahoo';
+    const cacheEnabled = process.env.MARKET_DATA_CACHE_ENABLED !== 'false';
 
     logger.log(`Initializing market data provider: ${providerName}`);
 
-    // Currently only Yahoo is implemented; CoinGecko can be added later
-    providerInstance = new YahooMarketDataProvider();
+    let baseProvider: MarketDataProvider;
+
+    switch (providerName) {
+      case 'coingecko':
+        baseProvider = new CoinGeckoMarketDataProvider();
+        break;
+      case 'yahoo':
+      default:
+        baseProvider = new YahooMarketDataProvider();
+        break;
+    }
+
+    if (cacheEnabled) {
+      providerInstance = new CachedMarketDataProvider(baseProvider);
+      logger.log('Market data caching enabled');
+    } else {
+      providerInstance = baseProvider;
+    }
   }
 
   return providerInstance;
+}
+
+/**
+ * Get cache stats for telemetry. Returns null if caching is disabled.
+ */
+export function getMarketDataCacheStats(): {
+  cacheEnabled: boolean;
+  cacheHits: number;
+} {
+  if (providerInstance instanceof CachedMarketDataProvider) {
+    return {
+      cacheEnabled: true,
+      cacheHits: providerInstance.cacheHits
+    };
+  }
+
+  return { cacheEnabled: false, cacheHits: 0 };
+}
+
+/**
+ * Reset cache hit counter after telemetry flush.
+ */
+export function resetMarketDataCacheHits(): void {
+  if (providerInstance instanceof CachedMarketDataProvider) {
+    providerInstance.resetCacheHits();
+  }
+}
+
+/** Reset the singleton — used for testing or dynamic provider switching. */
+export function resetMarketDataProvider(): void {
+  providerInstance = null;
 }

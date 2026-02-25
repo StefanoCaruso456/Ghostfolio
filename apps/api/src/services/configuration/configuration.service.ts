@@ -59,6 +59,8 @@ export class ConfigurationService {
       GOOGLE_SHEETS_PRIVATE_KEY: str({ default: '' }),
       HOST: host({ default: DEFAULT_HOST }),
       JWT_SECRET_KEY: str(),
+      MARKET_DATA_CACHE_ENABLED: bool({ default: true }),
+      MARKET_DATA_PROVIDER: str({ default: 'yahoo' }),
       MAX_ACTIVITIES_TO_IMPORT: num({ default: Number.MAX_SAFE_INTEGER }),
       MAX_CHART_ITEMS: num({ default: 365 }),
       OIDC_AUTHORIZATION_URL: str({ default: '' }),

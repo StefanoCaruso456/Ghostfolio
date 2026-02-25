@@ -3,6 +3,10 @@ import { ConfigurationService } from '@ghostfolio/api/services/configuration/con
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { randomUUID } from 'node:crypto';
 
+import {
+  getMarketDataCacheStats,
+  resetMarketDataCacheHits
+} from '../providers';
 import type {
   DerivedMetrics,
   GuardrailType,
@@ -292,6 +296,7 @@ export class TraceContext {
   private error: string | null = null;
   private aborted = false;
   private iterationCount = 0;
+  private historyMessageCount = 0;
   private guardrailsTriggered: GuardrailType[] = [];
 
   private toolSpans: ToolSpan[] = [];
@@ -367,6 +372,10 @@ export class TraceContext {
 
   public setIterationCount(count: number): void {
     this.iterationCount = count;
+  }
+
+  public setHistoryMessageCount(count: number): void {
+    this.historyMessageCount = count;
   }
 
   public addGuardrail(guardrail: GuardrailType): void {
@@ -480,7 +489,7 @@ export class TraceContext {
 
     // ── Extended metadata computation ─────────────────────────────────
     const requestShape = {
-      historyMessageCount: 0, // Populated by caller if needed
+      historyMessageCount: this.historyMessageCount,
       userMessageChars: this.queryText.length,
       userMessageTokensEstimate: Math.ceil(this.queryText.length / 4)
     };
@@ -588,7 +597,7 @@ export class TraceContext {
             providerErrors
           }
         : undefined,
-      cachingMeta: { cacheEnabled: false, cacheHits: 0 },
+      cachingMeta: getMarketDataCacheStats(),
       answerQualitySignals
     };
 
@@ -613,6 +622,9 @@ export class TraceContext {
         this.iterationCount > 0 ? totalLatencyMs / this.iterationCount : 0,
       toolSuccessRates
     };
+
+    // Reset per-query cache hit counter after capturing the snapshot
+    resetMarketDataCacheHits();
 
     return {
       trace,

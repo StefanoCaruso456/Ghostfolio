@@ -290,6 +290,9 @@ export class AiService {
       model: modelId
     });
 
+    // ── Wire history message count into telemetry ─────────────────
+    trace.setHistoryMessageCount(history.length);
+
     // ── Initialize guardrails ───────────────────────────────────────
     const circuitBreaker = new CircuitBreaker({
       maxRepetitions: CIRCUIT_BREAKER_MAX_REPETITIONS
