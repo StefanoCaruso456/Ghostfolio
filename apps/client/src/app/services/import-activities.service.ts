@@ -27,7 +27,7 @@ export class ImportActivitiesService {
   private static FEE_KEYS = ['commission', 'fee', 'ibcommission'];
   private static QUANTITY_KEYS = ['qty', 'quantity', 'shares', 'units'];
   private static SYMBOL_KEYS = ['code', 'symbol', 'ticker'];
-  private static TYPE_KEYS = ['action', 'buy/sell', 'type'];
+  private static TYPE_KEYS = ['action', 'activitytype', 'buy/sell', 'type'];
   private static UNIT_PRICE_KEYS = [
     'price',
     'tradeprice',
