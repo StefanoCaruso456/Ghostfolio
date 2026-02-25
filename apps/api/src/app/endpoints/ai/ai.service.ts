@@ -1,20 +1,23 @@
 import { PortfolioService } from '@ghostfolio/api/app/portfolio/portfolio.service';
+import { ConfigurationService } from '@ghostfolio/api/services/configuration/configuration.service';
 import { PropertyService } from '@ghostfolio/api/services/property/property.service';
-import {
-  PROPERTY_API_KEY_OPENROUTER,
-  PROPERTY_OPENROUTER_MODEL
-} from '@ghostfolio/common/config';
 import { AiChatResponse, Filter } from '@ghostfolio/common/interfaces';
 import type { AiPromptMode } from '@ghostfolio/common/types';
 
+import { createOpenAI } from '@ai-sdk/openai';
 import { Injectable, Logger } from '@nestjs/common';
-import { createOpenRouter } from '@openrouter/ai-sdk-provider';
 import { generateText } from 'ai';
 import { randomUUID } from 'node:crypto';
 import type { ColumnDescriptor } from 'tablemark';
 
 import { estimateCost } from '../../import-auditor/schemas/agent-metrics.schema';
 import { BraintrustTelemetryService } from './telemetry/braintrust-telemetry.service';
+
+// OpenRouter imports commented out — replaced by direct OpenAI
+// import { createOpenRouter } from '@openrouter/ai-sdk-provider';
+// import { PROPERTY_API_KEY_OPENROUTER, PROPERTY_OPENROUTER_MODEL } from '@ghostfolio/common/config';
+
+const DEFAULT_MODEL = 'gpt-4o';
 
 @Injectable()
 export class AiService {
@@ -40,6 +43,7 @@ export class AiService {
   ];
 
   public constructor(
+    private readonly configurationService: ConfigurationService,
     private readonly portfolioService: PortfolioService,
     private readonly propertyService: PropertyService,
     private readonly telemetryService: BraintrustTelemetryService
@@ -60,35 +64,36 @@ export class AiService {
     userCurrency: string;
     userId: string;
   }): Promise<AiChatResponse> {
-    const openRouterApiKey = await this.propertyService.getByKey<string>(
-      PROPERTY_API_KEY_OPENROUTER
-    );
+    // ── OpenAI via Vercel AI SDK ─────────────────────────────────────
+    const openAiApiKey = this.configurationService.get('OPENAI_KEY');
 
-    const openRouterModel = await this.propertyService.getByKey<string>(
-      PROPERTY_OPENROUTER_MODEL
-    );
-
-    if (!openRouterApiKey) {
+    if (!openAiApiKey) {
       Logger.error(
-        'OpenRouter API key not configured. Set API_KEY_OPENROUTER in the Property table.',
-        'AiService'
-      );
-      throw new Error('AI chat is not configured. Missing OpenRouter API key.');
-    }
-
-    if (!openRouterModel) {
-      Logger.error(
-        'OpenRouter model not configured. Set OPENROUTER_MODEL in the Property table.',
+        'OPENAI_KEY not configured. Set it as an environment variable in Railway.',
         'AiService'
       );
       throw new Error(
-        'AI chat is not configured. Missing OpenRouter model setting.'
+        'AI chat is not configured. Missing OPENAI_KEY environment variable.'
       );
     }
 
-    const openRouterService = createOpenRouter({
-      apiKey: openRouterApiKey
-    });
+    const openai = createOpenAI({ apiKey: openAiApiKey });
+    const modelId = DEFAULT_MODEL;
+
+    // ── OpenRouter code (commented out) ──────────────────────────────
+    // const openRouterApiKey = await this.propertyService.getByKey<string>(
+    //   PROPERTY_API_KEY_OPENROUTER
+    // );
+    // const openRouterModel = await this.propertyService.getByKey<string>(
+    //   PROPERTY_OPENROUTER_MODEL
+    // );
+    // if (!openRouterApiKey) {
+    //   throw new Error('AI chat is not configured. Missing OpenRouter API key.');
+    // }
+    // if (!openRouterModel) {
+    //   throw new Error('AI chat is not configured. Missing OpenRouter model setting.');
+    // }
+    // const openRouterService = createOpenRouter({ apiKey: openRouterApiKey });
 
     // ── Start telemetry trace ────────────────────────────────────────
     const activeConversationId = conversationId || randomUUID();
@@ -96,7 +101,7 @@ export class AiService {
       sessionId: activeConversationId,
       userId,
       queryText: message,
-      model: openRouterModel
+      model: modelId
     });
 
     // ── Fetch portfolio context (tracked as a tool span) ─────────────
@@ -188,12 +193,14 @@ export class AiService {
 
     // ── LLM call (tracked with latency) ──────────────────────────────
     trace.markLlmStart();
-    trace.setIterationCount(1); // Single-turn for now; ReAct loop will increment
+    trace.setIterationCount(1);
 
     try {
       const result = await generateText({
         messages,
-        model: openRouterService.chat(openRouterModel)
+        model: openai(modelId)
+        // OpenRouter version (commented out):
+        // model: openRouterService.chat(openRouterModel)
       });
 
       trace.markLlmEnd();
@@ -203,7 +210,7 @@ export class AiService {
       const outputTokens = result.usage?.completionTokens ?? 0;
 
       trace.setTokens(inputTokens, outputTokens);
-      trace.setCost(estimateCost(openRouterModel, inputTokens, outputTokens));
+      trace.setCost(estimateCost(modelId, inputTokens, outputTokens));
       trace.setResponse(result.text);
       trace.setQueryCategory(this.classifyQuery(message));
 
@@ -246,7 +253,7 @@ export class AiService {
       });
 
       Logger.error(
-        `OpenRouter API call failed: ${error instanceof Error ? error.message : String(error)}`,
+        `OpenAI API call failed: ${error instanceof Error ? error.message : String(error)}`,
         'AiService'
       );
 
@@ -286,22 +293,30 @@ export class AiService {
   }
 
   public async generateText({ prompt }: { prompt: string }) {
-    const openRouterApiKey = await this.propertyService.getByKey<string>(
-      PROPERTY_API_KEY_OPENROUTER
-    );
+    const openAiApiKey = this.configurationService.get('OPENAI_KEY');
 
-    const openRouterModel = await this.propertyService.getByKey<string>(
-      PROPERTY_OPENROUTER_MODEL
-    );
+    if (!openAiApiKey) {
+      throw new Error(
+        'AI text generation is not configured. Missing OPENAI_KEY.'
+      );
+    }
 
-    const openRouterService = createOpenRouter({
-      apiKey: openRouterApiKey
-    });
+    const openai = createOpenAI({ apiKey: openAiApiKey });
 
     return generateText({
       prompt,
-      model: openRouterService.chat(openRouterModel)
+      model: openai(DEFAULT_MODEL)
     });
+
+    // OpenRouter version (commented out):
+    // const openRouterApiKey = await this.propertyService.getByKey<string>(
+    //   PROPERTY_API_KEY_OPENROUTER
+    // );
+    // const openRouterModel = await this.propertyService.getByKey<string>(
+    //   PROPERTY_OPENROUTER_MODEL
+    // );
+    // const openRouterService = createOpenRouter({ apiKey: openRouterApiKey });
+    // return generateText({ prompt, model: openRouterService.chat(openRouterModel) });
   }
 
   public async getPrompt({
