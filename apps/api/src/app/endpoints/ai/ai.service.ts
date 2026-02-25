@@ -64,6 +64,24 @@ export class AiService {
       PROPERTY_OPENROUTER_MODEL
     );
 
+    if (!openRouterApiKey) {
+      Logger.error(
+        'OpenRouter API key not configured. Set API_KEY_OPENROUTER in the Property table.',
+        'AiService'
+      );
+      throw new Error('AI chat is not configured. Missing OpenRouter API key.');
+    }
+
+    if (!openRouterModel) {
+      Logger.error(
+        'OpenRouter model not configured. Set OPENROUTER_MODEL in the Property table.',
+        'AiService'
+      );
+      throw new Error(
+        'AI chat is not configured. Missing OpenRouter model setting.'
+      );
+    }
+
     const openRouterService = createOpenRouter({
       apiKey: openRouterApiKey
     });
@@ -133,19 +151,28 @@ export class AiService {
       { content: message, role: 'user' as const }
     ];
 
-    const result = await generateText({
-      messages,
-      model: openRouterService.chat(openRouterModel)
-    });
+    try {
+      const result = await generateText({
+        messages,
+        model: openRouterService.chat(openRouterModel)
+      });
 
-    return {
-      conversationId: conversationId || randomUUID(),
-      message: {
-        content: result.text,
-        role: 'assistant',
-        timestamp: new Date().toISOString()
-      }
-    };
+      return {
+        conversationId: conversationId || randomUUID(),
+        message: {
+          content: result.text,
+          role: 'assistant',
+          timestamp: new Date().toISOString()
+        }
+      };
+    } catch (error) {
+      Logger.error(
+        `OpenRouter API call failed: ${error instanceof Error ? error.message : String(error)}`,
+        'AiService'
+      );
+
+      throw error;
+    }
   }
 
   public async generateText({ prompt }: { prompt: string }) {
