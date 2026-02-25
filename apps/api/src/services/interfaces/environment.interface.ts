@@ -2,6 +2,8 @@ import { CleanedEnvAccessors } from 'envalid';
 
 export interface Environment extends CleanedEnvAccessors {
   ACCESS_TOKEN_SALT: string;
+  BRAINTRUST_API_KEY: string;
+  BRAINTRUST_PROJECT: string;
   API_KEY_ALPHA_VANTAGE: string;
   API_KEY_BETTER_UPTIME: string;
   API_KEY_COINGECKO_DEMO: string;
