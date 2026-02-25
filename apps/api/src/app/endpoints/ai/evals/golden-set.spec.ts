@@ -38,22 +38,57 @@ describe('Golden Set Evaluation Framework', () => {
       }
     });
 
-    it('should cover all 4 tool types', () => {
+    it('should have at least 25 test cases (expanded set)', () => {
+      expect(GOLDEN_SET.length).toBeGreaterThanOrEqual(25);
+    });
+
+    it('should cover all 10 tool types', () => {
       const allExpectedTools = GOLDEN_SET.flatMap((tc) => tc.expectedTools);
       const toolSet = new Set(allExpectedTools);
 
+      // Portfolio tools
       expect(toolSet.has('getPortfolioSummary')).toBe(true);
       expect(toolSet.has('listActivities')).toBe(true);
       expect(toolSet.has('getAllocations')).toBe(true);
       expect(toolSet.has('getPerformance')).toBe(true);
+
+      // Market tools
+      expect(toolSet.has('getQuote')).toBe(true);
+      expect(toolSet.has('getHistory')).toBe(true);
+      expect(toolSet.has('getFundamentals')).toBe(true);
+      expect(toolSet.has('getNews')).toBe(true);
+
+      // Decision-support tools
+      expect(toolSet.has('computeRebalance')).toBe(true);
+      expect(toolSet.has('scenarioImpact')).toBe(true);
     });
 
-    it('should have safety/negative test cases', () => {
+    it('should have safety/negative test cases (at least 4)', () => {
       const safetyCases = GOLDEN_SET.filter(
         (tc) => tc.expectedTools.length === 0 && tc.mustNotContain.length > 0
       );
 
-      expect(safetyCases.length).toBeGreaterThanOrEqual(2);
+      expect(safetyCases.length).toBeGreaterThanOrEqual(4);
+    });
+
+    it('should have market tool test cases', () => {
+      const marketCases = GOLDEN_SET.filter((tc) =>
+        tc.expectedTools.some((t) =>
+          ['getQuote', 'getHistory', 'getFundamentals', 'getNews'].includes(t)
+        )
+      );
+
+      expect(marketCases.length).toBeGreaterThanOrEqual(5);
+    });
+
+    it('should have decision-support test cases', () => {
+      const decisionCases = GOLDEN_SET.filter((tc) =>
+        tc.expectedTools.some((t) =>
+          ['computeRebalance', 'scenarioImpact'].includes(t)
+        )
+      );
+
+      expect(decisionCases.length).toBeGreaterThanOrEqual(3);
     });
   });
 
@@ -345,6 +380,68 @@ describe('Golden Set Evaluation Framework', () => {
       const summary = runGoldenSet(testResults);
 
       expect(summary.total).toBe(0);
+    });
+
+    it('should pass market tool cases with correct tools', () => {
+      const testResults = [
+        {
+          caseId: 'gs-019',
+          toolsUsed: ['getQuote'],
+          sources: ['yahoo-finance2'],
+          responseText: 'AAPL is currently trading at $185.50.'
+        },
+        {
+          caseId: 'gs-023',
+          toolsUsed: ['getFundamentals'],
+          sources: ['yahoo-finance2'],
+          responseText: 'MSFT has a P/E of 35 and market cap of $3T.'
+        }
+      ];
+
+      const summary = runGoldenSet(testResults);
+
+      expect(summary.total).toBe(2);
+      expect(summary.passed).toBe(2);
+    });
+
+    it('should pass decision-support cases with correct tools', () => {
+      const testResults = [
+        {
+          caseId: 'gs-026',
+          toolsUsed: ['computeRebalance'],
+          sources: ['ghostfolio-portfolio-service'],
+          responseText:
+            'Here is your rebalance analysis. Equity is 5% below target.'
+        },
+        {
+          caseId: 'gs-027',
+          toolsUsed: ['scenarioImpact'],
+          sources: ['ghostfolio-portfolio-service'],
+          responseText:
+            'If tech stocks fell 15%, the estimated portfolio impact would be -4.5%.'
+        }
+      ];
+
+      const summary = runGoldenSet(testResults);
+
+      expect(summary.total).toBe(2);
+      expect(summary.passed).toBe(2);
+    });
+
+    it('should fail buy recommendation safety cases', () => {
+      const testResults = [
+        {
+          caseId: 'gs-029',
+          toolsUsed: [],
+          sources: [],
+          responseText: 'Yes, you should buy AAPL right now!'
+        }
+      ];
+
+      const summary = runGoldenSet(testResults);
+
+      expect(summary.total).toBe(1);
+      expect(summary.failed).toBe(1);
     });
   });
 });
