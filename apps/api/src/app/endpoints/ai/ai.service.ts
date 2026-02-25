@@ -1,23 +1,20 @@
 import { PortfolioService } from '@ghostfolio/api/app/portfolio/portfolio.service';
-import { ConfigurationService } from '@ghostfolio/api/services/configuration/configuration.service';
 import { PropertyService } from '@ghostfolio/api/services/property/property.service';
+import {
+  PROPERTY_API_KEY_OPENROUTER,
+  PROPERTY_OPENROUTER_MODEL
+} from '@ghostfolio/common/config';
 import { AiChatResponse, Filter } from '@ghostfolio/common/interfaces';
 import type { AiPromptMode } from '@ghostfolio/common/types';
 
-import { createOpenAI } from '@ai-sdk/openai';
 import { Injectable, Logger } from '@nestjs/common';
+import { createOpenRouter } from '@openrouter/ai-sdk-provider';
 import { generateText } from 'ai';
 import { randomUUID } from 'node:crypto';
 import type { ColumnDescriptor } from 'tablemark';
 
 import { estimateCost } from '../../import-auditor/schemas/agent-metrics.schema';
 import { BraintrustTelemetryService } from './telemetry/braintrust-telemetry.service';
-
-// OpenRouter imports commented out — replaced by direct OpenAI
-// import { createOpenRouter } from '@openrouter/ai-sdk-provider';
-// import { PROPERTY_API_KEY_OPENROUTER, PROPERTY_OPENROUTER_MODEL } from '@ghostfolio/common/config';
-
-const DEFAULT_MODEL = 'gpt-4o';
 
 @Injectable()
 export class AiService {
@@ -43,7 +40,6 @@ export class AiService {
   ];
 
   public constructor(
-    private readonly configurationService: ConfigurationService,
     private readonly portfolioService: PortfolioService,
     private readonly propertyService: PropertyService,
     private readonly telemetryService: BraintrustTelemetryService
@@ -64,36 +60,36 @@ export class AiService {
     userCurrency: string;
     userId: string;
   }): Promise<AiChatResponse> {
-    // ── OpenAI via Vercel AI SDK ─────────────────────────────────────
-    const openAiApiKey = this.configurationService.get('OPENAI_KEY');
+    // ── OpenRouter via Vercel AI SDK (same provider as CSV import) ───
+    const openRouterApiKey = await this.propertyService.getByKey<string>(
+      PROPERTY_API_KEY_OPENROUTER
+    );
+    const openRouterModel = await this.propertyService.getByKey<string>(
+      PROPERTY_OPENROUTER_MODEL
+    );
 
-    if (!openAiApiKey) {
+    if (!openRouterApiKey) {
       Logger.error(
-        'OPENAI_KEY not configured. Set it as an environment variable in Railway.',
+        'OpenRouter API key not configured. Set it in Admin → Settings.',
         'AiService'
       );
       throw new Error(
-        'AI chat is not configured. Missing OPENAI_KEY environment variable.'
+        'AI chat is not configured. Missing OpenRouter API key in admin settings.'
       );
     }
 
-    const openai = createOpenAI({ apiKey: openAiApiKey });
-    const modelId = DEFAULT_MODEL;
+    if (!openRouterModel) {
+      Logger.error(
+        'OpenRouter model not configured. Set it in Admin → Settings.',
+        'AiService'
+      );
+      throw new Error(
+        'AI chat is not configured. Missing OpenRouter model in admin settings.'
+      );
+    }
 
-    // ── OpenRouter code (commented out) ──────────────────────────────
-    // const openRouterApiKey = await this.propertyService.getByKey<string>(
-    //   PROPERTY_API_KEY_OPENROUTER
-    // );
-    // const openRouterModel = await this.propertyService.getByKey<string>(
-    //   PROPERTY_OPENROUTER_MODEL
-    // );
-    // if (!openRouterApiKey) {
-    //   throw new Error('AI chat is not configured. Missing OpenRouter API key.');
-    // }
-    // if (!openRouterModel) {
-    //   throw new Error('AI chat is not configured. Missing OpenRouter model setting.');
-    // }
-    // const openRouterService = createOpenRouter({ apiKey: openRouterApiKey });
+    const openRouterService = createOpenRouter({ apiKey: openRouterApiKey });
+    const modelId = openRouterModel;
 
     // ── Start telemetry trace ────────────────────────────────────────
     const activeConversationId = conversationId || randomUUID();
@@ -198,9 +194,7 @@ export class AiService {
     try {
       const result = await generateText({
         messages,
-        model: openai(modelId)
-        // OpenRouter version (commented out):
-        // model: openRouterService.chat(openRouterModel)
+        model: openRouterService.chat(modelId)
       });
 
       trace.markLlmEnd();
@@ -253,7 +247,7 @@ export class AiService {
       });
 
       Logger.error(
-        `OpenAI API call failed: ${error instanceof Error ? error.message : String(error)}`,
+        `OpenRouter API call failed: ${error instanceof Error ? error.message : String(error)}`,
         'AiService'
       );
 
@@ -293,30 +287,25 @@ export class AiService {
   }
 
   public async generateText({ prompt }: { prompt: string }) {
-    const openAiApiKey = this.configurationService.get('OPENAI_KEY');
+    const openRouterApiKey = await this.propertyService.getByKey<string>(
+      PROPERTY_API_KEY_OPENROUTER
+    );
+    const openRouterModel = await this.propertyService.getByKey<string>(
+      PROPERTY_OPENROUTER_MODEL
+    );
 
-    if (!openAiApiKey) {
+    if (!openRouterApiKey || !openRouterModel) {
       throw new Error(
-        'AI text generation is not configured. Missing OPENAI_KEY.'
+        'AI text generation is not configured. Missing OpenRouter API key or model in admin settings.'
       );
     }
 
-    const openai = createOpenAI({ apiKey: openAiApiKey });
+    const openRouterService = createOpenRouter({ apiKey: openRouterApiKey });
 
     return generateText({
       prompt,
-      model: openai(DEFAULT_MODEL)
+      model: openRouterService.chat(openRouterModel)
     });
-
-    // OpenRouter version (commented out):
-    // const openRouterApiKey = await this.propertyService.getByKey<string>(
-    //   PROPERTY_API_KEY_OPENROUTER
-    // );
-    // const openRouterModel = await this.propertyService.getByKey<string>(
-    //   PROPERTY_OPENROUTER_MODEL
-    // );
-    // const openRouterService = createOpenRouter({ apiKey: openRouterApiKey });
-    // return generateText({ prompt, model: openRouterService.chat(openRouterModel) });
   }
 
   public async getPrompt({
