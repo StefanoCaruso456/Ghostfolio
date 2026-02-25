@@ -1,0 +1,71 @@
+Date,Code,DataSource,Currency,Price,Quantity,Action,Fee,Note
+03-01-2024,AAPL,MANUAL,USD,185.99,10,buy,4.95,Apple Inc
+03-01-2024,MSFT,MANUAL,USD,374.58,8,buy,4.95,Microsoft Corporation
+04-01-2024,GOOGL,MANUAL,USD,140.25,12,buy,0,Alphabet Inc Class A
+05-01-2024,AMZN,MANUAL,USD,153.26,15,buy,4.95,Amazon.com Inc
+08-01-2024,NVDA,MANUAL,USD,480.04,6,buy,0,NVIDIA Corporation
+09-01-2024,META,MANUAL,USD,358.66,7,buy,4.95,Meta Platforms Inc
+10-01-2024,TSLA,MANUAL,USD,231.44,10,buy,0,Tesla Inc
+11-01-2024,BRK.B,MANUAL,USD,362.43,5,buy,4.95,Berkshire Hathaway Class B
+12-01-2024,JPM,MANUAL,USD,172.23,12,buy,0,JPMorgan Chase & Co
+15-01-2024,V,MANUAL,USD,268.94,8,buy,4.95,Visa Inc Class A
+16-01-2024,JNJ,MANUAL,USD,158.72,10,buy,0,Johnson & Johnson
+17-01-2024,UNH,MANUAL,USD,537.12,3,buy,4.95,UnitedHealth Group Inc
+18-01-2024,HD,MANUAL,USD,348.56,5,buy,0,Home Depot Inc
+19-01-2024,PG,MANUAL,USD,148.93,10,buy,4.95,Procter & Gamble Co
+22-01-2024,MA,MANUAL,USD,426.87,4,buy,0,Mastercard Inc Class A
+23-01-2024,XOM,MANUAL,USD,101.34,15,buy,4.95,Exxon Mobil Corporation
+24-01-2024,LLY,MANUAL,USD,620.38,3,buy,0,Eli Lilly and Company
+25-01-2024,ABBV,MANUAL,USD,165.23,8,buy,4.95,AbbVie Inc
+26-01-2024,COST,MANUAL,USD,682.45,2,buy,0,Costco Wholesale Corp
+29-01-2024,MRK,MANUAL,USD,122.56,12,buy,4.95,Merck & Co Inc
+30-01-2024,AVGO,MANUAL,USD,1185.32,2,buy,0,Broadcom Inc
+31-01-2024,PEP,MANUAL,USD,169.87,8,buy,4.95,PepsiCo Inc
+01-02-2024,TMO,MANUAL,USD,542.18,3,buy,0,Thermo Fisher Scientific
+02-02-2024,ADBE,MANUAL,USD,612.34,3,buy,4.95,Adobe Inc
+05-02-2024,CRM,MANUAL,USD,274.56,6,buy,0,Salesforce Inc
+06-02-2024,AMD,MANUAL,USD,169.43,10,buy,4.95,Advanced Micro Devices
+07-02-2024,NFLX,MANUAL,USD,562.78,3,buy,0,Netflix Inc
+08-02-2024,DIS,MANUAL,USD,95.67,15,buy,4.95,Walt Disney Company
+09-02-2024,INTC,MANUAL,USD,46.23,20,buy,0,Intel Corporation
+12-02-2024,VZ,MANUAL,USD,40.89,20,buy,4.95,Verizon Communications
+13-02-2024,KO,MANUAL,USD,59.43,15,buy,0,Coca-Cola Company
+14-02-2024,WMT,MANUAL,USD,168.34,8,buy,4.95,Walmart Inc
+15-02-2024,ABT,MANUAL,USD,113.56,10,buy,0,Abbott Laboratories
+16-02-2024,CVX,MANUAL,USD,152.78,8,buy,4.95,Chevron Corporation
+19-02-2024,NEE,MANUAL,USD,58.92,15,buy,0,NextEra Energy Inc
+20-02-2024,PM,MANUAL,USD,92.34,10,buy,4.95,Philip Morris International
+21-02-2024,VTI,MANUAL,USD,243.56,20,buy,0,Vanguard Total Stock Market ETF
+22-02-2024,VXUS,MANUAL,USD,56.78,30,buy,0,Vanguard Total Intl Stock ETF
+23-02-2024,BND,MANUAL,USD,72.34,25,buy,0,Vanguard Total Bond Market ETF
+26-02-2024,QQQ,MANUAL,USD,426.89,5,buy,4.95,Invesco QQQ Trust
+27-02-2024,GLD,MANUAL,USD,189.45,10,buy,0,SPDR Gold Shares
+28-02-2024,VNQ,MANUAL,USD,82.67,15,buy,4.95,Vanguard Real Estate ETF
+29-02-2024,SCHD,MANUAL,USD,78.23,20,buy,0,Schwab US Dividend Equity ETF
+25-03-2024,AAPL,MANUAL,USD,0.96,10,dividend,0,Apple Q1 dividend
+25-03-2024,MSFT,MANUAL,USD,0.75,8,dividend,0,Microsoft Q1 dividend
+25-03-2024,JPM,MANUAL,USD,1.15,12,dividend,0,JPMorgan Q1 dividend
+25-03-2024,JNJ,MANUAL,USD,1.24,10,dividend,0,J&J Q1 dividend
+25-03-2024,PG,MANUAL,USD,1.0065,10,dividend,0,P&G Q1 dividend
+25-03-2024,KO,MANUAL,USD,0.485,15,dividend,0,Coca-Cola Q1 dividend
+25-03-2024,XOM,MANUAL,USD,0.95,15,dividend,0,ExxonMobil Q1 dividend
+25-03-2024,VTI,MANUAL,USD,0.8267,20,dividend,0,VTI Q1 distribution
+25-03-2024,SCHD,MANUAL,USD,0.6123,20,dividend,0,SCHD Q1 distribution
+25-03-2024,BND,MANUAL,USD,0.1834,25,dividend,0,BND Q1 distribution
+15-04-2024,NVDA,MANUAL,USD,762.00,4,buy,0,NVIDIA add to position
+22-04-2024,AMZN,MANUAL,USD,186.13,5,buy,4.95,Amazon add to position
+10-05-2024,TSLA,MANUAL,USD,174.56,5,sell,4.95,Tesla trim position
+15-05-2024,INTC,MANUAL,USD,31.23,10,sell,0,Intel reduce exposure
+25-06-2024,AAPL,MANUAL,USD,0.96,10,dividend,0,Apple Q2 dividend
+25-06-2024,MSFT,MANUAL,USD,0.75,8,dividend,0,Microsoft Q2 dividend
+25-06-2024,JPM,MANUAL,USD,1.25,12,dividend,0,JPMorgan Q2 dividend
+25-06-2024,KO,MANUAL,USD,0.485,15,dividend,0,Coca-Cola Q2 dividend
+25-06-2024,XOM,MANUAL,USD,0.95,15,dividend,0,ExxonMobil Q2 dividend
+25-06-2024,VTI,MANUAL,USD,0.8712,20,dividend,0,VTI Q2 distribution
+25-06-2024,SCHD,MANUAL,USD,0.5589,20,dividend,0,SCHD Q2 distribution
+01-07-2024,PLTR,MANUAL,USD,26.45,20,buy,4.95,Palantir Technologies
+08-07-2024,UBER,MANUAL,USD,71.23,10,buy,0,Uber Technologies
+15-07-2024,SQ,MANUAL,USD,68.34,8,buy,4.95,Block Inc
+22-07-2024,COIN,MANUAL,USD,234.56,3,buy,0,Coinbase Global
+01-08-2024,Account Management Fee,MANUAL,USD,0,0,fee,75,Annual platform fee
+15-08-2024,ARM,MANUAL,USD,142.67,5,buy,4.95,Arm Holdings
