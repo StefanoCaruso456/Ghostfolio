@@ -57,6 +57,16 @@ import { parseCsv } from './tools/parse-csv.tool';
 import { validateTransactions } from './tools/validate-transactions.tool';
 import { enforceVerificationGate } from './verification/enforce';
 
+/**
+ * Strip Unicode smart quotes and non-ASCII characters that break HTTP headers.
+ */
+function sanitizePropertyString(value: string): string {
+  return value
+    .replace(/[\u2018\u2019\u201C\u201D\u201A\u201B\u201E\u201F]/g, '')
+    .replace(/[\u0080-\uFFFF]/g, '')
+    .trim();
+}
+
 // ─── Types ──────────────────────────────────────────────────────────
 
 /**
@@ -184,21 +194,21 @@ export class ImportAuditorService {
     const failureTracker = new ToolFailureTracker();
 
     try {
-      const openRouterApiKey = await this.propertyService.getByKey<string>(
+      const rawApiKey = await this.propertyService.getByKey<string>(
         PROPERTY_API_KEY_OPENROUTER
       );
 
-      const openRouterModelLight = await this.propertyService.getByKey<string>(
+      const rawModelLight = await this.propertyService.getByKey<string>(
         PROPERTY_OPENROUTER_MODEL_LIGHT
       );
 
-      const openRouterModel =
-        openRouterModelLight ??
+      const rawModel =
+        rawModelLight ??
         (await this.propertyService.getByKey<string>(
           PROPERTY_OPENROUTER_MODEL
         ));
 
-      if (!openRouterApiKey || !openRouterModel) {
+      if (!rawApiKey || !rawModel) {
         metrics.success = false;
         metrics.error = 'AI service not configured';
 
@@ -211,6 +221,10 @@ export class ImportAuditorService {
           metrics: finalizeMetrics(metrics)
         };
       }
+
+      // Sanitize to prevent ByteString errors from smart quotes / non-ASCII chars
+      const openRouterApiKey = sanitizePropertyString(rawApiKey);
+      const openRouterModel = sanitizePropertyString(rawModel);
 
       const openRouterService = createOpenRouter({
         apiKey: openRouterApiKey
