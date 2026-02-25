@@ -59,6 +59,16 @@ import { enforceVerificationGate } from './verification/enforce';
 
 // ─── Types ──────────────────────────────────────────────────────────
 
+/**
+ * Zod 3.25's z.infer can produce types where fields appear optional to TS
+ * even when the schema marks them required. This helper forces the required
+ * shape that executeWithGuardrails expects.
+ */
+type ToolOutput<T> = T & {
+  status: string;
+  verification: VerificationResult;
+};
+
 interface ToolCallRecord {
   tool: string;
   args?: Record<string, unknown>;
@@ -358,7 +368,10 @@ export class ImportAuditorService {
               const result = executeWithGuardrails(
                 'detectBrokerFormat',
                 args as unknown as Record<string, unknown>,
-                () => detectBrokerFormat(args)
+                () =>
+                  detectBrokerFormat(args) as ToolOutput<
+                    ReturnType<typeof detectBrokerFormat>
+                  >
               );
               const durationMs = Date.now() - start;
 
@@ -386,7 +399,7 @@ export class ImportAuditorService {
                   parseCsv({
                     csvContent: args.csvContent,
                     delimiter: args.delimiter
-                  })
+                  }) as ToolOutput<ReturnType<typeof parseCsv>>
               );
               const durationMs = Date.now() - start;
 
@@ -415,7 +428,7 @@ export class ImportAuditorService {
                     headers: args.headers,
                     sampleRows: args.sampleRows,
                     brokerHint: args.brokerHint
-                  })
+                  }) as ToolOutput<ReturnType<typeof mapBrokerFields>>
               );
               const durationMs = Date.now() - start;
 
@@ -442,7 +455,7 @@ export class ImportAuditorService {
                 () =>
                   validateTransactions({
                     activities: args.activities
-                  })
+                  }) as ToolOutput<ReturnType<typeof validateTransactions>>
               );
               const durationMs = Date.now() - start;
 
@@ -509,7 +522,9 @@ export class ImportAuditorService {
                     validActivities: args.validActivities,
                     totalErrors: args.totalErrors,
                     totalWarnings: args.totalWarnings
-                  })
+                  }) as ToolOutput<ReturnType<typeof generateImportPreview>> & {
+                    data: { canCommit: boolean };
+                  }
               );
               const durationMs = Date.now() - start;
 
