@@ -13,6 +13,9 @@ import { generateText } from 'ai';
 import { randomUUID } from 'node:crypto';
 import type { ColumnDescriptor } from 'tablemark';
 
+import { estimateCost } from '../../import-auditor/schemas/agent-metrics.schema';
+import { BraintrustTelemetryService } from './telemetry/braintrust-telemetry.service';
+
 @Injectable()
 export class AiService {
   private static readonly HOLDINGS_TABLE_COLUMN_DEFINITIONS: ({
@@ -38,7 +41,8 @@ export class AiService {
 
   public constructor(
     private readonly portfolioService: PortfolioService,
-    private readonly propertyService: PropertyService
+    private readonly propertyService: PropertyService,
+    private readonly telemetryService: BraintrustTelemetryService
   ) {}
 
   public async chat({
@@ -86,7 +90,23 @@ export class AiService {
       apiKey: openRouterApiKey
     });
 
+    // ── Start telemetry trace ────────────────────────────────────────
+    const activeConversationId = conversationId || randomUUID();
+    const trace = this.telemetryService.startTrace({
+      sessionId: activeConversationId,
+      userId,
+      queryText: message,
+      model: openRouterModel
+    });
+
+    // ── Fetch portfolio context (tracked as a tool span) ─────────────
     let portfolioContext = '';
+
+    const portfolioSpan = trace.startToolSpan(
+      'get_portfolio_context',
+      { userCurrency, languageCode },
+      1
+    );
 
     try {
       const portfolioPrompt = await this.getPrompt({
@@ -99,8 +119,23 @@ export class AiService {
       });
 
       portfolioContext = `\n\nThe user's current portfolio (base currency: ${userCurrency}):\n${portfolioPrompt}`;
+
+      trace.addToolSpan(
+        portfolioSpan.end({
+          status: 'success',
+          toolOutput: { contextLength: portfolioContext.length }
+        })
+      );
     } catch (error) {
       Logger.warn('Could not fetch portfolio for AI chat context', 'AiService');
+
+      trace.addToolSpan(
+        portfolioSpan.end({
+          status: 'error',
+          toolOutput: null,
+          error: error instanceof Error ? error.message : String(error)
+        })
+      );
     }
 
     const systemMessage = [
@@ -151,14 +186,48 @@ export class AiService {
       { content: message, role: 'user' as const }
     ];
 
+    // ── LLM call (tracked with latency) ──────────────────────────────
+    trace.markLlmStart();
+    trace.setIterationCount(1); // Single-turn for now; ReAct loop will increment
+
     try {
       const result = await generateText({
         messages,
         model: openRouterService.chat(openRouterModel)
       });
 
+      trace.markLlmEnd();
+
+      // Record token usage and cost
+      const inputTokens = result.usage?.promptTokens ?? 0;
+      const outputTokens = result.usage?.completionTokens ?? 0;
+
+      trace.setTokens(inputTokens, outputTokens);
+      trace.setCost(estimateCost(openRouterModel, inputTokens, outputTokens));
+      trace.setResponse(result.text);
+      trace.setQueryCategory(this.classifyQuery(message));
+
+      // ── Verification: basic domain constraint check ────────────────
+      trace.setConfidence(portfolioContext ? 0.9 : 0.6);
+
+      if (!portfolioContext) {
+        trace.addWarning(
+          'Portfolio context unavailable — response may be less grounded'
+        );
+      }
+
+      // ── Finalize and log to Braintrust (non-blocking) ──────────────
+      const payload = trace.finalize();
+
+      this.telemetryService.logTrace(payload).catch((telemetryError) => {
+        Logger.warn(
+          `Telemetry logging failed: ${telemetryError instanceof Error ? telemetryError.message : String(telemetryError)}`,
+          'AiService'
+        );
+      });
+
       return {
-        conversationId: conversationId || randomUUID(),
+        conversationId: activeConversationId,
         message: {
           content: result.text,
           role: 'assistant',
@@ -166,6 +235,16 @@ export class AiService {
         }
       };
     } catch (error) {
+      trace.markLlmEnd();
+      trace.markError(error instanceof Error ? error.message : String(error));
+
+      // Log the failed trace too — we want to see errors in Braintrust
+      const payload = trace.finalize();
+
+      this.telemetryService.logTrace(payload).catch(() => {
+        // Swallow telemetry errors on failure path
+      });
+
       Logger.error(
         `OpenRouter API call failed: ${error instanceof Error ? error.message : String(error)}`,
         'AiService'
@@ -173,6 +252,37 @@ export class AiService {
 
       throw error;
     }
+  }
+
+  /**
+   * Classify query intent for telemetry bucketing.
+   */
+  private classifyQuery(
+    query: string
+  ): 'portfolio' | 'market' | 'allocation' | 'tax' | 'performance' | 'general' {
+    const lower = query.toLowerCase();
+
+    if (/\b(portfolio|holdings?|positions?|my\s+stocks?)\b/.test(lower)) {
+      return 'portfolio';
+    }
+
+    if (/\b(allocat|diversif|rebalanc|weight)\b/.test(lower)) {
+      return 'allocation';
+    }
+
+    if (/\b(market|economy|sector|index|s&p|nasdaq|dow)\b/.test(lower)) {
+      return 'market';
+    }
+
+    if (/\b(performance|return|gain|loss|profit|growth)\b/.test(lower)) {
+      return 'performance';
+    }
+
+    if (/\b(tax|capital\s+gains?|deduct|write.?off|1099)\b/.test(lower)) {
+      return 'tax';
+    }
+
+    return 'general';
   }
 
   public async generateText({ prompt }: { prompt: string }) {

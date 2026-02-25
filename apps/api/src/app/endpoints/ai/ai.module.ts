@@ -25,6 +25,7 @@ import { Module } from '@nestjs/common';
 
 import { AiController } from './ai.controller';
 import { AiService } from './ai.service';
+import { BraintrustTelemetryService } from './telemetry/braintrust-telemetry.service';
 
 @Module({
   controllers: [AiController],
@@ -49,6 +50,7 @@ import { AiService } from './ai.service';
     AccountBalanceService,
     AccountService,
     AiService,
+    BraintrustTelemetryService,
     CurrentRateService,
     MarketDataService,
     PortfolioCalculatorFactory,
