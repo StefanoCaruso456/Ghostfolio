@@ -1,6 +1,7 @@
 import { AccountBalanceService } from '@ghostfolio/api/app/account-balance/account-balance.service';
 import { AccountService } from '@ghostfolio/api/app/account/account.service';
 import { OrderModule } from '@ghostfolio/api/app/order/order.module';
+import { OrderService } from '@ghostfolio/api/app/order/order.service';
 import { PortfolioCalculatorFactory } from '@ghostfolio/api/app/portfolio/calculator/portfolio-calculator.factory';
 import { CurrentRateService } from '@ghostfolio/api/app/portfolio/current-rate.service';
 import { PortfolioService } from '@ghostfolio/api/app/portfolio/portfolio.service';
@@ -53,6 +54,7 @@ import { BraintrustTelemetryService } from './telemetry/braintrust-telemetry.ser
     BraintrustTelemetryService,
     CurrentRateService,
     MarketDataService,
+    OrderService,
     PortfolioCalculatorFactory,
     PortfolioService,
     RulesService
