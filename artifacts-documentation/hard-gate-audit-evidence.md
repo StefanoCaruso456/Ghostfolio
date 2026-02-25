@@ -343,3 +343,75 @@ $ curl -L https://app.ghostclone.xyz/ → HTTP 200
 
 **Platform:** Railway (us-west2)
 **Domain:** app.ghostclone.xyz
+
+---
+
+## Full API Test Suite (All 40 Suites)
+
+Run command:
+
+```
+ACCESS_TOKEN_SALT=<salt> JWT_SECRET_KEY=<secret> npx jest --config apps/api/jest.config.ts --no-coverage --maxWorkers=1
+```
+
+### Results: 38 passed, 2 skipped, 0 failed
+
+```
+PASS api apps/api/src/helper/object.helper.spec.ts
+PASS api apps/api/src/app/portfolio/current-rate.service.spec.ts
+PASS api apps/api/src/services/data-provider/data-enhancer/yahoo-finance/yahoo-finance.service.spec.ts
+PASS api apps/api/src/guards/has-permission.guard.spec.ts
+PASS api apps/api/src/services/benchmark/benchmark.service.spec.ts
+PASS api apps/api/src/app/import-auditor/__tests__/evaluation-test-cases.spec.ts
+PASS api apps/api/src/app/import-auditor/__tests__/output-validation-and-gates.spec.ts
+PASS api apps/api/src/app/import-auditor/__tests__/production-hardening.spec.ts
+PASS api apps/api/src/app/import-auditor/__tests__/validate-transactions.tool.spec.ts
+PASS api apps/api/src/app/import-auditor/__tests__/generate-import-preview.tool.spec.ts
+PASS api apps/api/src/app/import-auditor/__tests__/activity-import-dto.spec.ts
+PASS api apps/api/src/app/import-auditor/__tests__/map-broker-fields.tool.spec.ts
+PASS api apps/api/src/app/import-auditor/__tests__/detect-broker-format.tool.spec.ts
+PASS api apps/api/src/app/import-auditor/__tests__/parse-csv.tool.spec.ts
+PASS api apps/api/src/app/import-auditor/__tests__/verification.spec.ts
+PASS api apps/api/src/app/import-auditor/__tests__/agent-metrics.spec.ts
+PASS api apps/api/src/app/import-auditor/__tests__/circuit-breaker.spec.ts
+PASS api apps/api/src/app/import-auditor/__tests__/cost-limiter.spec.ts
+PASS api apps/api/src/app/portfolio/calculator/roai/portfolio-calculator-cash.spec.ts
+PASS api apps/api/src/app/endpoints/ai/telemetry/__tests__/braintrust-telemetry.spec.ts
+PASS api apps/api/src/app/portfolio/calculator/roai/portfolio-calculator-msft-buy-with-dividend.spec.ts
+PASS api apps/api/src/app/portfolio/calculator/roai/portfolio-calculator-msft-buy-and-sell.spec.ts
+PASS api apps/api/src/app/portfolio/calculator/roai/portfolio-calculator-btcusd-short.spec.ts
+PASS api apps/api/src/app/portfolio/calculator/roai/portfolio-calculator-btcusd.spec.ts
+PASS api apps/api/src/app/portfolio/calculator/roai/portfolio-calculator-fee.spec.ts
+PASS api apps/api/src/app/portfolio/calculator/roai/portfolio-calculator-btceur.spec.ts
+PASS api apps/api/src/app/portfolio/calculator/roai/portfolio-calculator-novn-buy-and-sell.spec.ts
+PASS api apps/api/src/app/portfolio/calculator/roai/portfolio-calculator-novn-buy-and-sell-partially.spec.ts
+PASS api apps/api/src/app/portfolio/calculator/roai/portfolio-calculator-baln-buy-and-sell.spec.ts
+PASS api apps/api/src/app/portfolio/calculator/roai/portfolio-calculator-baln-buy-and-sell-in-two-activities.spec.ts
+PASS api apps/api/src/app/portfolio/calculator/roai/portfolio-calculator-valuable.spec.ts
+PASS api apps/api/src/app/portfolio/calculator/roai/portfolio-calculator-baln-buy.spec.ts
+PASS api apps/api/src/app/portfolio/calculator/roai/portfolio-calculator-googl-buy.spec.ts
+PASS api apps/api/src/app/portfolio/calculator/roai/portfolio-calculator-liability.spec.ts
+PASS api apps/api/src/app/portfolio/calculator/roai/portfolio-calculator-baln-buy-and-buy.spec.ts
+PASS api apps/api/src/app/portfolio/calculator/roai/portfolio-calculator-no-orders.spec.ts
+PASS api apps/api/src/app/portfolio/calculator/roai/portfolio-calculator-jnug-buy-and-sell-and-buy-and-sell.spec.ts
+PASS api apps/api/src/app/portfolio/calculator/roai/portfolio-calculator-btceur-in-base-currency-eur.spec.ts
+
+Test Suites: 2 skipped, 38 passed, 38 of 40 total
+Tests:       2 skipped, 267 passed, 269 total
+```
+
+### Breakdown by Component
+
+| Component                             | Suites | Tests   | Status       |
+| ------------------------------------- | ------ | ------- | ------------ |
+| Import Auditor (agent + tools)        | 13     | 199     | ALL PASS     |
+| ROAI Portfolio Calculator             | 19     | 21      | ALL PASS     |
+| AI Chat Telemetry (Braintrust)        | 1      | 38      | ALL PASS     |
+| Core services (guards, helpers, etc.) | 5      | 9       | ALL PASS     |
+| **Total**                             | **38** | **267** | **ALL PASS** |
+
+### Note on Environment
+
+ROAI calculator tests require `ACCESS_TOKEN_SALT` and `JWT_SECRET_KEY` env vars.
+Without them, `ConfigurationService` calls `process.exit(1)` and Jest reports
+"worker encountered child process exceptions" — this is an env config issue, not a code bug.
