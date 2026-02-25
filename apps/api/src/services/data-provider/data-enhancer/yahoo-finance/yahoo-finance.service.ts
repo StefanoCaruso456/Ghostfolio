@@ -177,7 +177,10 @@ export class YahooFinanceDataEnhancerService implements DataEnhancerInterface {
           }
         } catch {}
       } else if (symbol?.endsWith(`-${DEFAULT_CURRENCY}`)) {
-        throw new Error(`${symbol} is not valid`);
+        // Normalize "BTC-USD" to "BTCUSD" so convertToYahooFinanceSymbol
+        // can handle it through the standard crypto conversion path
+        symbol = symbol.replace(`-${DEFAULT_CURRENCY}`, DEFAULT_CURRENCY);
+        symbol = this.convertToYahooFinanceSymbol(symbol);
       } else {
         symbol = this.convertToYahooFinanceSymbol(symbol);
       }
