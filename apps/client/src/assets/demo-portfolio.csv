@@ -1,50 +1,2001 @@
 Date,Code,DataSource,Currency,Price,Quantity,Action,Fee,Note
-05-01-2024,AAPL,MANUAL,USD,185.50,10,buy,4.95,Apple Inc
-12-01-2024,MSFT,MANUAL,USD,388.00,8,buy,4.95,Microsoft Corporation
-19-01-2024,GOOGL,MANUAL,USD,141.80,15,buy,4.95,Alphabet Inc
-26-01-2024,AMZN,MANUAL,USD,155.20,12,buy,4.95,Amazon.com Inc
-02-02-2024,NVDA,MANUAL,USD,615.00,5,buy,4.95,NVIDIA Corporation
-09-02-2024,TSLA,MANUAL,USD,193.50,10,buy,4.95,Tesla Inc
-16-02-2024,META,MANUAL,USD,473.00,6,buy,4.95,Meta Platforms Inc
-23-02-2024,VOO,MANUAL,USD,452.30,5,buy,0,Vanguard S&P 500 ETF
-01-03-2024,VTI,MANUAL,USD,248.60,8,buy,0,Vanguard Total Stock Market ETF
-08-03-2024,QQQ,MANUAL,USD,437.50,4,buy,0,Invesco QQQ Trust
-15-03-2024,SPY,MANUAL,USD,510.20,3,buy,0,SPDR S&P 500 ETF Trust
-22-03-2024,SCHD,MANUAL,USD,78.40,15,buy,0,Schwab US Dividend Equity ETF
-29-03-2024,VGT,MANUAL,USD,520.10,4,buy,0,Vanguard Info Technology ETF
-05-04-2024,JPM,MANUAL,USD,198.30,8,buy,4.95,JPMorgan Chase & Co
-12-04-2024,V,MANUAL,USD,279.50,7,buy,4.95,Visa Inc
-19-04-2024,JNJ,MANUAL,USD,148.60,12,buy,4.95,Johnson & Johnson
-26-04-2024,UNH,MANUAL,USD,492.80,3,buy,4.95,UnitedHealth Group Inc
-03-05-2024,HD,MANUAL,USD,342.10,5,buy,4.95,The Home Depot Inc
-10-05-2024,PG,MANUAL,USD,163.70,10,buy,4.95,Procter & Gamble Co
-17-05-2024,MA,MANUAL,USD,462.90,5,buy,4.95,Mastercard Inc
-24-05-2024,COST,MANUAL,USD,812.50,3,buy,4.95,Costco Wholesale Corp
-31-05-2024,KO,MANUAL,USD,63.20,20,buy,4.95,Coca-Cola Company
-07-06-2024,PEP,MANUAL,USD,174.80,8,buy,4.95,PepsiCo Inc
-14-06-2024,ABBV,MANUAL,USD,167.30,10,buy,4.95,AbbVie Inc
-21-06-2024,MRK,MANUAL,USD,128.90,12,buy,4.95,Merck & Co Inc
-28-06-2024,LLY,MANUAL,USD,905.40,2,buy,4.95,Eli Lilly and Company
-05-07-2024,AVGO,MANUAL,USD,1620.00,3,buy,4.95,Broadcom Inc
-12-07-2024,AMD,MANUAL,USD,170.50,15,buy,4.95,Advanced Micro Devices Inc
-19-07-2024,CRM,MANUAL,USD,258.30,6,buy,4.95,Salesforce Inc
-26-07-2024,NFLX,MANUAL,USD,648.70,4,buy,4.95,Netflix Inc
-02-08-2024,DIS,MANUAL,USD,90.20,15,buy,4.95,Walt Disney Company
-09-08-2024,PYPL,MANUAL,USD,65.80,12,buy,4.95,PayPal Holdings Inc
-16-08-2024,SQ,MANUAL,USD,68.40,10,buy,4.95,Block Inc
-23-08-2024,SHOP,MANUAL,USD,67.50,8,buy,4.95,Shopify Inc
-30-08-2024,INTC,MANUAL,USD,21.50,25,buy,4.95,Intel Corporation
-06-09-2024,VZ,MANUAL,USD,41.30,20,buy,4.95,Verizon Communications Inc
-13-09-2024,T,MANUAL,USD,21.80,30,buy,4.95,AT&T Inc
-20-09-2024,XOM,MANUAL,USD,116.40,10,buy,4.95,Exxon Mobil Corporation
-27-09-2024,CVX,MANUAL,USD,147.60,8,buy,4.95,Chevron Corporation
-04-10-2024,BRK-B,MANUAL,USD,460.20,4,buy,4.95,Berkshire Hathaway Inc
-11-10-2024,VNQ,MANUAL,USD,85.30,12,buy,0,Vanguard Real Estate ETF
-18-10-2024,BND,MANUAL,USD,72.10,15,buy,0,Vanguard Total Bond Market ETF
-25-10-2024,VXUS,MANUAL,USD,56.80,20,buy,0,Vanguard Total Intl Stock ETF
-01-11-2024,IWM,MANUAL,USD,218.40,6,buy,0,iShares Russell 2000 ETF
-08-11-2024,GLD,MANUAL,USD,243.60,5,buy,0,SPDR Gold Shares
-15-11-2024,WMT,MANUAL,USD,85.30,10,buy,4.95,Walmart Inc
-22-11-2024,TGT,MANUAL,USD,138.50,8,buy,4.95,Target Corporation
-29-11-2024,SBUX,MANUAL,USD,98.40,12,buy,4.95,Starbucks Corporation
-06-12-2024,NKE,MANUAL,USD,78.60,10,buy,4.95,Nike Inc
+05-01-2023,PLD,MANUAL,USD,1.56,5,dividend,0,Prologis Inc
+06-01-2023,GS,MANUAL,USD,402.15,8,buy,6.95,Goldman Sachs Group Inc
+09-01-2023,GLD,MANUAL,USD,192.7,5,buy,2.5,SPDR Gold Shares
+09-01-2023,COIN,MANUAL,USD,121.24,27,buy,4.95,Coinbase Global Inc
+09-01-2023,MA,MANUAL,USD,463.92,4,buy,1.0,Mastercard Inc
+09-01-2023,XLI,MANUAL,USD,115.61,2,buy,2.5,Industrial Select Sector SPDR
+09-01-2023,HYG,MANUAL,USD,76.21,20,buy,0,iShares iBoxx High Yield Corp
+09-01-2023,MRK,MANUAL,USD,121.27,26,buy,0,Merck & Co Inc
+09-01-2023,USB,MANUAL,USD,43.17,18,buy,0,US Bancorp
+09-01-2023,GS,MANUAL,USD,388.49,1,buy,6.95,Goldman Sachs Group Inc
+10-01-2023,JNJ,MANUAL,USD,154.95,14,buy,0,Johnson & Johnson
+10-01-2023,AAPL,MANUAL,USD,158.07,3,buy,4.95,Apple Inc
+11-01-2023,VZ,MANUAL,USD,36.79,22,buy,0,Verizon Communications Inc
+11-01-2023,MSFT,MANUAL,USD,392.6,2,buy,2.5,Microsoft Corporation
+11-01-2023,YUM,MANUAL,USD,125.18,7,buy,2.5,Yum Brands Inc
+11-01-2023,SNOW,MANUAL,USD,153.97,5,buy,0,Snowflake Inc
+11-01-2023,LOW,MANUAL,USD,249.9,7,buy,0,Lowes Companies Inc
+11-01-2023,ORCL,MANUAL,USD,163.69,13,buy,4.95,Oracle Corporation
+11-01-2023,SBUX,MANUAL,USD,1.34,47,dividend,0,Starbucks Corporation
+12-01-2023,NVDA,MANUAL,USD,519.36,1,buy,1.0,NVIDIA Corporation
+12-01-2023,ABNB,MANUAL,USD,0.63,6,dividend,0,Airbnb Inc
+13-01-2023,CAT,MANUAL,USD,291.66,2,buy,4.95,Caterpillar Inc
+13-01-2023,XLP,MANUAL,USD,77.3,28,buy,0,Consumer Staples Select SPDR
+13-01-2023,SPY,MANUAL,USD,477.51,6,buy,2.5,SPDR S&P 500 ETF Trust
+16-01-2023,ORCL,MANUAL,USD,120.43,13,buy,0,Oracle Corporation
+16-01-2023,TLT,MANUAL,USD,99.8,30,buy,1.0,iShares 20+ Year Treasury Bond
+16-01-2023,JNJ,MANUAL,USD,159.16,23,buy,0,Johnson & Johnson
+16-01-2023,TSLA,MANUAL,USD,192.01,16,buy,1.0,Tesla Inc
+16-01-2023,JNJ,MANUAL,USD,146.23,25,buy,4.95,Johnson & Johnson
+16-01-2023,SLV,MANUAL,USD,22.12,8,buy,0,iShares Silver Trust
+16-01-2023,NKE,MANUAL,USD,73.66,25,buy,4.95,Nike Inc
+16-01-2023,HD,MANUAL,USD,295.74,3,buy,6.95,The Home Depot Inc
+16-01-2023,V,MANUAL,USD,248.59,8,buy,2.5,Visa Inc
+17-01-2023,T,MANUAL,USD,17.4,26,buy,0,AT&T Inc
+18-01-2023,BND,MANUAL,USD,69.17,9,buy,0,Vanguard Total Bond Market ETF
+19-01-2023,SQ,MANUAL,USD,60.71,3,buy,1.0,Block Inc
+19-01-2023,V,MANUAL,USD,274.8,14,buy,0,Visa Inc
+19-01-2023,VXUS,MANUAL,USD,2.29,13,dividend,0,Vanguard Total Intl Stock ETF
+20-01-2023,MSFT,MANUAL,USD,377.65,9,buy,4.95,Microsoft Corporation
+23-01-2023,SPY,MANUAL,USD,460.47,3,buy,2.5,SPDR S&P 500 ETF Trust
+23-01-2023,MRK,MANUAL,USD,113.23,14,buy,0,Merck & Co Inc
+23-01-2023,ARKK,MANUAL,USD,52.7,25,buy,0,ARK Innovation ETF
+23-01-2023,GLD,MANUAL,USD,208.82,14,buy,4.95,SPDR Gold Shares
+23-01-2023,JPM,MANUAL,USD,159.01,29,buy,2.5,JPMorgan Chase & Co
+23-01-2023,QQQ,MANUAL,USD,429.72,7,buy,0,Invesco QQQ Trust
+23-01-2023,KO,MANUAL,USD,60.38,2,buy,6.95,Coca-Cola Company
+23-01-2023,INTC,MANUAL,USD,36.79,19,buy,0,Intel Corporation
+23-01-2023,ABBV,MANUAL,USD,0.76,18,dividend,0,AbbVie Inc
+24-01-2023,ADBE,MANUAL,USD,575.61,5,buy,6.95,Adobe Inc
+24-01-2023,BRK-B,MANUAL,USD,423.9,10,buy,0,Berkshire Hathaway Inc
+25-01-2023,QQQ,MANUAL,USD,449.74,15,buy,6.95,Invesco QQQ Trust
+25-01-2023,VOO,MANUAL,USD,401.82,15,buy,0,Vanguard S&P 500 ETF
+25-01-2023,SNOW,MANUAL,USD,175.38,6,buy,0,Snowflake Inc
+26-01-2023,PLTR,MANUAL,USD,24.81,15,buy,2.5,Palantir Technologies Inc
+26-01-2023,GOOGL,MANUAL,USD,170.77,21,buy,4.95,Alphabet Inc
+26-01-2023,COST,MANUAL,USD,0.17,39,dividend,0,Costco Wholesale Corp
+26-01-2023,XLV,MANUAL,USD,0.92,16,dividend,0,Health Care Select Sector SPDR
+27-01-2023,QCOM,MANUAL,USD,2.16,25,dividend,0,Qualcomm Inc
+30-01-2023,TXN,MANUAL,USD,160.38,30,buy,1.0,Texas Instruments Inc
+30-01-2023,PG,MANUAL,USD,146.16,16,buy,0,Procter & Gamble Co
+30-01-2023,GLD,MANUAL,USD,213.79,7,buy,0,SPDR Gold Shares
+30-01-2023,ZS,MANUAL,USD,219.32,5,buy,2.5,Zscaler Inc
+30-01-2023,CRM,MANUAL,USD,265.39,5,buy,4.95,Salesforce Inc
+30-01-2023,VXUS,MANUAL,USD,52.27,22,buy,0,Vanguard Total Intl Stock ETF
+30-01-2023,PANW,MANUAL,USD,1.47,50,dividend,0,Palo Alto Networks Inc
+30-01-2023,ABBV,MANUAL,USD,1.81,24,dividend,0,AbbVie Inc
+30-01-2023,LCID,MANUAL,USD,1.19,26,dividend,0,Lucid Group Inc
+01-02-2023,CSCO,MANUAL,USD,54.85,29,buy,4.95,Cisco Systems Inc
+01-02-2023,COST,MANUAL,USD,695.52,1,buy,4.95,Costco Wholesale Corp
+01-02-2023,PG,MANUAL,USD,152.25,9,buy,4.95,Procter & Gamble Co
+01-02-2023,MA,MANUAL,USD,387.3,12,buy,6.95,Mastercard Inc
+02-02-2023,TSLA,MANUAL,USD,0.58,23,dividend,0,Tesla Inc
+03-02-2023,PLTR,MANUAL,USD,24.55,7,buy,0,Palantir Technologies Inc
+03-02-2023,PANW,MANUAL,USD,293.13,3,buy,2.5,Palo Alto Networks Inc
+06-02-2023,VTI,MANUAL,USD,252.98,9,buy,4.95,Vanguard Total Stock Market ETF
+06-02-2023,XLE,MANUAL,USD,82.88,6,buy,0,Energy Select Sector SPDR
+06-02-2023,TLT,MANUAL,USD,97.59,3,buy,0,iShares 20+ Year Treasury Bond
+06-02-2023,XOM,MANUAL,USD,101.87,18,buy,4.95,Exxon Mobil Corporation
+06-02-2023,PG,MANUAL,USD,161.67,27,buy,4.95,Procter & Gamble Co
+06-02-2023,COIN,MANUAL,USD,179.07,29,buy,0,Coinbase Global Inc
+06-02-2023,VOO,MANUAL,USD,1.01,49,dividend,0,Vanguard S&P 500 ETF
+08-02-2023,LQD,MANUAL,USD,113.35,19,buy,0,iShares Investment Grade Corp
+08-02-2023,LQD,MANUAL,USD,111.17,8,buy,4.95,iShares Investment Grade Corp
+08-02-2023,LOW,MANUAL,USD,221.58,1,buy,0,Lowes Companies Inc
+08-02-2023,XLE,MANUAL,USD,88.98,16,buy,0,Energy Select Sector SPDR
+08-02-2023,KO,MANUAL,USD,61.95,20,buy,4.95,Coca-Cola Company
+08-02-2023,EEM,MANUAL,USD,38.2,18,buy,4.95,iShares MSCI Emerging Markets
+09-02-2023,XLI,MANUAL,USD,107.52,19,buy,1.0,Industrial Select Sector SPDR
+09-02-2023,SQ,MANUAL,USD,72.6,7,buy,4.95,Block Inc
+09-02-2023,LQD,MANUAL,USD,112.91,12,buy,0,iShares Investment Grade Corp
+09-02-2023,GOOGL,MANUAL,USD,138.66,11,buy,0,Alphabet Inc
+09-02-2023,CCI,MANUAL,USD,0.6,17,dividend,0,Crown Castle Inc
+10-02-2023,VGT,MANUAL,USD,475.24,3,buy,4.95,Vanguard Info Technology ETF
+10-02-2023,LCID,MANUAL,USD,6.11,30,buy,0,Lucid Group Inc
+13-02-2023,XLP,MANUAL,USD,72.36,5,buy,1.0,Consumer Staples Select SPDR
+13-02-2023,WMT,MANUAL,USD,160.47,16,buy,4.95,Walmart Inc
+14-02-2023,DE,MANUAL,USD,416.02,2,buy,0,Deere & Company
+14-02-2023,CAT,MANUAL,USD,290.73,11,buy,0,Caterpillar Inc
+14-02-2023,MS,MANUAL,USD,1.22,44,dividend,0,Morgan Stanley
+15-02-2023,XOM,MANUAL,USD,102.19,23,buy,0,Exxon Mobil Corporation
+15-02-2023,EEM,MANUAL,USD,1.29,5,dividend,0,iShares MSCI Emerging Markets
+16-02-2023,SCHD,MANUAL,USD,81.06,29,buy,2.5,Schwab US Dividend Equity ETF
+16-02-2023,SBUX,MANUAL,USD,95.93,14,buy,4.95,Starbucks Corporation
+16-02-2023,VXUS,MANUAL,USD,55.25,15,buy,1.0,Vanguard Total Intl Stock ETF
+17-02-2023,HD,MANUAL,USD,318.18,14,buy,0,The Home Depot Inc
+17-02-2023,PYPL,MANUAL,USD,63.05,8,buy,4.95,PayPal Holdings Inc
+17-02-2023,SLV,MANUAL,USD,22.11,15,buy,4.95,iShares Silver Trust
+20-02-2023,SCHD,MANUAL,USD,80.33,5,buy,0,Schwab US Dividend Equity ETF
+20-02-2023,WMT,MANUAL,USD,176.64,11,buy,4.95,Walmart Inc
+20-02-2023,VTI,MANUAL,USD,224.91,8,buy,1.0,Vanguard Total Stock Market ETF
+20-02-2023,ABNB,MANUAL,USD,123.17,21,buy,1.0,Airbnb Inc
+20-02-2023,MARA,MANUAL,USD,12.23,10,buy,6.95,Marathon Digital Holdings
+20-02-2023,MARA,MANUAL,USD,21.55,18,buy,4.95,Marathon Digital Holdings
+20-02-2023,LQD,MANUAL,USD,2.4,33,dividend,0,iShares Investment Grade Corp
+20-02-2023,PYPL,MANUAL,USD,1.93,42,dividend,0,PayPal Holdings Inc
+23-02-2023,META,MANUAL,USD,359.08,15,buy,6.95,Meta Platforms Inc
+23-02-2023,MA,MANUAL,USD,440.63,8,buy,0,Mastercard Inc
+23-02-2023,PANW,MANUAL,USD,342.66,13,buy,6.95,Palo Alto Networks Inc
+24-02-2023,ABBV,MANUAL,USD,151.36,28,buy,6.95,AbbVie Inc
+24-02-2023,COIN,MANUAL,USD,100.36,18,buy,0,Coinbase Global Inc
+24-02-2023,ZS,MANUAL,USD,238.1,5,buy,1.0,Zscaler Inc
+27-02-2023,PLD,MANUAL,USD,133.51,26,buy,4.95,Prologis Inc
+27-02-2023,COST,MANUAL,USD,580.38,2,buy,2.5,Costco Wholesale Corp
+27-02-2023,BA,MANUAL,USD,172.11,13,buy,0,Boeing Company
+27-02-2023,DDOG,MANUAL,USD,99.72,20,buy,0,Datadog Inc
+27-02-2023,ORCL,MANUAL,USD,106.03,13,buy,0,Oracle Corporation
+27-02-2023,VZ,MANUAL,USD,32.32,26,buy,0,Verizon Communications Inc
+27-02-2023,VGT,MANUAL,USD,519.64,1,buy,0,Vanguard Info Technology ETF
+27-02-2023,CAT,MANUAL,USD,1.11,17,dividend,0,Caterpillar Inc
+28-02-2023,BAC,MANUAL,USD,28.08,10,buy,4.95,Bank of America Corp
+28-02-2023,XLP,MANUAL,USD,78.65,17,buy,0,Consumer Staples Select SPDR
+28-02-2023,DDOG,MANUAL,USD,110.59,30,buy,1.0,Datadog Inc
+28-02-2023,BND,MANUAL,USD,72.26,7,buy,4.95,Vanguard Total Bond Market ETF
+01-03-2023,BND,MANUAL,USD,70.05,12,buy,2.5,Vanguard Total Bond Market ETF
+01-03-2023,PLTR,MANUAL,USD,17.26,10,buy,4.95,Palantir Technologies Inc
+01-03-2023,PSA,MANUAL,USD,270.0,13,buy,0,Public Storage
+01-03-2023,SPY,MANUAL,USD,513.75,3,buy,2.5,SPDR S&P 500 ETF Trust
+03-03-2023,LLY,MANUAL,USD,649.8,1,buy,1.0,Eli Lilly and Company
+03-03-2023,AMT,MANUAL,USD,180.19,9,buy,4.95,American Tower Corp
+03-03-2023,SBUX,MANUAL,USD,99.71,9,buy,0,Starbucks Corporation
+03-03-2023,GS,MANUAL,USD,466.88,13,buy,4.95,Goldman Sachs Group Inc
+06-03-2023,TSLA,MANUAL,USD,255.38,9,buy,4.95,Tesla Inc
+06-03-2023,BA,MANUAL,USD,237.26,9,buy,2.5,Boeing Company
+06-03-2023,AMT,MANUAL,USD,194.44,24,buy,2.5,American Tower Corp
+06-03-2023,VXUS,MANUAL,USD,52.07,27,buy,4.95,Vanguard Total Intl Stock ETF
+06-03-2023,NFLX,MANUAL,USD,547.93,5,buy,1.0,Netflix Inc
+06-03-2023,SNOW,MANUAL,USD,2.12,21,dividend,0,Snowflake Inc
+06-03-2023,AAPL,MANUAL,USD,2.34,35,dividend,0,Apple Inc
+07-03-2023,DDOG,MANUAL,USD,118.23,17,buy,4.95,Datadog Inc
+08-03-2023,VXUS,MANUAL,USD,50.97,5,buy,2.5,Vanguard Total Intl Stock ETF
+08-03-2023,BRK-B,MANUAL,USD,1.6,11,dividend,0,Berkshire Hathaway Inc
+09-03-2023,XLK,MANUAL,USD,186.81,9,buy,1.0,Technology Select Sector SPDR
+09-03-2023,BA,MANUAL,USD,191.43,21,buy,2.5,Boeing Company
+10-03-2023,V,MANUAL,USD,260.04,10,buy,0,Visa Inc
+10-03-2023,NET,MANUAL,USD,0.41,41,dividend,0,Cloudflare Inc
+10-03-2023,UBER,MANUAL,USD,0.38,13,dividend,0,Uber Technologies Inc
+10-03-2023,USB,MANUAL,USD,0.5,29,dividend,0,US Bancorp
+13-03-2023,AVGO,MANUAL,USD,980.72,4,buy,0,Broadcom Inc
+13-03-2023,VNQ,MANUAL,USD,79.5,26,buy,0,Vanguard Real Estate ETF
+13-03-2023,SNOW,MANUAL,USD,145.22,18,buy,2.5,Snowflake Inc
+13-03-2023,BLK,MANUAL,USD,715.83,2,buy,2.5,BlackRock Inc
+13-03-2023,VNQ,MANUAL,USD,83.36,24,buy,0,Vanguard Real Estate ETF
+13-03-2023,YUM,MANUAL,USD,138.03,4,buy,1.0,Yum Brands Inc
+13-03-2023,BAC,MANUAL,USD,1.52,17,dividend,0,Bank of America Corp
+14-03-2023,ABBV,MANUAL,USD,166.78,22,buy,4.95,AbbVie Inc
+15-03-2023,MRK,MANUAL,USD,126.84,26,buy,6.95,Merck & Co Inc
+16-03-2023,AAPL,MANUAL,USD,181.85,2,buy,4.95,Apple Inc
+16-03-2023,SNOW,MANUAL,USD,190.07,3,buy,4.95,Snowflake Inc
+17-03-2023,PG,MANUAL,USD,146.49,26,buy,4.95,Procter & Gamble Co
+17-03-2023,PLD,MANUAL,USD,132.41,5,buy,0,Prologis Inc
+17-03-2023,PYPL,MANUAL,USD,60.33,14,buy,1.0,PayPal Holdings Inc
+20-03-2023,BA,MANUAL,USD,182.52,14,buy,6.95,Boeing Company
+20-03-2023,TSLA,MANUAL,USD,231.6,15,buy,0,Tesla Inc
+20-03-2023,SLV,MANUAL,USD,26.39,2,buy,4.95,iShares Silver Trust
+20-03-2023,CAT,MANUAL,USD,290.32,2,buy,4.95,Caterpillar Inc
+20-03-2023,COST,MANUAL,USD,633.19,4,buy,2.5,Costco Wholesale Corp
+21-03-2023,V,MANUAL,USD,287.25,15,buy,0,Visa Inc
+22-03-2023,T,MANUAL,USD,15.77,9,buy,0,AT&T Inc
+22-03-2023,QCOM,MANUAL,USD,124.77,16,buy,0,Qualcomm Inc
+22-03-2023,BA,MANUAL,USD,243.38,2,buy,2.5,Boeing Company
+23-03-2023,ABNB,MANUAL,USD,155.68,8,buy,4.95,Airbnb Inc
+23-03-2023,EEM,MANUAL,USD,43.17,19,buy,2.5,iShares MSCI Emerging Markets
+23-03-2023,XLK,MANUAL,USD,176.63,8,buy,6.95,Technology Select Sector SPDR
+23-03-2023,VXUS,MANUAL,USD,51.9,11,buy,0,Vanguard Total Intl Stock ETF
+23-03-2023,SNOW,MANUAL,USD,183.41,26,buy,6.95,Snowflake Inc
+24-03-2023,BRK-B,MANUAL,USD,406.47,13,buy,0,Berkshire Hathaway Inc
+27-03-2023,SCHW,MANUAL,USD,63.38,19,buy,1.0,Charles Schwab Corp
+27-03-2023,SQ,MANUAL,USD,64.11,24,buy,0,Block Inc
+27-03-2023,CCI,MANUAL,USD,116.29,28,buy,2.5,Crown Castle Inc
+27-03-2023,VXUS,MANUAL,USD,54.66,5,buy,1.0,Vanguard Total Intl Stock ETF
+27-03-2023,NKE,MANUAL,USD,90.48,22,buy,0,Nike Inc
+27-03-2023,YUM,MANUAL,USD,127.13,24,buy,4.95,Yum Brands Inc
+27-03-2023,VZ,MANUAL,USD,39.88,16,buy,6.95,Verizon Communications Inc
+27-03-2023,TXN,MANUAL,USD,0.32,32,dividend,0,Texas Instruments Inc
+27-03-2023,AVGO,MANUAL,USD,1.98,47,dividend,0,Broadcom Inc
+28-03-2023,IWM,MANUAL,USD,201.41,1,buy,2.5,iShares Russell 2000 ETF
+29-03-2023,TSLA,MANUAL,USD,207.46,5,buy,1.0,Tesla Inc
+29-03-2023,SLV,MANUAL,USD,2.13,37,dividend,0,iShares Silver Trust
+30-03-2023,IWM,MANUAL,USD,202.7,1,buy,4.95,iShares Russell 2000 ETF
+30-03-2023,PLD,MANUAL,USD,117.45,20,buy,4.95,Prologis Inc
+30-03-2023,IWM,MANUAL,USD,223.53,15,buy,0,iShares Russell 2000 ETF
+30-03-2023,CVX,MANUAL,USD,0.19,26,dividend,0,Chevron Corporation
+31-03-2023,SHOP,MANUAL,USD,61.96,14,buy,0,Shopify Inc
+31-03-2023,CAT,MANUAL,USD,0.56,44,dividend,0,Caterpillar Inc
+03-04-2023,EEM,MANUAL,USD,39.89,11,buy,0,iShares MSCI Emerging Markets
+03-04-2023,PYPL,MANUAL,USD,73.49,4,buy,6.95,PayPal Holdings Inc
+03-04-2023,VOO,MANUAL,USD,412.38,7,buy,4.95,Vanguard S&P 500 ETF
+03-04-2023,AMT,MANUAL,USD,212.87,11,buy,1.0,American Tower Corp
+03-04-2023,LCID,MANUAL,USD,3.52,14,buy,2.5,Lucid Group Inc
+03-04-2023,WFC,MANUAL,USD,45.07,30,buy,6.95,Wells Fargo & Company
+03-04-2023,VXUS,MANUAL,USD,50.39,14,buy,0,Vanguard Total Intl Stock ETF
+03-04-2023,CVX,MANUAL,USD,142.5,1,buy,4.95,Chevron Corporation
+04-04-2023,CCI,MANUAL,USD,100.56,8,buy,4.95,Crown Castle Inc
+04-04-2023,SQ,MANUAL,USD,0.47,31,dividend,0,Block Inc
+05-04-2023,NFLX,MANUAL,USD,521.51,1,buy,6.95,Netflix Inc
+05-04-2023,EEM,MANUAL,USD,39.5,23,buy,0,iShares MSCI Emerging Markets
+05-04-2023,XLI,MANUAL,USD,109.76,4,buy,1.0,Industrial Select Sector SPDR
+05-04-2023,CVX,MANUAL,USD,158.73,25,buy,4.95,Chevron Corporation
+06-04-2023,VTI,MANUAL,USD,251.59,7,buy,0,Vanguard Total Stock Market ETF
+07-04-2023,UNH,MANUAL,USD,540.51,3,buy,0,UnitedHealth Group Inc
+07-04-2023,SCHW,MANUAL,USD,56.14,20,buy,4.95,Charles Schwab Corp
+10-04-2023,DE,MANUAL,USD,421.58,1,buy,4.95,Deere & Company
+10-04-2023,VZ,MANUAL,USD,37.86,9,buy,0,Verizon Communications Inc
+10-04-2023,BA,MANUAL,USD,197.04,20,buy,6.95,Boeing Company
+10-04-2023,EEM,MANUAL,USD,41.13,7,buy,6.95,iShares MSCI Emerging Markets
+10-04-2023,QQQ,MANUAL,USD,410.13,6,buy,4.95,Invesco QQQ Trust
+10-04-2023,TXN,MANUAL,USD,168.94,24,buy,4.95,Texas Instruments Inc
+12-04-2023,NKE,MANUAL,USD,80.77,12,buy,4.95,Nike Inc
+12-04-2023,BLK,MANUAL,USD,833.58,1,buy,4.95,BlackRock Inc
+12-04-2023,UNH,MANUAL,USD,489.39,6,buy,1.0,UnitedHealth Group Inc
+12-04-2023,LLY,MANUAL,USD,560.29,3,buy,0,Eli Lilly and Company
+12-04-2023,XOM,MANUAL,USD,106.77,24,buy,4.95,Exxon Mobil Corporation
+12-04-2023,SOXX,MANUAL,USD,187.09,8,buy,2.5,iShares Semiconductor ETF
+12-04-2023,BRK-B,MANUAL,USD,399.3,14,buy,0,Berkshire Hathaway Inc
+13-04-2023,MSFT,MANUAL,USD,353.29,12,buy,4.95,Microsoft Corporation
+13-04-2023,EEM,MANUAL,USD,0.45,32,dividend,0,iShares MSCI Emerging Markets
+13-04-2023,NFLX,MANUAL,USD,0.38,28,dividend,0,Netflix Inc
+14-04-2023,USB,MANUAL,USD,45.37,7,buy,4.95,US Bancorp
+14-04-2023,TGT,MANUAL,USD,154.33,12,buy,1.0,Target Corporation
+14-04-2023,TSLA,MANUAL,USD,226.36,8,buy,0,Tesla Inc
+14-04-2023,CSCO,MANUAL,USD,54.29,2,buy,4.95,Cisco Systems Inc
+14-04-2023,SNOW,MANUAL,USD,149.26,12,buy,1.0,Snowflake Inc
+14-04-2023,ORCL,MANUAL,USD,0.87,31,dividend,0,Oracle Corporation
+17-04-2023,META,MANUAL,USD,386.79,8,buy,0,Meta Platforms Inc
+17-04-2023,SCHD,MANUAL,USD,71.24,12,buy,4.95,Schwab US Dividend Equity ETF
+17-04-2023,SCHD,MANUAL,USD,71.68,4,buy,2.5,Schwab US Dividend Equity ETF
+17-04-2023,COST,MANUAL,USD,624.36,3,buy,0,Costco Wholesale Corp
+17-04-2023,MS,MANUAL,USD,75.18,22,buy,1.0,Morgan Stanley
+17-04-2023,ZS,MANUAL,USD,234.29,4,buy,6.95,Zscaler Inc
+17-04-2023,MS,MANUAL,USD,83.14,20,buy,4.95,Morgan Stanley
+17-04-2023,ABBV,MANUAL,USD,152.7,5,buy,6.95,AbbVie Inc
+17-04-2023,XLV,MANUAL,USD,140.36,7,buy,1.0,Health Care Select Sector SPDR
+17-04-2023,VTI,MANUAL,USD,1.73,40,dividend,0,Vanguard Total Stock Market ETF
+17-04-2023,SCHW,MANUAL,USD,0.92,48,dividend,0,Charles Schwab Corp
+18-04-2023,BND,MANUAL,USD,68.56,22,buy,4.95,Vanguard Total Bond Market ETF
+18-04-2023,UNH,MANUAL,USD,488.36,5,buy,0,UnitedHealth Group Inc
+19-04-2023,O,MANUAL,USD,59.39,5,buy,4.95,Realty Income Corp
+19-04-2023,TLT,MANUAL,USD,95.28,12,buy,4.95,iShares 20+ Year Treasury Bond
+19-04-2023,TSLA,MANUAL,USD,236.64,9,buy,0,Tesla Inc
+20-04-2023,PSA,MANUAL,USD,302.89,7,buy,6.95,Public Storage
+21-04-2023,XLP,MANUAL,USD,78.96,10,buy,4.95,Consumer Staples Select SPDR
+21-04-2023,LOW,MANUAL,USD,226.03,1,buy,2.5,Lowes Companies Inc
+24-04-2023,V,MANUAL,USD,277.12,5,buy,4.95,Visa Inc
+24-04-2023,CRM,MANUAL,USD,234.51,6,buy,0,Salesforce Inc
+24-04-2023,PEP,MANUAL,USD,178.36,17,buy,0,PepsiCo Inc
+24-04-2023,EEM,MANUAL,USD,38.81,1,buy,2.5,iShares MSCI Emerging Markets
+24-04-2023,O,MANUAL,USD,56.54,1,buy,0,Realty Income Corp
+24-04-2023,SOXX,MANUAL,USD,181.77,5,buy,0,iShares Semiconductor ETF
+24-04-2023,MA,MANUAL,USD,390.79,11,buy,6.95,Mastercard Inc
+24-04-2023,SOXX,MANUAL,USD,211.61,15,buy,0,iShares Semiconductor ETF
+24-04-2023,ADBE,MANUAL,USD,492.36,2,buy,4.95,Adobe Inc
+24-04-2023,BAC,MANUAL,USD,34.86,20,buy,2.5,Bank of America Corp
+24-04-2023,LLY,MANUAL,USD,563.12,5,buy,0,Eli Lilly and Company
+24-04-2023,PYPL,MANUAL,USD,1.24,26,dividend,0,PayPal Holdings Inc
+25-04-2023,PEP,MANUAL,USD,173.22,1,buy,0,PepsiCo Inc
+25-04-2023,XLF,MANUAL,USD,38.16,16,buy,1.0,Financial Select Sector SPDR
+25-04-2023,XLV,MANUAL,USD,138.53,16,buy,6.95,Health Care Select Sector SPDR
+26-04-2023,RIVN,MANUAL,USD,20.16,28,buy,1.0,Rivian Automotive Inc
+26-04-2023,META,MANUAL,USD,380.42,10,buy,0,Meta Platforms Inc
+26-04-2023,PLTR,MANUAL,USD,24.77,26,buy,0,Palantir Technologies Inc
+26-04-2023,CSCO,MANUAL,USD,2.19,41,dividend,0,Cisco Systems Inc
+26-04-2023,LCID,MANUAL,USD,0.91,18,dividend,0,Lucid Group Inc
+27-04-2023,AMT,MANUAL,USD,181.0,9,buy,4.95,American Tower Corp
+27-04-2023,DE,MANUAL,USD,354.94,15,buy,4.95,Deere & Company
+27-04-2023,DDOG,MANUAL,USD,114.15,30,buy,0,Datadog Inc
+28-04-2023,XLE,MANUAL,USD,83.97,15,buy,0,Energy Select Sector SPDR
+28-04-2023,TXN,MANUAL,USD,177.84,11,buy,0,Texas Instruments Inc
+01-05-2023,MCD,MANUAL,USD,287.27,13,buy,4.95,McDonalds Corp
+01-05-2023,AMZN,MANUAL,USD,181.39,9,buy,0,Amazon.com Inc
+01-05-2023,NOW,MANUAL,USD,658.91,2,buy,4.95,ServiceNow Inc
+01-05-2023,TLT,MANUAL,USD,96.18,16,buy,6.95,iShares 20+ Year Treasury Bond
+01-05-2023,VGT,MANUAL,USD,522.34,5,buy,4.95,Vanguard Info Technology ETF
+01-05-2023,PYPL,MANUAL,USD,55.52,6,buy,6.95,PayPal Holdings Inc
+01-05-2023,TGT,MANUAL,USD,152.62,7,buy,0,Target Corporation
+01-05-2023,XLE,MANUAL,USD,83.24,13,buy,6.95,Energy Select Sector SPDR
+01-05-2023,YUM,MANUAL,USD,131.25,13,buy,0,Yum Brands Inc
+01-05-2023,DDOG,MANUAL,USD,93.8,25,buy,0,Datadog Inc
+01-05-2023,PANW,MANUAL,USD,326.08,8,buy,2.5,Palo Alto Networks Inc
+01-05-2023,JPM,MANUAL,USD,172.31,26,buy,4.95,JPMorgan Chase & Co
+01-05-2023,XLI,MANUAL,USD,112.7,15,buy,4.95,Industrial Select Sector SPDR
+01-05-2023,ORCL,MANUAL,USD,0.75,25,dividend,0,Oracle Corporation
+02-05-2023,XLE,MANUAL,USD,86.41,21,buy,1.0,Energy Select Sector SPDR
+03-05-2023,YUM,MANUAL,USD,134.58,10,buy,1.0,Yum Brands Inc
+03-05-2023,ABNB,MANUAL,USD,158.78,8,buy,4.95,Airbnb Inc
+03-05-2023,SNOW,MANUAL,USD,186.29,1,buy,1.0,Snowflake Inc
+03-05-2023,XLF,MANUAL,USD,37.76,28,buy,0,Financial Select Sector SPDR
+03-05-2023,MRK,MANUAL,USD,129.6,4,buy,1.0,Merck & Co Inc
+04-05-2023,O,MANUAL,USD,57.48,15,buy,0,Realty Income Corp
+04-05-2023,AAPL,MANUAL,USD,151.08,21,buy,0,Apple Inc
+04-05-2023,ADBE,MANUAL,USD,477.52,11,buy,6.95,Adobe Inc
+04-05-2023,XLE,MANUAL,USD,93.44,2,buy,0,Energy Select Sector SPDR
+05-05-2023,ADBE,MANUAL,USD,572.41,2,buy,0,Adobe Inc
+05-05-2023,AMZN,MANUAL,USD,173.53,16,buy,0,Amazon.com Inc
+08-05-2023,LLY,MANUAL,USD,604.29,4,buy,0,Eli Lilly and Company
+08-05-2023,T,MANUAL,USD,19.01,18,buy,2.5,AT&T Inc
+08-05-2023,EEM,MANUAL,USD,42.19,15,buy,1.0,iShares MSCI Emerging Markets
+08-05-2023,QCOM,MANUAL,USD,162.19,8,buy,0,Qualcomm Inc
+08-05-2023,HD,MANUAL,USD,345.57,6,buy,2.5,The Home Depot Inc
+08-05-2023,BND,MANUAL,USD,74.83,19,buy,0,Vanguard Total Bond Market ETF
+08-05-2023,MCD,MANUAL,USD,281.4,14,buy,6.95,McDonalds Corp
+08-05-2023,HD,MANUAL,USD,357.89,7,buy,0,The Home Depot Inc
+08-05-2023,AAPL,MANUAL,USD,1.41,9,dividend,0,Apple Inc
+08-05-2023,GOOGL,MANUAL,USD,1.68,39,dividend,0,Alphabet Inc
+08-05-2023,VZ,MANUAL,USD,1.73,34,dividend,0,Verizon Communications Inc
+09-05-2023,HYG,MANUAL,USD,75.27,22,buy,4.95,iShares iBoxx High Yield Corp
+09-05-2023,AMT,MANUAL,USD,207.25,6,buy,6.95,American Tower Corp
+09-05-2023,CRWD,MANUAL,USD,210.94,8,buy,1.0,CrowdStrike Holdings Inc
+10-05-2023,MSFT,MANUAL,USD,1.21,17,dividend,0,Microsoft Corporation
+11-05-2023,BRK-B,MANUAL,USD,367.28,7,buy,0,Berkshire Hathaway Inc
+11-05-2023,LCID,MANUAL,USD,0.83,31,dividend,0,Lucid Group Inc
+12-05-2023,CMG,MANUAL,USD,2837.87,4,buy,0,Chipotle Mexican Grill Inc
+12-05-2023,NVDA,MANUAL,USD,426.89,11,buy,1.0,NVIDIA Corporation
+12-05-2023,MRK,MANUAL,USD,101.28,3,buy,2.5,Merck & Co Inc
+12-05-2023,YUM,MANUAL,USD,128.09,21,buy,4.95,Yum Brands Inc
+12-05-2023,ORCL,MANUAL,USD,1.35,39,dividend,0,Oracle Corporation
+12-05-2023,GS,MANUAL,USD,1.63,21,dividend,0,Goldman Sachs Group Inc
+15-05-2023,UBER,MANUAL,USD,41.46,12,buy,0,Uber Technologies Inc
+15-05-2023,TLT,MANUAL,USD,95.92,8,buy,0,iShares 20+ Year Treasury Bond
+15-05-2023,TSLA,MANUAL,USD,186.08,2,buy,4.95,Tesla Inc
+15-05-2023,CRM,MANUAL,USD,269.98,12,buy,4.95,Salesforce Inc
+15-05-2023,VTI,MANUAL,USD,0.25,33,dividend,0,Vanguard Total Stock Market ETF
+15-05-2023,VOO,MANUAL,USD,0.85,32,dividend,0,Vanguard S&P 500 ETF
+16-05-2023,MCD,MANUAL,USD,279.32,2,buy,2.5,McDonalds Corp
+16-05-2023,WFC,MANUAL,USD,46.77,25,buy,0,Wells Fargo & Company
+17-05-2023,JNJ,MANUAL,USD,164.21,1,buy,4.95,Johnson & Johnson
+17-05-2023,DE,MANUAL,USD,357.43,15,buy,6.95,Deere & Company
+18-05-2023,LLY,MANUAL,USD,864.61,3,buy,4.95,Eli Lilly and Company
+18-05-2023,JPM,MANUAL,USD,145.67,14,buy,6.95,JPMorgan Chase & Co
+18-05-2023,CMG,MANUAL,USD,2449.68,3,buy,4.95,Chipotle Mexican Grill Inc
+18-05-2023,YUM,MANUAL,USD,132.17,8,buy,2.5,Yum Brands Inc
+18-05-2023,XLE,MANUAL,USD,89.01,20,buy,0,Energy Select Sector SPDR
+19-05-2023,XLP,MANUAL,USD,77.1,13,buy,0,Consumer Staples Select SPDR
+22-05-2023,HYG,MANUAL,USD,74.94,12,buy,2.5,iShares iBoxx High Yield Corp
+22-05-2023,XLV,MANUAL,USD,132.93,13,buy,6.95,Health Care Select Sector SPDR
+22-05-2023,LLY,MANUAL,USD,861.97,1,buy,0,Eli Lilly and Company
+22-05-2023,NFLX,MANUAL,USD,484.13,8,buy,1.0,Netflix Inc
+22-05-2023,NOW,MANUAL,USD,600.9,2,buy,0,ServiceNow Inc
+22-05-2023,ZS,MANUAL,USD,195.04,2,buy,6.95,Zscaler Inc
+22-05-2023,COIN,MANUAL,USD,128.09,7,buy,6.95,Coinbase Global Inc
+23-05-2023,MARA,MANUAL,USD,21.46,10,buy,1.0,Marathon Digital Holdings
+23-05-2023,CRM,MANUAL,USD,220.85,14,buy,0,Salesforce Inc
+23-05-2023,PG,MANUAL,USD,145.96,30,buy,6.95,Procter & Gamble Co
+23-05-2023,GS,MANUAL,USD,404.12,6,buy,4.95,Goldman Sachs Group Inc
+23-05-2023,MCD,MANUAL,USD,260.21,15,buy,0,McDonalds Corp
+23-05-2023,O,MANUAL,USD,50.88,13,buy,4.95,Realty Income Corp
+24-05-2023,MSFT,MANUAL,USD,389.7,6,buy,1.0,Microsoft Corporation
+24-05-2023,HD,MANUAL,USD,323.02,15,buy,4.95,The Home Depot Inc
+24-05-2023,CCI,MANUAL,USD,109.53,22,buy,4.95,Crown Castle Inc
+25-05-2023,CRM,MANUAL,USD,261.55,12,buy,0,Salesforce Inc
+25-05-2023,CMG,MANUAL,USD,2958.84,4,buy,0,Chipotle Mexican Grill Inc
+25-05-2023,XLP,MANUAL,USD,75.52,8,buy,0,Consumer Staples Select SPDR
+25-05-2023,AMD,MANUAL,USD,170.98,29,buy,0,Advanced Micro Devices Inc
+25-05-2023,TSLA,MANUAL,USD,231.02,5,buy,0,Tesla Inc
+26-05-2023,ORCL,MANUAL,USD,155.33,23,buy,0,Oracle Corporation
+26-05-2023,VZ,MANUAL,USD,40.7,7,buy,4.95,Verizon Communications Inc
+26-05-2023,ZS,MANUAL,USD,194.16,19,buy,0,Zscaler Inc
+29-05-2023,VTI,MANUAL,USD,247.05,2,buy,4.95,Vanguard Total Stock Market ETF
+29-05-2023,AMZN,MANUAL,USD,179.41,22,buy,6.95,Amazon.com Inc
+29-05-2023,V,MANUAL,USD,257.42,8,buy,4.95,Visa Inc
+29-05-2023,YUM,MANUAL,USD,132.66,14,buy,0,Yum Brands Inc
+29-05-2023,SCHW,MANUAL,USD,68.9,22,buy,0,Charles Schwab Corp
+29-05-2023,NVDA,MANUAL,USD,595.56,4,buy,0,NVIDIA Corporation
+29-05-2023,JNJ,MANUAL,USD,152.9,23,buy,0,Johnson & Johnson
+29-05-2023,AVGO,MANUAL,USD,1.0,15,dividend,0,Broadcom Inc
+30-05-2023,ZS,MANUAL,USD,204.6,3,buy,0,Zscaler Inc
+30-05-2023,CRWD,MANUAL,USD,234.95,10,buy,1.0,CrowdStrike Holdings Inc
+30-05-2023,WFC,MANUAL,USD,45.63,23,buy,1.0,Wells Fargo & Company
+30-05-2023,PLTR,MANUAL,USD,17.79,17,buy,2.5,Palantir Technologies Inc
+30-05-2023,CVX,MANUAL,USD,156.12,30,buy,0,Chevron Corporation
+30-05-2023,AMT,MANUAL,USD,191.92,29,buy,1.0,American Tower Corp
+30-05-2023,COST,MANUAL,USD,1.31,36,dividend,0,Costco Wholesale Corp
+31-05-2023,VZ,MANUAL,USD,41.85,18,buy,4.95,Verizon Communications Inc
+31-05-2023,UBER,MANUAL,USD,62.97,19,buy,0,Uber Technologies Inc
+31-05-2023,COST,MANUAL,USD,603.66,1,buy,2.5,Costco Wholesale Corp
+31-05-2023,LCID,MANUAL,USD,4.45,23,buy,1.0,Lucid Group Inc
+31-05-2023,LOW,MANUAL,USD,0.24,37,dividend,0,Lowes Companies Inc
+01-06-2023,DDOG,MANUAL,USD,90.65,18,buy,2.5,Datadog Inc
+01-06-2023,XLI,MANUAL,USD,106.27,14,buy,4.95,Industrial Select Sector SPDR
+01-06-2023,LLY,MANUAL,USD,870.01,2,buy,6.95,Eli Lilly and Company
+01-06-2023,SPY,MANUAL,USD,444.48,7,buy,0,SPDR S&P 500 ETF Trust
+01-06-2023,SCHW,MANUAL,USD,63.81,30,buy,4.95,Charles Schwab Corp
+02-06-2023,PLTR,MANUAL,USD,21.95,15,buy,4.95,Palantir Technologies Inc
+05-06-2023,MA,MANUAL,USD,453.0,2,buy,4.95,Mastercard Inc
+05-06-2023,VXUS,MANUAL,USD,56.31,20,buy,0,Vanguard Total Intl Stock ETF
+05-06-2023,ORCL,MANUAL,USD,112.53,28,buy,0,Oracle Corporation
+05-06-2023,MRK,MANUAL,USD,115.52,8,buy,0,Merck & Co Inc
+05-06-2023,VTI,MANUAL,USD,224.02,6,buy,2.5,Vanguard Total Stock Market ETF
+05-06-2023,CMG,MANUAL,USD,2696.33,2,buy,0,Chipotle Mexican Grill Inc
+05-06-2023,CVX,MANUAL,USD,159.68,22,buy,4.95,Chevron Corporation
+06-06-2023,XLP,MANUAL,USD,79.66,15,buy,0,Consumer Staples Select SPDR
+06-06-2023,VTI,MANUAL,USD,210.46,8,buy,1.0,Vanguard Total Stock Market ETF
+06-06-2023,COIN,MANUAL,USD,135.57,30,buy,6.95,Coinbase Global Inc
+07-06-2023,BLK,MANUAL,USD,836.38,4,buy,4.95,BlackRock Inc
+07-06-2023,INTC,MANUAL,USD,36.9,29,buy,2.5,Intel Corporation
+08-06-2023,SCHW,MANUAL,USD,59.77,16,buy,0,Charles Schwab Corp
+08-06-2023,XOM,MANUAL,USD,99.9,8,buy,2.5,Exxon Mobil Corporation
+09-06-2023,O,MANUAL,USD,57.15,26,buy,2.5,Realty Income Corp
+09-06-2023,QCOM,MANUAL,USD,127.31,28,buy,0,Qualcomm Inc
+12-06-2023,C,MANUAL,USD,62.71,21,buy,0,Citigroup Inc
+12-06-2023,META,MANUAL,USD,333.06,1,buy,0,Meta Platforms Inc
+12-06-2023,GLD,MANUAL,USD,199.3,30,buy,0,SPDR Gold Shares
+12-06-2023,PANW,MANUAL,USD,253.99,6,buy,0,Palo Alto Networks Inc
+12-06-2023,CSCO,MANUAL,USD,46.22,22,buy,1.0,Cisco Systems Inc
+13-06-2023,CVX,MANUAL,USD,154.24,30,buy,0,Chevron Corporation
+13-06-2023,JNJ,MANUAL,USD,153.83,1,buy,2.5,Johnson & Johnson
+13-06-2023,SCHD,MANUAL,USD,79.69,10,buy,0,Schwab US Dividend Equity ETF
+13-06-2023,PYPL,MANUAL,USD,65.0,22,buy,1.0,PayPal Holdings Inc
+13-06-2023,O,MANUAL,USD,55.34,20,buy,6.95,Realty Income Corp
+13-06-2023,RIVN,MANUAL,USD,10.19,16,buy,0,Rivian Automotive Inc
+14-06-2023,ARKK,MANUAL,USD,39.12,23,buy,2.5,ARK Innovation ETF
+15-06-2023,COIN,MANUAL,USD,149.81,11,buy,4.95,Coinbase Global Inc
+15-06-2023,INTC,MANUAL,USD,39.26,4,buy,2.5,Intel Corporation
+15-06-2023,PYPL,MANUAL,USD,71.27,30,buy,1.0,PayPal Holdings Inc
+15-06-2023,MRK,MANUAL,USD,114.95,17,buy,6.95,Merck & Co Inc
+15-06-2023,LLY,MANUAL,USD,659.08,3,buy,4.95,Eli Lilly and Company
+16-06-2023,PLD,MANUAL,USD,117.69,20,buy,4.95,Prologis Inc
+16-06-2023,VGT,MANUAL,USD,503.82,1,buy,1.0,Vanguard Info Technology ETF
+19-06-2023,DIS,MANUAL,USD,114.17,26,buy,0,Walt Disney Company
+19-06-2023,RIVN,MANUAL,USD,21.58,4,buy,0,Rivian Automotive Inc
+19-06-2023,VXUS,MANUAL,USD,55.85,21,buy,4.95,Vanguard Total Intl Stock ETF
+19-06-2023,META,MANUAL,USD,479.3,4,buy,4.95,Meta Platforms Inc
+19-06-2023,PYPL,MANUAL,USD,69.3,21,buy,2.5,PayPal Holdings Inc
+19-06-2023,LQD,MANUAL,USD,110.34,4,buy,0,iShares Investment Grade Corp
+19-06-2023,T,MANUAL,USD,20.64,29,buy,2.5,AT&T Inc
+19-06-2023,WMT,MANUAL,USD,156.32,12,buy,2.5,Walmart Inc
+19-06-2023,IWM,MANUAL,USD,184.61,5,buy,4.95,iShares Russell 2000 ETF
+19-06-2023,XLE,MANUAL,USD,88.57,10,buy,0,Energy Select Sector SPDR
+20-06-2023,CVX,MANUAL,USD,143.24,30,buy,4.95,Chevron Corporation
+20-06-2023,JPM,MANUAL,USD,169.22,11,buy,2.5,JPMorgan Chase & Co
+20-06-2023,TSLA,MANUAL,USD,214.32,12,buy,2.5,Tesla Inc
+20-06-2023,PANW,MANUAL,USD,299.15,5,buy,2.5,Palo Alto Networks Inc
+21-06-2023,ZS,MANUAL,USD,230.43,3,buy,0,Zscaler Inc
+21-06-2023,XLI,MANUAL,USD,106.5,16,buy,1.0,Industrial Select Sector SPDR
+22-06-2023,CAT,MANUAL,USD,288.96,3,buy,1.0,Caterpillar Inc
+22-06-2023,DE,MANUAL,USD,379.42,13,buy,0,Deere & Company
+22-06-2023,VOO,MANUAL,USD,410.66,9,buy,2.5,Vanguard S&P 500 ETF
+22-06-2023,AVGO,MANUAL,USD,1217.64,1,buy,6.95,Broadcom Inc
+22-06-2023,XLF,MANUAL,USD,37.38,20,buy,0,Financial Select Sector SPDR
+23-06-2023,XLV,MANUAL,USD,131.24,1,buy,4.95,Health Care Select Sector SPDR
+23-06-2023,VGT,MANUAL,USD,536.6,5,buy,0,Vanguard Info Technology ETF
+23-06-2023,TXN,MANUAL,USD,160.52,1,buy,0,Texas Instruments Inc
+23-06-2023,BAC,MANUAL,USD,33.44,28,buy,1.0,Bank of America Corp
+26-06-2023,DDOG,MANUAL,USD,116.35,10,buy,1.0,Datadog Inc
+26-06-2023,RIVN,MANUAL,USD,10.92,21,buy,0,Rivian Automotive Inc
+26-06-2023,EEM,MANUAL,USD,42.4,12,buy,0,iShares MSCI Emerging Markets
+26-06-2023,IWM,MANUAL,USD,219.96,12,buy,0,iShares Russell 2000 ETF
+26-06-2023,COIN,MANUAL,USD,137.63,6,buy,6.95,Coinbase Global Inc
+26-06-2023,SQ,MANUAL,USD,51.8,7,buy,4.95,Block Inc
+26-06-2023,MS,MANUAL,USD,89.32,22,buy,4.95,Morgan Stanley
+26-06-2023,DDOG,MANUAL,USD,92.59,7,buy,1.0,Datadog Inc
+26-06-2023,ABBV,MANUAL,USD,173.75,27,buy,4.95,AbbVie Inc
+26-06-2023,LQD,MANUAL,USD,0.78,16,dividend,0,iShares Investment Grade Corp
+26-06-2023,LOW,MANUAL,USD,0.24,25,dividend,0,Lowes Companies Inc
+27-06-2023,CMG,MANUAL,USD,2282.69,4,buy,1.0,Chipotle Mexican Grill Inc
+27-06-2023,O,MANUAL,USD,2.36,44,dividend,0,Realty Income Corp
+29-06-2023,VNQ,MANUAL,USD,81.89,18,buy,1.0,Vanguard Real Estate ETF
+29-06-2023,WMT,MANUAL,USD,159.4,19,buy,1.0,Walmart Inc
+29-06-2023,ABBV,MANUAL,USD,173.08,4,buy,2.5,AbbVie Inc
+29-06-2023,SHOP,MANUAL,USD,70.62,27,buy,1.0,Shopify Inc
+30-06-2023,LOW,MANUAL,USD,236.93,7,buy,0,Lowes Companies Inc
+30-06-2023,GOOGL,MANUAL,USD,134.6,5,buy,2.5,Alphabet Inc
+30-06-2023,SHOP,MANUAL,USD,50.93,13,buy,6.95,Shopify Inc
+03-07-2023,COIN,MANUAL,USD,127.05,21,buy,6.95,Coinbase Global Inc
+03-07-2023,KO,MANUAL,USD,55.79,28,buy,2.5,Coca-Cola Company
+03-07-2023,IWM,MANUAL,USD,221.35,14,buy,1.0,iShares Russell 2000 ETF
+03-07-2023,RIVN,MANUAL,USD,17.68,15,buy,0,Rivian Automotive Inc
+03-07-2023,MSFT,MANUAL,USD,367.94,15,buy,1.0,Microsoft Corporation
+03-07-2023,ABNB,MANUAL,USD,135.4,13,buy,0,Airbnb Inc
+03-07-2023,ABBV,MANUAL,USD,177.77,23,buy,0,AbbVie Inc
+03-07-2023,ORCL,MANUAL,USD,2.11,49,dividend,0,Oracle Corporation
+03-07-2023,DE,MANUAL,USD,0.26,13,dividend,0,Deere & Company
+03-07-2023,GOOGL,MANUAL,USD,2.12,11,dividend,0,Alphabet Inc
+05-07-2023,QCOM,MANUAL,USD,139.51,23,buy,4.95,Qualcomm Inc
+05-07-2023,MS,MANUAL,USD,81.51,17,buy,6.95,Morgan Stanley
+06-07-2023,KO,MANUAL,USD,60.5,17,buy,1.0,Coca-Cola Company
+06-07-2023,SCHW,MANUAL,USD,64.09,14,buy,6.95,Charles Schwab Corp
+06-07-2023,BAC,MANUAL,USD,35.17,20,buy,0,Bank of America Corp
+07-07-2023,VZ,MANUAL,USD,41.96,14,buy,6.95,Verizon Communications Inc
+07-07-2023,V,MANUAL,USD,273.55,14,buy,0,Visa Inc
+10-07-2023,BND,MANUAL,USD,71.41,12,buy,4.95,Vanguard Total Bond Market ETF
+10-07-2023,BLK,MANUAL,USD,817.95,4,buy,0,BlackRock Inc
+10-07-2023,COST,MANUAL,USD,616.24,3,buy,4.95,Costco Wholesale Corp
+10-07-2023,MS,MANUAL,USD,90.58,17,buy,4.95,Morgan Stanley
+10-07-2023,XLV,MANUAL,USD,144.77,30,buy,4.95,Health Care Select Sector SPDR
+10-07-2023,VTI,MANUAL,USD,216.83,11,buy,6.95,Vanguard Total Stock Market ETF
+11-07-2023,SNOW,MANUAL,USD,192.98,20,buy,1.0,Snowflake Inc
+11-07-2023,META,MANUAL,USD,331.13,6,buy,0,Meta Platforms Inc
+12-07-2023,CRWD,MANUAL,USD,201.69,13,buy,4.95,CrowdStrike Holdings Inc
+12-07-2023,ABNB,MANUAL,USD,0.68,7,dividend,0,Airbnb Inc
+13-07-2023,HYG,MANUAL,USD,74.83,7,buy,6.95,iShares iBoxx High Yield Corp
+13-07-2023,IWM,MANUAL,USD,189.5,3,buy,4.95,iShares Russell 2000 ETF
+14-07-2023,QQQ,MANUAL,USD,432.42,12,buy,4.95,Invesco QQQ Trust
+14-07-2023,DE,MANUAL,USD,416.94,15,buy,6.95,Deere & Company
+14-07-2023,WMT,MANUAL,USD,159.12,30,buy,2.5,Walmart Inc
+14-07-2023,MA,MANUAL,USD,389.61,1,buy,4.95,Mastercard Inc
+17-07-2023,TXN,MANUAL,USD,157.83,22,buy,2.5,Texas Instruments Inc
+17-07-2023,MRK,MANUAL,USD,116.09,5,buy,2.5,Merck & Co Inc
+17-07-2023,MA,MANUAL,USD,406.7,10,buy,0,Mastercard Inc
+17-07-2023,GS,MANUAL,USD,365.66,7,buy,0,Goldman Sachs Group Inc
+17-07-2023,ORCL,MANUAL,USD,164.53,17,buy,0,Oracle Corporation
+17-07-2023,AMT,MANUAL,USD,204.84,13,buy,0,American Tower Corp
+17-07-2023,AMD,MANUAL,USD,176.97,4,buy,6.95,Advanced Micro Devices Inc
+17-07-2023,XOM,MANUAL,USD,96.57,28,buy,4.95,Exxon Mobil Corporation
+17-07-2023,META,MANUAL,USD,331.21,3,buy,0,Meta Platforms Inc
+17-07-2023,SOXX,MANUAL,USD,1.9,37,dividend,0,iShares Semiconductor ETF
+17-07-2023,IWM,MANUAL,USD,1.7,49,dividend,0,iShares Russell 2000 ETF
+17-07-2023,VZ,MANUAL,USD,1.79,13,dividend,0,Verizon Communications Inc
+18-07-2023,GS,MANUAL,USD,428.64,11,buy,4.95,Goldman Sachs Group Inc
+18-07-2023,DIS,MANUAL,USD,101.69,9,buy,1.0,Walt Disney Company
+18-07-2023,ZS,MANUAL,USD,208.15,4,buy,4.95,Zscaler Inc
+18-07-2023,WMT,MANUAL,USD,0.32,44,dividend,0,Walmart Inc
+18-07-2023,MRK,MANUAL,USD,1.38,49,dividend,0,Merck & Co Inc
+19-07-2023,ABNB,MANUAL,USD,121.07,13,buy,1.0,Airbnb Inc
+19-07-2023,MRK,MANUAL,USD,115.79,8,buy,0,Merck & Co Inc
+19-07-2023,C,MANUAL,USD,0.36,5,dividend,0,Citigroup Inc
+20-07-2023,VGT,MANUAL,USD,455.55,3,buy,4.95,Vanguard Info Technology ETF
+20-07-2023,RIVN,MANUAL,USD,13.53,6,buy,0,Rivian Automotive Inc
+20-07-2023,PEP,MANUAL,USD,166.61,11,buy,6.95,PepsiCo Inc
+20-07-2023,ARKK,MANUAL,USD,51.03,6,buy,0,ARK Innovation ETF
+21-07-2023,XLE,MANUAL,USD,86.51,28,buy,2.5,Energy Select Sector SPDR
+21-07-2023,ABNB,MANUAL,USD,1.62,28,dividend,0,Airbnb Inc
+24-07-2023,SQ,MANUAL,USD,55.2,5,buy,0,Block Inc
+24-07-2023,MARA,MANUAL,USD,20.99,18,buy,4.95,Marathon Digital Holdings
+24-07-2023,UNH,MANUAL,USD,532.37,1,buy,4.95,UnitedHealth Group Inc
+25-07-2023,PANW,MANUAL,USD,277.4,8,buy,2.5,Palo Alto Networks Inc
+25-07-2023,XLI,MANUAL,USD,117.18,25,buy,4.95,Industrial Select Sector SPDR
+25-07-2023,T,MANUAL,USD,15.59,12,buy,0,AT&T Inc
+26-07-2023,COST,MANUAL,USD,790.38,3,buy,0,Costco Wholesale Corp
+26-07-2023,HYG,MANUAL,USD,76.65,1,buy,1.0,iShares iBoxx High Yield Corp
+26-07-2023,XLI,MANUAL,USD,109.7,8,buy,4.95,Industrial Select Sector SPDR
+26-07-2023,ARKK,MANUAL,USD,46.32,29,buy,2.5,ARK Innovation ETF
+27-07-2023,HD,MANUAL,USD,317.41,15,buy,6.95,The Home Depot Inc
+27-07-2023,BND,MANUAL,USD,69.35,9,buy,1.0,Vanguard Total Bond Market ETF
+28-07-2023,XOM,MANUAL,USD,96.1,7,buy,0,Exxon Mobil Corporation
+28-07-2023,SOXX,MANUAL,USD,205.05,5,buy,0,iShares Semiconductor ETF
+28-07-2023,XLF,MANUAL,USD,36.35,16,buy,6.95,Financial Select Sector SPDR
+31-07-2023,SHOP,MANUAL,USD,70.09,11,buy,4.95,Shopify Inc
+31-07-2023,PLTR,MANUAL,USD,16.6,30,buy,6.95,Palantir Technologies Inc
+31-07-2023,VTI,MANUAL,USD,231.31,14,buy,2.5,Vanguard Total Stock Market ETF
+31-07-2023,CAT,MANUAL,USD,253.84,4,buy,0,Caterpillar Inc
+31-07-2023,AMT,MANUAL,USD,213.84,14,buy,4.95,American Tower Corp
+31-07-2023,META,MANUAL,USD,0.68,43,dividend,0,Meta Platforms Inc
+01-08-2023,JPM,MANUAL,USD,174.95,23,buy,2.5,JPMorgan Chase & Co
+01-08-2023,WFC,MANUAL,USD,50.58,7,buy,0,Wells Fargo & Company
+02-08-2023,VOO,MANUAL,USD,456.63,15,buy,0,Vanguard S&P 500 ETF
+03-08-2023,PANW,MANUAL,USD,319.02,6,buy,6.95,Palo Alto Networks Inc
+03-08-2023,DDOG,MANUAL,USD,121.98,14,buy,2.5,Datadog Inc
+03-08-2023,PG,MANUAL,USD,152.58,28,buy,1.0,Procter & Gamble Co
+04-08-2023,XLK,MANUAL,USD,213.47,5,buy,0,Technology Select Sector SPDR
+07-08-2023,WFC,MANUAL,USD,52.92,7,buy,4.95,Wells Fargo & Company
+07-08-2023,WMT,MANUAL,USD,172.05,22,buy,0,Walmart Inc
+07-08-2023,ABNB,MANUAL,USD,165.67,14,buy,6.95,Airbnb Inc
+07-08-2023,LLY,MANUAL,USD,799.67,3,buy,0,Eli Lilly and Company
+07-08-2023,BRK-B,MANUAL,USD,437.28,12,buy,1.0,Berkshire Hathaway Inc
+07-08-2023,XLK,MANUAL,USD,199.54,21,buy,2.5,Technology Select Sector SPDR
+07-08-2023,TLT,MANUAL,USD,95.44,20,buy,0,iShares 20+ Year Treasury Bond
+07-08-2023,LQD,MANUAL,USD,111.62,16,buy,0,iShares Investment Grade Corp
+07-08-2023,CVX,MANUAL,USD,157.19,6,buy,6.95,Chevron Corporation
+07-08-2023,IWM,MANUAL,USD,1.2,43,dividend,0,iShares Russell 2000 ETF
+07-08-2023,WFC,MANUAL,USD,0.12,45,dividend,0,Wells Fargo & Company
+08-08-2023,MCD,MANUAL,USD,288.53,7,buy,4.95,McDonalds Corp
+09-08-2023,HYG,MANUAL,USD,75.53,5,buy,1.0,iShares iBoxx High Yield Corp
+09-08-2023,BND,MANUAL,USD,73.35,19,buy,0,Vanguard Total Bond Market ETF
+09-08-2023,T,MANUAL,USD,0.32,40,dividend,0,AT&T Inc
+09-08-2023,SCHW,MANUAL,USD,0.67,26,dividend,0,Charles Schwab Corp
+10-08-2023,VGT,MANUAL,USD,481.0,6,buy,0,Vanguard Info Technology ETF
+10-08-2023,HYG,MANUAL,USD,74.44,2,buy,4.95,iShares iBoxx High Yield Corp
+11-08-2023,MA,MANUAL,USD,466.15,2,buy,0,Mastercard Inc
+11-08-2023,CSCO,MANUAL,USD,51.48,26,buy,4.95,Cisco Systems Inc
+11-08-2023,T,MANUAL,USD,0.54,36,dividend,0,AT&T Inc
+14-08-2023,DE,MANUAL,USD,387.2,13,buy,1.0,Deere & Company
+14-08-2023,MRK,MANUAL,USD,122.16,9,buy,4.95,Merck & Co Inc
+14-08-2023,NET,MANUAL,USD,80.24,2,buy,2.5,Cloudflare Inc
+14-08-2023,SPY,MANUAL,USD,475.94,14,buy,6.95,SPDR S&P 500 ETF Trust
+14-08-2023,XLI,MANUAL,USD,111.84,10,buy,6.95,Industrial Select Sector SPDR
+14-08-2023,TLT,MANUAL,USD,95.74,10,buy,0,iShares 20+ Year Treasury Bond
+14-08-2023,NOW,MANUAL,USD,578.86,2,buy,4.95,ServiceNow Inc
+15-08-2023,TGT,MANUAL,USD,154.91,5,buy,6.95,Target Corporation
+15-08-2023,XLV,MANUAL,USD,134.09,16,buy,0,Health Care Select Sector SPDR
+15-08-2023,COIN,MANUAL,USD,137.57,26,buy,2.5,Coinbase Global Inc
+15-08-2023,KO,MANUAL,USD,63.3,20,buy,0,Coca-Cola Company
+15-08-2023,PEP,MANUAL,USD,2.22,16,dividend,0,PepsiCo Inc
+16-08-2023,TLT,MANUAL,USD,99.35,17,buy,0,iShares 20+ Year Treasury Bond
+16-08-2023,NKE,MANUAL,USD,77.89,14,buy,4.95,Nike Inc
+17-08-2023,XOM,MANUAL,USD,105.11,8,buy,4.95,Exxon Mobil Corporation
+17-08-2023,USB,MANUAL,USD,41.77,21,buy,6.95,US Bancorp
+17-08-2023,XLP,MANUAL,USD,79.56,2,buy,4.95,Consumer Staples Select SPDR
+17-08-2023,USB,MANUAL,USD,36.63,5,buy,6.95,US Bancorp
+17-08-2023,LCID,MANUAL,USD,5.85,21,buy,2.5,Lucid Group Inc
+18-08-2023,SCHD,MANUAL,USD,79.8,29,buy,1.0,Schwab US Dividend Equity ETF
+18-08-2023,IWM,MANUAL,USD,210.88,13,buy,6.95,iShares Russell 2000 ETF
+18-08-2023,CSCO,MANUAL,USD,55.0,5,buy,0,Cisco Systems Inc
+21-08-2023,GLD,MANUAL,USD,225.51,11,buy,0,SPDR Gold Shares
+21-08-2023,PLD,MANUAL,USD,130.33,9,buy,2.5,Prologis Inc
+21-08-2023,PLTR,MANUAL,USD,18.88,29,buy,4.95,Palantir Technologies Inc
+21-08-2023,CAT,MANUAL,USD,288.64,13,buy,1.0,Caterpillar Inc
+21-08-2023,ZS,MANUAL,USD,0.21,31,dividend,0,Zscaler Inc
+21-08-2023,AMT,MANUAL,USD,1.76,34,dividend,0,American Tower Corp
+22-08-2023,PG,MANUAL,USD,166.5,24,buy,2.5,Procter & Gamble Co
+22-08-2023,MRK,MANUAL,USD,100.97,25,buy,0,Merck & Co Inc
+22-08-2023,LQD,MANUAL,USD,105.03,23,buy,6.95,iShares Investment Grade Corp
+22-08-2023,AMZN,MANUAL,USD,2.45,32,dividend,0,Amazon.com Inc
+24-08-2023,XLV,MANUAL,USD,135.34,13,buy,2.5,Health Care Select Sector SPDR
+24-08-2023,GOOGL,MANUAL,USD,132.34,5,buy,4.95,Alphabet Inc
+24-08-2023,BND,MANUAL,USD,68.69,24,buy,2.5,Vanguard Total Bond Market ETF
+24-08-2023,LCID,MANUAL,USD,3.55,14,buy,2.5,Lucid Group Inc
+25-08-2023,AVGO,MANUAL,USD,1062.21,5,buy,1.0,Broadcom Inc
+25-08-2023,BRK-B,MANUAL,USD,372.16,8,buy,0,Berkshire Hathaway Inc
+28-08-2023,MA,MANUAL,USD,414.47,12,buy,4.95,Mastercard Inc
+28-08-2023,RIVN,MANUAL,USD,17.28,12,buy,4.95,Rivian Automotive Inc
+28-08-2023,LOW,MANUAL,USD,248.01,6,buy,0,Lowes Companies Inc
+28-08-2023,XLE,MANUAL,USD,94.11,5,buy,4.95,Energy Select Sector SPDR
+28-08-2023,XLI,MANUAL,USD,117.57,5,buy,0,Industrial Select Sector SPDR
+29-08-2023,VOO,MANUAL,USD,438.13,9,buy,6.95,Vanguard S&P 500 ETF
+29-08-2023,ORCL,MANUAL,USD,2.26,26,dividend,0,Oracle Corporation
+30-08-2023,MCD,MANUAL,USD,296.96,13,buy,4.95,McDonalds Corp
+30-08-2023,LOW,MANUAL,USD,228.29,15,buy,1.0,Lowes Companies Inc
+31-08-2023,SCHD,MANUAL,USD,78.07,8,buy,4.95,Schwab US Dividend Equity ETF
+31-08-2023,VXUS,MANUAL,USD,50.02,22,buy,0,Vanguard Total Intl Stock ETF
+31-08-2023,SNOW,MANUAL,USD,179.72,24,buy,0,Snowflake Inc
+31-08-2023,PYPL,MANUAL,USD,67.96,19,buy,0,PayPal Holdings Inc
+31-08-2023,SLV,MANUAL,USD,1.05,24,dividend,0,iShares Silver Trust
+01-09-2023,ORCL,MANUAL,USD,131.27,9,buy,1.0,Oracle Corporation
+01-09-2023,IWM,MANUAL,USD,2.03,42,dividend,0,iShares Russell 2000 ETF
+04-09-2023,SCHD,MANUAL,USD,72.0,16,buy,6.95,Schwab US Dividend Equity ETF
+04-09-2023,JNJ,MANUAL,USD,151.11,6,buy,1.0,Johnson & Johnson
+04-09-2023,XLI,MANUAL,USD,112.43,27,buy,4.95,Industrial Select Sector SPDR
+04-09-2023,COST,MANUAL,USD,585.08,5,buy,0,Costco Wholesale Corp
+04-09-2023,ADBE,MANUAL,USD,464.76,1,buy,4.95,Adobe Inc
+04-09-2023,C,MANUAL,USD,1.28,37,dividend,0,Citigroup Inc
+04-09-2023,NVDA,MANUAL,USD,500.24,2,sell,1.0,NVIDIA Corporation
+05-09-2023,BRK-B,MANUAL,USD,347.53,10,buy,0,Berkshire Hathaway Inc
+06-09-2023,DE,MANUAL,USD,395.34,7,buy,1.0,Deere & Company
+06-09-2023,WFC,MANUAL,USD,50.14,7,buy,2.5,Wells Fargo & Company
+06-09-2023,QCOM,MANUAL,USD,144.37,14,buy,4.95,Qualcomm Inc
+06-09-2023,PG,MANUAL,USD,148.76,22,buy,4.95,Procter & Gamble Co
+08-09-2023,ORCL,MANUAL,USD,117.85,11,buy,0,Oracle Corporation
+08-09-2023,CSCO,MANUAL,USD,46.11,2,buy,6.95,Cisco Systems Inc
+11-09-2023,VTI,MANUAL,USD,228.48,8,buy,4.95,Vanguard Total Stock Market ETF
+11-09-2023,PG,MANUAL,USD,158.28,19,buy,0,Procter & Gamble Co
+11-09-2023,DE,MANUAL,USD,389.94,11,buy,1.0,Deere & Company
+11-09-2023,DE,MANUAL,USD,429.22,5,buy,0,Deere & Company
+11-09-2023,DDOG,MANUAL,USD,110.64,18,buy,0,Datadog Inc
+11-09-2023,GOOGL,MANUAL,USD,122.37,19,buy,0,Alphabet Inc
+11-09-2023,SCHW,MANUAL,USD,65.96,16,buy,2.5,Charles Schwab Corp
+11-09-2023,LCID,MANUAL,USD,1.39,32,dividend,0,Lucid Group Inc
+12-09-2023,SQ,MANUAL,USD,71.63,16,buy,4.95,Block Inc
+12-09-2023,VGT,MANUAL,USD,1.93,46,dividend,0,Vanguard Info Technology ETF
+12-09-2023,XLV,MANUAL,USD,132.8,2,sell,1.0,Health Care Select Sector SPDR
+12-09-2023,XLF,MANUAL,USD,34.59,8,sell,1.0,Financial Select Sector SPDR
+13-09-2023,COIN,MANUAL,USD,148.03,20,buy,0,Coinbase Global Inc
+13-09-2023,TSLA,MANUAL,USD,253.0,6,buy,6.95,Tesla Inc
+13-09-2023,BND,MANUAL,USD,0.23,22,dividend,0,Vanguard Total Bond Market ETF
+13-09-2023,QCOM,MANUAL,USD,169.36,6,sell,4.95,Qualcomm Inc
+14-09-2023,JPM,MANUAL,USD,182.74,12,buy,0,JPMorgan Chase & Co
+14-09-2023,BLK,MANUAL,USD,718.47,3,buy,4.95,BlackRock Inc
+14-09-2023,CAT,MANUAL,USD,277.47,10,sell,4.95,Caterpillar Inc
+15-09-2023,COST,MANUAL,USD,704.91,2,buy,2.5,Costco Wholesale Corp
+15-09-2023,QQQ,MANUAL,USD,0.57,26,dividend,0,Invesco QQQ Trust
+18-09-2023,TLT,MANUAL,USD,99.57,28,buy,0,iShares 20+ Year Treasury Bond
+18-09-2023,BRK-B,MANUAL,USD,369.97,4,buy,1.0,Berkshire Hathaway Inc
+18-09-2023,YUM,MANUAL,USD,131.85,10,buy,4.95,Yum Brands Inc
+18-09-2023,CRM,MANUAL,USD,252.58,12,buy,4.95,Salesforce Inc
+18-09-2023,BA,MANUAL,USD,207.95,4,buy,0,Boeing Company
+18-09-2023,MSFT,MANUAL,USD,348.28,13,buy,6.95,Microsoft Corporation
+18-09-2023,PEP,MANUAL,USD,171.16,19,buy,4.95,PepsiCo Inc
+18-09-2023,SOXX,MANUAL,USD,206.34,4,buy,2.5,iShares Semiconductor ETF
+18-09-2023,GS,MANUAL,USD,438.81,15,buy,6.95,Goldman Sachs Group Inc
+19-09-2023,AAPL,MANUAL,USD,172.7,13,buy,4.95,Apple Inc
+20-09-2023,JPM,MANUAL,USD,179.71,7,buy,0,JPMorgan Chase & Co
+20-09-2023,WMT,MANUAL,USD,169.64,25,buy,0,Walmart Inc
+21-09-2023,SBUX,MANUAL,USD,77.02,4,sell,1.0,Starbucks Corporation
+22-09-2023,GLD,MANUAL,USD,235.09,1,buy,0,SPDR Gold Shares
+22-09-2023,ORCL,MANUAL,USD,137.82,10,buy,0,Oracle Corporation
+25-09-2023,SLV,MANUAL,USD,26.01,27,buy,4.95,iShares Silver Trust
+25-09-2023,KO,MANUAL,USD,64.14,16,buy,4.95,Coca-Cola Company
+25-09-2023,V,MANUAL,USD,243.38,13,buy,4.95,Visa Inc
+25-09-2023,ABNB,MANUAL,USD,125.16,3,buy,0,Airbnb Inc
+25-09-2023,C,MANUAL,USD,0.68,24,dividend,0,Citigroup Inc
+25-09-2023,NKE,MANUAL,USD,0.32,11,dividend,0,Nike Inc
+25-09-2023,BND,MANUAL,USD,1.0,12,dividend,0,Vanguard Total Bond Market ETF
+25-09-2023,AAPL,MANUAL,USD,184.76,4,sell,4.95,Apple Inc
+25-09-2023,MRK,MANUAL,USD,119.03,3,sell,4.95,Merck & Co Inc
+26-09-2023,META,MANUAL,USD,379.61,8,buy,1.0,Meta Platforms Inc
+26-09-2023,KO,MANUAL,USD,57.27,12,buy,4.95,Coca-Cola Company
+26-09-2023,ABNB,MANUAL,USD,138.48,7,buy,0,Airbnb Inc
+26-09-2023,PG,MANUAL,USD,147.92,2,buy,0,Procter & Gamble Co
+26-09-2023,XLE,MANUAL,USD,80.78,15,buy,2.5,Energy Select Sector SPDR
+27-09-2023,VZ,MANUAL,USD,37.87,29,buy,4.95,Verizon Communications Inc
+27-09-2023,XLP,MANUAL,USD,76.34,26,buy,0,Consumer Staples Select SPDR
+28-09-2023,V,MANUAL,USD,273.54,9,buy,1.0,Visa Inc
+28-09-2023,JPM,MANUAL,USD,180.18,3,buy,2.5,JPMorgan Chase & Co
+28-09-2023,XLE,MANUAL,USD,80.47,28,buy,2.5,Energy Select Sector SPDR
+28-09-2023,EEM,MANUAL,USD,40.21,1,sell,4.95,iShares MSCI Emerging Markets
+29-09-2023,SLV,MANUAL,USD,22.79,27,buy,0,iShares Silver Trust
+29-09-2023,DDOG,MANUAL,USD,113.15,19,buy,0,Datadog Inc
+29-09-2023,CMG,MANUAL,USD,2448.26,4,buy,1.0,Chipotle Mexican Grill Inc
+29-09-2023,CSCO,MANUAL,USD,51.94,13,buy,1.0,Cisco Systems Inc
+29-09-2023,T,MANUAL,USD,19.29,25,buy,4.95,AT&T Inc
+02-10-2023,PG,MANUAL,USD,148.49,24,buy,4.95,Procter & Gamble Co
+02-10-2023,MS,MANUAL,USD,75.96,20,buy,2.5,Morgan Stanley
+02-10-2023,XLE,MANUAL,USD,83.76,23,buy,2.5,Energy Select Sector SPDR
+02-10-2023,HD,MANUAL,USD,348.2,7,buy,1.0,The Home Depot Inc
+02-10-2023,XOM,MANUAL,USD,106.61,4,buy,0,Exxon Mobil Corporation
+02-10-2023,VTI,MANUAL,USD,228.47,11,buy,4.95,Vanguard Total Stock Market ETF
+02-10-2023,LCID,MANUAL,USD,4.15,16,buy,2.5,Lucid Group Inc
+02-10-2023,SPY,MANUAL,USD,469.79,7,buy,1.0,SPDR S&P 500 ETF Trust
+02-10-2023,NFLX,MANUAL,USD,1.65,27,dividend,0,Netflix Inc
+03-10-2023,JNJ,MANUAL,USD,153.99,5,buy,0,Johnson & Johnson
+04-10-2023,META,MANUAL,USD,379.21,10,buy,0,Meta Platforms Inc
+04-10-2023,SPY,MANUAL,USD,452.34,13,buy,0,SPDR S&P 500 ETF Trust
+04-10-2023,XLI,MANUAL,USD,111.46,10,buy,1.0,Industrial Select Sector SPDR
+04-10-2023,XLE,MANUAL,USD,87.57,14,buy,0,Energy Select Sector SPDR
+05-10-2023,CRM,MANUAL,USD,249.5,13,buy,0,Salesforce Inc
+06-10-2023,VGT,MANUAL,USD,516.49,4,buy,2.5,Vanguard Info Technology ETF
+06-10-2023,VXUS,MANUAL,USD,52.14,4,buy,4.95,Vanguard Total Intl Stock ETF
+06-10-2023,PLTR,MANUAL,USD,22.28,20,buy,4.95,Palantir Technologies Inc
+09-10-2023,ABBV,MANUAL,USD,171.62,10,buy,1.0,AbbVie Inc
+09-10-2023,QCOM,MANUAL,USD,122.93,17,buy,0,Qualcomm Inc
+09-10-2023,NOW,MANUAL,USD,654.77,5,buy,0,ServiceNow Inc
+09-10-2023,EEM,MANUAL,USD,43.01,23,buy,6.95,iShares MSCI Emerging Markets
+09-10-2023,O,MANUAL,USD,56.63,30,buy,1.0,Realty Income Corp
+09-10-2023,AMT,MANUAL,USD,196.58,18,buy,6.95,American Tower Corp
+09-10-2023,SLV,MANUAL,USD,0.69,25,dividend,0,iShares Silver Trust
+10-10-2023,COST,MANUAL,USD,584.34,5,buy,0,Costco Wholesale Corp
+12-10-2023,VTI,MANUAL,USD,248.63,7,buy,1.0,Vanguard Total Stock Market ETF
+12-10-2023,PEP,MANUAL,USD,168.06,20,buy,2.5,PepsiCo Inc
+12-10-2023,SCHD,MANUAL,USD,79.36,12,buy,2.5,Schwab US Dividend Equity ETF
+13-10-2023,GLD,MANUAL,USD,195.84,7,buy,6.95,SPDR Gold Shares
+16-10-2023,ABBV,MANUAL,USD,160.82,28,buy,0,AbbVie Inc
+16-10-2023,VTI,MANUAL,USD,227.56,7,buy,1.0,Vanguard Total Stock Market ETF
+16-10-2023,SCHD,MANUAL,USD,80.58,8,buy,6.95,Schwab US Dividend Equity ETF
+16-10-2023,IWM,MANUAL,USD,219.61,15,buy,4.95,iShares Russell 2000 ETF
+16-10-2023,COIN,MANUAL,USD,137.41,26,buy,2.5,Coinbase Global Inc
+16-10-2023,AVGO,MANUAL,USD,1501.86,1,buy,0,Broadcom Inc
+16-10-2023,ARKK,MANUAL,USD,49.81,29,buy,1.0,ARK Innovation ETF
+16-10-2023,CAT,MANUAL,USD,262.56,15,buy,2.5,Caterpillar Inc
+16-10-2023,LCID,MANUAL,USD,3.78,3,buy,6.95,Lucid Group Inc
+16-10-2023,DDOG,MANUAL,USD,1.65,15,dividend,0,Datadog Inc
+16-10-2023,UNH,MANUAL,USD,467.37,9,sell,4.95,UnitedHealth Group Inc
+17-10-2023,XLI,MANUAL,USD,119.96,30,buy,2.5,Industrial Select Sector SPDR
+17-10-2023,COIN,MANUAL,USD,1.73,50,dividend,0,Coinbase Global Inc
+18-10-2023,XLF,MANUAL,USD,40.22,17,buy,2.5,Financial Select Sector SPDR
+18-10-2023,O,MANUAL,USD,52.97,4,buy,0,Realty Income Corp
+18-10-2023,V,MANUAL,USD,283.28,7,buy,2.5,Visa Inc
+19-10-2023,T,MANUAL,USD,19.92,15,buy,0,AT&T Inc
+19-10-2023,PLD,MANUAL,USD,119.7,2,buy,0,Prologis Inc
+20-10-2023,PANW,MANUAL,USD,307.41,2,buy,4.95,Palo Alto Networks Inc
+20-10-2023,ZS,MANUAL,USD,195.11,2,buy,0,Zscaler Inc
+23-10-2023,CVX,MANUAL,USD,144.2,26,buy,1.0,Chevron Corporation
+23-10-2023,GLD,MANUAL,USD,212.84,12,buy,6.95,SPDR Gold Shares
+23-10-2023,MARA,MANUAL,USD,14.81,1,buy,0,Marathon Digital Holdings
+23-10-2023,PLTR,MANUAL,USD,20.54,6,sell,1.0,Palantir Technologies Inc
+23-10-2023,AMD,MANUAL,USD,128.53,3,sell,0,Advanced Micro Devices Inc
+24-10-2023,XLF,MANUAL,USD,39.42,6,buy,0,Financial Select Sector SPDR
+25-10-2023,V,MANUAL,USD,251.88,1,buy,4.95,Visa Inc
+25-10-2023,MSFT,MANUAL,USD,413.45,7,buy,1.0,Microsoft Corporation
+25-10-2023,PANW,MANUAL,USD,305.71,2,buy,1.0,Palo Alto Networks Inc
+26-10-2023,MARA,MANUAL,USD,24.78,28,buy,4.95,Marathon Digital Holdings
+26-10-2023,EEM,MANUAL,USD,41.89,6,buy,0,iShares MSCI Emerging Markets
+26-10-2023,XLE,MANUAL,USD,94.48,25,buy,0,Energy Select Sector SPDR
+26-10-2023,NKE,MANUAL,USD,86.62,2,buy,4.95,Nike Inc
+26-10-2023,GS,MANUAL,USD,0.2,14,dividend,0,Goldman Sachs Group Inc
+26-10-2023,SCHW,MANUAL,USD,1.67,15,dividend,0,Charles Schwab Corp
+27-10-2023,META,MANUAL,USD,498.53,10,buy,2.5,Meta Platforms Inc
+27-10-2023,TSLA,MANUAL,USD,202.42,6,buy,2.5,Tesla Inc
+30-10-2023,BA,MANUAL,USD,236.35,15,buy,1.0,Boeing Company
+30-10-2023,XLI,MANUAL,USD,115.18,9,buy,2.5,Industrial Select Sector SPDR
+30-10-2023,ABNB,MANUAL,USD,161.56,3,buy,2.5,Airbnb Inc
+30-10-2023,BND,MANUAL,USD,70.03,9,buy,0,Vanguard Total Bond Market ETF
+30-10-2023,DIS,MANUAL,USD,89.13,11,buy,2.5,Walt Disney Company
+30-10-2023,AMT,MANUAL,USD,201.91,12,buy,0,American Tower Corp
+30-10-2023,UNH,MANUAL,USD,522.3,4,buy,1.0,UnitedHealth Group Inc
+31-10-2023,CVX,MANUAL,USD,1.27,14,dividend,0,Chevron Corporation
+31-10-2023,META,MANUAL,USD,2.14,30,dividend,0,Meta Platforms Inc
+31-10-2023,SPY,MANUAL,USD,2.12,37,dividend,0,SPDR S&P 500 ETF Trust
+01-11-2023,CMG,MANUAL,USD,2754.41,4,buy,2.5,Chipotle Mexican Grill Inc
+01-11-2023,GS,MANUAL,USD,468.98,1,buy,2.5,Goldman Sachs Group Inc
+01-11-2023,SCHD,MANUAL,USD,73.92,14,buy,0,Schwab US Dividend Equity ETF
+01-11-2023,PLD,MANUAL,USD,124.97,29,buy,6.95,Prologis Inc
+01-11-2023,YUM,MANUAL,USD,128.06,18,buy,0,Yum Brands Inc
+01-11-2023,CRM,MANUAL,USD,252.25,13,buy,0,Salesforce Inc
+01-11-2023,XOM,MANUAL,USD,108.37,7,sell,4.95,Exxon Mobil Corporation
+02-11-2023,TSLA,MANUAL,USD,250.85,6,buy,0,Tesla Inc
+06-11-2023,ZS,MANUAL,USD,230.25,11,buy,6.95,Zscaler Inc
+06-11-2023,CAT,MANUAL,USD,262.49,13,buy,4.95,Caterpillar Inc
+06-11-2023,TXN,MANUAL,USD,163.25,18,buy,0,Texas Instruments Inc
+06-11-2023,QCOM,MANUAL,USD,139.05,3,buy,1.0,Qualcomm Inc
+06-11-2023,XLE,MANUAL,USD,79.34,29,buy,0,Energy Select Sector SPDR
+06-11-2023,TLT,MANUAL,USD,91.2,28,buy,0,iShares 20+ Year Treasury Bond
+06-11-2023,AAPL,MANUAL,USD,194.3,7,buy,1.0,Apple Inc
+06-11-2023,MARA,MANUAL,USD,14.84,29,buy,2.5,Marathon Digital Holdings
+06-11-2023,BRK-B,MANUAL,USD,405.87,13,buy,0,Berkshire Hathaway Inc
+06-11-2023,V,MANUAL,USD,266.82,8,sell,0,Visa Inc
+07-11-2023,CMG,MANUAL,USD,3050.29,1,buy,0,Chipotle Mexican Grill Inc
+07-11-2023,BLK,MANUAL,USD,739.14,5,buy,4.95,BlackRock Inc
+07-11-2023,MCD,MANUAL,USD,270.86,12,buy,1.0,McDonalds Corp
+07-11-2023,VOO,MANUAL,USD,1.57,32,dividend,0,Vanguard S&P 500 ETF
+08-11-2023,CMG,MANUAL,USD,2849.24,2,buy,0,Chipotle Mexican Grill Inc
+08-11-2023,PLD,MANUAL,USD,124.49,26,buy,2.5,Prologis Inc
+08-11-2023,DIS,MANUAL,USD,110.67,22,buy,4.95,Walt Disney Company
+08-11-2023,IWM,MANUAL,USD,194.52,6,buy,2.5,iShares Russell 2000 ETF
+08-11-2023,XLF,MANUAL,USD,39.42,27,buy,2.5,Financial Select Sector SPDR
+08-11-2023,CCI,MANUAL,USD,107.62,10,buy,2.5,Crown Castle Inc
+08-11-2023,VOO,MANUAL,USD,419.96,5,sell,4.95,Vanguard S&P 500 ETF
+09-11-2023,MCD,MANUAL,USD,276.02,11,buy,0,McDonalds Corp
+09-11-2023,BLK,MANUAL,USD,2.04,19,dividend,0,BlackRock Inc
+10-11-2023,NVDA,MANUAL,USD,798.37,1,buy,4.95,NVIDIA Corporation
+10-11-2023,EEM,MANUAL,USD,41.4,29,buy,4.95,iShares MSCI Emerging Markets
+10-11-2023,MS,MANUAL,USD,87.35,24,buy,6.95,Morgan Stanley
+10-11-2023,PEP,MANUAL,USD,160.58,27,buy,0,PepsiCo Inc
+13-11-2023,GLD,MANUAL,USD,237.44,4,buy,4.95,SPDR Gold Shares
+13-11-2023,XLF,MANUAL,USD,35.28,22,buy,4.95,Financial Select Sector SPDR
+13-11-2023,DDOG,MANUAL,USD,94.16,17,buy,4.95,Datadog Inc
+13-11-2023,MARA,MANUAL,USD,12.54,12,buy,6.95,Marathon Digital Holdings
+13-11-2023,AAPL,MANUAL,USD,170.06,7,sell,6.95,Apple Inc
+14-11-2023,XLI,MANUAL,USD,114.95,3,buy,2.5,Industrial Select Sector SPDR
+14-11-2023,LOW,MANUAL,USD,243.4,5,buy,0,Lowes Companies Inc
+14-11-2023,AAPL,MANUAL,USD,170.01,25,buy,4.95,Apple Inc
+14-11-2023,SLV,MANUAL,USD,23.71,28,buy,0,iShares Silver Trust
+14-11-2023,GLD,MANUAL,USD,248.43,9,buy,0,SPDR Gold Shares
+14-11-2023,COIN,MANUAL,USD,166.55,4,sell,4.95,Coinbase Global Inc
+15-11-2023,XLP,MANUAL,USD,77.34,11,buy,2.5,Consumer Staples Select SPDR
+15-11-2023,VTI,MANUAL,USD,229.91,12,buy,6.95,Vanguard Total Stock Market ETF
+15-11-2023,LQD,MANUAL,USD,106.76,2,buy,0,iShares Investment Grade Corp
+15-11-2023,HD,MANUAL,USD,345.08,9,buy,0,The Home Depot Inc
+15-11-2023,BRK-B,MANUAL,USD,434.92,5,buy,0,Berkshire Hathaway Inc
+15-11-2023,XLE,MANUAL,USD,1.55,23,dividend,0,Energy Select Sector SPDR
+16-11-2023,CSCO,MANUAL,USD,54.95,8,buy,1.0,Cisco Systems Inc
+16-11-2023,VNQ,MANUAL,USD,82.73,27,buy,6.95,Vanguard Real Estate ETF
+16-11-2023,HD,MANUAL,USD,368.18,6,sell,6.95,The Home Depot Inc
+17-11-2023,T,MANUAL,USD,17.29,18,buy,6.95,AT&T Inc
+17-11-2023,AAPL,MANUAL,USD,191.96,22,buy,0,Apple Inc
+20-11-2023,CRWD,MANUAL,USD,247.88,11,buy,1.0,CrowdStrike Holdings Inc
+20-11-2023,NET,MANUAL,USD,62.0,19,buy,6.95,Cloudflare Inc
+20-11-2023,GLD,MANUAL,USD,210.55,2,buy,2.5,SPDR Gold Shares
+20-11-2023,SCHW,MANUAL,USD,68.27,4,buy,4.95,Charles Schwab Corp
+20-11-2023,NOW,MANUAL,USD,683.02,2,buy,6.95,ServiceNow Inc
+20-11-2023,SBUX,MANUAL,USD,87.42,19,buy,4.95,Starbucks Corporation
+20-11-2023,XLK,MANUAL,USD,178.88,13,buy,1.0,Technology Select Sector SPDR
+20-11-2023,ZS,MANUAL,USD,203.65,10,buy,0,Zscaler Inc
+20-11-2023,SOXX,MANUAL,USD,210.5,6,buy,6.95,iShares Semiconductor ETF
+20-11-2023,ZS,MANUAL,USD,234.55,14,buy,4.95,Zscaler Inc
+21-11-2023,PEP,MANUAL,USD,160.31,7,buy,0,PepsiCo Inc
+21-11-2023,WMT,MANUAL,USD,168.75,11,buy,1.0,Walmart Inc
+21-11-2023,PANW,MANUAL,USD,320.98,7,buy,0,Palo Alto Networks Inc
+21-11-2023,DE,MANUAL,USD,365.54,7,sell,4.95,Deere & Company
+22-11-2023,NVDA,MANUAL,USD,560.47,2,buy,1.0,NVIDIA Corporation
+22-11-2023,EEM,MANUAL,USD,43.57,30,buy,0,iShares MSCI Emerging Markets
+22-11-2023,PG,MANUAL,USD,166.56,6,buy,0,Procter & Gamble Co
+22-11-2023,UBER,MANUAL,USD,40.59,22,buy,0,Uber Technologies Inc
+22-11-2023,YUM,MANUAL,USD,131.13,4,buy,0,Yum Brands Inc
+22-11-2023,SLV,MANUAL,USD,22.02,9,sell,0,iShares Silver Trust
+23-11-2023,UNH,MANUAL,USD,514.23,4,buy,1.0,UnitedHealth Group Inc
+23-11-2023,MCD,MANUAL,USD,271.99,15,buy,4.95,McDonalds Corp
+23-11-2023,PSA,MANUAL,USD,308.9,6,buy,6.95,Public Storage
+23-11-2023,BLK,MANUAL,USD,829.51,4,buy,0,BlackRock Inc
+23-11-2023,ZS,MANUAL,USD,182.64,9,sell,0,Zscaler Inc
+24-11-2023,MRK,MANUAL,USD,114.58,11,buy,4.95,Merck & Co Inc
+24-11-2023,ABBV,MANUAL,USD,177.78,5,buy,0,AbbVie Inc
+24-11-2023,BLK,MANUAL,USD,801.0,4,buy,2.5,BlackRock Inc
+24-11-2023,XLV,MANUAL,USD,139.05,17,buy,0,Health Care Select Sector SPDR
+24-11-2023,SBUX,MANUAL,USD,1.54,45,dividend,0,Starbucks Corporation
+27-11-2023,VXUS,MANUAL,USD,57.14,3,buy,0,Vanguard Total Intl Stock ETF
+27-11-2023,AMZN,MANUAL,USD,185.16,27,buy,1.0,Amazon.com Inc
+27-11-2023,CVX,MANUAL,USD,152.06,23,buy,4.95,Chevron Corporation
+27-11-2023,ZS,MANUAL,USD,196.28,3,buy,1.0,Zscaler Inc
+27-11-2023,AMZN,MANUAL,USD,161.8,1,buy,4.95,Amazon.com Inc
+27-11-2023,GOOGL,MANUAL,USD,134.36,4,buy,0,Alphabet Inc
+27-11-2023,MRK,MANUAL,USD,100.58,2,buy,0,Merck & Co Inc
+27-11-2023,COIN,MANUAL,USD,168.01,14,buy,2.5,Coinbase Global Inc
+27-11-2023,WFC,MANUAL,USD,1.06,7,dividend,0,Wells Fargo & Company
+27-11-2023,DE,MANUAL,USD,370.16,2,sell,6.95,Deere & Company
+28-11-2023,EEM,MANUAL,USD,43.22,23,buy,4.95,iShares MSCI Emerging Markets
+28-11-2023,SPY,MANUAL,USD,488.66,3,buy,4.95,SPDR S&P 500 ETF Trust
+29-11-2023,UBER,MANUAL,USD,61.13,1,buy,0,Uber Technologies Inc
+29-11-2023,PYPL,MANUAL,USD,73.0,7,sell,1.0,PayPal Holdings Inc
+30-11-2023,BAC,MANUAL,USD,32.89,4,buy,1.0,Bank of America Corp
+01-12-2023,MCD,MANUAL,USD,293.71,1,buy,4.95,McDonalds Corp
+01-12-2023,BRK-B,MANUAL,USD,440.99,10,buy,0,Berkshire Hathaway Inc
+01-12-2023,CAT,MANUAL,USD,339.81,9,buy,2.5,Caterpillar Inc
+01-12-2023,WMT,MANUAL,USD,171.83,16,buy,6.95,Walmart Inc
+01-12-2023,LCID,MANUAL,USD,4.81,1,buy,0,Lucid Group Inc
+04-12-2023,RIVN,MANUAL,USD,10.36,9,buy,6.95,Rivian Automotive Inc
+04-12-2023,HYG,MANUAL,USD,74.95,21,buy,0,iShares iBoxx High Yield Corp
+04-12-2023,CMG,MANUAL,USD,2518.06,2,buy,0,Chipotle Mexican Grill Inc
+04-12-2023,AMD,MANUAL,USD,111.87,23,buy,4.95,Advanced Micro Devices Inc
+04-12-2023,BA,MANUAL,USD,238.53,8,buy,0,Boeing Company
+04-12-2023,RIVN,MANUAL,USD,11.72,28,buy,0,Rivian Automotive Inc
+04-12-2023,ORCL,MANUAL,USD,133.23,6,sell,6.95,Oracle Corporation
+06-12-2023,VTI,MANUAL,USD,214.73,7,buy,4.95,Vanguard Total Stock Market ETF
+06-12-2023,WFC,MANUAL,USD,48.09,5,buy,4.95,Wells Fargo & Company
+06-12-2023,LOW,MANUAL,USD,0.7,48,dividend,0,Lowes Companies Inc
+07-12-2023,DIS,MANUAL,USD,113.96,2,buy,4.95,Walt Disney Company
+07-12-2023,QCOM,MANUAL,USD,153.22,16,buy,6.95,Qualcomm Inc
+08-12-2023,PLTR,MANUAL,USD,24.69,14,buy,0,Palantir Technologies Inc
+08-12-2023,AAPL,MANUAL,USD,191.31,7,buy,0,Apple Inc
+08-12-2023,QCOM,MANUAL,USD,132.3,19,buy,4.95,Qualcomm Inc
+08-12-2023,EEM,MANUAL,USD,38.23,3,buy,0,iShares MSCI Emerging Markets
+08-12-2023,GS,MANUAL,USD,388.94,5,buy,4.95,Goldman Sachs Group Inc
+11-12-2023,AAPL,MANUAL,USD,184.7,21,buy,4.95,Apple Inc
+11-12-2023,META,MANUAL,USD,351.15,13,buy,4.95,Meta Platforms Inc
+11-12-2023,ABNB,MANUAL,USD,141.53,27,buy,0,Airbnb Inc
+11-12-2023,XLV,MANUAL,USD,139.47,6,buy,1.0,Health Care Select Sector SPDR
+11-12-2023,NET,MANUAL,USD,69.09,12,buy,4.95,Cloudflare Inc
+11-12-2023,TSLA,MANUAL,USD,201.47,11,buy,4.95,Tesla Inc
+11-12-2023,YUM,MANUAL,USD,132.96,10,buy,2.5,Yum Brands Inc
+11-12-2023,META,MANUAL,USD,301.65,14,buy,2.5,Meta Platforms Inc
+11-12-2023,MRK,MANUAL,USD,0.3,41,dividend,0,Merck & Co Inc
+11-12-2023,META,MANUAL,USD,1.35,20,dividend,0,Meta Platforms Inc
+11-12-2023,AMT,MANUAL,USD,190.87,8,sell,0,American Tower Corp
+12-12-2023,NKE,MANUAL,USD,98.46,2,sell,6.95,Nike Inc
+13-12-2023,ORCL,MANUAL,USD,146.82,26,buy,2.5,Oracle Corporation
+13-12-2023,O,MANUAL,USD,58.76,20,buy,0,Realty Income Corp
+13-12-2023,C,MANUAL,USD,55.15,17,buy,6.95,Citigroup Inc
+13-12-2023,T,MANUAL,USD,16.63,9,sell,0,AT&T Inc
+14-12-2023,GOOGL,MANUAL,USD,164.96,10,buy,4.95,Alphabet Inc
+14-12-2023,VTI,MANUAL,USD,231.53,4,buy,0,Vanguard Total Stock Market ETF
+15-12-2023,VTI,MANUAL,USD,211.05,4,buy,4.95,Vanguard Total Stock Market ETF
+15-12-2023,NET,MANUAL,USD,88.15,15,buy,0,Cloudflare Inc
+15-12-2023,RIVN,MANUAL,USD,18.15,2,buy,1.0,Rivian Automotive Inc
+15-12-2023,PSA,MANUAL,USD,285.95,12,buy,0,Public Storage
+15-12-2023,CRWD,MANUAL,USD,212.93,1,buy,0,CrowdStrike Holdings Inc
+15-12-2023,USB,MANUAL,USD,40.49,2,buy,0,US Bancorp
+15-12-2023,SPY,MANUAL,USD,465.18,3,buy,2.5,SPDR S&P 500 ETF Trust
+18-12-2023,SNOW,MANUAL,USD,188.04,4,buy,4.95,Snowflake Inc
+18-12-2023,AMD,MANUAL,USD,175.81,16,buy,4.95,Advanced Micro Devices Inc
+18-12-2023,ORCL,MANUAL,USD,168.16,16,buy,6.95,Oracle Corporation
+18-12-2023,QQQ,MANUAL,USD,414.47,10,buy,2.5,Invesco QQQ Trust
+18-12-2023,MRK,MANUAL,USD,127.71,24,buy,4.95,Merck & Co Inc
+18-12-2023,VTI,MANUAL,USD,220.41,10,buy,2.5,Vanguard Total Stock Market ETF
+19-12-2023,SBUX,MANUAL,USD,80.49,13,buy,2.5,Starbucks Corporation
+19-12-2023,MCD,MANUAL,USD,1.62,50,dividend,0,McDonalds Corp
+20-12-2023,GOOGL,MANUAL,USD,155.64,22,buy,0,Alphabet Inc
+20-12-2023,LCID,MANUAL,USD,6.58,25,buy,0,Lucid Group Inc
+20-12-2023,USB,MANUAL,USD,38.39,16,buy,2.5,US Bancorp
+20-12-2023,COST,MANUAL,USD,618.47,3,buy,4.95,Costco Wholesale Corp
+20-12-2023,EEM,MANUAL,USD,38.4,5,sell,6.95,iShares MSCI Emerging Markets
+21-12-2023,HYG,MANUAL,USD,77.39,9,buy,2.5,iShares iBoxx High Yield Corp
+21-12-2023,GS,MANUAL,USD,438.39,12,buy,0,Goldman Sachs Group Inc
+21-12-2023,UBER,MANUAL,USD,74.66,19,buy,0,Uber Technologies Inc
+22-12-2023,ABNB,MANUAL,USD,169.38,10,buy,2.5,Airbnb Inc
+22-12-2023,SNOW,MANUAL,USD,198.52,5,buy,1.0,Snowflake Inc
+22-12-2023,CSCO,MANUAL,USD,57.46,26,buy,0,Cisco Systems Inc
+22-12-2023,WMT,MANUAL,USD,167.17,16,buy,0,Walmart Inc
+22-12-2023,SBUX,MANUAL,USD,88.57,17,buy,0,Starbucks Corporation
+22-12-2023,CMG,MANUAL,USD,3087.67,4,buy,4.95,Chipotle Mexican Grill Inc
+25-12-2023,PSA,MANUAL,USD,295.48,9,buy,4.95,Public Storage
+25-12-2023,CCI,MANUAL,USD,97.97,18,buy,2.5,Crown Castle Inc
+25-12-2023,XLP,MANUAL,USD,72.43,14,buy,4.95,Consumer Staples Select SPDR
+25-12-2023,XLP,MANUAL,USD,75.15,22,buy,0,Consumer Staples Select SPDR
+25-12-2023,TGT,MANUAL,USD,126.67,12,buy,0,Target Corporation
+25-12-2023,T,MANUAL,USD,19.23,5,buy,0,AT&T Inc
+25-12-2023,XLE,MANUAL,USD,85.14,24,buy,0,Energy Select Sector SPDR
+25-12-2023,MS,MANUAL,USD,83.81,28,buy,4.95,Morgan Stanley
+26-12-2023,SCHD,MANUAL,USD,72.65,7,buy,1.0,Schwab US Dividend Equity ETF
+26-12-2023,JNJ,MANUAL,USD,146.87,28,buy,4.95,Johnson & Johnson
+27-12-2023,NFLX,MANUAL,USD,0.82,47,dividend,0,Netflix Inc
+28-12-2023,PSA,MANUAL,USD,261.46,14,buy,4.95,Public Storage
+28-12-2023,NKE,MANUAL,USD,2.12,18,dividend,0,Nike Inc
+29-12-2023,GLD,MANUAL,USD,239.19,3,buy,4.95,SPDR Gold Shares
+01-01-2024,TXN,MANUAL,USD,181.21,25,buy,2.5,Texas Instruments Inc
+01-01-2024,LQD,MANUAL,USD,111.76,28,buy,4.95,iShares Investment Grade Corp
+01-01-2024,PEP,MANUAL,USD,164.29,6,buy,4.95,PepsiCo Inc
+01-01-2024,ORCL,MANUAL,USD,115.8,14,buy,0,Oracle Corporation
+01-01-2024,XLE,MANUAL,USD,94.94,22,buy,0,Energy Select Sector SPDR
+02-01-2024,USB,MANUAL,USD,37.75,27,buy,4.95,US Bancorp
+02-01-2024,AMT,MANUAL,USD,181.95,10,buy,0,American Tower Corp
+03-01-2024,GLD,MANUAL,USD,208.84,11,buy,4.95,SPDR Gold Shares
+04-01-2024,MSFT,MANUAL,USD,401.1,10,buy,1.0,Microsoft Corporation
+04-01-2024,WFC,MANUAL,USD,45.46,10,sell,1.0,Wells Fargo & Company
+05-01-2024,NKE,MANUAL,USD,84.39,26,buy,6.95,Nike Inc
+05-01-2024,PSA,MANUAL,USD,285.37,3,buy,0,Public Storage
+05-01-2024,BLK,MANUAL,USD,845.84,3,buy,0,BlackRock Inc
+05-01-2024,UNH,MANUAL,USD,479.58,2,buy,0,UnitedHealth Group Inc
+08-01-2024,SOXX,MANUAL,USD,223.58,11,buy,6.95,iShares Semiconductor ETF
+08-01-2024,RIVN,MANUAL,USD,16.16,4,buy,6.95,Rivian Automotive Inc
+08-01-2024,YUM,MANUAL,USD,126.32,28,buy,0,Yum Brands Inc
+08-01-2024,ARKK,MANUAL,USD,38.31,10,buy,0,ARK Innovation ETF
+08-01-2024,TLT,MANUAL,USD,86.02,17,buy,0,iShares 20+ Year Treasury Bond
+08-01-2024,CCI,MANUAL,USD,112.32,2,buy,0,Crown Castle Inc
+08-01-2024,META,MANUAL,USD,300.8,5,buy,6.95,Meta Platforms Inc
+08-01-2024,VXUS,MANUAL,USD,52.35,25,buy,6.95,Vanguard Total Intl Stock ETF
+08-01-2024,VZ,MANUAL,USD,31.61,24,buy,1.0,Verizon Communications Inc
+08-01-2024,SOXX,MANUAL,USD,207.17,8,buy,0,iShares Semiconductor ETF
+08-01-2024,COST,MANUAL,USD,730.61,1,buy,4.95,Costco Wholesale Corp
+08-01-2024,PSA,MANUAL,USD,279.88,14,buy,2.5,Public Storage
+08-01-2024,BAC,MANUAL,USD,33.81,19,buy,2.5,Bank of America Corp
+08-01-2024,AVGO,MANUAL,USD,1025.63,4,buy,6.95,Broadcom Inc
+08-01-2024,XLI,MANUAL,USD,1.34,7,dividend,0,Industrial Select Sector SPDR
+09-01-2024,RIVN,MANUAL,USD,18.97,17,buy,6.95,Rivian Automotive Inc
+09-01-2024,AAPL,MANUAL,USD,0.12,27,dividend,0,Apple Inc
+10-01-2024,IWM,MANUAL,USD,217.14,4,buy,6.95,iShares Russell 2000 ETF
+12-01-2024,CAT,MANUAL,USD,249.03,1,buy,4.95,Caterpillar Inc
+12-01-2024,DE,MANUAL,USD,398.95,7,buy,4.95,Deere & Company
+12-01-2024,BRK-B,MANUAL,USD,393.59,5,buy,0,Berkshire Hathaway Inc
+15-01-2024,MRK,MANUAL,USD,120.35,19,buy,6.95,Merck & Co Inc
+15-01-2024,JNJ,MANUAL,USD,153.74,13,buy,6.95,Johnson & Johnson
+15-01-2024,MSFT,MANUAL,USD,348.06,13,buy,4.95,Microsoft Corporation
+15-01-2024,LQD,MANUAL,USD,109.54,25,buy,2.5,iShares Investment Grade Corp
+15-01-2024,META,MANUAL,USD,346.35,2,buy,0,Meta Platforms Inc
+15-01-2024,TGT,MANUAL,USD,126.13,18,buy,0,Target Corporation
+15-01-2024,LOW,MANUAL,USD,210.76,8,buy,0,Lowes Companies Inc
+15-01-2024,UNH,MANUAL,USD,484.89,10,buy,0,UnitedHealth Group Inc
+15-01-2024,SCHD,MANUAL,USD,72.04,19,buy,0,Schwab US Dividend Equity ETF
+15-01-2024,TXN,MANUAL,USD,2.03,25,dividend,0,Texas Instruments Inc
+16-01-2024,VOO,MANUAL,USD,462.09,1,buy,1.0,Vanguard S&P 500 ETF
+16-01-2024,CAT,MANUAL,USD,2.31,12,dividend,0,Caterpillar Inc
+17-01-2024,COST,MANUAL,USD,656.58,3,buy,0,Costco Wholesale Corp
+17-01-2024,YUM,MANUAL,USD,128.26,15,buy,4.95,Yum Brands Inc
+17-01-2024,SLV,MANUAL,USD,20.74,24,buy,4.95,iShares Silver Trust
+17-01-2024,ABBV,MANUAL,USD,179.85,12,buy,0,AbbVie Inc
+17-01-2024,CRM,MANUAL,USD,215.6,12,buy,2.5,Salesforce Inc
+18-01-2024,KO,MANUAL,USD,56.27,25,buy,4.95,Coca-Cola Company
+18-01-2024,XLK,MANUAL,USD,201.03,15,buy,4.95,Technology Select Sector SPDR
+18-01-2024,JNJ,MANUAL,USD,0.83,28,dividend,0,Johnson & Johnson
+19-01-2024,NET,MANUAL,USD,88.41,18,buy,0,Cloudflare Inc
+19-01-2024,TGT,MANUAL,USD,152.13,13,buy,2.5,Target Corporation
+19-01-2024,CMG,MANUAL,USD,2658.46,1,buy,0,Chipotle Mexican Grill Inc
+19-01-2024,HD,MANUAL,USD,315.4,1,sell,6.95,The Home Depot Inc
+22-01-2024,MA,MANUAL,USD,448.63,13,buy,0,Mastercard Inc
+22-01-2024,SLV,MANUAL,USD,23.13,25,buy,0,iShares Silver Trust
+22-01-2024,QQQ,MANUAL,USD,423.41,7,buy,0,Invesco QQQ Trust
+22-01-2024,SOXX,MANUAL,USD,216.0,8,buy,6.95,iShares Semiconductor ETF
+22-01-2024,LLY,MANUAL,USD,906.55,4,buy,6.95,Eli Lilly and Company
+22-01-2024,CSCO,MANUAL,USD,53.08,4,buy,1.0,Cisco Systems Inc
+22-01-2024,DDOG,MANUAL,USD,0.59,16,dividend,0,Datadog Inc
+22-01-2024,CRWD,MANUAL,USD,1.36,35,dividend,0,CrowdStrike Holdings Inc
+23-01-2024,BAC,MANUAL,USD,29.54,6,buy,0,Bank of America Corp
+23-01-2024,BND,MANUAL,USD,69.96,26,buy,2.5,Vanguard Total Bond Market ETF
+23-01-2024,NOW,MANUAL,USD,720.32,3,buy,4.95,ServiceNow Inc
+23-01-2024,WMT,MANUAL,USD,2.09,27,dividend,0,Walmart Inc
+24-01-2024,NKE,MANUAL,USD,86.58,2,buy,0,Nike Inc
+24-01-2024,VNQ,MANUAL,USD,83.56,11,buy,0,Vanguard Real Estate ETF
+24-01-2024,CSCO,MANUAL,USD,57.34,29,buy,4.95,Cisco Systems Inc
+24-01-2024,NOW,MANUAL,USD,1.47,28,dividend,0,ServiceNow Inc
+25-01-2024,XLI,MANUAL,USD,112.02,13,buy,0,Industrial Select Sector SPDR
+25-01-2024,NFLX,MANUAL,USD,507.93,1,buy,4.95,Netflix Inc
+26-01-2024,IWM,MANUAL,USD,192.52,27,buy,2.5,iShares Russell 2000 ETF
+26-01-2024,HYG,MANUAL,USD,77.12,8,buy,6.95,iShares iBoxx High Yield Corp
+26-01-2024,WMT,MANUAL,USD,165.6,17,buy,4.95,Walmart Inc
+29-01-2024,VGT,MANUAL,USD,453.36,14,buy,1.0,Vanguard Info Technology ETF
+29-01-2024,MS,MANUAL,USD,95.56,12,buy,0,Morgan Stanley
+29-01-2024,UNH,MANUAL,USD,503.26,5,buy,1.0,UnitedHealth Group Inc
+29-01-2024,SBUX,MANUAL,USD,88.46,30,buy,2.5,Starbucks Corporation
+29-01-2024,MCD,MANUAL,USD,266.78,5,buy,4.95,McDonalds Corp
+29-01-2024,HD,MANUAL,USD,351.88,14,buy,0,The Home Depot Inc
+29-01-2024,XLK,MANUAL,USD,187.53,26,buy,0,Technology Select Sector SPDR
+29-01-2024,SPY,MANUAL,USD,489.09,11,buy,0,SPDR S&P 500 ETF Trust
+29-01-2024,NFLX,MANUAL,USD,542.39,1,buy,1.0,Netflix Inc
+29-01-2024,INTC,MANUAL,USD,0.16,33,dividend,0,Intel Corporation
+30-01-2024,GS,MANUAL,USD,362.7,7,buy,0,Goldman Sachs Group Inc
+30-01-2024,TGT,MANUAL,USD,153.23,2,buy,0,Target Corporation
+30-01-2024,GS,MANUAL,USD,389.23,11,buy,0,Goldman Sachs Group Inc
+30-01-2024,MARA,MANUAL,USD,14.23,6,sell,1.0,Marathon Digital Holdings
+31-01-2024,XLP,MANUAL,USD,75.35,20,buy,4.95,Consumer Staples Select SPDR
+02-02-2024,DIS,MANUAL,USD,114.81,12,buy,4.95,Walt Disney Company
+02-02-2024,XLI,MANUAL,USD,107.25,16,buy,0,Industrial Select Sector SPDR
+02-02-2024,SBUX,MANUAL,USD,86.18,10,buy,1.0,Starbucks Corporation
+05-02-2024,SOXX,MANUAL,USD,243.95,5,buy,4.95,iShares Semiconductor ETF
+05-02-2024,DDOG,MANUAL,USD,102.67,4,buy,0,Datadog Inc
+05-02-2024,BAC,MANUAL,USD,34.11,19,buy,0,Bank of America Corp
+05-02-2024,UNH,MANUAL,USD,536.08,4,buy,1.0,UnitedHealth Group Inc
+05-02-2024,ADBE,MANUAL,USD,545.78,5,buy,4.95,Adobe Inc
+05-02-2024,JPM,MANUAL,USD,182.74,20,buy,1.0,JPMorgan Chase & Co
+05-02-2024,COST,MANUAL,USD,839.37,1,buy,0,Costco Wholesale Corp
+05-02-2024,ABBV,MANUAL,USD,162.12,5,buy,0,AbbVie Inc
+05-02-2024,CAT,MANUAL,USD,291.61,1,buy,4.95,Caterpillar Inc
+05-02-2024,EEM,MANUAL,USD,42.28,17,buy,0,iShares MSCI Emerging Markets
+05-02-2024,PEP,MANUAL,USD,167.47,15,buy,4.95,PepsiCo Inc
+05-02-2024,COST,MANUAL,USD,783.85,2,buy,0,Costco Wholesale Corp
+06-02-2024,AAPL,MANUAL,USD,161.93,26,buy,6.95,Apple Inc
+06-02-2024,CVX,MANUAL,USD,157.07,27,buy,2.5,Chevron Corporation
+08-02-2024,TGT,MANUAL,USD,127.82,25,buy,4.95,Target Corporation
+08-02-2024,TGT,MANUAL,USD,126.42,30,buy,1.0,Target Corporation
+09-02-2024,USB,MANUAL,USD,36.14,16,buy,0,US Bancorp
+09-02-2024,VOO,MANUAL,USD,450.74,15,buy,0,Vanguard S&P 500 ETF
+12-02-2024,SHOP,MANUAL,USD,53.93,21,buy,4.95,Shopify Inc
+12-02-2024,WMT,MANUAL,USD,167.84,22,buy,4.95,Walmart Inc
+12-02-2024,ZS,MANUAL,USD,209.77,11,buy,2.5,Zscaler Inc
+12-02-2024,NVDA,MANUAL,USD,755.83,2,buy,0,NVIDIA Corporation
+12-02-2024,NKE,MANUAL,USD,94.66,1,buy,6.95,Nike Inc
+12-02-2024,SCHD,MANUAL,USD,1.78,13,dividend,0,Schwab US Dividend Equity ETF
+12-02-2024,CVX,MANUAL,USD,151.74,10,sell,0,Chevron Corporation
+12-02-2024,BND,MANUAL,USD,71.93,4,sell,6.95,Vanguard Total Bond Market ETF
+13-02-2024,QQQ,MANUAL,USD,437.56,7,buy,0,Invesco QQQ Trust
+13-02-2024,INTC,MANUAL,USD,20.13,13,buy,6.95,Intel Corporation
+14-02-2024,VOO,MANUAL,USD,412.07,14,buy,6.95,Vanguard S&P 500 ETF
+14-02-2024,PLTR,MANUAL,USD,24.36,10,buy,0,Palantir Technologies Inc
+14-02-2024,VZ,MANUAL,USD,41.56,10,buy,6.95,Verizon Communications Inc
+15-02-2024,EEM,MANUAL,USD,40.5,4,buy,1.0,iShares MSCI Emerging Markets
+15-02-2024,DIS,MANUAL,USD,83.12,28,buy,4.95,Walt Disney Company
+15-02-2024,SNOW,MANUAL,USD,160.56,4,sell,6.95,Snowflake Inc
+19-02-2024,AMD,MANUAL,USD,172.2,6,buy,2.5,Advanced Micro Devices Inc
+19-02-2024,TSLA,MANUAL,USD,174.6,18,buy,4.95,Tesla Inc
+19-02-2024,GS,MANUAL,USD,442.64,12,buy,0,Goldman Sachs Group Inc
+19-02-2024,META,MANUAL,USD,429.78,5,buy,0,Meta Platforms Inc
+19-02-2024,QCOM,MANUAL,USD,163.15,23,buy,4.95,Qualcomm Inc
+19-02-2024,VTI,MANUAL,USD,210.88,10,sell,1.0,Vanguard Total Stock Market ETF
+20-02-2024,MARA,MANUAL,USD,22.97,27,buy,0,Marathon Digital Holdings
+20-02-2024,BAC,MANUAL,USD,34.61,22,buy,0,Bank of America Corp
+20-02-2024,JPM,MANUAL,USD,166.8,18,buy,0,JPMorgan Chase & Co
+20-02-2024,UBER,MANUAL,USD,69.54,25,buy,0,Uber Technologies Inc
+21-02-2024,GS,MANUAL,USD,429.33,5,buy,0,Goldman Sachs Group Inc
+22-02-2024,PANW,MANUAL,USD,268.49,6,buy,6.95,Palo Alto Networks Inc
+23-02-2024,ZS,MANUAL,USD,209.31,4,buy,6.95,Zscaler Inc
+26-02-2024,SHOP,MANUAL,USD,61.64,21,buy,2.5,Shopify Inc
+26-02-2024,EEM,MANUAL,USD,40.65,20,buy,0,iShares MSCI Emerging Markets
+26-02-2024,ABNB,MANUAL,USD,132.72,19,buy,0,Airbnb Inc
+26-02-2024,WFC,MANUAL,USD,0.36,28,dividend,0,Wells Fargo & Company
+26-02-2024,AMZN,MANUAL,USD,1.62,6,dividend,0,Amazon.com Inc
+27-02-2024,TLT,MANUAL,USD,96.54,27,buy,0,iShares 20+ Year Treasury Bond
+27-02-2024,UBER,MANUAL,USD,51.15,27,buy,0,Uber Technologies Inc
+28-02-2024,LCID,MANUAL,USD,6.21,28,buy,4.95,Lucid Group Inc
+28-02-2024,HD,MANUAL,USD,363.5,14,buy,0,The Home Depot Inc
+28-02-2024,MRK,MANUAL,USD,126.46,14,buy,2.5,Merck & Co Inc
+29-02-2024,CAT,MANUAL,USD,336.78,9,buy,0,Caterpillar Inc
+29-02-2024,AMD,MANUAL,USD,172.45,28,buy,0,Advanced Micro Devices Inc
+29-02-2024,INTC,MANUAL,USD,24.01,22,buy,4.95,Intel Corporation
+29-02-2024,XLI,MANUAL,USD,120.41,8,buy,6.95,Industrial Select Sector SPDR
+29-02-2024,DDOG,MANUAL,USD,127.06,11,buy,2.5,Datadog Inc
+29-02-2024,ABNB,MANUAL,USD,128.9,1,sell,6.95,Airbnb Inc
+01-03-2024,CSCO,MANUAL,USD,49.88,1,buy,0,Cisco Systems Inc
+01-03-2024,LCID,MANUAL,USD,6.71,2,buy,4.95,Lucid Group Inc
+04-03-2024,EEM,MANUAL,USD,43.32,19,buy,4.95,iShares MSCI Emerging Markets
+04-03-2024,VTI,MANUAL,USD,230.38,8,buy,2.5,Vanguard Total Stock Market ETF
+04-03-2024,AMZN,MANUAL,USD,123.73,17,buy,1.0,Amazon.com Inc
+04-03-2024,ABNB,MANUAL,USD,144.21,7,buy,1.0,Airbnb Inc
+04-03-2024,ARKK,MANUAL,USD,45.77,2,buy,6.95,ARK Innovation ETF
+04-03-2024,CMG,MANUAL,USD,2608.26,4,buy,0,Chipotle Mexican Grill Inc
+04-03-2024,BLK,MANUAL,USD,743.78,1,buy,2.5,BlackRock Inc
+04-03-2024,V,MANUAL,USD,247.48,10,buy,0,Visa Inc
+04-03-2024,INTC,MANUAL,USD,34.33,3,buy,4.95,Intel Corporation
+04-03-2024,XOM,MANUAL,USD,119.24,18,buy,0,Exxon Mobil Corporation
+04-03-2024,SNOW,MANUAL,USD,148.37,19,buy,0,Snowflake Inc
+04-03-2024,VGT,MANUAL,USD,533.17,3,buy,4.95,Vanguard Info Technology ETF
+05-03-2024,PEP,MANUAL,USD,177.64,6,buy,0,PepsiCo Inc
+05-03-2024,TSLA,MANUAL,USD,1.25,24,dividend,0,Tesla Inc
+06-03-2024,CVX,MANUAL,USD,0.89,11,dividend,0,Chevron Corporation
+07-03-2024,NKE,MANUAL,USD,83.61,6,buy,1.0,Nike Inc
+07-03-2024,AVGO,MANUAL,USD,1460.57,3,buy,2.5,Broadcom Inc
+08-03-2024,MSFT,MANUAL,USD,404.01,7,buy,1.0,Microsoft Corporation
+08-03-2024,CVX,MANUAL,USD,153.23,22,buy,4.95,Chevron Corporation
+11-03-2024,C,MANUAL,USD,45.64,3,buy,4.95,Citigroup Inc
+11-03-2024,MCD,MANUAL,USD,283.86,7,buy,6.95,McDonalds Corp
+11-03-2024,WMT,MANUAL,USD,165.28,28,buy,0,Walmart Inc
+11-03-2024,T,MANUAL,USD,19.88,24,buy,6.95,AT&T Inc
+11-03-2024,TLT,MANUAL,USD,92.17,18,buy,0,iShares 20+ Year Treasury Bond
+11-03-2024,O,MANUAL,USD,55.68,29,buy,2.5,Realty Income Corp
+11-03-2024,LQD,MANUAL,USD,109.75,8,buy,4.95,iShares Investment Grade Corp
+11-03-2024,PLTR,MANUAL,USD,23.3,20,buy,0,Palantir Technologies Inc
+11-03-2024,XLE,MANUAL,USD,78.37,6,buy,0,Energy Select Sector SPDR
+11-03-2024,ZS,MANUAL,USD,2.47,12,dividend,0,Zscaler Inc
+11-03-2024,WMT,MANUAL,USD,1.26,44,dividend,0,Walmart Inc
+11-03-2024,MA,MANUAL,USD,398.39,1,sell,4.95,Mastercard Inc
+13-03-2024,RIVN,MANUAL,USD,12.63,26,buy,6.95,Rivian Automotive Inc
+14-03-2024,ADBE,MANUAL,USD,539.19,4,buy,0,Adobe Inc
+14-03-2024,IWM,MANUAL,USD,1.18,32,dividend,0,iShares Russell 2000 ETF
+15-03-2024,PYPL,MANUAL,USD,63.1,2,buy,2.5,PayPal Holdings Inc
+15-03-2024,VTI,MANUAL,USD,252.17,5,buy,6.95,Vanguard Total Stock Market ETF
+18-03-2024,PLD,MANUAL,USD,114.07,15,buy,0,Prologis Inc
+18-03-2024,GLD,MANUAL,USD,187.76,22,buy,6.95,SPDR Gold Shares
+18-03-2024,SPY,MANUAL,USD,488.2,3,buy,4.95,SPDR S&P 500 ETF Trust
+18-03-2024,GLD,MANUAL,USD,202.02,4,buy,4.95,SPDR Gold Shares
+18-03-2024,ADBE,MANUAL,USD,575.49,1,buy,0,Adobe Inc
+18-03-2024,TSLA,MANUAL,USD,195.12,9,buy,0,Tesla Inc
+18-03-2024,VNQ,MANUAL,USD,77.53,11,buy,4.95,Vanguard Real Estate ETF
+18-03-2024,MSFT,MANUAL,USD,396.26,4,buy,1.0,Microsoft Corporation
+19-03-2024,TGT,MANUAL,USD,122.45,22,buy,1.0,Target Corporation
+19-03-2024,UNH,MANUAL,USD,535.63,2,buy,4.95,UnitedHealth Group Inc
+20-03-2024,CRM,MANUAL,USD,230.28,3,buy,0,Salesforce Inc
+20-03-2024,BND,MANUAL,USD,2.13,31,dividend,0,Vanguard Total Bond Market ETF
+20-03-2024,TGT,MANUAL,USD,133.22,8,sell,1.0,Target Corporation
+25-03-2024,PYPL,MANUAL,USD,66.78,17,buy,0,PayPal Holdings Inc
+25-03-2024,USB,MANUAL,USD,37.29,26,buy,0,US Bancorp
+25-03-2024,LCID,MANUAL,USD,5.27,11,buy,4.95,Lucid Group Inc
+25-03-2024,O,MANUAL,USD,59.75,5,buy,0,Realty Income Corp
+25-03-2024,META,MANUAL,USD,330.44,10,buy,6.95,Meta Platforms Inc
+26-03-2024,T,MANUAL,USD,21.17,16,buy,0,AT&T Inc
+26-03-2024,PANW,MANUAL,USD,349.1,9,buy,0,Palo Alto Networks Inc
+26-03-2024,ZS,MANUAL,USD,182.62,12,buy,4.95,Zscaler Inc
+26-03-2024,ORCL,MANUAL,USD,151.28,6,buy,2.5,Oracle Corporation
+26-03-2024,PANW,MANUAL,USD,305.9,12,buy,6.95,Palo Alto Networks Inc
+26-03-2024,BLK,MANUAL,USD,805.01,1,buy,4.95,BlackRock Inc
+26-03-2024,CSCO,MANUAL,USD,52.27,22,buy,0,Cisco Systems Inc
+28-03-2024,VGT,MANUAL,USD,431.97,8,buy,0,Vanguard Info Technology ETF
+28-03-2024,MA,MANUAL,USD,386.15,11,buy,4.95,Mastercard Inc
+28-03-2024,XOM,MANUAL,USD,104.95,10,buy,4.95,Exxon Mobil Corporation
+29-03-2024,LCID,MANUAL,USD,3.13,12,buy,0,Lucid Group Inc
+29-03-2024,COIN,MANUAL,USD,134.64,14,buy,0,Coinbase Global Inc
+29-03-2024,MARA,MANUAL,USD,20.07,9,buy,0,Marathon Digital Holdings
+29-03-2024,PEP,MANUAL,USD,161.39,30,buy,4.95,PepsiCo Inc
+01-04-2024,COST,MANUAL,USD,715.5,5,buy,0,Costco Wholesale Corp
+01-04-2024,XLF,MANUAL,USD,37.54,7,buy,6.95,Financial Select Sector SPDR
+01-04-2024,PLTR,MANUAL,USD,21.51,24,buy,2.5,Palantir Technologies Inc
+01-04-2024,INTC,MANUAL,USD,35.87,16,buy,6.95,Intel Corporation
+01-04-2024,GLD,MANUAL,USD,225.92,8,buy,4.95,SPDR Gold Shares
+01-04-2024,EEM,MANUAL,USD,42.81,15,buy,0,iShares MSCI Emerging Markets
+01-04-2024,ORCL,MANUAL,USD,117.3,2,buy,4.95,Oracle Corporation
+01-04-2024,CVX,MANUAL,USD,154.91,27,buy,4.95,Chevron Corporation
+01-04-2024,DE,MANUAL,USD,377.09,12,buy,6.95,Deere & Company
+01-04-2024,AMD,MANUAL,USD,159.32,14,buy,6.95,Advanced Micro Devices Inc
+01-04-2024,HD,MANUAL,USD,361.18,9,buy,1.0,The Home Depot Inc
+01-04-2024,MCD,MANUAL,USD,269.03,5,buy,2.5,McDonalds Corp
+01-04-2024,BLK,MANUAL,USD,814.47,1,buy,2.5,BlackRock Inc
+01-04-2024,AMZN,MANUAL,USD,130.19,1,buy,0,Amazon.com Inc
+01-04-2024,CRM,MANUAL,USD,239.8,7,sell,6.95,Salesforce Inc
+02-04-2024,CRWD,MANUAL,USD,319.67,11,buy,1.0,CrowdStrike Holdings Inc
+02-04-2024,BA,MANUAL,USD,180.81,23,buy,0,Boeing Company
+02-04-2024,ZS,MANUAL,USD,215.56,7,buy,4.95,Zscaler Inc
+02-04-2024,DDOG,MANUAL,USD,128.55,16,buy,0,Datadog Inc
+02-04-2024,XOM,MANUAL,USD,1.35,19,dividend,0,Exxon Mobil Corporation
+03-04-2024,BA,MANUAL,USD,241.78,14,buy,6.95,Boeing Company
+03-04-2024,BRK-B,MANUAL,USD,418.34,3,buy,6.95,Berkshire Hathaway Inc
+03-04-2024,PANW,MANUAL,USD,271.46,5,buy,6.95,Palo Alto Networks Inc
+03-04-2024,ARKK,MANUAL,USD,51.75,15,buy,0,ARK Innovation ETF
+03-04-2024,VZ,MANUAL,USD,40.6,2,buy,4.95,Verizon Communications Inc
+03-04-2024,BAC,MANUAL,USD,29.78,28,buy,6.95,Bank of America Corp
+04-04-2024,MA,MANUAL,USD,428.47,6,buy,2.5,Mastercard Inc
+04-04-2024,GLD,MANUAL,USD,182.96,28,buy,1.0,SPDR Gold Shares
+04-04-2024,TLT,MANUAL,USD,92.92,12,buy,0,iShares 20+ Year Treasury Bond
+04-04-2024,XLI,MANUAL,USD,111.32,16,buy,0,Industrial Select Sector SPDR
+04-04-2024,O,MANUAL,USD,53.7,6,buy,4.95,Realty Income Corp
+04-04-2024,BLK,MANUAL,USD,1.49,10,dividend,0,BlackRock Inc
+05-04-2024,SLV,MANUAL,USD,27.68,1,buy,0,iShares Silver Trust
+05-04-2024,DDOG,MANUAL,USD,120.29,10,sell,0,Datadog Inc
+08-04-2024,CRM,MANUAL,USD,251.25,14,buy,0,Salesforce Inc
+08-04-2024,INTC,MANUAL,USD,42.44,5,buy,2.5,Intel Corporation
+08-04-2024,LOW,MANUAL,USD,256.93,8,buy,0,Lowes Companies Inc
+08-04-2024,QQQ,MANUAL,USD,449.16,10,buy,2.5,Invesco QQQ Trust
+08-04-2024,JNJ,MANUAL,USD,148.46,6,buy,4.95,Johnson & Johnson
+08-04-2024,MARA,MANUAL,USD,16.86,19,buy,0,Marathon Digital Holdings
+08-04-2024,VZ,MANUAL,USD,32.16,5,buy,4.95,Verizon Communications Inc
+08-04-2024,BRK-B,MANUAL,USD,401.25,4,buy,4.95,Berkshire Hathaway Inc
+08-04-2024,SOXX,MANUAL,USD,208.84,10,buy,0,iShares Semiconductor ETF
+08-04-2024,ORCL,MANUAL,USD,122.02,13,buy,6.95,Oracle Corporation
+08-04-2024,SCHW,MANUAL,USD,73.15,12,buy,6.95,Charles Schwab Corp
+08-04-2024,PSA,MANUAL,USD,0.46,25,dividend,0,Public Storage
+08-04-2024,HYG,MANUAL,USD,0.86,30,dividend,0,iShares iBoxx High Yield Corp
+08-04-2024,BRK-B,MANUAL,USD,446.33,8,sell,4.95,Berkshire Hathaway Inc
+09-04-2024,UBER,MANUAL,USD,71.08,14,buy,1.0,Uber Technologies Inc
+09-04-2024,VNQ,MANUAL,USD,82.18,24,buy,0,Vanguard Real Estate ETF
+09-04-2024,CAT,MANUAL,USD,0.2,34,dividend,0,Caterpillar Inc
+10-04-2024,WMT,MANUAL,USD,157.56,28,buy,4.95,Walmart Inc
+10-04-2024,SCHW,MANUAL,USD,60.44,20,buy,6.95,Charles Schwab Corp
+10-04-2024,DE,MANUAL,USD,2.26,29,dividend,0,Deere & Company
+10-04-2024,CRWD,MANUAL,USD,216.83,5,sell,4.95,CrowdStrike Holdings Inc
+11-04-2024,COST,MANUAL,USD,550.97,3,buy,0,Costco Wholesale Corp
+11-04-2024,CVX,MANUAL,USD,141.46,2,buy,0,Chevron Corporation
+11-04-2024,AMT,MANUAL,USD,216.91,13,buy,2.5,American Tower Corp
+11-04-2024,CAT,MANUAL,USD,0.1,32,dividend,0,Caterpillar Inc
+12-04-2024,T,MANUAL,USD,21.92,18,buy,6.95,AT&T Inc
+12-04-2024,MA,MANUAL,USD,447.3,6,buy,2.5,Mastercard Inc
+12-04-2024,PG,MANUAL,USD,147.7,9,buy,6.95,Procter & Gamble Co
+12-04-2024,C,MANUAL,USD,60.15,15,buy,4.95,Citigroup Inc
+12-04-2024,AMD,MANUAL,USD,155.74,9,sell,0,Advanced Micro Devices Inc
+15-04-2024,XLP,MANUAL,USD,79.73,7,buy,1.0,Consumer Staples Select SPDR
+15-04-2024,KO,MANUAL,USD,60.66,25,buy,6.95,Coca-Cola Company
+15-04-2024,XLI,MANUAL,USD,115.22,2,buy,6.95,Industrial Select Sector SPDR
+15-04-2024,XLP,MANUAL,USD,76.49,23,buy,0,Consumer Staples Select SPDR
+15-04-2024,VGT,MANUAL,USD,457.25,12,buy,6.95,Vanguard Info Technology ETF
+15-04-2024,MRK,MANUAL,USD,102.62,13,buy,0,Merck & Co Inc
+15-04-2024,CRWD,MANUAL,USD,0.41,50,dividend,0,CrowdStrike Holdings Inc
+15-04-2024,BRK-B,MANUAL,USD,0.68,28,dividend,0,Berkshire Hathaway Inc
+16-04-2024,MSFT,MANUAL,USD,385.9,2,buy,0,Microsoft Corporation
+16-04-2024,SNOW,MANUAL,USD,178.09,23,buy,1.0,Snowflake Inc
+16-04-2024,LOW,MANUAL,USD,242.15,15,buy,0,Lowes Companies Inc
+16-04-2024,MSFT,MANUAL,USD,374.79,9,buy,0,Microsoft Corporation
+16-04-2024,XLF,MANUAL,USD,37.35,25,buy,1.0,Financial Select Sector SPDR
+16-04-2024,TXN,MANUAL,USD,183.56,17,buy,1.0,Texas Instruments Inc
+17-04-2024,TSLA,MANUAL,USD,218.26,7,buy,0,Tesla Inc
+17-04-2024,AMT,MANUAL,USD,208.29,3,buy,4.95,American Tower Corp
+18-04-2024,MCD,MANUAL,USD,295.86,1,buy,6.95,McDonalds Corp
+18-04-2024,BLK,MANUAL,USD,831.65,3,buy,6.95,BlackRock Inc
+18-04-2024,QCOM,MANUAL,USD,164.96,4,buy,0,Qualcomm Inc
+19-04-2024,V,MANUAL,USD,287.35,14,buy,0,Visa Inc
+19-04-2024,NFLX,MANUAL,USD,578.61,3,buy,0,Netflix Inc
+19-04-2024,BRK-B,MANUAL,USD,398.75,6,buy,4.95,Berkshire Hathaway Inc
+19-04-2024,TSLA,MANUAL,USD,174.56,30,buy,2.5,Tesla Inc
+19-04-2024,HYG,MANUAL,USD,75.0,14,buy,4.95,iShares iBoxx High Yield Corp
+22-04-2024,COST,MANUAL,USD,663.84,5,buy,4.95,Costco Wholesale Corp
+22-04-2024,HD,MANUAL,USD,343.41,10,buy,1.0,The Home Depot Inc
+22-04-2024,XLK,MANUAL,USD,192.27,25,buy,4.95,Technology Select Sector SPDR
+22-04-2024,HD,MANUAL,USD,330.09,7,buy,1.0,The Home Depot Inc
+22-04-2024,SBUX,MANUAL,USD,95.91,2,buy,1.0,Starbucks Corporation
+22-04-2024,KO,MANUAL,USD,58.99,10,buy,6.95,Coca-Cola Company
+22-04-2024,BRK-B,MANUAL,USD,403.1,7,buy,0,Berkshire Hathaway Inc
+22-04-2024,SCHD,MANUAL,USD,72.38,23,buy,0,Schwab US Dividend Equity ETF
+22-04-2024,ORCL,MANUAL,USD,2.01,44,dividend,0,Oracle Corporation
+22-04-2024,EEM,MANUAL,USD,41.46,2,sell,4.95,iShares MSCI Emerging Markets
+22-04-2024,XLV,MANUAL,USD,131.02,9,sell,4.95,Health Care Select Sector SPDR
+23-04-2024,META,MANUAL,USD,437.5,2,buy,2.5,Meta Platforms Inc
+23-04-2024,NKE,MANUAL,USD,79.18,5,sell,1.0,Nike Inc
+25-04-2024,VXUS,MANUAL,USD,57.11,4,buy,4.95,Vanguard Total Intl Stock ETF
+25-04-2024,YUM,MANUAL,USD,1.54,26,dividend,0,Yum Brands Inc
+26-04-2024,SNOW,MANUAL,USD,156.52,27,buy,0,Snowflake Inc
+26-04-2024,IWM,MANUAL,USD,185.94,11,buy,2.5,iShares Russell 2000 ETF
+26-04-2024,XOM,MANUAL,USD,105.93,30,buy,6.95,Exxon Mobil Corporation
+26-04-2024,CRWD,MANUAL,USD,223.49,4,sell,0,CrowdStrike Holdings Inc
+29-04-2024,NVDA,MANUAL,USD,488.97,15,buy,6.95,NVIDIA Corporation
+29-04-2024,SCHD,MANUAL,USD,74.18,11,buy,1.0,Schwab US Dividend Equity ETF
+29-04-2024,ORCL,MANUAL,USD,103.05,13,buy,1.0,Oracle Corporation
+29-04-2024,ZS,MANUAL,USD,225.7,15,buy,4.95,Zscaler Inc
+29-04-2024,LQD,MANUAL,USD,106.82,29,buy,4.95,iShares Investment Grade Corp
+29-04-2024,AMZN,MANUAL,USD,183.23,2,buy,0,Amazon.com Inc
+30-04-2024,XLK,MANUAL,USD,182.19,18,buy,0,Technology Select Sector SPDR
+30-04-2024,VOO,MANUAL,USD,432.35,10,buy,4.95,Vanguard S&P 500 ETF
+30-04-2024,PYPL,MANUAL,USD,67.61,22,buy,0,PayPal Holdings Inc
+01-05-2024,VNQ,MANUAL,USD,85.58,26,buy,2.5,Vanguard Real Estate ETF
+01-05-2024,EEM,MANUAL,USD,0.18,15,dividend,0,iShares MSCI Emerging Markets
+02-05-2024,MCD,MANUAL,USD,279.9,11,buy,0,McDonalds Corp
+02-05-2024,PYPL,MANUAL,USD,61.83,17,buy,0,PayPal Holdings Inc
+03-05-2024,NET,MANUAL,USD,92.23,29,buy,1.0,Cloudflare Inc
+06-05-2024,HD,MANUAL,USD,315.89,1,buy,4.95,The Home Depot Inc
+06-05-2024,PEP,MANUAL,USD,178.03,20,buy,0,PepsiCo Inc
+06-05-2024,SQ,MANUAL,USD,75.17,4,buy,6.95,Block Inc
+06-05-2024,BND,MANUAL,USD,71.27,28,buy,4.95,Vanguard Total Bond Market ETF
+06-05-2024,PLTR,MANUAL,USD,18.7,25,buy,2.5,Palantir Technologies Inc
+06-05-2024,CCI,MANUAL,USD,113.43,25,buy,4.95,Crown Castle Inc
+06-05-2024,UNH,MANUAL,USD,0.62,9,dividend,0,UnitedHealth Group Inc
+06-05-2024,ORCL,MANUAL,USD,121.55,10,sell,0,Oracle Corporation
+06-05-2024,PANW,MANUAL,USD,313.5,6,sell,0,Palo Alto Networks Inc
+08-05-2024,MS,MANUAL,USD,79.26,21,buy,2.5,Morgan Stanley
+08-05-2024,GOOGL,MANUAL,USD,139.15,23,buy,1.0,Alphabet Inc
+08-05-2024,AMZN,MANUAL,USD,1.14,6,dividend,0,Amazon.com Inc
+09-05-2024,PLD,MANUAL,USD,136.22,18,buy,0,Prologis Inc
+09-05-2024,SQ,MANUAL,USD,69.16,7,buy,1.0,Block Inc
+09-05-2024,AVGO,MANUAL,USD,1418.9,2,buy,2.5,Broadcom Inc
+13-05-2024,ORCL,MANUAL,USD,107.47,13,buy,1.0,Oracle Corporation
+13-05-2024,USB,MANUAL,USD,36.31,8,buy,4.95,US Bancorp
+13-05-2024,SOXX,MANUAL,USD,204.38,8,buy,6.95,iShares Semiconductor ETF
+13-05-2024,MS,MANUAL,USD,98.11,25,buy,0,Morgan Stanley
+13-05-2024,DE,MANUAL,USD,411.6,6,buy,6.95,Deere & Company
+13-05-2024,DE,MANUAL,USD,406.39,10,buy,6.95,Deere & Company
+13-05-2024,PSA,MANUAL,USD,266.45,3,buy,6.95,Public Storage
+14-05-2024,SPY,MANUAL,USD,505.28,5,buy,0,SPDR S&P 500 ETF Trust
+14-05-2024,CCI,MANUAL,USD,109.3,16,buy,0,Crown Castle Inc
+14-05-2024,JPM,MANUAL,USD,152.46,2,buy,2.5,JPMorgan Chase & Co
+14-05-2024,ZS,MANUAL,USD,226.93,14,buy,0,Zscaler Inc
+14-05-2024,NOW,MANUAL,USD,671.88,1,sell,1.0,ServiceNow Inc
+15-05-2024,AMT,MANUAL,USD,205.97,12,buy,1.0,American Tower Corp
+15-05-2024,LCID,MANUAL,USD,4.2,18,buy,0,Lucid Group Inc
+15-05-2024,DIS,MANUAL,USD,82.74,8,sell,4.95,Walt Disney Company
+16-05-2024,O,MANUAL,USD,50.16,18,buy,2.5,Realty Income Corp
+16-05-2024,EEM,MANUAL,USD,39.96,1,buy,0,iShares MSCI Emerging Markets
+16-05-2024,PEP,MANUAL,USD,176.51,23,buy,0,PepsiCo Inc
+16-05-2024,NVDA,MANUAL,USD,559.87,5,buy,6.95,NVIDIA Corporation
+17-05-2024,XLP,MANUAL,USD,74.01,30,buy,0,Consumer Staples Select SPDR
+17-05-2024,SQ,MANUAL,USD,79.0,21,buy,6.95,Block Inc
+17-05-2024,CMG,MANUAL,USD,1.93,39,dividend,0,Chipotle Mexican Grill Inc
+17-05-2024,NKE,MANUAL,USD,89.22,4,sell,6.95,Nike Inc
+20-05-2024,PLD,MANUAL,USD,123.45,1,buy,0,Prologis Inc
+20-05-2024,QCOM,MANUAL,USD,167.67,5,buy,4.95,Qualcomm Inc
+20-05-2024,VZ,MANUAL,USD,40.3,22,buy,0,Verizon Communications Inc
+20-05-2024,O,MANUAL,USD,55.26,23,buy,4.95,Realty Income Corp
+20-05-2024,USB,MANUAL,USD,42.25,28,buy,6.95,US Bancorp
+20-05-2024,CVX,MANUAL,USD,156.02,24,buy,4.95,Chevron Corporation
+20-05-2024,YUM,MANUAL,USD,1.86,31,dividend,0,Yum Brands Inc
+21-05-2024,EEM,MANUAL,USD,38.67,24,buy,0,iShares MSCI Emerging Markets
+21-05-2024,VZ,MANUAL,USD,2.27,50,dividend,0,Verizon Communications Inc
+22-05-2024,DIS,MANUAL,USD,80.92,18,buy,1.0,Walt Disney Company
+22-05-2024,WFC,MANUAL,USD,44.28,19,buy,6.95,Wells Fargo & Company
+22-05-2024,NFLX,MANUAL,USD,2.42,7,dividend,0,Netflix Inc
+22-05-2024,XLP,MANUAL,USD,0.51,17,dividend,0,Consumer Staples Select SPDR
+23-05-2024,BND,MANUAL,USD,72.51,2,buy,0,Vanguard Total Bond Market ETF
+23-05-2024,LOW,MANUAL,USD,207.11,4,buy,4.95,Lowes Companies Inc
+23-05-2024,V,MANUAL,USD,242.04,12,buy,6.95,Visa Inc
+23-05-2024,CRWD,MANUAL,USD,1.24,42,dividend,0,CrowdStrike Holdings Inc
+24-05-2024,CSCO,MANUAL,USD,48.24,24,buy,4.95,Cisco Systems Inc
+24-05-2024,QCOM,MANUAL,USD,154.22,20,buy,4.95,Qualcomm Inc
+27-05-2024,WFC,MANUAL,USD,54.99,29,buy,4.95,Wells Fargo & Company
+27-05-2024,COST,MANUAL,USD,835.9,5,buy,4.95,Costco Wholesale Corp
+27-05-2024,GS,MANUAL,USD,448.55,12,buy,4.95,Goldman Sachs Group Inc
+27-05-2024,MS,MANUAL,USD,1.63,33,dividend,0,Morgan Stanley
+27-05-2024,PYPL,MANUAL,USD,61.58,10,sell,1.0,PayPal Holdings Inc
+28-05-2024,V,MANUAL,USD,269.84,11,buy,4.95,Visa Inc
+28-05-2024,LOW,MANUAL,USD,208.35,4,buy,4.95,Lowes Companies Inc
+28-05-2024,ADBE,MANUAL,USD,549.91,3,buy,0,Adobe Inc
+28-05-2024,NOW,MANUAL,USD,605.7,5,buy,4.95,ServiceNow Inc
+28-05-2024,GS,MANUAL,USD,359.81,12,buy,6.95,Goldman Sachs Group Inc
+29-05-2024,SCHD,MANUAL,USD,71.36,25,buy,0,Schwab US Dividend Equity ETF
+30-05-2024,BLK,MANUAL,USD,810.41,4,buy,0,BlackRock Inc
+31-05-2024,GOOGL,MANUAL,USD,164.72,22,buy,2.5,Alphabet Inc
+31-05-2024,JNJ,MANUAL,USD,158.47,2,buy,0,Johnson & Johnson
+31-05-2024,WMT,MANUAL,USD,157.65,26,buy,4.95,Walmart Inc
+31-05-2024,HD,MANUAL,USD,357.69,12,buy,1.0,The Home Depot Inc
+31-05-2024,XLI,MANUAL,USD,121.23,22,buy,1.0,Industrial Select Sector SPDR
+31-05-2024,BAC,MANUAL,USD,29.53,3,sell,4.95,Bank of America Corp
+03-06-2024,NFLX,MANUAL,USD,568.57,2,buy,2.5,Netflix Inc
+03-06-2024,HD,MANUAL,USD,327.44,13,buy,0,The Home Depot Inc
+03-06-2024,LCID,MANUAL,USD,3.64,18,buy,2.5,Lucid Group Inc
+03-06-2024,SOXX,MANUAL,USD,227.91,3,buy,0,iShares Semiconductor ETF
+03-06-2024,UNH,MANUAL,USD,457.69,5,buy,4.95,UnitedHealth Group Inc
+03-06-2024,SNOW,MANUAL,USD,142.02,17,buy,2.5,Snowflake Inc
+03-06-2024,AMD,MANUAL,USD,168.1,16,buy,1.0,Advanced Micro Devices Inc
+04-06-2024,HYG,MANUAL,USD,77.62,28,buy,2.5,iShares iBoxx High Yield Corp
+04-06-2024,ABNB,MANUAL,USD,121.25,16,buy,0,Airbnb Inc
+05-06-2024,LCID,MANUAL,USD,4.07,1,buy,4.95,Lucid Group Inc
+05-06-2024,BLK,MANUAL,USD,0.95,8,dividend,0,BlackRock Inc
+06-06-2024,TGT,MANUAL,USD,127.85,7,buy,0,Target Corporation
+06-06-2024,UNH,MANUAL,USD,2.42,36,dividend,0,UnitedHealth Group Inc
+10-06-2024,TLT,MANUAL,USD,87.91,25,buy,1.0,iShares 20+ Year Treasury Bond
+10-06-2024,BA,MANUAL,USD,179.06,4,buy,4.95,Boeing Company
+10-06-2024,USB,MANUAL,USD,38.85,5,buy,4.95,US Bancorp
+10-06-2024,SBUX,MANUAL,USD,96.99,1,buy,4.95,Starbucks Corporation
+10-06-2024,MS,MANUAL,USD,0.78,15,dividend,0,Morgan Stanley
+10-06-2024,COIN,MANUAL,USD,92.12,6,sell,0,Coinbase Global Inc
+11-06-2024,TGT,MANUAL,USD,150.9,15,buy,0,Target Corporation
+12-06-2024,PLTR,MANUAL,USD,17.26,6,buy,0,Palantir Technologies Inc
+13-06-2024,NOW,MANUAL,USD,615.59,1,buy,0,ServiceNow Inc
+14-06-2024,CRWD,MANUAL,USD,302.14,2,buy,0,CrowdStrike Holdings Inc
+14-06-2024,CRM,MANUAL,USD,278.7,2,buy,6.95,Salesforce Inc
+14-06-2024,COIN,MANUAL,USD,166.72,27,buy,0,Coinbase Global Inc
+14-06-2024,BND,MANUAL,USD,1.5,28,dividend,0,Vanguard Total Bond Market ETF
+17-06-2024,ABNB,MANUAL,USD,142.57,8,buy,4.95,Airbnb Inc
+17-06-2024,SBUX,MANUAL,USD,83.0,3,buy,2.5,Starbucks Corporation
+17-06-2024,GLD,MANUAL,USD,242.64,2,buy,4.95,SPDR Gold Shares
+17-06-2024,XLE,MANUAL,USD,85.77,20,buy,0,Energy Select Sector SPDR
+17-06-2024,AVGO,MANUAL,USD,1385.54,4,buy,4.95,Broadcom Inc
+17-06-2024,PYPL,MANUAL,USD,65.76,24,buy,0,PayPal Holdings Inc
+17-06-2024,YUM,MANUAL,USD,138.56,15,buy,6.95,Yum Brands Inc
+17-06-2024,XLF,MANUAL,USD,34.63,29,buy,0,Financial Select Sector SPDR
+17-06-2024,HD,MANUAL,USD,312.51,8,buy,2.5,The Home Depot Inc
+17-06-2024,CAT,MANUAL,USD,1.97,21,dividend,0,Caterpillar Inc
+17-06-2024,XLI,MANUAL,USD,1.21,25,dividend,0,Industrial Select Sector SPDR
+18-06-2024,NKE,MANUAL,USD,1.87,11,dividend,0,Nike Inc
+19-06-2024,MARA,MANUAL,USD,17.27,8,buy,4.95,Marathon Digital Holdings
+19-06-2024,BRK-B,MANUAL,USD,0.92,45,dividend,0,Berkshire Hathaway Inc
+19-06-2024,WFC,MANUAL,USD,56.9,10,sell,4.95,Wells Fargo & Company
+21-06-2024,RIVN,MANUAL,USD,14.56,30,buy,6.95,Rivian Automotive Inc
+21-06-2024,GS,MANUAL,USD,346.5,7,buy,4.95,Goldman Sachs Group Inc
+21-06-2024,AAPL,MANUAL,USD,186.69,28,buy,0,Apple Inc
+21-06-2024,PYPL,MANUAL,USD,63.55,19,buy,0,PayPal Holdings Inc
+21-06-2024,NFLX,MANUAL,USD,1.85,22,dividend,0,Netflix Inc
+24-06-2024,PLD,MANUAL,USD,117.47,26,buy,0,Prologis Inc
+24-06-2024,HD,MANUAL,USD,360.35,3,buy,4.95,The Home Depot Inc
+24-06-2024,SPY,MANUAL,USD,496.58,13,buy,0,SPDR S&P 500 ETF Trust
+24-06-2024,AMD,MANUAL,USD,124.19,4,buy,1.0,Advanced Micro Devices Inc
+24-06-2024,MSFT,MANUAL,USD,369.16,15,buy,6.95,Microsoft Corporation
+25-06-2024,UNH,MANUAL,USD,533.85,1,buy,1.0,UnitedHealth Group Inc
+25-06-2024,XLI,MANUAL,USD,117.59,17,buy,0,Industrial Select Sector SPDR
+27-06-2024,ARKK,MANUAL,USD,0.38,18,dividend,0,ARK Innovation ETF
+01-07-2024,XLP,MANUAL,USD,73.26,17,buy,0,Consumer Staples Select SPDR
+01-07-2024,GLD,MANUAL,USD,209.99,2,buy,1.0,SPDR Gold Shares
+01-07-2024,PLTR,MANUAL,USD,17.72,22,buy,0,Palantir Technologies Inc
+01-07-2024,LCID,MANUAL,USD,5.01,4,buy,0,Lucid Group Inc
+01-07-2024,CCI,MANUAL,USD,115.22,14,buy,4.95,Crown Castle Inc
+01-07-2024,VTI,MANUAL,USD,217.75,14,buy,4.95,Vanguard Total Stock Market ETF
+01-07-2024,NET,MANUAL,USD,68.18,22,buy,2.5,Cloudflare Inc
+01-07-2024,XLE,MANUAL,USD,89.53,18,buy,4.95,Energy Select Sector SPDR
+01-07-2024,DE,MANUAL,USD,388.02,6,buy,0,Deere & Company
+01-07-2024,LOW,MANUAL,USD,1.57,48,dividend,0,Lowes Companies Inc
+01-07-2024,ZS,MANUAL,USD,239.31,8,sell,4.95,Zscaler Inc
+02-07-2024,MSFT,MANUAL,USD,341.39,1,buy,4.95,Microsoft Corporation
+02-07-2024,NFLX,MANUAL,USD,466.97,13,buy,6.95,Netflix Inc
+02-07-2024,USB,MANUAL,USD,35.12,21,buy,0,US Bancorp
+02-07-2024,XLF,MANUAL,USD,39.19,10,buy,4.95,Financial Select Sector SPDR
+02-07-2024,LOW,MANUAL,USD,217.16,7,buy,0,Lowes Companies Inc
+02-07-2024,COST,MANUAL,USD,615.96,4,buy,4.95,Costco Wholesale Corp
+02-07-2024,XLV,MANUAL,USD,135.62,4,buy,1.0,Health Care Select Sector SPDR
+02-07-2024,DDOG,MANUAL,USD,1.45,24,dividend,0,Datadog Inc
+03-07-2024,VTI,MANUAL,USD,229.89,14,buy,4.95,Vanguard Total Stock Market ETF
+03-07-2024,MARA,MANUAL,USD,19.35,20,buy,0,Marathon Digital Holdings
+03-07-2024,BLK,MANUAL,USD,823.21,5,buy,2.5,BlackRock Inc
+03-07-2024,IWM,MANUAL,USD,215.03,8,buy,6.95,iShares Russell 2000 ETF
+03-07-2024,TGT,MANUAL,USD,149.87,11,buy,0,Target Corporation
+03-07-2024,VGT,MANUAL,USD,489.61,3,buy,0,Vanguard Info Technology ETF
+04-07-2024,JNJ,MANUAL,USD,164.02,23,buy,0,Johnson & Johnson
+04-07-2024,JNJ,MANUAL,USD,152.17,25,buy,4.95,Johnson & Johnson
+04-07-2024,MRK,MANUAL,USD,0.81,14,dividend,0,Merck & Co Inc
+05-07-2024,T,MANUAL,USD,15.06,4,buy,2.5,AT&T Inc
+05-07-2024,GS,MANUAL,USD,350.98,14,buy,6.95,Goldman Sachs Group Inc
+05-07-2024,AMT,MANUAL,USD,201.51,5,buy,0,American Tower Corp
+05-07-2024,CMG,MANUAL,USD,2991.47,4,buy,4.95,Chipotle Mexican Grill Inc
+05-07-2024,LOW,MANUAL,USD,208.94,4,buy,0,Lowes Companies Inc
+05-07-2024,CAT,MANUAL,USD,288.08,6,sell,4.95,Caterpillar Inc
+08-07-2024,SOXX,MANUAL,USD,228.08,12,buy,4.95,iShares Semiconductor ETF
+08-07-2024,USB,MANUAL,USD,43.3,15,buy,2.5,US Bancorp
+08-07-2024,XLP,MANUAL,USD,75.95,3,buy,0,Consumer Staples Select SPDR
+08-07-2024,XLP,MANUAL,USD,78.68,29,buy,0,Consumer Staples Select SPDR
+08-07-2024,LLY,MANUAL,USD,658.45,3,buy,0,Eli Lilly and Company
+08-07-2024,PLTR,MANUAL,USD,20.26,28,buy,4.95,Palantir Technologies Inc
+08-07-2024,LQD,MANUAL,USD,109.72,25,buy,0,iShares Investment Grade Corp
+08-07-2024,XLK,MANUAL,USD,181.36,3,buy,6.95,Technology Select Sector SPDR
+08-07-2024,O,MANUAL,USD,58.19,7,buy,6.95,Realty Income Corp
+08-07-2024,VNQ,MANUAL,USD,83.47,11,buy,4.95,Vanguard Real Estate ETF
+08-07-2024,COIN,MANUAL,USD,130.75,15,buy,4.95,Coinbase Global Inc
+08-07-2024,PLTR,MANUAL,USD,16.04,24,buy,0,Palantir Technologies Inc
+08-07-2024,O,MANUAL,USD,53.13,14,buy,2.5,Realty Income Corp
+08-07-2024,BLK,MANUAL,USD,712.46,4,buy,0,BlackRock Inc
+08-07-2024,CSCO,MANUAL,USD,55.88,3,sell,1.0,Cisco Systems Inc
+09-07-2024,PG,MANUAL,USD,164.22,7,buy,0,Procter & Gamble Co
+10-07-2024,MS,MANUAL,USD,1.96,14,dividend,0,Morgan Stanley
+11-07-2024,O,MANUAL,USD,54.62,2,buy,4.95,Realty Income Corp
+11-07-2024,AVGO,MANUAL,USD,1180.25,3,buy,0,Broadcom Inc
+12-07-2024,RIVN,MANUAL,USD,19.88,12,buy,0,Rivian Automotive Inc
+15-07-2024,HYG,MANUAL,USD,77.0,29,buy,4.95,iShares iBoxx High Yield Corp
+15-07-2024,HD,MANUAL,USD,329.07,15,buy,0,The Home Depot Inc
+15-07-2024,AVGO,MANUAL,USD,1318.61,5,buy,6.95,Broadcom Inc
+15-07-2024,TXN,MANUAL,USD,172.29,2,buy,0,Texas Instruments Inc
+15-07-2024,AAPL,MANUAL,USD,193.9,11,buy,4.95,Apple Inc
+15-07-2024,NVDA,MANUAL,USD,0.58,17,dividend,0,NVIDIA Corporation
+16-07-2024,CMG,MANUAL,USD,3060.71,5,buy,4.95,Chipotle Mexican Grill Inc
+16-07-2024,PYPL,MANUAL,USD,60.56,21,buy,4.95,PayPal Holdings Inc
+17-07-2024,TSLA,MANUAL,USD,214.67,12,buy,6.95,Tesla Inc
+17-07-2024,ABBV,MANUAL,USD,151.83,9,buy,6.95,AbbVie Inc
+17-07-2024,ABNB,MANUAL,USD,120.3,8,sell,0,Airbnb Inc
+18-07-2024,CMG,MANUAL,USD,3112.8,5,buy,4.95,Chipotle Mexican Grill Inc
+18-07-2024,PLTR,MANUAL,USD,20.15,18,buy,0,Palantir Technologies Inc
+18-07-2024,SCHD,MANUAL,USD,73.41,27,buy,1.0,Schwab US Dividend Equity ETF
+18-07-2024,BND,MANUAL,USD,72.87,3,sell,4.95,Vanguard Total Bond Market ETF
+19-07-2024,ABNB,MANUAL,USD,124.9,21,buy,0,Airbnb Inc
+19-07-2024,NOW,MANUAL,USD,616.16,4,buy,4.95,ServiceNow Inc
+19-07-2024,COIN,MANUAL,USD,107.97,20,buy,0,Coinbase Global Inc
+19-07-2024,MCD,MANUAL,USD,261.08,8,buy,4.95,McDonalds Corp
+19-07-2024,CAT,MANUAL,USD,264.99,2,buy,0,Caterpillar Inc
+19-07-2024,MARA,MANUAL,USD,23.89,9,buy,1.0,Marathon Digital Holdings
+19-07-2024,NKE,MANUAL,USD,81.42,25,buy,0,Nike Inc
+19-07-2024,O,MANUAL,USD,51.76,28,buy,0,Realty Income Corp
+19-07-2024,SQ,MANUAL,USD,0.3,10,dividend,0,Block Inc
+22-07-2024,BRK-B,MANUAL,USD,341.78,2,buy,4.95,Berkshire Hathaway Inc
+22-07-2024,XLF,MANUAL,USD,35.04,29,buy,0,Financial Select Sector SPDR
+22-07-2024,UNH,MANUAL,USD,513.98,2,buy,2.5,UnitedHealth Group Inc
+22-07-2024,TGT,MANUAL,USD,130.1,13,buy,6.95,Target Corporation
+22-07-2024,DIS,MANUAL,USD,91.26,10,buy,2.5,Walt Disney Company
+22-07-2024,C,MANUAL,USD,52.0,6,buy,4.95,Citigroup Inc
+22-07-2024,MSFT,MANUAL,USD,408.73,2,buy,0,Microsoft Corporation
+22-07-2024,XLV,MANUAL,USD,131.63,21,buy,0,Health Care Select Sector SPDR
+22-07-2024,TXN,MANUAL,USD,178.51,16,buy,0,Texas Instruments Inc
+22-07-2024,MARA,MANUAL,USD,12.31,10,buy,1.0,Marathon Digital Holdings
+22-07-2024,GS,MANUAL,USD,449.7,7,buy,6.95,Goldman Sachs Group Inc
+22-07-2024,SQ,MANUAL,USD,61.54,21,buy,1.0,Block Inc
+22-07-2024,XLF,MANUAL,USD,1.08,35,dividend,0,Financial Select Sector SPDR
+22-07-2024,SLV,MANUAL,USD,27.16,2,sell,4.95,iShares Silver Trust
+22-07-2024,PEP,MANUAL,USD,175.23,6,sell,1.0,PepsiCo Inc
+23-07-2024,VTI,MANUAL,USD,220.36,14,buy,4.95,Vanguard Total Stock Market ETF
+23-07-2024,WMT,MANUAL,USD,157.33,20,buy,1.0,Walmart Inc
+23-07-2024,CMG,MANUAL,USD,2922.04,5,buy,4.95,Chipotle Mexican Grill Inc
+23-07-2024,QQQ,MANUAL,USD,443.83,6,buy,1.0,Invesco QQQ Trust
+23-07-2024,INTC,MANUAL,USD,2.41,48,dividend,0,Intel Corporation
+23-07-2024,IWM,MANUAL,USD,0.69,17,dividend,0,iShares Russell 2000 ETF
+24-07-2024,CAT,MANUAL,USD,291.24,1,buy,0,Caterpillar Inc
+24-07-2024,MRK,MANUAL,USD,111.54,30,buy,1.0,Merck & Co Inc
+24-07-2024,AMZN,MANUAL,USD,0.38,23,dividend,0,Amazon.com Inc
+25-07-2024,ZS,MANUAL,USD,2.5,32,dividend,0,Zscaler Inc
+26-07-2024,META,MANUAL,USD,352.33,2,buy,6.95,Meta Platforms Inc
+26-07-2024,AVGO,MANUAL,USD,937.64,3,buy,4.95,Broadcom Inc
+26-07-2024,QCOM,MANUAL,USD,158.76,1,sell,4.95,Qualcomm Inc
+29-07-2024,WMT,MANUAL,USD,177.1,14,buy,0,Walmart Inc
+29-07-2024,JNJ,MANUAL,USD,160.29,20,buy,4.95,Johnson & Johnson
+29-07-2024,BRK-B,MANUAL,USD,388.97,6,buy,0,Berkshire Hathaway Inc
+29-07-2024,GLD,MANUAL,USD,245.36,12,buy,4.95,SPDR Gold Shares
+29-07-2024,ZS,MANUAL,USD,234.31,10,buy,0,Zscaler Inc
+29-07-2024,VXUS,MANUAL,USD,53.41,15,buy,4.95,Vanguard Total Intl Stock ETF
+29-07-2024,ZS,MANUAL,USD,225.78,11,buy,1.0,Zscaler Inc
+29-07-2024,VXUS,MANUAL,USD,56.14,20,buy,6.95,Vanguard Total Intl Stock ETF
+29-07-2024,SBUX,MANUAL,USD,91.65,9,buy,4.95,Starbucks Corporation
+29-07-2024,VNQ,MANUAL,USD,86.83,25,buy,1.0,Vanguard Real Estate ETF
+29-07-2024,CAT,MANUAL,USD,281.52,13,buy,1.0,Caterpillar Inc
+29-07-2024,SPY,MANUAL,USD,500.25,4,buy,4.95,SPDR S&P 500 ETF Trust
+29-07-2024,MRK,MANUAL,USD,118.4,27,buy,0,Merck & Co Inc
+29-07-2024,ADBE,MANUAL,USD,491.11,7,sell,4.95,Adobe Inc
+30-07-2024,BRK-B,MANUAL,USD,1.65,46,dividend,0,Berkshire Hathaway Inc
+31-07-2024,C,MANUAL,USD,56.23,22,buy,0,Citigroup Inc
+31-07-2024,ARKK,MANUAL,USD,39.81,8,buy,6.95,ARK Innovation ETF
+31-07-2024,ARKK,MANUAL,USD,41.52,22,buy,6.95,ARK Innovation ETF
+31-07-2024,XLE,MANUAL,USD,92.52,17,buy,0,Energy Select Sector SPDR
+01-08-2024,PANW,MANUAL,USD,279.98,1,buy,1.0,Palo Alto Networks Inc
+01-08-2024,JPM,MANUAL,USD,190.67,26,buy,4.95,JPMorgan Chase & Co
+02-08-2024,BAC,MANUAL,USD,34.38,29,buy,4.95,Bank of America Corp
+02-08-2024,SNOW,MANUAL,USD,155.63,21,buy,6.95,Snowflake Inc
+05-08-2024,MCD,MANUAL,USD,285.72,6,buy,1.0,McDonalds Corp
+05-08-2024,GLD,MANUAL,USD,215.17,5,buy,0,SPDR Gold Shares
+05-08-2024,AMT,MANUAL,USD,184.16,16,buy,0,American Tower Corp
+05-08-2024,DE,MANUAL,USD,402.75,12,buy,6.95,Deere & Company
+05-08-2024,MRK,MANUAL,USD,105.6,12,buy,1.0,Merck & Co Inc
+05-08-2024,WFC,MANUAL,USD,51.02,20,buy,4.95,Wells Fargo & Company
+05-08-2024,VXUS,MANUAL,USD,56.97,28,buy,0,Vanguard Total Intl Stock ETF
+05-08-2024,JNJ,MANUAL,USD,155.71,12,buy,1.0,Johnson & Johnson
+05-08-2024,O,MANUAL,USD,1.71,43,dividend,0,Realty Income Corp
+05-08-2024,MS,MANUAL,USD,2.41,44,dividend,0,Morgan Stanley
+06-08-2024,C,MANUAL,USD,46.25,22,buy,0,Citigroup Inc
+06-08-2024,PANW,MANUAL,USD,325.52,4,buy,0,Palo Alto Networks Inc
+06-08-2024,MCD,MANUAL,USD,262.53,2,sell,4.95,McDonalds Corp
+07-08-2024,BAC,MANUAL,USD,37.21,15,buy,0,Bank of America Corp
+07-08-2024,SNOW,MANUAL,USD,147.76,28,buy,0,Snowflake Inc
+07-08-2024,QQQ,MANUAL,USD,428.72,5,sell,4.95,Invesco QQQ Trust
+08-08-2024,VOO,MANUAL,USD,418.07,10,buy,0,Vanguard S&P 500 ETF
+08-08-2024,XLP,MANUAL,USD,72.55,27,buy,0,Consumer Staples Select SPDR
+09-08-2024,ZS,MANUAL,USD,214.57,13,buy,6.95,Zscaler Inc
+09-08-2024,DIS,MANUAL,USD,94.58,22,buy,0,Walt Disney Company
+09-08-2024,XLP,MANUAL,USD,79.2,26,buy,0,Consumer Staples Select SPDR
+09-08-2024,SCHD,MANUAL,USD,74.8,30,buy,4.95,Schwab US Dividend Equity ETF
+09-08-2024,JPM,MANUAL,USD,175.94,1,sell,6.95,JPMorgan Chase & Co
+12-08-2024,MSFT,MANUAL,USD,355.59,8,buy,1.0,Microsoft Corporation
+12-08-2024,SLV,MANUAL,USD,25.21,11,buy,6.95,iShares Silver Trust
+12-08-2024,CCI,MANUAL,USD,100.81,24,buy,0,Crown Castle Inc
+12-08-2024,CMG,MANUAL,USD,2591.6,5,buy,0,Chipotle Mexican Grill Inc
+12-08-2024,CSCO,MANUAL,USD,52.6,16,buy,0,Cisco Systems Inc
+12-08-2024,V,MANUAL,USD,273.45,2,buy,0,Visa Inc
+12-08-2024,XLV,MANUAL,USD,138.25,3,buy,1.0,Health Care Select Sector SPDR
+12-08-2024,AAPL,MANUAL,USD,176.85,18,buy,0,Apple Inc
+12-08-2024,AMD,MANUAL,USD,121.53,24,buy,4.95,Advanced Micro Devices Inc
+12-08-2024,JPM,MANUAL,USD,187.43,21,buy,0,JPMorgan Chase & Co
+12-08-2024,CVX,MANUAL,USD,1.87,34,dividend,0,Chevron Corporation
+12-08-2024,LCID,MANUAL,USD,1.71,50,dividend,0,Lucid Group Inc
+13-08-2024,ADBE,MANUAL,USD,450.6,7,buy,0,Adobe Inc
+13-08-2024,HYG,MANUAL,USD,74.25,15,buy,2.5,iShares iBoxx High Yield Corp
+14-08-2024,COIN,MANUAL,USD,118.04,1,buy,1.0,Coinbase Global Inc
+14-08-2024,BRK-B,MANUAL,USD,428.06,7,buy,4.95,Berkshire Hathaway Inc
+14-08-2024,SNOW,MANUAL,USD,159.13,20,buy,1.0,Snowflake Inc
+14-08-2024,GS,MANUAL,USD,420.98,3,buy,4.95,Goldman Sachs Group Inc
+14-08-2024,MCD,MANUAL,USD,263.58,7,buy,2.5,McDonalds Corp
+15-08-2024,PLD,MANUAL,USD,117.94,7,buy,2.5,Prologis Inc
+15-08-2024,LQD,MANUAL,USD,1.92,41,dividend,0,iShares Investment Grade Corp
+16-08-2024,JPM,MANUAL,USD,172.98,5,buy,6.95,JPMorgan Chase & Co
+16-08-2024,BA,MANUAL,USD,180.45,28,buy,6.95,Boeing Company
+16-08-2024,XLK,MANUAL,USD,202.55,4,buy,0,Technology Select Sector SPDR
+16-08-2024,GOOGL,MANUAL,USD,161.72,21,buy,4.95,Alphabet Inc
+19-08-2024,XLF,MANUAL,USD,38.43,26,buy,0,Financial Select Sector SPDR
+19-08-2024,C,MANUAL,USD,48.08,22,buy,1.0,Citigroup Inc
+19-08-2024,CCI,MANUAL,USD,109.44,24,buy,0,Crown Castle Inc
+19-08-2024,YUM,MANUAL,USD,127.6,27,buy,0,Yum Brands Inc
+19-08-2024,ZS,MANUAL,USD,209.23,6,buy,0,Zscaler Inc
+19-08-2024,EEM,MANUAL,USD,40.16,2,buy,0,iShares MSCI Emerging Markets
+19-08-2024,UBER,MANUAL,USD,47.78,30,buy,0,Uber Technologies Inc
+19-08-2024,CRWD,MANUAL,USD,211.37,5,buy,0,CrowdStrike Holdings Inc
+19-08-2024,PYPL,MANUAL,USD,1.17,39,dividend,0,PayPal Holdings Inc
+19-08-2024,ORCL,MANUAL,USD,121.58,1,sell,6.95,Oracle Corporation
+20-08-2024,O,MANUAL,USD,53.69,18,buy,1.0,Realty Income Corp
+20-08-2024,PYPL,MANUAL,USD,55.81,4,buy,2.5,PayPal Holdings Inc
+20-08-2024,COST,MANUAL,USD,567.55,4,buy,0,Costco Wholesale Corp
+21-08-2024,CVX,MANUAL,USD,154.46,1,buy,4.95,Chevron Corporation
+21-08-2024,TGT,MANUAL,USD,128.74,9,buy,4.95,Target Corporation
+21-08-2024,NKE,MANUAL,USD,97.18,17,buy,0,Nike Inc
+21-08-2024,MARA,MANUAL,USD,16.27,8,sell,1.0,Marathon Digital Holdings
+21-08-2024,CSCO,MANUAL,USD,57.35,4,sell,4.95,Cisco Systems Inc
+22-08-2024,GS,MANUAL,USD,333.42,8,buy,0,Goldman Sachs Group Inc
+23-08-2024,NET,MANUAL,USD,75.0,19,buy,2.5,Cloudflare Inc
+23-08-2024,COST,MANUAL,USD,803.8,3,buy,6.95,Costco Wholesale Corp
+23-08-2024,YUM,MANUAL,USD,127.29,19,buy,1.0,Yum Brands Inc
+23-08-2024,CCI,MANUAL,USD,104.78,25,buy,4.95,Crown Castle Inc
+23-08-2024,VXUS,MANUAL,USD,55.9,26,buy,4.95,Vanguard Total Intl Stock ETF
+26-08-2024,GOOGL,MANUAL,USD,123.71,9,buy,4.95,Alphabet Inc
+26-08-2024,PLTR,MANUAL,USD,16.41,28,buy,0,Palantir Technologies Inc
+26-08-2024,ADBE,MANUAL,USD,476.04,12,buy,0,Adobe Inc
+26-08-2024,SLV,MANUAL,USD,21.94,10,buy,2.5,iShares Silver Trust
+26-08-2024,C,MANUAL,USD,64.77,4,sell,0,Citigroup Inc
+27-08-2024,CVX,MANUAL,USD,159.8,10,buy,0,Chevron Corporation
+27-08-2024,DDOG,MANUAL,USD,117.57,28,buy,2.5,Datadog Inc
+28-08-2024,CMG,MANUAL,USD,2385.13,1,buy,0,Chipotle Mexican Grill Inc
+28-08-2024,PG,MANUAL,USD,1.11,24,dividend,0,Procter & Gamble Co
+29-08-2024,USB,MANUAL,USD,35.02,5,buy,1.0,US Bancorp
+29-08-2024,QCOM,MANUAL,USD,138.96,19,buy,6.95,Qualcomm Inc
+29-08-2024,MARA,MANUAL,USD,13.19,2,buy,4.95,Marathon Digital Holdings
+29-08-2024,EEM,MANUAL,USD,43.38,29,buy,4.95,iShares MSCI Emerging Markets
+29-08-2024,VTI,MANUAL,USD,247.81,1,buy,2.5,Vanguard Total Stock Market ETF
+30-08-2024,VZ,MANUAL,USD,30.67,17,buy,0,Verizon Communications Inc
+30-08-2024,AMD,MANUAL,USD,137.88,15,buy,4.95,Advanced Micro Devices Inc
+30-08-2024,PLTR,MANUAL,USD,22.66,5,sell,0,Palantir Technologies Inc
+30-08-2024,XLP,MANUAL,USD,77.48,5,sell,4.95,Consumer Staples Select SPDR
+02-09-2024,CSCO,MANUAL,USD,52.77,1,buy,0,Cisco Systems Inc
+02-09-2024,QQQ,MANUAL,USD,422.16,4,buy,0,Invesco QQQ Trust
+02-09-2024,SNOW,MANUAL,USD,156.1,28,buy,4.95,Snowflake Inc
+02-09-2024,YUM,MANUAL,USD,132.05,2,buy,4.95,Yum Brands Inc
+02-09-2024,SLV,MANUAL,USD,23.44,1,buy,4.95,iShares Silver Trust
+02-09-2024,V,MANUAL,USD,269.8,9,buy,0,Visa Inc
+02-09-2024,AMZN,MANUAL,USD,136.69,13,buy,0,Amazon.com Inc
+02-09-2024,XLV,MANUAL,USD,139.99,17,buy,6.95,Health Care Select Sector SPDR
+02-09-2024,KO,MANUAL,USD,56.98,7,sell,4.95,Coca-Cola Company
+03-09-2024,ABBV,MANUAL,USD,145.26,26,buy,4.95,AbbVie Inc
+03-09-2024,LLY,MANUAL,USD,887.61,1,buy,4.95,Eli Lilly and Company
+04-09-2024,YUM,MANUAL,USD,127.32,25,buy,0,Yum Brands Inc
+04-09-2024,T,MANUAL,USD,15.11,5,buy,4.95,AT&T Inc
+04-09-2024,PANW,MANUAL,USD,339.13,14,buy,6.95,Palo Alto Networks Inc
+04-09-2024,CMG,MANUAL,USD,2922.41,2,sell,1.0,Chipotle Mexican Grill Inc
+05-09-2024,NKE,MANUAL,USD,85.92,15,buy,2.5,Nike Inc
+05-09-2024,C,MANUAL,USD,54.13,24,buy,2.5,Citigroup Inc
+05-09-2024,XOM,MANUAL,USD,100.78,1,buy,1.0,Exxon Mobil Corporation
+05-09-2024,XLV,MANUAL,USD,137.97,6,buy,4.95,Health Care Select Sector SPDR
+06-09-2024,T,MANUAL,USD,21.14,14,buy,4.95,AT&T Inc
+06-09-2024,INTC,MANUAL,USD,0.7,48,dividend,0,Intel Corporation
+09-09-2024,XLE,MANUAL,USD,85.4,3,buy,4.95,Energy Select Sector SPDR
+09-09-2024,NVDA,MANUAL,USD,604.22,2,buy,0,NVIDIA Corporation
+09-09-2024,QQQ,MANUAL,USD,1.59,11,dividend,0,Invesco QQQ Trust
+10-09-2024,ABBV,MANUAL,USD,154.32,26,buy,4.95,AbbVie Inc
+10-09-2024,VNQ,MANUAL,USD,79.47,3,buy,2.5,Vanguard Real Estate ETF
+10-09-2024,QCOM,MANUAL,USD,153.75,18,buy,1.0,Qualcomm Inc
+10-09-2024,BA,MANUAL,USD,200.51,5,buy,0,Boeing Company
+10-09-2024,O,MANUAL,USD,57.26,10,buy,1.0,Realty Income Corp
+10-09-2024,BRK-B,MANUAL,USD,341.26,6,sell,4.95,Berkshire Hathaway Inc
+11-09-2024,PSA,MANUAL,USD,307.51,9,buy,4.95,Public Storage
+11-09-2024,MCD,MANUAL,USD,265.25,2,buy,1.0,McDonalds Corp
+12-09-2024,SCHD,MANUAL,USD,81.56,21,buy,4.95,Schwab US Dividend Equity ETF
+13-09-2024,NKE,MANUAL,USD,90.38,5,buy,4.95,Nike Inc
+16-09-2024,TLT,MANUAL,USD,91.35,7,buy,4.95,iShares 20+ Year Treasury Bond
+16-09-2024,KO,MANUAL,USD,61.07,24,buy,0,Coca-Cola Company
+16-09-2024,SCHW,MANUAL,USD,69.01,14,buy,0,Charles Schwab Corp
+16-09-2024,XLE,MANUAL,USD,0.42,13,dividend,0,Energy Select Sector SPDR
+16-09-2024,ZS,MANUAL,USD,192.59,4,sell,6.95,Zscaler Inc
+16-09-2024,IWM,MANUAL,USD,197.97,4,sell,1.0,iShares Russell 2000 ETF
+17-09-2024,USB,MANUAL,USD,34.66,22,buy,0,US Bancorp
+17-09-2024,NOW,MANUAL,USD,719.56,5,buy,1.0,ServiceNow Inc
+18-09-2024,DE,MANUAL,USD,403.46,1,buy,6.95,Deere & Company
+18-09-2024,ABBV,MANUAL,USD,150.47,10,buy,4.95,AbbVie Inc
+19-09-2024,ABNB,MANUAL,USD,134.25,24,buy,6.95,Airbnb Inc
+19-09-2024,ABBV,MANUAL,USD,157.09,12,buy,0,AbbVie Inc
+19-09-2024,UBER,MANUAL,USD,72.13,28,buy,4.95,Uber Technologies Inc
+19-09-2024,TLT,MANUAL,USD,98.81,23,buy,2.5,iShares 20+ Year Treasury Bond
+19-09-2024,AVGO,MANUAL,USD,1.31,25,dividend,0,Broadcom Inc
+23-09-2024,BND,MANUAL,USD,70.23,13,buy,4.95,Vanguard Total Bond Market ETF
+23-09-2024,PLD,MANUAL,USD,111.33,21,buy,2.5,Prologis Inc
+23-09-2024,ADBE,MANUAL,USD,535.3,5,buy,0,Adobe Inc
+23-09-2024,BLK,MANUAL,USD,777.18,1,buy,0,BlackRock Inc
+23-09-2024,SOXX,MANUAL,USD,236.53,5,buy,4.95,iShares Semiconductor ETF
+23-09-2024,UNH,MANUAL,USD,506.26,4,buy,6.95,UnitedHealth Group Inc
+23-09-2024,KO,MANUAL,USD,58.0,14,buy,4.95,Coca-Cola Company
+23-09-2024,USB,MANUAL,USD,44.76,5,sell,4.95,US Bancorp
+23-09-2024,GOOGL,MANUAL,USD,140.98,2,sell,4.95,Alphabet Inc
+24-09-2024,XLV,MANUAL,USD,136.12,9,buy,0,Health Care Select Sector SPDR
+24-09-2024,JPM,MANUAL,USD,188.16,8,buy,4.95,JPMorgan Chase & Co
+24-09-2024,KO,MANUAL,USD,56.39,7,buy,4.95,Coca-Cola Company
+24-09-2024,ORCL,MANUAL,USD,140.46,7,buy,4.95,Oracle Corporation
+24-09-2024,UNH,MANUAL,USD,478.1,5,buy,0,UnitedHealth Group Inc
+25-09-2024,VXUS,MANUAL,USD,56.44,25,buy,6.95,Vanguard Total Intl Stock ETF
+25-09-2024,CVX,MANUAL,USD,151.98,2,sell,6.95,Chevron Corporation
+26-09-2024,VOO,MANUAL,USD,441.02,10,buy,6.95,Vanguard S&P 500 ETF
+26-09-2024,ARKK,MANUAL,USD,40.0,4,buy,0,ARK Innovation ETF
+26-09-2024,ADBE,MANUAL,USD,559.31,3,buy,0,Adobe Inc
+26-09-2024,VGT,MANUAL,USD,1.9,19,dividend,0,Vanguard Info Technology ETF
+27-09-2024,MARA,MANUAL,USD,14.43,8,buy,0,Marathon Digital Holdings
+27-09-2024,KO,MANUAL,USD,64.24,23,buy,4.95,Coca-Cola Company
+30-09-2024,CAT,MANUAL,USD,301.36,9,buy,0,Caterpillar Inc
+30-09-2024,VXUS,MANUAL,USD,53.04,28,buy,1.0,Vanguard Total Intl Stock ETF
+30-09-2024,SLV,MANUAL,USD,20.43,12,buy,0,iShares Silver Trust
+30-09-2024,ABNB,MANUAL,USD,133.42,24,buy,0,Airbnb Inc
+30-09-2024,RIVN,MANUAL,USD,12.87,24,buy,0,Rivian Automotive Inc
+30-09-2024,SLV,MANUAL,USD,22.95,22,buy,0,iShares Silver Trust
+01-10-2024,DDOG,MANUAL,USD,99.7,12,buy,6.95,Datadog Inc
+02-10-2024,SCHW,MANUAL,USD,56.93,3,buy,6.95,Charles Schwab Corp
+03-10-2024,DDOG,MANUAL,USD,91.09,16,buy,0,Datadog Inc
+03-10-2024,SQ,MANUAL,USD,65.46,22,buy,0,Block Inc
+03-10-2024,SCHD,MANUAL,USD,1.69,31,dividend,0,Schwab US Dividend Equity ETF
+04-10-2024,CSCO,MANUAL,USD,49.67,23,buy,4.95,Cisco Systems Inc
+04-10-2024,RIVN,MANUAL,USD,17.39,22,buy,4.95,Rivian Automotive Inc
+04-10-2024,COIN,MANUAL,USD,86.01,12,buy,0,Coinbase Global Inc
+04-10-2024,WMT,MANUAL,USD,162.56,17,buy,4.95,Walmart Inc
+04-10-2024,VOO,MANUAL,USD,410.61,15,buy,0,Vanguard S&P 500 ETF
+04-10-2024,COIN,MANUAL,USD,114.13,4,buy,2.5,Coinbase Global Inc
+07-10-2024,VNQ,MANUAL,USD,85.78,25,buy,6.95,Vanguard Real Estate ETF
+07-10-2024,PEP,MANUAL,USD,169.88,25,buy,6.95,PepsiCo Inc
+07-10-2024,LLY,MANUAL,USD,609.15,3,buy,1.0,Eli Lilly and Company
+07-10-2024,SNOW,MANUAL,USD,144.59,3,buy,0,Snowflake Inc
+07-10-2024,SHOP,MANUAL,USD,70.58,23,buy,0,Shopify Inc
+07-10-2024,GOOGL,MANUAL,USD,158.68,28,buy,0,Alphabet Inc
+07-10-2024,DE,MANUAL,USD,354.79,6,buy,6.95,Deere & Company
+07-10-2024,LLY,MANUAL,USD,672.22,1,buy,0,Eli Lilly and Company
+07-10-2024,EEM,MANUAL,USD,43.73,20,buy,0,iShares MSCI Emerging Markets
+07-10-2024,DE,MANUAL,USD,1.7,43,dividend,0,Deere & Company
+07-10-2024,C,MANUAL,USD,2.34,21,dividend,0,Citigroup Inc
+07-10-2024,C,MANUAL,USD,56.05,8,sell,1.0,Citigroup Inc
+08-10-2024,ADBE,MANUAL,USD,473.98,11,buy,2.5,Adobe Inc
+08-10-2024,HD,MANUAL,USD,331.01,10,buy,0,The Home Depot Inc
+08-10-2024,COST,MANUAL,USD,768.47,5,buy,0,Costco Wholesale Corp
+08-10-2024,IWM,MANUAL,USD,183.86,4,sell,1.0,iShares Russell 2000 ETF
+09-10-2024,AMZN,MANUAL,USD,162.62,8,buy,0,Amazon.com Inc
+09-10-2024,JPM,MANUAL,USD,184.77,16,buy,0,JPMorgan Chase & Co
+09-10-2024,UBER,MANUAL,USD,54.91,2,buy,1.0,Uber Technologies Inc
+10-10-2024,XLP,MANUAL,USD,72.25,19,buy,2.5,Consumer Staples Select SPDR
+11-10-2024,AMT,MANUAL,USD,195.3,10,buy,0,American Tower Corp
+14-10-2024,WFC,MANUAL,USD,43.08,24,buy,4.95,Wells Fargo & Company
+14-10-2024,SCHD,MANUAL,USD,75.08,9,buy,0,Schwab US Dividend Equity ETF
+14-10-2024,SCHW,MANUAL,USD,66.71,23,buy,1.0,Charles Schwab Corp
+14-10-2024,LLY,MANUAL,USD,932.54,2,buy,4.95,Eli Lilly and Company
+14-10-2024,CRM,MANUAL,USD,259.32,6,buy,4.95,Salesforce Inc
+14-10-2024,TXN,MANUAL,USD,167.92,24,buy,1.0,Texas Instruments Inc
+14-10-2024,MCD,MANUAL,USD,281.57,5,buy,0,McDonalds Corp
+14-10-2024,PANW,MANUAL,USD,250.14,2,buy,2.5,Palo Alto Networks Inc
+14-10-2024,XLI,MANUAL,USD,121.95,26,buy,0,Industrial Select Sector SPDR
+14-10-2024,BLK,MANUAL,USD,782.51,3,sell,1.0,BlackRock Inc
+15-10-2024,AMT,MANUAL,USD,198.9,21,buy,4.95,American Tower Corp
+15-10-2024,XLP,MANUAL,USD,1.21,33,dividend,0,Consumer Staples Select SPDR
+16-10-2024,ZS,MANUAL,USD,190.04,19,buy,1.0,Zscaler Inc
+17-10-2024,BAC,MANUAL,USD,29.22,4,buy,0,Bank of America Corp
+17-10-2024,INTC,MANUAL,USD,32.38,20,buy,2.5,Intel Corporation
+17-10-2024,ADBE,MANUAL,USD,2.31,42,dividend,0,Adobe Inc
+18-10-2024,QCOM,MANUAL,USD,157.63,15,buy,0,Qualcomm Inc
+18-10-2024,SCHW,MANUAL,USD,55.61,29,buy,4.95,Charles Schwab Corp
+21-10-2024,MARA,MANUAL,USD,15.1,10,buy,2.5,Marathon Digital Holdings
+21-10-2024,MARA,MANUAL,USD,24.67,21,buy,2.5,Marathon Digital Holdings
+21-10-2024,DIS,MANUAL,USD,101.48,20,buy,4.95,Walt Disney Company
+21-10-2024,KO,MANUAL,USD,63.08,11,buy,2.5,Coca-Cola Company
+21-10-2024,TLT,MANUAL,USD,94.59,10,buy,1.0,iShares 20+ Year Treasury Bond
+21-10-2024,TXN,MANUAL,USD,164.66,4,buy,0,Texas Instruments Inc
+21-10-2024,BAC,MANUAL,USD,31.0,24,buy,2.5,Bank of America Corp
+21-10-2024,MSFT,MANUAL,USD,348.11,5,buy,0,Microsoft Corporation
+21-10-2024,HD,MANUAL,USD,354.48,8,buy,2.5,The Home Depot Inc
+21-10-2024,META,MANUAL,USD,355.52,2,buy,0,Meta Platforms Inc
+21-10-2024,LLY,MANUAL,USD,2.28,9,dividend,0,Eli Lilly and Company
+22-10-2024,EEM,MANUAL,USD,43.78,2,buy,6.95,iShares MSCI Emerging Markets
+22-10-2024,MSFT,MANUAL,USD,414.09,14,buy,6.95,Microsoft Corporation
+22-10-2024,BA,MANUAL,USD,200.29,4,buy,0,Boeing Company
+22-10-2024,ARKK,MANUAL,USD,42.77,5,buy,0,ARK Innovation ETF
+22-10-2024,LQD,MANUAL,USD,108.08,18,buy,6.95,iShares Investment Grade Corp
+23-10-2024,PLTR,MANUAL,USD,24.49,12,buy,6.95,Palantir Technologies Inc
+23-10-2024,SLV,MANUAL,USD,21.64,18,buy,6.95,iShares Silver Trust
+23-10-2024,LQD,MANUAL,USD,0.29,22,dividend,0,iShares Investment Grade Corp
+23-10-2024,ADBE,MANUAL,USD,525.39,2,sell,6.95,Adobe Inc
+24-10-2024,GLD,MANUAL,USD,237.05,2,buy,0,SPDR Gold Shares
+24-10-2024,QQQ,MANUAL,USD,437.78,2,buy,2.5,Invesco QQQ Trust
+24-10-2024,WFC,MANUAL,USD,47.12,29,buy,6.95,Wells Fargo & Company
+24-10-2024,META,MANUAL,USD,376.48,7,buy,4.95,Meta Platforms Inc
+24-10-2024,SOXX,MANUAL,USD,203.51,6,buy,1.0,iShares Semiconductor ETF
+24-10-2024,PLTR,MANUAL,USD,1.9,28,dividend,0,Palantir Technologies Inc
+25-10-2024,T,MANUAL,USD,15.41,25,buy,0,AT&T Inc
+28-10-2024,CAT,MANUAL,USD,299.38,5,buy,0,Caterpillar Inc
+28-10-2024,QCOM,MANUAL,USD,163.17,6,buy,0,Qualcomm Inc
+28-10-2024,NET,MANUAL,USD,79.64,8,buy,4.95,Cloudflare Inc
+28-10-2024,CAT,MANUAL,USD,240.88,6,buy,6.95,Caterpillar Inc
+28-10-2024,TSLA,MANUAL,USD,199.17,23,buy,4.95,Tesla Inc
+28-10-2024,PYPL,MANUAL,USD,57.61,6,buy,0,PayPal Holdings Inc
+28-10-2024,SPY,MANUAL,USD,1.66,39,dividend,0,SPDR S&P 500 ETF Trust
+29-10-2024,CCI,MANUAL,USD,113.99,3,buy,2.5,Crown Castle Inc
+29-10-2024,USB,MANUAL,USD,35.97,12,buy,4.95,US Bancorp
+29-10-2024,PANW,MANUAL,USD,347.52,9,buy,1.0,Palo Alto Networks Inc
+30-10-2024,XLK,MANUAL,USD,179.97,10,buy,1.0,Technology Select Sector SPDR
+30-10-2024,TGT,MANUAL,USD,147.72,13,buy,4.95,Target Corporation
+30-10-2024,PLTR,MANUAL,USD,2.36,33,dividend,0,Palantir Technologies Inc
+31-10-2024,NOW,MANUAL,USD,667.07,5,buy,2.5,ServiceNow Inc
+31-10-2024,CSCO,MANUAL,USD,52.86,18,buy,4.95,Cisco Systems Inc
+31-10-2024,ARKK,MANUAL,USD,1.91,24,dividend,0,ARK Innovation ETF
+01-11-2024,TXN,MANUAL,USD,183.05,29,buy,6.95,Texas Instruments Inc
+01-11-2024,MA,MANUAL,USD,437.63,1,buy,2.5,Mastercard Inc
+01-11-2024,KO,MANUAL,USD,55.18,2,sell,4.95,Coca-Cola Company
+04-11-2024,AMD,MANUAL,USD,139.94,29,buy,6.95,Advanced Micro Devices Inc
+04-11-2024,LOW,MANUAL,USD,259.05,1,buy,2.5,Lowes Companies Inc
+04-11-2024,USB,MANUAL,USD,40.35,22,buy,4.95,US Bancorp
+04-11-2024,BRK-B,MANUAL,USD,430.8,3,buy,0,Berkshire Hathaway Inc
+04-11-2024,DDOG,MANUAL,USD,120.05,10,buy,0,Datadog Inc
+04-11-2024,NOW,MANUAL,USD,568.24,1,buy,4.95,ServiceNow Inc
+04-11-2024,BA,MANUAL,USD,203.55,4,buy,2.5,Boeing Company
+04-11-2024,PSA,MANUAL,USD,271.73,10,buy,0,Public Storage
+04-11-2024,NKE,MANUAL,USD,81.36,19,buy,0,Nike Inc
+04-11-2024,AVGO,MANUAL,USD,1293.12,1,buy,6.95,Broadcom Inc
+05-11-2024,SQ,MANUAL,USD,78.93,20,buy,0,Block Inc
+05-11-2024,DIS,MANUAL,USD,101.99,25,buy,1.0,Walt Disney Company
+05-11-2024,CRWD,MANUAL,USD,243.6,2,buy,0,CrowdStrike Holdings Inc
+05-11-2024,LLY,MANUAL,USD,922.3,3,buy,4.95,Eli Lilly and Company
+06-11-2024,WFC,MANUAL,USD,54.93,9,buy,0,Wells Fargo & Company
+07-11-2024,COIN,MANUAL,USD,102.17,11,buy,1.0,Coinbase Global Inc
+08-11-2024,UNH,MANUAL,USD,497.53,3,buy,4.95,UnitedHealth Group Inc
+08-11-2024,AMZN,MANUAL,USD,133.52,11,buy,4.95,Amazon.com Inc
+08-11-2024,XLK,MANUAL,USD,176.52,20,buy,0,Technology Select Sector SPDR
+08-11-2024,BAC,MANUAL,USD,1.6,34,dividend,0,Bank of America Corp
+11-11-2024,SHOP,MANUAL,USD,52.44,8,buy,0,Shopify Inc
+11-11-2024,T,MANUAL,USD,21.62,27,buy,0,AT&T Inc
+11-11-2024,SCHD,MANUAL,USD,72.55,21,buy,0,Schwab US Dividend Equity ETF
+11-11-2024,NVDA,MANUAL,USD,567.7,1,buy,4.95,NVIDIA Corporation
+11-11-2024,XLV,MANUAL,USD,133.98,21,buy,2.5,Health Care Select Sector SPDR
+11-11-2024,UBER,MANUAL,USD,65.43,16,buy,1.0,Uber Technologies Inc
+11-11-2024,PEP,MANUAL,USD,173.39,24,buy,6.95,PepsiCo Inc
+11-11-2024,ORCL,MANUAL,USD,113.37,23,buy,2.5,Oracle Corporation
+11-11-2024,DDOG,MANUAL,USD,121.96,2,buy,4.95,Datadog Inc
+11-11-2024,V,MANUAL,USD,263.14,3,buy,2.5,Visa Inc
+12-11-2024,ORCL,MANUAL,USD,155.47,21,buy,0,Oracle Corporation
+12-11-2024,DE,MANUAL,USD,396.85,1,buy,0,Deere & Company
+12-11-2024,BND,MANUAL,USD,74.37,7,sell,4.95,Vanguard Total Bond Market ETF
+13-11-2024,SBUX,MANUAL,USD,102.11,6,buy,0,Starbucks Corporation
+13-11-2024,YUM,MANUAL,USD,125.7,13,buy,2.5,Yum Brands Inc
+13-11-2024,SOXX,MANUAL,USD,238.03,15,buy,4.95,iShares Semiconductor ETF
+13-11-2024,BLK,MANUAL,USD,721.73,5,buy,2.5,BlackRock Inc
+13-11-2024,MSFT,MANUAL,USD,375.06,6,sell,1.0,Microsoft Corporation
+14-11-2024,CRM,MANUAL,USD,251.23,7,buy,4.95,Salesforce Inc
+15-11-2024,META,MANUAL,USD,345.74,4,buy,2.5,Meta Platforms Inc
+18-11-2024,VZ,MANUAL,USD,35.82,18,buy,0,Verizon Communications Inc
+18-11-2024,TLT,MANUAL,USD,89.63,8,buy,2.5,iShares 20+ Year Treasury Bond
+18-11-2024,META,MANUAL,USD,490.09,11,buy,4.95,Meta Platforms Inc
+18-11-2024,SPY,MANUAL,USD,467.5,7,buy,4.95,SPDR S&P 500 ETF Trust
+18-11-2024,YUM,MANUAL,USD,136.55,11,buy,4.95,Yum Brands Inc
+18-11-2024,XLK,MANUAL,USD,185.24,23,buy,6.95,Technology Select Sector SPDR
+18-11-2024,CVX,MANUAL,USD,140.21,4,buy,0,Chevron Corporation
+18-11-2024,WFC,MANUAL,USD,46.87,6,sell,4.95,Wells Fargo & Company
+19-11-2024,CRWD,MANUAL,USD,297.12,15,buy,6.95,CrowdStrike Holdings Inc
+20-11-2024,QQQ,MANUAL,USD,417.38,9,buy,0,Invesco QQQ Trust
+20-11-2024,PLD,MANUAL,USD,121.43,17,buy,1.0,Prologis Inc
+20-11-2024,XOM,MANUAL,USD,96.68,4,buy,4.95,Exxon Mobil Corporation
+20-11-2024,LOW,MANUAL,USD,257.46,7,buy,4.95,Lowes Companies Inc
+20-11-2024,TGT,MANUAL,USD,143.01,3,buy,2.5,Target Corporation
+20-11-2024,CSCO,MANUAL,USD,50.45,29,buy,0,Cisco Systems Inc
+20-11-2024,AMZN,MANUAL,USD,1.17,12,dividend,0,Amazon.com Inc
+21-11-2024,COIN,MANUAL,USD,162.14,19,buy,0,Coinbase Global Inc
+21-11-2024,COST,MANUAL,USD,635.31,5,buy,0,Costco Wholesale Corp
+21-11-2024,SNOW,MANUAL,USD,175.32,7,buy,1.0,Snowflake Inc
+21-11-2024,MSFT,MANUAL,USD,0.52,40,dividend,0,Microsoft Corporation
+22-11-2024,VXUS,MANUAL,USD,50.88,14,buy,4.95,Vanguard Total Intl Stock ETF
+22-11-2024,YUM,MANUAL,USD,139.45,22,buy,2.5,Yum Brands Inc
+22-11-2024,PLD,MANUAL,USD,2.36,8,dividend,0,Prologis Inc
+25-11-2024,NFLX,MANUAL,USD,634.07,5,buy,0,Netflix Inc
+25-11-2024,DE,MANUAL,USD,410.58,10,buy,2.5,Deere & Company
+25-11-2024,COIN,MANUAL,USD,119.27,5,buy,4.95,Coinbase Global Inc
+25-11-2024,GS,MANUAL,USD,431.19,12,buy,0,Goldman Sachs Group Inc
+25-11-2024,O,MANUAL,USD,56.41,5,buy,0,Realty Income Corp
+25-11-2024,SOXX,MANUAL,USD,249.49,12,buy,0,iShares Semiconductor ETF
+25-11-2024,XLF,MANUAL,USD,35.79,22,buy,0,Financial Select Sector SPDR
+25-11-2024,PLD,MANUAL,USD,137.57,6,sell,4.95,Prologis Inc
+25-11-2024,VZ,MANUAL,USD,37.54,5,sell,0,Verizon Communications Inc
+25-11-2024,TXN,MANUAL,USD,156.16,2,sell,1.0,Texas Instruments Inc
+26-11-2024,PLD,MANUAL,USD,114.29,17,buy,0,Prologis Inc
+26-11-2024,NET,MANUAL,USD,91.44,8,buy,0,Cloudflare Inc
+26-11-2024,SNOW,MANUAL,USD,151.36,6,buy,2.5,Snowflake Inc
+26-11-2024,WMT,MANUAL,USD,158.97,27,buy,0,Walmart Inc
+26-11-2024,SBUX,MANUAL,USD,1.36,42,dividend,0,Starbucks Corporation
+26-11-2024,GOOGL,MANUAL,USD,0.43,46,dividend,0,Alphabet Inc
+27-11-2024,MSFT,MANUAL,USD,377.23,10,buy,4.95,Microsoft Corporation
+27-11-2024,RIVN,MANUAL,USD,17.79,17,buy,2.5,Rivian Automotive Inc
+27-11-2024,DE,MANUAL,USD,375.24,1,buy,4.95,Deere & Company
+27-11-2024,MRK,MANUAL,USD,0.16,49,dividend,0,Merck & Co Inc
+28-11-2024,BLK,MANUAL,USD,752.62,1,buy,1.0,BlackRock Inc
+29-11-2024,V,MANUAL,USD,250.27,8,buy,0,Visa Inc
+29-11-2024,ABBV,MANUAL,USD,166.36,13,buy,0,AbbVie Inc
+29-11-2024,XLP,MANUAL,USD,75.38,2,buy,0,Consumer Staples Select SPDR
+02-12-2024,SCHW,MANUAL,USD,59.82,30,buy,0,Charles Schwab Corp
+02-12-2024,PG,MANUAL,USD,151.05,19,buy,0,Procter & Gamble Co
+02-12-2024,LQD,MANUAL,USD,106.73,16,buy,0,iShares Investment Grade Corp
+02-12-2024,T,MANUAL,USD,16.75,27,buy,0,AT&T Inc
+02-12-2024,TSLA,MANUAL,USD,249.71,15,buy,0,Tesla Inc
+02-12-2024,ORCL,MANUAL,USD,167.28,30,buy,1.0,Oracle Corporation
+02-12-2024,TLT,MANUAL,USD,99.34,4,buy,1.0,iShares 20+ Year Treasury Bond
+04-12-2024,PSA,MANUAL,USD,305.62,11,buy,2.5,Public Storage
+04-12-2024,RIVN,MANUAL,USD,15.58,23,buy,6.95,Rivian Automotive Inc
+04-12-2024,TXN,MANUAL,USD,169.75,23,buy,6.95,Texas Instruments Inc
+04-12-2024,QCOM,MANUAL,USD,128.76,18,buy,0,Qualcomm Inc
+04-12-2024,LLY,MANUAL,USD,699.53,1,buy,0,Eli Lilly and Company
+04-12-2024,GS,MANUAL,USD,376.44,15,buy,1.0,Goldman Sachs Group Inc
+04-12-2024,LCID,MANUAL,USD,3.32,29,buy,1.0,Lucid Group Inc
+04-12-2024,C,MANUAL,USD,51.78,20,buy,6.95,Citigroup Inc
+04-12-2024,ORCL,MANUAL,USD,160.6,3,sell,4.95,Oracle Corporation
+05-12-2024,KO,MANUAL,USD,58.43,15,buy,0,Coca-Cola Company
+05-12-2024,V,MANUAL,USD,256.66,12,buy,0,Visa Inc
+06-12-2024,HYG,MANUAL,USD,77.33,16,buy,4.95,iShares iBoxx High Yield Corp
+06-12-2024,UBER,MANUAL,USD,74.84,11,buy,6.95,Uber Technologies Inc
+06-12-2024,NFLX,MANUAL,USD,407.3,12,buy,6.95,Netflix Inc
+06-12-2024,META,MANUAL,USD,492.71,4,sell,4.95,Meta Platforms Inc
+09-12-2024,CCI,MANUAL,USD,95.14,25,buy,0,Crown Castle Inc
+09-12-2024,XLF,MANUAL,USD,36.43,13,buy,4.95,Financial Select Sector SPDR
+09-12-2024,ZS,MANUAL,USD,217.76,8,buy,4.95,Zscaler Inc
+09-12-2024,LLY,MANUAL,USD,913.76,3,buy,0,Eli Lilly and Company
+09-12-2024,SNOW,MANUAL,USD,157.67,6,buy,0,Snowflake Inc
+09-12-2024,NET,MANUAL,USD,63.16,1,buy,2.5,Cloudflare Inc
+09-12-2024,GOOGL,MANUAL,USD,165.23,30,buy,0,Alphabet Inc
+09-12-2024,XLK,MANUAL,USD,200.24,12,buy,4.95,Technology Select Sector SPDR
+09-12-2024,LOW,MANUAL,USD,259.59,9,buy,0,Lowes Companies Inc
+09-12-2024,MA,MANUAL,USD,458.63,11,buy,0,Mastercard Inc
+09-12-2024,ORCL,MANUAL,USD,146.14,10,sell,0,Oracle Corporation
+09-12-2024,SBUX,MANUAL,USD,82.16,2,sell,0,Starbucks Corporation
+09-12-2024,MARA,MANUAL,USD,21.27,6,sell,6.95,Marathon Digital Holdings
+10-12-2024,TXN,MANUAL,USD,161.12,17,buy,6.95,Texas Instruments Inc
+10-12-2024,RIVN,MANUAL,USD,10.32,28,buy,4.95,Rivian Automotive Inc
+11-12-2024,AMD,MANUAL,USD,171.0,16,buy,4.95,Advanced Micro Devices Inc
+11-12-2024,NVDA,MANUAL,USD,627.47,2,buy,0,NVIDIA Corporation
+13-12-2024,KO,MANUAL,USD,57.99,1,buy,0,Coca-Cola Company
+13-12-2024,AMT,MANUAL,USD,215.09,1,buy,2.5,American Tower Corp
+13-12-2024,QCOM,MANUAL,USD,158.44,25,buy,6.95,Qualcomm Inc
+16-12-2024,CRWD,MANUAL,USD,246.08,4,buy,0,CrowdStrike Holdings Inc
+16-12-2024,PYPL,MANUAL,USD,67.09,7,buy,2.5,PayPal Holdings Inc
+16-12-2024,XOM,MANUAL,USD,110.82,19,buy,4.95,Exxon Mobil Corporation
+16-12-2024,UNH,MANUAL,USD,522.64,2,buy,0,UnitedHealth Group Inc
+16-12-2024,V,MANUAL,USD,249.21,8,buy,0,Visa Inc
+16-12-2024,KO,MANUAL,USD,58.7,6,buy,6.95,Coca-Cola Company
+16-12-2024,XLK,MANUAL,USD,211.06,8,buy,4.95,Technology Select Sector SPDR
+16-12-2024,EEM,MANUAL,USD,38.16,2,buy,0,iShares MSCI Emerging Markets
+16-12-2024,ADBE,MANUAL,USD,504.06,3,sell,4.95,Adobe Inc
+17-12-2024,DDOG,MANUAL,USD,104.35,19,buy,0,Datadog Inc
+17-12-2024,SLV,MANUAL,USD,23.49,6,buy,4.95,iShares Silver Trust
+18-12-2024,BRK-B,MANUAL,USD,396.87,4,buy,0,Berkshire Hathaway Inc
+20-12-2024,GLD,MANUAL,USD,184.46,2,buy,0,SPDR Gold Shares
+20-12-2024,PANW,MANUAL,USD,285.17,10,buy,0,Palo Alto Networks Inc
+20-12-2024,LCID,MANUAL,USD,5.49,17,buy,2.5,Lucid Group Inc
+20-12-2024,LCID,MANUAL,USD,3.94,6,buy,0,Lucid Group Inc
+20-12-2024,AVGO,MANUAL,USD,1333.36,1,sell,4.95,Broadcom Inc
