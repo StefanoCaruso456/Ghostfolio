@@ -187,12 +187,18 @@ export class BraintrustTelemetryService implements OnModuleInit {
           }
         },
         scores: {
-          // Pre-computed eval scores logged inline for Braintrust dashboard
-          latency: this.scoreLatency(payload.trace.totalLatencyMs),
-          cost: this.scoreCost(payload.trace.estimatedCostUsd),
+          // Pre-computed eval scores logged inline for Braintrust dashboard.
+          // When the trace errored, scores reflect failure instead of defaults.
+          latency: payload.trace.success
+            ? this.scoreLatency(payload.trace.totalLatencyMs)
+            : 0,
+          cost: payload.trace.success
+            ? this.scoreCost(payload.trace.estimatedCostUsd)
+            : 0,
           confidence: payload.verification.confidenceScore,
           safety: payload.verification.escalationTriggered ? 0 : 1,
-          groundedness: payload.verification.passed ? 1 : 0
+          groundedness:
+            payload.trace.success && payload.verification.passed ? 1 : 0
         }
       });
 

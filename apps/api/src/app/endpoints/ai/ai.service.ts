@@ -16,6 +16,22 @@ import type { ColumnDescriptor } from 'tablemark';
 import { estimateCost } from '../../import-auditor/schemas/agent-metrics.schema';
 import { BraintrustTelemetryService } from './telemetry/braintrust-telemetry.service';
 
+/**
+ * Strip Unicode smart quotes, curly quotes, and other non-ASCII punctuation
+ * that break HTTP headers (fetch requires Latin-1 / byte-string values).
+ * Also trims whitespace and removes surrounding quotes.
+ */
+function sanitizePropertyString(value: string): string {
+  return (
+    value
+      // Replace smart/curly quotes with empty string (API keys never contain quotes)
+      .replace(/[\u2018\u2019\u201C\u201D\u201A\u201B\u201E\u201F]/g, '')
+      // Strip any remaining non-ASCII characters (U+0080 and above)
+      .replace(/[\u0080-\uFFFF]/g, '')
+      .trim()
+  );
+}
+
 @Injectable()
 export class AiService {
   private static readonly HOLDINGS_TABLE_COLUMN_DEFINITIONS: ({
@@ -61,14 +77,14 @@ export class AiService {
     userId: string;
   }): Promise<AiChatResponse> {
     // ── OpenRouter via Vercel AI SDK (same provider as CSV import) ───
-    const openRouterApiKey = await this.propertyService.getByKey<string>(
+    const rawApiKey = await this.propertyService.getByKey<string>(
       PROPERTY_API_KEY_OPENROUTER
     );
-    const openRouterModel = await this.propertyService.getByKey<string>(
+    const rawModel = await this.propertyService.getByKey<string>(
       PROPERTY_OPENROUTER_MODEL
     );
 
-    if (!openRouterApiKey) {
+    if (!rawApiKey) {
       Logger.error(
         'OpenRouter API key not configured. Set it in Admin → Settings.',
         'AiService'
@@ -78,7 +94,7 @@ export class AiService {
       );
     }
 
-    if (!openRouterModel) {
+    if (!rawModel) {
       Logger.error(
         'OpenRouter model not configured. Set it in Admin → Settings.',
         'AiService'
@@ -88,8 +104,11 @@ export class AiService {
       );
     }
 
+    // Sanitize to prevent ByteString errors from smart quotes / non-ASCII chars
+    const openRouterApiKey = sanitizePropertyString(rawApiKey);
+    const modelId = sanitizePropertyString(rawModel);
+
     const openRouterService = createOpenRouter({ apiKey: openRouterApiKey });
-    const modelId = openRouterModel;
 
     // ── Start telemetry trace ────────────────────────────────────────
     const activeConversationId = conversationId || randomUUID();
@@ -237,7 +256,14 @@ export class AiService {
       };
     } catch (error) {
       trace.markLlmEnd();
-      trace.markError(error instanceof Error ? error.message : String(error));
+
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+
+      trace.markError(errorMessage);
+      trace.setResponse(`[ERROR] ${errorMessage}`);
+      trace.setConfidence(0);
+      trace.setQueryCategory(this.classifyQuery(message));
 
       // Log the failed trace too — we want to see errors in Braintrust
       const payload = trace.finalize();
@@ -246,10 +272,7 @@ export class AiService {
         // Swallow telemetry errors on failure path
       });
 
-      Logger.error(
-        `OpenRouter API call failed: ${error instanceof Error ? error.message : String(error)}`,
-        'AiService'
-      );
+      Logger.error(`OpenRouter API call failed: ${errorMessage}`, 'AiService');
 
       throw error;
     }
@@ -287,24 +310,26 @@ export class AiService {
   }
 
   public async generateText({ prompt }: { prompt: string }) {
-    const openRouterApiKey = await this.propertyService.getByKey<string>(
+    const rawApiKey = await this.propertyService.getByKey<string>(
       PROPERTY_API_KEY_OPENROUTER
     );
-    const openRouterModel = await this.propertyService.getByKey<string>(
+    const rawModel = await this.propertyService.getByKey<string>(
       PROPERTY_OPENROUTER_MODEL
     );
 
-    if (!openRouterApiKey || !openRouterModel) {
+    if (!rawApiKey || !rawModel) {
       throw new Error(
         'AI text generation is not configured. Missing OpenRouter API key or model in admin settings.'
       );
     }
 
-    const openRouterService = createOpenRouter({ apiKey: openRouterApiKey });
+    const apiKey = sanitizePropertyString(rawApiKey);
+    const model = sanitizePropertyString(rawModel);
+    const openRouterService = createOpenRouter({ apiKey });
 
     return generateText({
       prompt,
-      model: openRouterService.chat(openRouterModel)
+      model: openRouterService.chat(model)
     });
   }
 
