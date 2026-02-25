@@ -94,6 +94,47 @@ export interface TraceLevelSummary {
 
   /** ISO-8601 timestamp */
   timestamp: string;
+
+  // ── Extended Metadata (Telemetry Additions) ────────────────────────
+
+  /** Shape of the user request */
+  requestShape?: {
+    historyMessageCount: number;
+    userMessageChars: number;
+    userMessageTokensEstimate: number;
+  };
+
+  /** Volume of data returned by tools */
+  toolDataVolume?: {
+    toolOutputBytesTotal: number;
+    toolOutputRowsTotal: number;
+    perTool: {
+      toolName: string;
+      outputBytes: number;
+      outputRows: number;
+    }[];
+  };
+
+  /** Market data provider metadata */
+  providerMeta?: {
+    marketProviderName: string;
+    rateLimited: boolean;
+    providerErrors: string[];
+  };
+
+  /** Caching metadata (placeholder for future caching layer) */
+  cachingMeta?: {
+    cacheEnabled: boolean;
+    cacheHits: number;
+  };
+
+  /** Answer quality signals for evaluation */
+  answerQualitySignals?: {
+    refused: boolean;
+    disclaimerShown: boolean;
+    numericClaimsCount: number;
+    toolBackedNumericClaimsCount: number | null;
+  };
 }
 
 export type GuardrailType =
