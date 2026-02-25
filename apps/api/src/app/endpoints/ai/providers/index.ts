@@ -1,4 +1,8 @@
-export { getMarketDataProvider } from './market-data.provider';
+export {
+  getMarketDataCacheStats,
+  getMarketDataProvider,
+  resetMarketDataCacheHits
+} from './market-data.provider';
 export type {
   FundamentalsResult,
   HistoryResult,
