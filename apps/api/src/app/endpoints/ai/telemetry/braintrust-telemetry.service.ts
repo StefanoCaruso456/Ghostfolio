@@ -184,7 +184,14 @@ export class BraintrustTelemetryService implements OnModuleInit {
             costPerToolCall: payload.derived.costPerToolCall,
             latencyPerIteration: payload.derived.latencyPerIteration,
             toolSuccessRates: payload.derived.toolSuccessRates
-          }
+          },
+
+          // ── Extended Metadata ──────────────────────────────────────
+          requestShape: payload.trace.requestShape,
+          toolDataVolume: payload.trace.toolDataVolume,
+          providerMeta: payload.trace.providerMeta,
+          cachingMeta: payload.trace.cachingMeta,
+          answerQualitySignals: payload.trace.answerQualitySignals
         },
         scores: {
           // Pre-computed eval scores logged inline for Braintrust dashboard.
@@ -425,6 +432,31 @@ export class TraceContext {
     this.verification.escalationReason = reason;
   }
 
+  // ── Helpers ──────────────────────────────────────────────────────────────
+
+  private estimateRowCount(output: Record<string, unknown> | null): number {
+    if (!output) {
+      return 0;
+    }
+
+    // Look for common array fields in tool output data
+    const data = output.data ?? output;
+
+    if (!data || typeof data !== 'object') {
+      return 0;
+    }
+
+    let rows = 0;
+
+    for (const value of Object.values(data as Record<string, unknown>)) {
+      if (Array.isArray(value)) {
+        rows += value.length;
+      }
+    }
+
+    return rows || 1; // At least 1 row if data exists
+  }
+
   // ── Finalize ─────────────────────────────────────────────────────────────
 
   /**
@@ -445,6 +477,78 @@ export class TraceContext {
     );
 
     const toolNames = [...new Set(this.toolSpans.map((s) => s.toolName))];
+
+    // ── Extended metadata computation ─────────────────────────────────
+    const requestShape = {
+      historyMessageCount: 0, // Populated by caller if needed
+      userMessageChars: this.queryText.length,
+      userMessageTokensEstimate: Math.ceil(this.queryText.length / 4)
+    };
+
+    // Tool data volume
+    const perToolVolume: {
+      toolName: string;
+      outputBytes: number;
+      outputRows: number;
+    }[] = [];
+    let toolOutputBytesTotal = 0;
+    let toolOutputRowsTotal = 0;
+
+    for (const span of this.toolSpans) {
+      const outputStr = span.toolOutput ? JSON.stringify(span.toolOutput) : '';
+      const bytes = outputStr.length;
+      const rows = this.estimateRowCount(span.toolOutput);
+
+      perToolVolume.push({
+        toolName: span.toolName,
+        outputBytes: bytes,
+        outputRows: rows
+      });
+      toolOutputBytesTotal += bytes;
+      toolOutputRowsTotal += rows;
+    }
+
+    // Provider metadata (detect market tools)
+    const marketToolNames = new Set([
+      'getQuote',
+      'getHistory',
+      'getFundamentals',
+      'getNews'
+    ]);
+    const hasMarketTools = toolNames.some((t) => marketToolNames.has(t));
+    const providerErrors: string[] = [];
+    let rateLimited = false;
+
+    for (const span of this.toolSpans) {
+      if (marketToolNames.has(span.toolName) && span.status === 'error') {
+        providerErrors.push(`${span.toolName}: ${span.error ?? 'unknown'}`);
+      }
+
+      if (span.toolOutput && (span.toolOutput as any)?.meta?.rateLimited) {
+        rateLimited = true;
+      }
+    }
+
+    // Answer quality signals
+    const lowerResp = this.responseText.toLowerCase();
+    const numericClaimsCount = (
+      this.responseText.match(/\d+[.,]?\d*\s*%|\$\s*\d+[.,]?\d*/g) ?? []
+    ).length;
+
+    const answerQualitySignals = {
+      refused:
+        lowerResp.includes('cannot predict') ||
+        lowerResp.includes('cannot recommend') ||
+        lowerResp.includes('not financial advice'),
+      disclaimerShown:
+        lowerResp.includes('disclaimer') ||
+        lowerResp.includes('not investment advice') ||
+        lowerResp.includes('not financial advice') ||
+        lowerResp.includes('not trade advice'),
+      numericClaimsCount,
+      toolBackedNumericClaimsCount:
+        this.toolSpans.length > 0 ? numericClaimsCount : null
+    };
 
     const trace: TraceLevelSummary = {
       traceId: this.traceId,
@@ -470,7 +574,22 @@ export class TraceContext {
       error: this.error,
       aborted: this.aborted,
       model: this.model,
-      timestamp: new Date(endTime).toISOString()
+      timestamp: new Date(endTime).toISOString(),
+      requestShape,
+      toolDataVolume: {
+        toolOutputBytesTotal,
+        toolOutputRowsTotal,
+        perTool: perToolVolume
+      },
+      providerMeta: hasMarketTools
+        ? {
+            marketProviderName: process.env.MARKET_DATA_PROVIDER || 'yahoo',
+            rateLimited,
+            providerErrors
+          }
+        : undefined,
+      cachingMeta: { cacheEnabled: false, cacheHits: 0 },
+      answerQualitySignals
     };
 
     // Compute derived metrics

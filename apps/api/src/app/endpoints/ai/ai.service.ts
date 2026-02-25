@@ -26,11 +26,37 @@ import {
 } from '../../import-auditor/schemas/verification.schema';
 import { enforceVerificationGate } from '../../import-auditor/verification/enforce';
 import { BraintrustTelemetryService } from './telemetry/braintrust-telemetry.service';
+import { buildRebalanceResult } from './tools/compute-rebalance.tool';
 import { buildAllocationsResult } from './tools/get-allocations.tool';
+import { buildFundamentalsResult } from './tools/get-fundamentals.tool';
+import { buildHistoryResult } from './tools/get-history.tool';
+import { buildNewsResult } from './tools/get-news.tool';
 import { buildPerformanceResult } from './tools/get-performance.tool';
 import { buildPortfolioSummary } from './tools/get-portfolio-summary.tool';
+import { buildQuoteResult } from './tools/get-quote.tool';
 import { buildActivitiesResult } from './tools/list-activities.tool';
+import { buildScenarioImpactResult } from './tools/scenario-impact.tool';
 import { GetAllocationsOutputSchema } from './tools/schemas/allocations.schema';
+import {
+  ComputeRebalanceInputSchema,
+  ComputeRebalanceOutputSchema
+} from './tools/schemas/compute-rebalance.schema';
+import {
+  GetFundamentalsInputSchema,
+  GetFundamentalsOutputSchema
+} from './tools/schemas/get-fundamentals.schema';
+import {
+  GetHistoryInputSchema,
+  GetHistoryOutputSchema
+} from './tools/schemas/get-history.schema';
+import {
+  GetNewsInputSchema,
+  GetNewsOutputSchema
+} from './tools/schemas/get-news.schema';
+import {
+  GetQuoteInputSchema,
+  GetQuoteOutputSchema
+} from './tools/schemas/get-quote.schema';
 import {
   ListActivitiesInputSchema,
   ListActivitiesOutputSchema
@@ -43,6 +69,10 @@ import {
   GetPortfolioSummaryInputSchema,
   GetPortfolioSummaryOutputSchema
 } from './tools/schemas/portfolio-summary.schema';
+import {
+  ScenarioImpactInputSchema,
+  ScenarioImpactOutputSchema
+} from './tools/schemas/scenario-impact.schema';
 
 // ─── Production Guardrails (Non-Negotiable) ──────────────────────────
 
@@ -64,7 +94,13 @@ const OUTPUT_SCHEMA_REGISTRY: Record<string, ZodType> = {
   getPortfolioSummary: GetPortfolioSummaryOutputSchema,
   listActivities: ListActivitiesOutputSchema,
   getAllocations: GetAllocationsOutputSchema,
-  getPerformance: GetPerformanceOutputSchema
+  getPerformance: GetPerformanceOutputSchema,
+  getQuote: GetQuoteOutputSchema,
+  getHistory: GetHistoryOutputSchema,
+  getFundamentals: GetFundamentalsOutputSchema,
+  getNews: GetNewsOutputSchema,
+  computeRebalance: ComputeRebalanceOutputSchema,
+  scenarioImpact: ScenarioImpactOutputSchema
 };
 
 // ─── Types ───────────────────────────────────────────────────────────
@@ -101,7 +137,7 @@ function buildReActSystemPrompt(
   return [
     '# Role',
     'You are Ghostfolio AI, a financial assistant integrated into the Ghostfolio portfolio management application.',
-    'You help users understand their portfolio using ONLY data retrieved from tools.',
+    'You help users understand their portfolio and markets using ONLY data retrieved from tools.',
     '',
     '# ReAct Protocol (MANDATORY)',
     'For every user question, follow this loop:',
@@ -111,13 +147,25 @@ function buildReActSystemPrompt(
     '4. **DECIDE**: If I have enough data, compose my answer. If not, call another tool.',
     '',
     '# Available Tools',
-    '- **getPortfolioSummary**: Get holdings count, top holdings, accounts count. Use for overview questions.',
-    '- **listActivities**: Get trades, dividends, fees with date filtering. Use for transaction history.',
-    '- **getAllocations**: Get allocation breakdown by asset class, currency, sector. Use for diversification questions.',
-    '- **getPerformance**: Get returns, net performance, investment totals. Use for performance questions.',
+    '',
+    '## Portfolio Tools',
+    '- **getPortfolioSummary**: Holdings count, top holdings, accounts. Use for overview questions.',
+    '- **listActivities**: Trades, dividends, fees with date/type filtering. Use for transaction history.',
+    '- **getAllocations**: Allocation by asset class, currency, sector. Use for diversification questions.',
+    '- **getPerformance**: Returns, net performance, investment totals. Use for performance questions.',
+    '',
+    '## Market Tools',
+    '- **getQuote**: Real-time quotes for 1–25 symbols. Use for current prices and daily changes.',
+    '- **getHistory**: Historical price data with optional returns/volatility/drawdown. Use for trend analysis.',
+    '- **getFundamentals**: Valuation ratios (P/E, EPS, dividend yield, market cap). Use for fundamental analysis.',
+    '- **getNews**: Recent news items for a symbol. Use for market context.',
+    '',
+    '## Decision-Support Tools',
+    '- **computeRebalance**: Compare current vs target allocation and compute deltas. Use when user asks about rebalancing.',
+    '- **scenarioImpact**: Estimate portfolio impact of hypothetical shocks. Use for "what if" questions.',
     '',
     '# Groundedness Contract (ABSOLUTE RULES)',
-    '- **NEVER output portfolio numbers unless they come from tool results.**',
+    '- **NEVER output portfolio or market numbers unless they come from tool results.**',
     '- Every numeric claim (%, $, counts) MUST be traceable to a tool response.',
     '- If a tool returned warnings, mention them to the user.',
     '- If data is unavailable, say so explicitly — do NOT guess or fabricate.',
@@ -127,22 +175,30 @@ function buildReActSystemPrompt(
     '- Be concise but thorough. Use markdown formatting.',
     '- Reference specific holdings by name and symbol when discussing them.',
     '- Structure longer responses with sections and bullet points.',
+    '- Always end responses with a sources line:',
+    '  "Sources: Ghostfolio (portfolio), Yahoo Finance (market quotes)" — listing which data sources were used.',
     `- Respond in: ${languageCode}.`,
     `- User's base currency: ${userCurrency}.`,
     '',
     '# Safety Guardrails',
     '- NEVER give specific buy/sell recommendations or price targets.',
-    '- If asked for predictions/forecasts: refuse politely and offer alternatives.',
-    '  Say: "I cannot predict future prices. Instead, let me show you your current portfolio data."',
-    '  Then call tools to provide factual data about their current position.',
+    '- If asked "what to buy/sell":',
+    '  1. Do NOT directly recommend. Instead, ask about constraints or offer scenario/rebalance analysis.',
+    '  2. Call market tools only after clarifying asset universe, timeframe, and risk.',
+    '  3. You may offer: "Would you like me to run a rebalance analysis or a scenario impact?"',
+    '- For "trending" or "what is moving" queries:',
+    '  Use getQuote/getNews to show factual data about current prices and movements — NOT predictions.',
+    '- If asked for predictions/forecasts: refuse politely and offer scenario analysis instead.',
+    '  Say: "I cannot predict future prices. I can run a scenario analysis — e.g., what if tech drops 10%?"',
     '- For complex tax/legal questions, recommend a qualified professional.',
-    '- Always include risk disclaimers for complex financial topics.',
+    '- Always include risk disclaimers when showing rebalance or scenario results.',
     '',
     '# Anti-Hallucination Rules',
     '- Do NOT invent allocation %, prices, or performance figures.',
     '- Do NOT reference holdings that were not returned by tools.',
     '- If the portfolio is empty, say: "Your portfolio has no holdings."',
-    '- When performing calculations, show your work using tool-provided values.'
+    '- When performing calculations, show your work using tool-provided values.',
+    '- Always call tools BEFORE stating any numbers.'
   ].join('\n');
 }
 
@@ -512,6 +568,118 @@ export class AiService {
                 }
               );
             }
+          }),
+
+          // ── Market Context Tools ──────────────────────────────────────
+
+          getQuote: tool({
+            description:
+              'Get real-time quotes for 1–25 symbols: price, daily change, currency. Use for current price lookups and daily movers.',
+            parameters: GetQuoteInputSchema,
+            execute: async (args) => {
+              return executeWithGuardrails(
+                'getQuote',
+                args as unknown as Record<string, unknown>,
+                async () => {
+                  const result = await buildQuoteResult(args);
+                  return result as ToolOutput<typeof result>;
+                }
+              );
+            }
+          }),
+
+          getHistory: tool({
+            description:
+              'Get historical price data for a symbol with optional returns, volatility, and max drawdown. Use for trend analysis and historical comparisons.',
+            parameters: GetHistoryInputSchema,
+            execute: async (args) => {
+              return executeWithGuardrails(
+                'getHistory',
+                args as unknown as Record<string, unknown>,
+                async () => {
+                  const result = await buildHistoryResult(args);
+                  return result as ToolOutput<typeof result>;
+                }
+              );
+            }
+          }),
+
+          getFundamentals: tool({
+            description:
+              'Get fundamental data for a symbol: P/E, EPS, market cap, dividend yield, sector, industry. Use for valuation and fundamental analysis.',
+            parameters: GetFundamentalsInputSchema,
+            execute: async (args) => {
+              return executeWithGuardrails(
+                'getFundamentals',
+                args as unknown as Record<string, unknown>,
+                async () => {
+                  const result = await buildFundamentalsResult(args);
+                  return result as ToolOutput<typeof result>;
+                }
+              );
+            }
+          }),
+
+          getNews: tool({
+            description:
+              'Get recent news items for a symbol. Use for market context and "what is happening with X" questions. Does not summarize — returns raw titles and links.',
+            parameters: GetNewsInputSchema,
+            execute: async (args) => {
+              return executeWithGuardrails(
+                'getNews',
+                args as unknown as Record<string, unknown>,
+                async () => {
+                  const result = await buildNewsResult(args);
+                  return result as ToolOutput<typeof result>;
+                }
+              );
+            }
+          }),
+
+          // ── Decision-Support Tools ────────────────────────────────────
+
+          computeRebalance: tool({
+            description:
+              'Compare current portfolio allocation against target allocation and compute deltas with suggested moves. Use when user asks about rebalancing. This is math only — not trade advice.',
+            parameters: ComputeRebalanceInputSchema,
+            execute: async (args) => {
+              return executeWithGuardrails(
+                'computeRebalance',
+                args as unknown as Record<string, unknown>,
+                async () => {
+                  const details = await this.portfolioService.getDetails({
+                    userId,
+                    impersonationId: undefined
+                  });
+
+                  return buildRebalanceResult(details, args) as ToolOutput<
+                    ReturnType<typeof buildRebalanceResult>
+                  >;
+                }
+              );
+            }
+          }),
+
+          scenarioImpact: tool({
+            description:
+              'Estimate portfolio impact of hypothetical shocks (e.g. "what if NVDA drops 20%" or "what if tech falls 10%"). Uses current allocations and deterministic arithmetic. No predictions.',
+            parameters: ScenarioImpactInputSchema,
+            execute: async (args) => {
+              return executeWithGuardrails(
+                'scenarioImpact',
+                args as unknown as Record<string, unknown>,
+                async () => {
+                  const details = await this.portfolioService.getDetails({
+                    userId,
+                    impersonationId: undefined
+                  });
+
+                  return buildScenarioImpactResult(details, args) as ToolOutput<
+                    ReturnType<typeof buildScenarioImpactResult>
+                  >;
+                }
+              );
+            }
           })
         }
       });
@@ -691,11 +859,19 @@ export class AiService {
       return 'portfolio';
     }
 
-    if (/\b(allocat|diversif|rebalanc|weight)\b/.test(lower)) {
+    if (
+      /\b(allocat|diversif|rebalanc|weight|scenario|what\s+if|impact)\b/.test(
+        lower
+      )
+    ) {
       return 'allocation';
     }
 
-    if (/\b(market|economy|sector|index|s&p|nasdaq|dow)\b/.test(lower)) {
+    if (
+      /\b(market|economy|sector|index|s&p|nasdaq|dow|quote|price|fundamentals?|news|trending|movers?)\b/.test(
+        lower
+      )
+    ) {
       return 'market';
     }
 
