@@ -30,6 +30,15 @@ export const routes: Routes = [
   {
     canActivate: [AuthGuard],
     loadComponent: () =>
+      import('./pages/ai-chat/ai-chat-page.component').then(
+        (c) => c.GfAiChatPageComponent
+      ),
+    path: internalRoutes.aiChat.path,
+    title: internalRoutes.aiChat.title
+  },
+  {
+    canActivate: [AuthGuard],
+    loadComponent: () =>
       import('./pages/api/api-page.component').then(
         (c) => c.GfApiPageComponent
       ),

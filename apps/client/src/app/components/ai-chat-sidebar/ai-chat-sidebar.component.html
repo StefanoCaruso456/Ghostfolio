@@ -14,14 +14,24 @@
       >
         <ion-icon name="create-outline" />
       </button>
-      <button
-        class="icon-btn"
-        mat-icon-button
-        matTooltip="Close"
-        (click)="onClose()"
-      >
-        <ion-icon name="close-outline" />
-      </button>
+      @if (mode === 'sidebar') {
+        <button
+          class="icon-btn"
+          mat-icon-button
+          matTooltip="Full screen"
+          (click)="onExpand()"
+        >
+          <ion-icon name="expand-outline" />
+        </button>
+        <button
+          class="icon-btn"
+          mat-icon-button
+          matTooltip="Close"
+          (click)="onClose()"
+        >
+          <ion-icon name="close-outline" />
+        </button>
+      }
     </div>
   </div>
 
