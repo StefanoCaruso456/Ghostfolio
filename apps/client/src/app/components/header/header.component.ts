@@ -101,7 +101,6 @@ export class GfHeaderComponent implements OnChanges {
   @Input() user: User;
 
   @Output() signOut = new EventEmitter<void>();
-  @Output() toggleAiSidebar = new EventEmitter<void>();
 
   @ViewChild('assistant') assistantElement: GfAssistantComponent;
   @ViewChild('assistantTrigger') assistentMenuTriggerElement: MatMenuTrigger;
