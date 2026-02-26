@@ -326,6 +326,7 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
     this.isGenerating = true;
     this.changeDetectorRef.markForCheck();
     this.scrollToBottom();
+    this.focusInput();
 
     const history = this.currentConversation.messages
       .filter((m) => !m.isLoading && !m.isError)
@@ -355,6 +356,7 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
           this.isGenerating = false;
           this.saveConversations();
           this.changeDetectorRef.markForCheck();
+          this.focusInput();
         },
         next: (response) => {
           const lastMessage =
@@ -369,6 +371,7 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
           this.saveConversations();
           this.changeDetectorRef.markForCheck();
           this.scrollToBottom();
+          this.focusInput();
         }
       });
   }
