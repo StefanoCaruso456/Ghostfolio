@@ -31,6 +31,7 @@ import {
   copyOutline,
   createOutline,
   documentTextOutline,
+  expandOutline,
   micOffOutline,
   micOutline,
   pencilOutline,
@@ -83,9 +84,11 @@ interface Conversation {
   templateUrl: './ai-chat-sidebar.component.html'
 })
 export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
+  @Input() mode: 'sidebar' | 'fullscreen' = 'sidebar';
   @Input() user: User;
 
   @Output() closed = new EventEmitter<void>();
+  @Output() expandClicked = new EventEmitter<void>();
 
   @ViewChild('chatInput') chatInputElement: ElementRef<HTMLTextAreaElement>;
   @ViewChild('messagesContainer')
@@ -155,6 +158,7 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
       copyOutline,
       createOutline,
       documentTextOutline,
+      expandOutline,
       micOffOutline,
       micOutline,
       pencilOutline,
@@ -179,6 +183,10 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
 
   public onClose() {
     this.closed.emit();
+  }
+
+  public onExpand() {
+    this.expandClicked.emit();
   }
 
   public onNewConversation() {

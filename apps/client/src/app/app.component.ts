@@ -134,6 +134,14 @@ export class GfAppComponent implements OnDestroy, OnInit {
         this.currentRoute = urlSegments[0].path;
         this.currentSubRoute = urlSegments[1]?.path;
 
+        // Auto-close sidebar when navigating to the fullscreen AI chat page
+        if (
+          this.currentRoute === internalRoutes.aiChat.path &&
+          this.isAiSidebarOpen
+        ) {
+          this.isAiSidebarOpen = false;
+        }
+
         if (
           ((this.currentRoute === internalRoutes.home.path &&
             !this.currentSubRoute) ||
@@ -252,6 +260,12 @@ export class GfAppComponent implements OnDestroy, OnInit {
     this.userService.remove();
 
     document.location.href = `/${document.documentElement.lang}`;
+  }
+
+  public onExpandAiChat() {
+    this.isAiSidebarOpen = false;
+    this.router.navigate(internalRoutes.aiChat.routerLink);
+    this.changeDetectorRef.markForCheck();
   }
 
   public onToggleAiSidebar() {
