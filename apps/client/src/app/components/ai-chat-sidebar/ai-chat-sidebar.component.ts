@@ -44,7 +44,8 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 interface Attachment {
-  content: string;
+  content: string; // base64 data URL for images, raw text for CSVs
+  mimeType: string; // actual MIME type (e.g. 'image/png', 'text/csv')
   name: string;
   previewUrl: string;
   type: 'csv' | 'image';
@@ -348,10 +349,7 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
           ? currentAttachments.map((a) => ({
               content: a.content,
               fileName: a.name,
-              mimeType:
-                a.type === 'image'
-                  ? 'image/png'
-                  : 'text/csv',
+              mimeType: a.mimeType,
               size: a.content.length
             }))
           : undefined,
@@ -416,22 +414,43 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
         continue;
       }
 
-      const reader = new FileReader();
+      if (isImage) {
+        // Read images as base64 data URL (needed for preview + vision API)
+        const reader = new FileReader();
 
-      reader.onload = () => {
-        const base64 = reader.result as string;
-        const attachment: Attachment = {
-          content: base64,
-          name: file.name,
-          previewUrl: isImage ? base64 : '',
-          type: isImage ? 'image' : 'csv'
+        reader.onload = () => {
+          const dataUrl = reader.result as string;
+
+          this.attachments.push({
+            content: dataUrl,
+            mimeType: file.type,
+            name: file.name,
+            previewUrl: dataUrl,
+            type: 'image'
+          });
+          this.changeDetectorRef.markForCheck();
         };
 
-        this.attachments.push(attachment);
-        this.changeDetectorRef.markForCheck();
-      };
+        reader.readAsDataURL(file);
+      } else {
+        // Read CSVs as raw text (needed for inline analysis)
+        const reader = new FileReader();
 
-      reader.readAsDataURL(file);
+        reader.onload = () => {
+          const text = reader.result as string;
+
+          this.attachments.push({
+            content: text,
+            mimeType: 'text/csv',
+            name: file.name,
+            previewUrl: '',
+            type: 'csv'
+          });
+          this.changeDetectorRef.markForCheck();
+        };
+
+        reader.readAsText(file);
+      }
     }
 
     // Reset so the same file can be re-selected
