@@ -98,4 +98,45 @@
       width: 100% !important;
     }
   }
+
+  // Floating AI chat trigger button
+  .ai-fab {
+    align-items: center;
+    background: linear-gradient(
+      135deg,
+      rgba(var(--gf-theme-primary-500-rgb), 1),
+      rgba(var(--gf-theme-secondary-500-rgb), 1)
+    );
+    border: none;
+    border-radius: 50%;
+    bottom: 1.5rem;
+    box-shadow:
+      0 4px 12px rgba(0, 0, 0, 0.15),
+      0 2px 4px rgba(0, 0, 0, 0.1);
+    color: white;
+    cursor: pointer;
+    display: flex;
+    height: 56px;
+    justify-content: center;
+    position: fixed;
+    right: 1.5rem;
+    transition: all 0.2s ease;
+    width: 56px;
+    z-index: 999;
+
+    ion-icon {
+      font-size: 1.5rem;
+    }
+
+    &:hover {
+      box-shadow:
+        0 6px 16px rgba(0, 0, 0, 0.2),
+        0 3px 6px rgba(0, 0, 0, 0.12);
+      transform: scale(1.05);
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+  }
 }

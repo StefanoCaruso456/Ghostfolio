@@ -44,7 +44,6 @@
         [pageTitle]="pageTitle"
         [user]="user"
         (signOut)="onSignOut()"
-        (toggleAiSidebar)="onToggleAiSidebar()"
       />
     </header>
 
@@ -68,5 +67,14 @@
         (expandClicked)="onExpandAiChat()"
       />
     </aside>
+  }
+
+  @if (!isAiSidebarOpen && hasPermissionToAccessAssistant && user) {
+    <button
+      class="ai-fab"
+      (click)="onToggleAiSidebar()"
+    >
+      <ion-icon name="sparkles-outline" />
+    </button>
   }
 </div>
