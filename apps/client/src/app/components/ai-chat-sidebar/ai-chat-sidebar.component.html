@@ -132,24 +132,28 @@
           }
           <div class="message-body">
             @if (message.role === 'user') {
+              @if (message.attachments?.length) {
+                <div class="message-attachments">
+                  @for (att of message.attachments; track att.name) {
+                    <div class="message-attachment-thumb">
+                      @if (att.type === 'image') {
+                        <img
+                          class="msg-thumb-image"
+                          [alt]="att.name"
+                          [src]="att.previewUrl"
+                        />
+                      } @else {
+                        <div class="msg-thumb-file">
+                          <ion-icon name="document-text-outline" />
+                          <span>{{ att.name }}</span>
+                        </div>
+                      }
+                    </div>
+                  }
+                </div>
+              }
               <div class="message-content user-content">
                 {{ message.content }}
-                @if (message.attachments?.length) {
-                  <div class="message-attachments">
-                    @for (att of message.attachments; track att.fileName) {
-                      <span class="message-attachment-badge">
-                        <ion-icon
-                          [name]="
-                            att.mimeType.startsWith('image/')
-                              ? 'image-outline'
-                              : 'document-outline'
-                          "
-                        />
-                        {{ att.fileName }}
-                      </span>
-                    }
-                  </div>
-                }
               </div>
             } @else if (message.isLoading) {
               <div class="message-content assistant-content">
@@ -219,38 +223,47 @@
         <span i18n>Listening...</span>
       </div>
     }
-    <!-- Attachment Preview Strip -->
+    <!-- Attachment Previews -->
     @if (attachments.length > 0) {
-      <div class="attachment-preview-strip">
-        @for (attachment of attachments; track attachment.fileName; let i = $index) {
-          <div class="attachment-chip">
-            <ion-icon [name]="getAttachmentIcon(attachment.mimeType)" class="attachment-chip-icon" />
-            <div class="attachment-chip-info">
-              <span class="attachment-chip-name">{{ attachment.fileName }}</span>
-              <span class="attachment-chip-size">{{ formatFileSize(attachment.size) }}</span>
-            </div>
-            <button class="attachment-chip-remove" (click)="onRemoveAttachment(i)">
-              <ion-icon name="close-circle-outline" />
+      <div class="attachment-previews">
+        @for (attachment of attachments; track attachment.name) {
+          <div class="attachment-thumbnail">
+            @if (attachment.type === 'image') {
+              <img
+                class="thumbnail-image"
+                [alt]="attachment.name"
+                [src]="attachment.previewUrl"
+              />
+            } @else {
+              <div class="thumbnail-file">
+                <ion-icon name="document-text-outline" />
+              </div>
+            }
+            <span class="thumbnail-name">{{ attachment.name }}</span>
+            <button
+              class="thumbnail-remove"
+              (click)="onRemoveAttachment(attachment)"
+            >
+              <ion-icon name="close-outline" />
             </button>
           </div>
         }
       </div>
     }
     <div class="input-wrapper">
-      <!-- Hidden file input -->
       <input
         #fileInput
-        accept=".pdf,.csv,.png,.jpg,.jpeg"
+        accept="image/png,image/jpeg,image/gif,image/webp,.csv"
+        hidden
         multiple
-        style="display: none"
         type="file"
-        (change)="onFileSelected($event)"
+        (change)="onFilesSelected($event)"
       />
       <button
         class="attach-btn"
-        matTooltip="Attach file"
-        [disabled]="attachments.length >= 3"
-        (click)="onAttachFile()"
+        matTooltip="Attach image or CSV"
+        [disabled]="isGenerating"
+        (click)="fileInput.click()"
       >
         <ion-icon name="attach-outline" />
       </button>
@@ -281,8 +294,10 @@
       ></textarea>
       <button
         class="send-btn"
-        [class.active]="inputValue.trim().length > 0 && !isGenerating"
-        [disabled]="!inputValue.trim() || isGenerating"
+        [class.active]="inputValue.trim().length > 0 || attachments.length > 0"
+        [disabled]="
+          (!inputValue.trim() && attachments.length === 0) || isGenerating
+        "
         (click)="onSendMessage()"
       >
         @if (isGenerating) {

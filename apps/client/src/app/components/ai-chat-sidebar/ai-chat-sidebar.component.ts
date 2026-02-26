@@ -1,5 +1,5 @@
 import { UserService } from '@ghostfolio/client/services/user/user.service';
-import { AiChatAttachment, User } from '@ghostfolio/common/interfaces';
+import { User } from '@ghostfolio/common/interfaces';
 import { DataService } from '@ghostfolio/ui/services';
 
 import { CommonModule } from '@angular/common';
@@ -31,8 +31,7 @@ import {
   closeOutline,
   copyOutline,
   createOutline,
-  documentOutline,
-  imageOutline,
+  documentTextOutline,
   micOffOutline,
   micOutline,
   pencilOutline,
@@ -45,8 +44,15 @@ import { MarkdownModule } from 'ngx-markdown';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
+interface Attachment {
+  content: string;
+  name: string;
+  previewUrl: string;
+  type: 'csv' | 'image';
+}
+
 interface ChatMessage {
-  attachments?: { fileName: string; mimeType: string }[];
+  attachments?: Attachment[];
   content: string;
   isCopied?: boolean;
   isError?: boolean;
@@ -82,11 +88,10 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
   @Output() closed = new EventEmitter<void>();
 
   @ViewChild('chatInput') chatInputElement: ElementRef<HTMLTextAreaElement>;
-  @ViewChild('fileInput') fileInputElement: ElementRef<HTMLInputElement>;
   @ViewChild('messagesContainer')
   messagesContainerElement: ElementRef<HTMLDivElement>;
 
-  public attachments: AiChatAttachment[] = [];
+  public attachments: Attachment[] = [];
   public conversations: Conversation[] = [];
   public currentConversation: Conversation | null = null;
   public editingConversationId: string | null = null;
@@ -99,14 +104,13 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
 
   private speechRecognition: any = null;
 
-  private readonly ALLOWED_TYPES = [
-    'application/pdf',
+  private static readonly ALLOWED_IMAGE_TYPES = [
+    'image/gif',
     'image/jpeg',
     'image/png',
-    'text/csv'
+    'image/webp'
   ];
-  private readonly MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
-  private readonly MAX_FILES = 3;
+  private static readonly MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
 
   public readonly suggestedPrompts = [
     {
@@ -151,8 +155,7 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
       closeOutline,
       copyOutline,
       createOutline,
-      documentOutline,
-      imageOutline,
+      documentTextOutline,
       micOffOutline,
       micOutline,
       pencilOutline,
@@ -292,32 +295,31 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
 
   public onSendMessage() {
     const message = this.inputValue.trim();
+    const hasAttachments = this.attachments.length > 0;
 
-    if (!message || this.isGenerating) {
+    if ((!message && !hasAttachments) || this.isGenerating) {
       return;
     }
 
     // Capture and clear attachments + input
-    const messageAttachments = [...this.attachments];
+    const currentAttachments = [...this.attachments];
     this.inputValue = '';
     this.attachments = [];
 
     if (!this.currentConversation) {
+      const title =
+        message || `${currentAttachments.length} file(s) attached`;
       this.currentConversation = {
         id: crypto.randomUUID(),
         messages: [],
-        title: message.slice(0, 50) + (message.length > 50 ? '...' : '')
+        title: title.slice(0, 50) + (title.length > 50 ? '...' : '')
       };
       this.conversations.unshift(this.currentConversation);
     }
 
     const userMessage: ChatMessage = {
-      attachments: messageAttachments.length
-        ? messageAttachments.map((a) => ({
-            fileName: a.fileName,
-            mimeType: a.mimeType
-          }))
-        : undefined,
+      attachments:
+        currentAttachments.length > 0 ? currentAttachments : undefined,
       content: message,
       role: 'user',
       timestamp: new Date().toISOString()
@@ -344,8 +346,16 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
 
     this.dataService
       .chatWithAi({
-        attachments: messageAttachments.length
-          ? messageAttachments
+        attachments: currentAttachments.length
+          ? currentAttachments.map((a) => ({
+              content: a.content,
+              fileName: a.name,
+              mimeType:
+                a.type === 'image'
+                  ? 'image/png'
+                  : 'text/csv',
+              size: a.content.length
+            }))
           : undefined,
         history,
         message,
@@ -385,84 +395,54 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
       });
   }
 
-  public onAttachFile() {
-    this.fileInputElement?.nativeElement?.click();
-  }
-
-  public onFileSelected(event: Event) {
+  public onFilesSelected(event: Event) {
     const input = event.target as HTMLInputElement;
     const files = input.files;
 
-    if (!files?.length) {
+    if (!files) {
       return;
     }
 
-    for (let i = 0; i < files.length; i++) {
-      if (this.attachments.length >= this.MAX_FILES) {
-        break;
-      }
-
-      const file = files[i];
-
-      if (!this.ALLOWED_TYPES.includes(file.type)) {
+    for (const file of Array.from(files)) {
+      if (file.size > GfAiChatSidebarComponent.MAX_FILE_SIZE) {
         continue;
       }
 
-      if (file.size > this.MAX_FILE_SIZE) {
+      const isImage =
+        GfAiChatSidebarComponent.ALLOWED_IMAGE_TYPES.includes(file.type);
+      const isCsv =
+        file.type === 'text/csv' ||
+        file.name.toLowerCase().endsWith('.csv');
+
+      if (!isImage && !isCsv) {
         continue;
       }
 
       const reader = new FileReader();
 
       reader.onload = () => {
-        const content =
-          file.type === 'text/csv'
-            ? (reader.result as string)
-            : (reader.result as string); // base64 data URL for images/PDFs
+        const base64 = reader.result as string;
+        const attachment: Attachment = {
+          content: base64,
+          name: file.name,
+          previewUrl: isImage ? base64 : '',
+          type: isImage ? 'image' : 'csv'
+        };
 
-        this.attachments.push({
-          content,
-          fileName: file.name,
-          mimeType: file.type,
-          size: file.size
-        });
+        this.attachments.push(attachment);
         this.changeDetectorRef.markForCheck();
       };
 
-      if (file.type === 'text/csv') {
-        reader.readAsText(file);
-      } else {
-        reader.readAsDataURL(file);
-      }
+      reader.readAsDataURL(file);
     }
 
-    // Reset input so same file can be re-selected
+    // Reset so the same file can be re-selected
     input.value = '';
   }
 
-  public onRemoveAttachment(index: number) {
-    this.attachments.splice(index, 1);
+  public onRemoveAttachment(attachment: Attachment) {
+    this.attachments = this.attachments.filter((a) => a !== attachment);
     this.changeDetectorRef.markForCheck();
-  }
-
-  public getAttachmentIcon(mimeType: string): string {
-    if (mimeType.startsWith('image/')) {
-      return 'image-outline';
-    }
-
-    return 'document-outline';
-  }
-
-  public formatFileSize(bytes: number): string {
-    if (bytes < 1024) {
-      return bytes + ' B';
-    }
-
-    if (bytes < 1024 * 1024) {
-      return (bytes / 1024).toFixed(1) + ' KB';
-    }
-
-    return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
   }
 
   public onCopyMessage(message: ChatMessage) {
