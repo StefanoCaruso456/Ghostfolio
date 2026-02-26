@@ -11,4 +11,13 @@ export class AiChatDto {
   @IsOptional()
   @IsArray()
   history?: { content: string; role: 'assistant' | 'user' }[];
+
+  @IsOptional()
+  @IsArray()
+  attachments?: {
+    content: string;
+    fileName: string;
+    mimeType: string;
+    size: number;
+  }[];
 }

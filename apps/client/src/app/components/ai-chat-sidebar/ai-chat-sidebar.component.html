@@ -42,15 +42,43 @@
         >
           <div class="history-item-content">
             <ion-icon name="chatbubble-ellipses-outline" class="history-icon" />
-            <span class="history-item-title">{{ conversation.title }}</span>
+            @if (editingConversationId === conversation.id) {
+              <input
+                class="history-rename-input"
+                type="text"
+                [(ngModel)]="editingTitle"
+                (blur)="onFinishRename(conversation)"
+                (click)="$event.stopPropagation()"
+                (keydown)="onRenameKeydown($event, conversation)"
+                autofocus
+              />
+            } @else {
+              <span
+                class="history-item-title"
+                (dblclick)="onStartRename($event, conversation)"
+              >
+                {{ conversation.title }}
+              </span>
+            }
           </div>
-          <button
-            class="history-delete"
-            mat-icon-button
-            (click)="onDeleteConversation($event, conversation)"
-          >
-            <ion-icon name="trash-outline" />
-          </button>
+          <div class="history-item-actions">
+            <button
+              class="history-action-btn"
+              mat-icon-button
+              matTooltip="Rename"
+              (click)="onStartRename($event, conversation)"
+            >
+              <ion-icon name="pencil-outline" />
+            </button>
+            <button
+              class="history-action-btn history-delete"
+              mat-icon-button
+              matTooltip="Delete"
+              (click)="onDeleteConversation($event, conversation)"
+            >
+              <ion-icon name="trash-outline" />
+            </button>
+          </div>
         </div>
       }
     </div>
@@ -106,6 +134,22 @@
             @if (message.role === 'user') {
               <div class="message-content user-content">
                 {{ message.content }}
+                @if (message.attachments?.length) {
+                  <div class="message-attachments">
+                    @for (att of message.attachments; track att.fileName) {
+                      <span class="message-attachment-badge">
+                        <ion-icon
+                          [name]="
+                            att.mimeType.startsWith('image/')
+                              ? 'image-outline'
+                              : 'document-outline'
+                          "
+                        />
+                        {{ att.fileName }}
+                      </span>
+                    }
+                  </div>
+                }
               </div>
             } @else if (message.isLoading) {
               <div class="message-content assistant-content">
@@ -163,21 +207,60 @@
 
   <!-- Input Area -->
   <div class="input-area">
+    @if (isGenerating) {
+      <div class="generating-indicator">
+        <div class="generating-dot"></div>
+        <span i18n>Generating response...</span>
+      </div>
+    }
+    <!-- Attachment Preview Strip -->
+    @if (attachments.length > 0) {
+      <div class="attachment-preview-strip">
+        @for (attachment of attachments; track attachment.fileName; let i = $index) {
+          <div class="attachment-chip">
+            <ion-icon [name]="getAttachmentIcon(attachment.mimeType)" class="attachment-chip-icon" />
+            <div class="attachment-chip-info">
+              <span class="attachment-chip-name">{{ attachment.fileName }}</span>
+              <span class="attachment-chip-size">{{ formatFileSize(attachment.size) }}</span>
+            </div>
+            <button class="attachment-chip-remove" (click)="onRemoveAttachment(i)">
+              <ion-icon name="close-circle-outline" />
+            </button>
+          </div>
+        }
+      </div>
+    }
     <div class="input-wrapper">
+      <!-- Hidden file input -->
+      <input
+        #fileInput
+        accept=".pdf,.csv,.png,.jpg,.jpeg"
+        multiple
+        style="display: none"
+        type="file"
+        (change)="onFileSelected($event)"
+      />
+      <button
+        class="attach-btn"
+        matTooltip="Attach file"
+        [disabled]="attachments.length >= 3"
+        (click)="onAttachFile()"
+      >
+        <ion-icon name="attach-outline" />
+      </button>
       <textarea
         #chatInput
         class="chat-input"
         i18n-placeholder
         placeholder="Ask about your portfolio..."
         rows="1"
-        [disabled]="isGenerating"
         [(ngModel)]="inputValue"
         (input)="adjustTextareaHeight($event)"
         (keydown)="onKeydown($event)"
       ></textarea>
       <button
         class="send-btn"
-        [class.active]="inputValue.trim().length > 0"
+        [class.active]="inputValue.trim().length > 0 && !isGenerating"
         [disabled]="!inputValue.trim() || isGenerating"
         (click)="onSendMessage()"
       >

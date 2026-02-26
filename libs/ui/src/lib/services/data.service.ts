@@ -88,19 +88,59 @@ export class DataService {
   public constructor(private http: HttpClient) {}
 
   public chatWithAi({
+    attachments,
     conversationId,
     history,
     message
   }: {
+    attachments?: {
+      content: string;
+      fileName: string;
+      mimeType: string;
+      size: number;
+    }[];
     conversationId?: string;
     history?: { content: string; role: 'assistant' | 'user' }[];
     message: string;
   }) {
     return this.http.post<AiChatResponse>('/api/v1/ai/chat', {
+      attachments,
       conversationId,
       history,
       message
     });
+  }
+
+  public deleteAiConversation(id: string) {
+    return this.http.delete<void>(`/api/v1/ai/conversations/${id}`);
+  }
+
+  public getAiConversations() {
+    return this.http.get<
+      {
+        createdAt: string;
+        id: string;
+        title: string;
+        updatedAt: string;
+      }[]
+    >('/api/v1/ai/conversations');
+  }
+
+  public getAiConversation(id: string) {
+    return this.http.get<{
+      id: string;
+      messages: {
+        content: string;
+        createdAt: string;
+        id: string;
+        role: string;
+      }[];
+      title: string;
+    }>(`/api/v1/ai/conversations/${id}`);
+  }
+
+  public updateAiConversation(id: string, data: { title: string }) {
+    return this.http.patch(`/api/v1/ai/conversations/${id}`, data);
   }
 
   public buildFiltersAsQueryParams({ filters }: { filters?: Filter[] }) {

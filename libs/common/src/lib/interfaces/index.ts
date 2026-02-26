@@ -1,4 +1,5 @@
 import type { Access } from './access.interface';
+import type { AiChatAttachment } from './ai-chat-attachment.interface';
 import type {
   AiChatMessage,
   AiChatResponse
@@ -104,6 +105,7 @@ import type { XRayRulesSettings } from './x-ray-rules-settings.interface';
 export {
   Access,
   AccessTokenResponse,
+  AiChatAttachment,
   AccountBalance,
   AccountBalancesResponse,
   AccountResponse,
