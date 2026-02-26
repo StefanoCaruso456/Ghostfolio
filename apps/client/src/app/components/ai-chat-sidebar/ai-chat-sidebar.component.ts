@@ -1,5 +1,5 @@
 import { UserService } from '@ghostfolio/client/services/user/user.service';
-import { User } from '@ghostfolio/common/interfaces';
+import { AiChatAttachment, User } from '@ghostfolio/common/interfaces';
 import { DataService } from '@ghostfolio/ui/services';
 
 import { CommonModule } from '@angular/common';
@@ -23,12 +23,17 @@ import { IonIcon } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
   arrowUpOutline,
+  attachOutline,
   chatbubbleEllipsesOutline,
   checkmarkOutline,
   chevronDownOutline,
+  closeCircleOutline,
   closeOutline,
   copyOutline,
   createOutline,
+  documentOutline,
+  imageOutline,
+  pencilOutline,
   refreshOutline,
   sparklesOutline,
   stopCircleOutline,
@@ -39,6 +44,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 interface ChatMessage {
+  attachments?: { fileName: string; mimeType: string }[];
   content: string;
   isCopied?: boolean;
   isError?: boolean;
@@ -74,14 +80,27 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
   @Output() closed = new EventEmitter<void>();
 
   @ViewChild('chatInput') chatInputElement: ElementRef<HTMLTextAreaElement>;
+  @ViewChild('fileInput') fileInputElement: ElementRef<HTMLInputElement>;
   @ViewChild('messagesContainer')
   messagesContainerElement: ElementRef<HTMLDivElement>;
 
+  public attachments: AiChatAttachment[] = [];
   public conversations: Conversation[] = [];
   public currentConversation: Conversation | null = null;
+  public editingConversationId: string | null = null;
+  public editingTitle = '';
   public inputValue = '';
   public isGenerating = false;
   public showHistory = false;
+
+  private readonly ALLOWED_TYPES = [
+    'application/pdf',
+    'image/jpeg',
+    'image/png',
+    'text/csv'
+  ];
+  private readonly MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
+  private readonly MAX_FILES = 3;
 
   public readonly suggestedPrompts = [
     {
@@ -118,12 +137,17 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
   ) {
     addIcons({
       arrowUpOutline,
+      attachOutline,
       chatbubbleEllipsesOutline,
       checkmarkOutline,
       chevronDownOutline,
+      closeCircleOutline,
       closeOutline,
       copyOutline,
       createOutline,
+      documentOutline,
+      imageOutline,
+      pencilOutline,
       refreshOutline,
       sparklesOutline,
       stopCircleOutline,
@@ -149,6 +173,7 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
   public onNewConversation() {
     this.currentConversation = null;
     this.inputValue = '';
+    this.attachments = [];
     this.showHistory = false;
     this.changeDetectorRef.markForCheck();
     this.focusInput();
@@ -158,11 +183,37 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
     this.currentConversation = conversation;
     this.showHistory = false;
     this.changeDetectorRef.markForCheck();
-    this.scrollToBottom();
+
+    // Load messages from API if not already loaded
+    if (conversation.messages.length === 0) {
+      this.dataService
+        .getAiConversation(conversation.id)
+        .pipe(takeUntil(this.unsubscribeSubject))
+        .subscribe({
+          error: () => {
+            // Messages may already be in localStorage cache
+          },
+          next: (fullConversation) => {
+            if (fullConversation?.messages) {
+              conversation.messages = fullConversation.messages.map((m) => ({
+                content: m.content,
+                role: m.role as 'assistant' | 'user',
+                timestamp: m.createdAt
+              }));
+              this.changeDetectorRef.markForCheck();
+              this.scrollToBottom();
+            }
+          }
+        });
+    } else {
+      this.scrollToBottom();
+    }
   }
 
   public onDeleteConversation(event: Event, conversation: Conversation) {
     event.stopPropagation();
+
+    // Optimistic UI update
     this.conversations = this.conversations.filter(
       (c) => c.id !== conversation.id
     );
@@ -173,6 +224,51 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
 
     this.saveConversations();
     this.changeDetectorRef.markForCheck();
+
+    // API delete (non-blocking)
+    this.dataService
+      .deleteAiConversation(conversation.id)
+      .pipe(takeUntil(this.unsubscribeSubject))
+      .subscribe();
+  }
+
+  public onStartRename(event: Event, conversation: Conversation) {
+    event.stopPropagation();
+    this.editingConversationId = conversation.id;
+    this.editingTitle = conversation.title;
+    this.changeDetectorRef.markForCheck();
+  }
+
+  public onFinishRename(conversation: Conversation) {
+    const newTitle = this.editingTitle.trim();
+
+    if (newTitle && newTitle !== conversation.title) {
+      conversation.title = newTitle;
+      this.saveConversations();
+
+      // API update (non-blocking)
+      this.dataService
+        .updateAiConversation(conversation.id, { title: newTitle })
+        .pipe(takeUntil(this.unsubscribeSubject))
+        .subscribe();
+    }
+
+    this.editingConversationId = null;
+    this.changeDetectorRef.markForCheck();
+  }
+
+  public onCancelRename() {
+    this.editingConversationId = null;
+    this.changeDetectorRef.markForCheck();
+  }
+
+  public onRenameKeydown(event: KeyboardEvent, conversation: Conversation) {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      this.onFinishRename(conversation);
+    } else if (event.key === 'Escape') {
+      this.onCancelRename();
+    }
   }
 
   public onToggleHistory() {
@@ -192,7 +288,10 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
       return;
     }
 
+    // Capture and clear attachments + input
+    const messageAttachments = [...this.attachments];
     this.inputValue = '';
+    this.attachments = [];
 
     if (!this.currentConversation) {
       this.currentConversation = {
@@ -204,6 +303,12 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
     }
 
     const userMessage: ChatMessage = {
+      attachments: messageAttachments.length
+        ? messageAttachments.map((a) => ({
+            fileName: a.fileName,
+            mimeType: a.mimeType
+          }))
+        : undefined,
       content: message,
       role: 'user',
       timestamp: new Date().toISOString()
@@ -229,6 +334,9 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
 
     this.dataService
       .chatWithAi({
+        attachments: messageAttachments.length
+          ? messageAttachments
+          : undefined,
         history,
         message,
         conversationId: this.currentConversation.id
@@ -263,6 +371,86 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
           this.scrollToBottom();
         }
       });
+  }
+
+  public onAttachFile() {
+    this.fileInputElement?.nativeElement?.click();
+  }
+
+  public onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const files = input.files;
+
+    if (!files?.length) {
+      return;
+    }
+
+    for (let i = 0; i < files.length; i++) {
+      if (this.attachments.length >= this.MAX_FILES) {
+        break;
+      }
+
+      const file = files[i];
+
+      if (!this.ALLOWED_TYPES.includes(file.type)) {
+        continue;
+      }
+
+      if (file.size > this.MAX_FILE_SIZE) {
+        continue;
+      }
+
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        const content =
+          file.type === 'text/csv'
+            ? (reader.result as string)
+            : (reader.result as string); // base64 data URL for images/PDFs
+
+        this.attachments.push({
+          content,
+          fileName: file.name,
+          mimeType: file.type,
+          size: file.size
+        });
+        this.changeDetectorRef.markForCheck();
+      };
+
+      if (file.type === 'text/csv') {
+        reader.readAsText(file);
+      } else {
+        reader.readAsDataURL(file);
+      }
+    }
+
+    // Reset input so same file can be re-selected
+    input.value = '';
+  }
+
+  public onRemoveAttachment(index: number) {
+    this.attachments.splice(index, 1);
+    this.changeDetectorRef.markForCheck();
+  }
+
+  public getAttachmentIcon(mimeType: string): string {
+    if (mimeType.startsWith('image/')) {
+      return 'image-outline';
+    }
+
+    return 'document-outline';
+  }
+
+  public formatFileSize(bytes: number): string {
+    if (bytes < 1024) {
+      return bytes + ' B';
+    }
+
+    if (bytes < 1024 * 1024) {
+      return (bytes / 1024).toFixed(1) + ' KB';
+    }
+
+    return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
   }
 
   public onCopyMessage(message: ChatMessage) {
@@ -326,15 +514,33 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
   }
 
   private loadConversations() {
-    try {
-      const stored = localStorage.getItem('gf-ai-conversations');
+    this.dataService
+      .getAiConversations()
+      .pipe(takeUntil(this.unsubscribeSubject))
+      .subscribe({
+        error: () => {
+          // Fall back to localStorage
+          try {
+            const stored = localStorage.getItem('gf-ai-conversations');
 
-      if (stored) {
-        this.conversations = JSON.parse(stored);
-      }
-    } catch {
-      this.conversations = [];
-    }
+            if (stored) {
+              this.conversations = JSON.parse(stored);
+            }
+          } catch {
+            this.conversations = [];
+          }
+
+          this.changeDetectorRef.markForCheck();
+        },
+        next: (apiConversations) => {
+          this.conversations = apiConversations.map((c) => ({
+            id: c.id,
+            messages: [],
+            title: c.title
+          }));
+          this.changeDetectorRef.markForCheck();
+        }
+      });
   }
 
   private saveConversations() {
