@@ -1,4 +1,6 @@
 import { AiChatDto } from './ai-chat.dto';
+import { AiFeedbackDto, AiFeedbackRatingDto } from './ai-feedback.dto';
+import { AiVerificationLabelDto } from './ai-verification-label.dto';
 import { AuthDeviceDto } from './auth-device.dto';
 import { CreateAccessDto } from './create-access.dto';
 import { CreateAccountBalanceDto } from './create-account-balance.dto';
@@ -27,6 +29,9 @@ import { UpdateUserSettingDto } from './update-user-setting.dto';
 
 export {
   AiChatDto,
+  AiFeedbackDto,
+  AiFeedbackRatingDto,
+  AiVerificationLabelDto,
   AuthDeviceDto,
   CreateAccessDto,
   CreateAccountBalanceDto,

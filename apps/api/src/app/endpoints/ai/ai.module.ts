@@ -21,16 +21,18 @@ import { PropertyModule } from '@ghostfolio/api/services/property/property.modul
 import { PortfolioSnapshotQueueModule } from '@ghostfolio/api/services/queues/portfolio-snapshot/portfolio-snapshot.module';
 import { SymbolProfileModule } from '@ghostfolio/api/services/symbol-profile/symbol-profile.module';
 
-import { Module } from '@nestjs/common';
+import { Module, OnModuleInit } from '@nestjs/common';
 
 import { AiController } from './ai.controller';
 import { AiService } from './ai.service';
 import { AiConversationController } from './conversation/conversation.controller';
 import { AiConversationService } from './conversation/conversation.service';
+import { AiMetricsController } from './metrics/ai-metrics.controller';
+import { AiMetricsService } from './metrics/ai-metrics.service';
 import { BraintrustTelemetryService } from './telemetry/braintrust-telemetry.service';
 
 @Module({
-  controllers: [AiController, AiConversationController],
+  controllers: [AiController, AiConversationController, AiMetricsController],
   imports: [
     ApiModule,
     BenchmarkModule,
@@ -52,6 +54,7 @@ import { BraintrustTelemetryService } from './telemetry/braintrust-telemetry.ser
     AccountBalanceService,
     AccountService,
     AiConversationService,
+    AiMetricsService,
     AiService,
     BraintrustTelemetryService,
     CurrentRateService,
@@ -61,4 +64,14 @@ import { BraintrustTelemetryService } from './telemetry/braintrust-telemetry.ser
     RulesService
   ]
 })
-export class AiModule {}
+export class AiModule implements OnModuleInit {
+  public constructor(
+    private readonly telemetryService: BraintrustTelemetryService,
+    private readonly metricsService: AiMetricsService
+  ) {}
+
+  public onModuleInit() {
+    // Wire metrics service into telemetry for DB persistence (avoids circular DI)
+    this.telemetryService.setMetricsService(this.metricsService);
+  }
+}

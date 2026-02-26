@@ -3,6 +3,7 @@ import { ConfigurationService } from '@ghostfolio/api/services/configuration/con
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { randomUUID } from 'node:crypto';
 
+import type { AiMetricsService } from '../metrics/ai-metrics.service';
 import {
   getMarketDataCacheStats,
   resetMarketDataCacheHits
@@ -34,9 +35,19 @@ export class BraintrustTelemetryService implements OnModuleInit {
   private enabled = false;
   private readonly nestLogger = new Logger(BraintrustTelemetryService.name);
 
+  private metricsService: AiMetricsService | null = null;
+
   public constructor(
     private readonly configurationService: ConfigurationService
   ) {}
+
+  /**
+   * Set the metrics service for DB persistence of trace metrics.
+   * Called by AiModule after both services are initialized to avoid circular deps.
+   */
+  public setMetricsService(service: AiMetricsService): void {
+    this.metricsService = service;
+  }
 
   public async onModuleInit() {
     const apiKey = this.configurationService.get('BRAINTRUST_API_KEY');
@@ -96,6 +107,29 @@ export class BraintrustTelemetryService implements OnModuleInit {
    * Log a completed trace with all spans and verification to Braintrust.
    */
   public async logTrace(payload: TelemetryPayload): Promise<void> {
+    // ── Always persist trace metric to DB (independent of Braintrust) ──
+    if (this.metricsService) {
+      this.metricsService
+        .persistTraceMetric({
+          traceId: payload.trace.traceId,
+          userId: payload.trace.userId,
+          totalLatencyMs: payload.trace.totalLatencyMs,
+          llmLatencyMs: payload.trace.llmLatencyMs,
+          toolLatencyTotalMs: payload.trace.toolLatencyTotalMs,
+          toolCallCount: payload.trace.toolCallCount,
+          usedTools: payload.trace.usedTools,
+          hallucinationFlagCount:
+            payload.verification.hallucinationFlags.length,
+          verificationPassed: payload.verification.passed,
+          estimatedCostUsd: payload.trace.estimatedCostUsd
+        })
+        .catch((dbError) => {
+          this.nestLogger.warn(
+            `DB metric persist failed: ${dbError instanceof Error ? dbError.message : String(dbError)}`
+          );
+        });
+    }
+
     if (!this.enabled || !this.logger) {
       this.nestLogger.debug(
         `Telemetry skip (disabled): trace=${payload.trace.traceId}`
@@ -227,6 +261,46 @@ export class BraintrustTelemetryService implements OnModuleInit {
     } catch (error) {
       this.nestLogger.error(
         `Failed to log trace to Braintrust: ${error instanceof Error ? error.message : String(error)}`
+      );
+    }
+
+  }
+
+  /**
+   * Log a user feedback event to Braintrust (non-blocking).
+   */
+  public async logFeedbackEvent(params: {
+    feedbackId: string;
+    userId: string;
+    rating: string;
+    traceId: string | null;
+    conversationId: string | null;
+  }): Promise<void> {
+    if (!this.enabled || !this.logger) {
+      return;
+    }
+
+    try {
+      this.logger.log({
+        id: `feedback-${params.feedbackId}`,
+        input: `User feedback: ${params.rating}`,
+        output: params.rating,
+        metadata: {
+          type: 'user_feedback',
+          feedbackId: params.feedbackId,
+          userId: params.userId,
+          rating: params.rating,
+          traceId: params.traceId,
+          conversationId: params.conversationId,
+          timestamp: new Date().toISOString()
+        },
+        scores: {
+          user_satisfaction: params.rating === 'UP' ? 1.0 : 0.0
+        }
+      });
+    } catch (error) {
+      this.nestLogger.warn(
+        `Failed to log feedback event: ${error instanceof Error ? error.message : String(error)}`
       );
     }
   }
