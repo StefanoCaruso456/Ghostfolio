@@ -20,12 +20,14 @@ import { REQUEST } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
 
 import { AiService } from './ai.service';
+import { McpClientService } from './mcp/mcp-client.service';
 
 @Controller('ai')
 export class AiController {
   public constructor(
     private readonly aiService: AiService,
     private readonly apiService: ApiService,
+    private readonly mcpClientService: McpClientService,
     @Inject(REQUEST) private readonly request: RequestWithUser
   ) {}
 
@@ -40,6 +42,16 @@ export class AiController {
       conversationId: body.conversationId,
       languageCode: this.request.user.settings.settings.language,
       userCurrency: this.request.user.settings.settings.baseCurrency,
+      userId: this.request.user.id
+    });
+  }
+
+  @Post('dashboard')
+  @HasPermission(permissions.readAiPrompt)
+  @UseGuards(AuthGuard('jwt'), HasPermissionGuard)
+  public async getDashboardConfig() {
+    return this.aiService.getDashboardConfig({
+      mcpClientService: this.mcpClientService,
       userId: this.request.user.id
     });
   }
