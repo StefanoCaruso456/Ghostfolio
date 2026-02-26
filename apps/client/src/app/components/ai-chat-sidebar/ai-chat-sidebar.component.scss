@@ -574,97 +574,138 @@
   }
 }
 
-// Attachment Preview Strip
-.attachment-preview-strip {
+// Attachment Previews
+.attachment-previews {
   display: flex;
-  flex-wrap: wrap;
   gap: 0.5rem;
-  padding: 0 0 0.5rem;
+  overflow-x: auto;
+  padding: 0 0.75rem 0.5rem;
 
-  .attachment-chip {
+  &::-webkit-scrollbar {
+    height: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(128, 128, 128, 0.2);
+    border-radius: 2px;
+  }
+}
+
+.attachment-thumbnail {
+  border: 1px solid rgba(128, 128, 128, 0.15);
+  border-radius: 10px;
+  box-shadow:
+    3px 3px 6px rgba(0, 0, 0, 0.06),
+    -2px -2px 5px rgba(255, 255, 255, 0.7);
+  flex-shrink: 0;
+  overflow: hidden;
+  position: relative;
+  width: 72px;
+
+  .thumbnail-image {
+    display: block;
+    height: 56px;
+    object-fit: cover;
+    width: 100%;
+  }
+
+  .thumbnail-file {
     align-items: center;
     background: rgba(128, 128, 128, 0.06);
-    border: 1px solid rgba(128, 128, 128, 0.15);
-    border-radius: 10px;
-    box-shadow:
-      3px 3px 6px rgba(0, 0, 0, 0.06),
-      -2px -2px 5px rgba(255, 255, 255, 0.8);
     display: flex;
-    gap: 0.375rem;
-    max-width: 200px;
-    padding: 0.375rem 0.5rem;
-    transition: all 0.15s ease;
+    height: 56px;
+    justify-content: center;
 
-    .attachment-chip-icon {
+    ion-icon {
       color: rgba(var(--gf-theme-primary-500-rgb), 0.7);
-      flex-shrink: 0;
-      font-size: 1rem;
+      font-size: 1.5rem;
+    }
+  }
+
+  .thumbnail-name {
+    display: block;
+    font-size: 0.6rem;
+    overflow: hidden;
+    padding: 0.2rem 0.35rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .thumbnail-remove {
+    align-items: center;
+    background: rgba(0, 0, 0, 0.55);
+    border: none;
+    border-radius: 50%;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    height: 18px;
+    justify-content: center;
+    opacity: 0;
+    position: absolute;
+    right: 3px;
+    top: 3px;
+    transition: opacity 0.15s ease;
+    width: 18px;
+
+    ion-icon {
+      font-size: 0.65rem;
+    }
+  }
+
+  &:hover .thumbnail-remove {
+    opacity: 1;
+  }
+}
+
+:host-context(.theme-dark) {
+  .attachment-thumbnail {
+    box-shadow:
+      3px 3px 6px rgba(0, 0, 0, 0.3),
+      -2px -2px 5px rgba(255, 255, 255, 0.04);
+  }
+}
+
+// Message Attachments (in chat bubbles)
+.message-attachments {
+  display: flex;
+  gap: 0.375rem;
+  justify-content: flex-end;
+  margin-bottom: 0.375rem;
+
+  .message-attachment-thumb {
+    border-radius: 8px;
+    overflow: hidden;
+
+    .msg-thumb-image {
+      border-radius: 8px;
+      display: block;
+      height: 80px;
+      max-width: 140px;
+      object-fit: cover;
+      width: auto;
     }
 
-    .attachment-chip-info {
+    .msg-thumb-file {
+      align-items: center;
+      background: rgba(var(--gf-theme-primary-500-rgb), 0.1);
+      border-radius: 8px;
       display: flex;
-      flex-direction: column;
-      min-width: 0;
+      font-size: 0.7rem;
+      gap: 0.35rem;
+      padding: 0.5rem 0.75rem;
 
-      .attachment-chip-name {
-        font-size: 0.72rem;
-        font-weight: 500;
+      ion-icon {
+        color: rgba(var(--gf-theme-primary-500-rgb), 0.8);
+        font-size: 1rem;
+      }
+
+      span {
+        max-width: 100px;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
       }
-
-      .attachment-chip-size {
-        color: rgba(128, 128, 128, 0.6);
-        font-size: 0.62rem;
-      }
-    }
-
-    .attachment-chip-remove {
-      align-items: center;
-      background: transparent;
-      border: none;
-      color: rgba(128, 128, 128, 0.5);
-      cursor: pointer;
-      display: flex;
-      flex-shrink: 0;
-      padding: 0;
-
-      ion-icon {
-        font-size: 0.9rem;
-      }
-
-      &:hover {
-        color: #e94560;
-      }
-    }
-
-    &:hover {
-      border-color: rgba(128, 128, 128, 0.25);
-    }
-  }
-}
-
-// Message Attachment Badges
-.message-attachments {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.375rem;
-  margin-top: 0.5rem;
-
-  .message-attachment-badge {
-    align-items: center;
-    background: rgba(var(--gf-theme-primary-500-rgb), 0.08);
-    border: 1px solid rgba(var(--gf-theme-primary-500-rgb), 0.15);
-    border-radius: 6px;
-    display: inline-flex;
-    font-size: 0.68rem;
-    gap: 0.25rem;
-    padding: 0.2rem 0.5rem;
-
-    ion-icon {
-      font-size: 0.75rem;
-      opacity: 0.7;
     }
   }
 }

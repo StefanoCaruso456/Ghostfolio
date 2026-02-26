@@ -212,8 +212,9 @@ function buildReActSystemPrompt(
     '- Users may attach CSV, PDF, or image files to their messages.',
     '- CSV content is provided inline as text — analyze it directly.',
     '- PDF text content is provided inline — analyze it directly.',
-    '- Image descriptions are noted but cannot be visually analyzed unless the model supports vision.',
-    '- When an attachment is present, acknowledge it and analyze the data it contains.'
+    '- Images are provided as visual content — analyze them using vision capabilities.',
+    '- When analyzing images: describe what you see, extract any relevant financial data (charts, tables, screenshots), and relate findings to the user question.',
+    '- When an attachment is present, acknowledge it and analyze the data it contains thoroughly.'
   ].join('\n');
 }
 
@@ -329,10 +330,25 @@ export class AiService {
     const systemMessage = buildReActSystemPrompt(languageCode, userCurrency);
 
     // ── Build user message with attachment context ──────────────────
-    let userMessageContent = message;
+    // Separate image attachments (multimodal) from text-based attachments
+    const imageAttachments: typeof attachments = [];
+    const textAttachments: typeof attachments = [];
 
     if (attachments?.length > 0) {
-      const attachmentDescriptions = attachments.map((att) => {
+      for (const att of attachments) {
+        if (att.mimeType.startsWith('image/')) {
+          imageAttachments.push(att);
+        } else {
+          textAttachments.push(att);
+        }
+      }
+    }
+
+    // Build the text portion: user message + inline CSV/PDF content
+    let textContent = message;
+
+    if (textAttachments.length > 0) {
+      const descriptions = textAttachments.map((att) => {
         if (att.mimeType === 'text/csv') {
           return `[Attached CSV: ${att.fileName}]\n${att.content}`;
         }
@@ -341,27 +357,52 @@ export class AiService {
           return `[Attached PDF: ${att.fileName}]\n${att.content}`;
         }
 
-        if (att.mimeType.startsWith('image/')) {
-          return `[Attached image: ${att.fileName} — image data provided but cannot be visually analyzed in this context]`;
-        }
-
         return `[Attached file: ${att.fileName}]`;
       });
 
-      userMessageContent +=
-        '\n\n--- Attachments ---\n' + attachmentDescriptions.join('\n\n');
+      textContent +=
+        '\n\n--- Attachments ---\n' + descriptions.join('\n\n');
     }
 
-    const messages: {
-      content: string;
-      role: 'assistant' | 'system' | 'user';
-    }[] = [
-      { content: systemMessage, role: 'system' },
+    // Build the user message — multimodal (content parts) if images, plain string otherwise
+    type ContentPart =
+      | { type: 'text'; text: string }
+      | { type: 'image'; image: string; mimeType?: string };
+
+    let userMessage:
+      | { content: string; role: 'user' }
+      | { content: ContentPart[]; role: 'user' };
+
+    if (imageAttachments.length > 0) {
+      const contentParts: ContentPart[] = [
+        { type: 'text', text: textContent }
+      ];
+
+      for (const img of imageAttachments) {
+        // Strip data URL prefix "data:image/xxx;base64," to get pure base64
+        const base64Data = img.content.includes(',')
+          ? img.content.split(',')[1]
+          : img.content;
+
+        contentParts.push({
+          type: 'image',
+          image: base64Data,
+          mimeType: img.mimeType
+        });
+      }
+
+      userMessage = { content: contentParts, role: 'user' };
+    } else {
+      userMessage = { content: textContent, role: 'user' };
+    }
+
+    const messages = [
+      { content: systemMessage, role: 'system' as const },
       ...history.map((msg) => ({
         content: msg.content,
         role: msg.role as 'assistant' | 'user'
       })),
-      { content: userMessageContent, role: 'user' as const }
+      userMessage
     ];
 
     // ── executeWithGuardrails wrapper ────────────────────────────────
