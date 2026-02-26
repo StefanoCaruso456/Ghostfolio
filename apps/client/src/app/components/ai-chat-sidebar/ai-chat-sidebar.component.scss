@@ -850,22 +850,3 @@
   }
 }
 
-// Fullscreen overrides
-:host-context(.ai-chat-fullscreen) {
-  .sidebar-container { border-left: none; margin: 0 auto; max-width: 900px; }
-  .sidebar-header { padding: 1rem 1.5rem; }
-  .messages-container { padding: 1.5rem 2rem; }
-  .message.message-user .message-content { max-width: 85%; }
-
-  .welcome-state {
-    padding: 3rem 2rem;
-    .welcome-icon-wrapper { height: 64px; width: 64px; }
-    .welcome-icon { font-size: 2rem; }
-    .welcome-title { font-size: 1.5rem; }
-    .welcome-subtitle { font-size: 1rem; max-width: 480px; }
-    .suggested-prompts { display: grid; gap: 0.75rem; grid-template-columns: repeat(2, 1fr); max-width: 600px; }
-  }
-
-  .input-area { padding: 0.75rem 2rem 1rem; }
-  .history-panel { max-height: 50vh; }
-}
