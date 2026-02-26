@@ -10,6 +10,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  CUSTOM_ELEMENTS_SCHEMA,
   DOCUMENT,
   HostBinding,
   Inject,
@@ -27,8 +28,9 @@ import {
   RouterOutlet
 } from '@angular/router';
 import { DataSource } from '@prisma/client';
+import { IonIcon } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { openOutline } from 'ionicons/icons';
+import { openOutline, sparklesOutline } from 'ionicons/icons';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
@@ -48,9 +50,11 @@ import { UserService } from './services/user/user.service';
     GfAiChatSidebarComponent,
     GfFooterComponent,
     GfHeaderComponent,
+    IonIcon,
     RouterLink,
     RouterOutlet
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   selector: 'gf-root',
   styleUrls: ['./app.component.scss'],
   templateUrl: './app.component.html'
@@ -68,6 +72,7 @@ export class GfAppComponent implements OnDestroy, OnInit {
   public hasInfoMessage: boolean;
   public hasPermissionToChangeDateRange: boolean;
   public hasPermissionToChangeFilters: boolean;
+  public hasPermissionToAccessAssistant: boolean;
   public hasPromotion = false;
   public hasTabs = false;
   public info: InfoItem;
@@ -111,7 +116,7 @@ export class GfAppComponent implements OnDestroy, OnInit {
         }
       });
 
-    addIcons({ openOutline });
+    addIcons({ openOutline, sparklesOutline });
   }
 
   public ngOnInit() {
@@ -224,6 +229,11 @@ export class GfAppComponent implements OnDestroy, OnInit {
         this.canCreateAccount = hasPermission(
           this.user?.permissions,
           permissions.createUserAccount
+        );
+
+        this.hasPermissionToAccessAssistant = hasPermission(
+          this.user?.permissions,
+          permissions.accessAssistant
         );
 
         this.hasInfoMessage =
