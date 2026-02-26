@@ -1,0 +1,266 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`AI Chat Telemetry Integration No-tools prompt — toolCallCount === 0 should match telemetry payload snapshot (no tools) 1`] = `
+{
+  "derived": {
+    "costPerToolCall": "<cost>",
+    "failedToolCount": 0,
+    "latencyPerIteration": "<ms>",
+    "toolOverheadRatio": "<ratio>",
+    "toolSuccessRates": {},
+  },
+  "reactIterations": [],
+  "toolSpans": [],
+  "trace": {
+    "aborted": false,
+    "answerQualitySignals": {
+      "disclaimerShown": false,
+      "numericClaimsCount": 0,
+      "refused": false,
+      "toolBackedNumericClaimsCount": null,
+    },
+    "cachingMeta": {
+      "cacheEnabled": true,
+      "cacheHits": 0,
+    },
+    "error": null,
+    "estimatedCostUsd": "<cost>",
+    "guardrailsTriggered": [],
+    "inputTokenCount": 150,
+    "iterationCount": 0,
+    "llmLatencyMs": "<ms>",
+    "model": "anthropic/claude-sonnet-4",
+    "outputTokenCount": 40,
+    "overheadLatencyMs": "<ms>",
+    "queryCategory": "general",
+    "queryText": "Hello, how are you?",
+    "requestShape": {
+      "historyMessageCount": 0,
+      "userMessageChars": 19,
+      "userMessageTokensEstimate": 5,
+    },
+    "responseText": "Hello! I'm your Ghostfolio AI assistant. I can help you with portfolio analysis, market data, and investment questions. How can I assist you today?",
+    "sessionId": "test-conv-2",
+    "success": true,
+    "timestamp": "<timestamp>",
+    "toolCallCount": 0,
+    "toolDataVolume": {
+      "perTool": [],
+      "toolOutputBytesTotal": 0,
+      "toolOutputRowsTotal": 0,
+    },
+    "toolLatencyTotalMs": "<ms>",
+    "toolNames": [],
+    "totalLatencyMs": "<ms>",
+    "totalTokenCount": 190,
+    "traceId": "<uuid>",
+    "usedTools": false,
+    "userId": "user-456",
+  },
+  "verification": {
+    "confidenceScore": 0.5,
+    "domainViolations": [],
+    "errors": [],
+    "escalationReason": null,
+    "escalationTriggered": false,
+    "factCheckSources": [],
+    "hallucinationFlags": [],
+    "passed": true,
+    "traceId": "<uuid>",
+    "warnings": [
+      "No tools were called — response may not be grounded in portfolio data",
+    ],
+  },
+}
+`;
+
+exports[`AI Chat Telemetry Integration Payload structure validation should match telemetry payload snapshot (structure) 1`] = `
+{
+  "derived": {
+    "costPerToolCall": "<cost>",
+    "failedToolCount": 0,
+    "latencyPerIteration": "<ms>",
+    "toolOverheadRatio": "<ratio>",
+    "toolSuccessRates": {},
+  },
+  "reactIterations": [],
+  "toolSpans": [],
+  "trace": {
+    "aborted": false,
+    "answerQualitySignals": {
+      "disclaimerShown": false,
+      "numericClaimsCount": 0,
+      "refused": false,
+      "toolBackedNumericClaimsCount": null,
+    },
+    "cachingMeta": {
+      "cacheEnabled": true,
+      "cacheHits": 0,
+    },
+    "error": null,
+    "estimatedCostUsd": "<cost>",
+    "guardrailsTriggered": [],
+    "inputTokenCount": 50,
+    "iterationCount": 0,
+    "llmLatencyMs": "<ms>",
+    "model": "anthropic/claude-sonnet-4",
+    "outputTokenCount": 20,
+    "overheadLatencyMs": "<ms>",
+    "queryCategory": "general",
+    "queryText": "Test prompt",
+    "requestShape": {
+      "historyMessageCount": 0,
+      "userMessageChars": 11,
+      "userMessageTokensEstimate": 3,
+    },
+    "responseText": "Test response",
+    "sessionId": "test-conv-3",
+    "success": true,
+    "timestamp": "<timestamp>",
+    "toolCallCount": 0,
+    "toolDataVolume": {
+      "perTool": [],
+      "toolOutputBytesTotal": 0,
+      "toolOutputRowsTotal": 0,
+    },
+    "toolLatencyTotalMs": "<ms>",
+    "toolNames": [],
+    "totalLatencyMs": "<ms>",
+    "totalTokenCount": 70,
+    "traceId": "<uuid>",
+    "usedTools": false,
+    "userId": "user-789",
+  },
+  "verification": {
+    "confidenceScore": 0.5,
+    "domainViolations": [],
+    "errors": [],
+    "escalationReason": null,
+    "escalationTriggered": false,
+    "factCheckSources": [],
+    "hallucinationFlags": [],
+    "passed": true,
+    "traceId": "<uuid>",
+    "warnings": [
+      "No tools were called — response may not be grounded in portfolio data",
+    ],
+  },
+}
+`;
+
+exports[`AI Chat Telemetry Integration Tool call scenario — getQuote should match telemetry payload snapshot (tool call) 1`] = `
+{
+  "derived": {
+    "costPerToolCall": "<cost>",
+    "failedToolCount": 1,
+    "latencyPerIteration": "<ms>",
+    "toolOverheadRatio": "<ratio>",
+    "toolSuccessRates": {
+      "getQuote": 0,
+    },
+  },
+  "reactIterations": [],
+  "toolSpans": [
+    {
+      "endedAt": "<timestamp>",
+      "error": "Failed to fetch quotes for all 1 symbols.",
+      "iterationIndex": 1,
+      "latencyMs": "<ms>",
+      "retryCount": 0,
+      "spanId": "<uuid>",
+      "startedAt": "<timestamp>",
+      "status": "error",
+      "toolInput": {
+        "symbols": [
+          "AAPL",
+        ],
+      },
+      "toolName": "getQuote",
+      "toolOutput": {
+        "confidence": 0.1,
+        "message": "Failed to fetch quotes for all 1 symbols.",
+        "status": "error",
+      },
+      "traceId": "<uuid>",
+      "wasCorrectTool": null,
+    },
+  ],
+  "trace": {
+    "aborted": false,
+    "answerQualitySignals": {
+      "disclaimerShown": false,
+      "numericClaimsCount": 1,
+      "refused": false,
+      "toolBackedNumericClaimsCount": 1,
+    },
+    "cachingMeta": {
+      "cacheEnabled": true,
+      "cacheHits": 0,
+    },
+    "error": null,
+    "estimatedCostUsd": "<cost>",
+    "guardrailsTriggered": [],
+    "inputTokenCount": 200,
+    "iterationCount": 1,
+    "llmLatencyMs": "<ms>",
+    "model": "anthropic/claude-sonnet-4",
+    "outputTokenCount": 80,
+    "overheadLatencyMs": "<ms>",
+    "providerMeta": {
+      "marketProviderName": "yahoo",
+      "providerErrors": [
+        "getQuote: Failed to fetch quotes for all 1 symbols.",
+      ],
+      "rateLimited": false,
+    },
+    "queryCategory": "market",
+    "queryText": "What is the price of AAPL?",
+    "requestShape": {
+      "historyMessageCount": 0,
+      "userMessageChars": 26,
+      "userMessageTokensEstimate": 7,
+    },
+    "responseText": "The current price of AAPL is $185.50.",
+    "sessionId": "test-conv-1",
+    "success": true,
+    "timestamp": "<timestamp>",
+    "toolCallCount": 1,
+    "toolDataVolume": {
+      "perTool": [
+        {
+          "outputBytes": 89,
+          "outputRows": 1,
+          "toolName": "getQuote",
+        },
+      ],
+      "toolOutputBytesTotal": 89,
+      "toolOutputRowsTotal": 1,
+    },
+    "toolLatencyTotalMs": "<ms>",
+    "toolNames": [
+      "getQuote",
+    ],
+    "totalLatencyMs": "<ms>",
+    "totalTokenCount": 280,
+    "traceId": "<uuid>",
+    "usedTools": true,
+    "userId": "user-123",
+  },
+  "verification": {
+    "confidenceScore": 0.6,
+    "domainViolations": [
+      "Verification gate BLOCKED after getQuote: Verification failed: unknown",
+    ],
+    "errors": [],
+    "escalationReason": null,
+    "escalationTriggered": false,
+    "factCheckSources": [],
+    "hallucinationFlags": [
+      "1 tool(s) failed verification but response doesn't mention errors",
+    ],
+    "passed": false,
+    "traceId": "<uuid>",
+    "warnings": [],
+  },
+}
+`;
