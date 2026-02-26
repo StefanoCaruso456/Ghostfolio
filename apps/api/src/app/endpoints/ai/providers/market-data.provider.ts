@@ -52,8 +52,16 @@ function daysAgo(days: number): Date {
 export class YahooMarketDataProvider implements MarketDataProvider {
   public readonly name = 'yahoo' as const;
 
+  // Cached instance — yahoo-finance2 v3 requires `new YahooFinance()`
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private yahooInstance: any = null;
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private async getYahoo(): Promise<any> {
+    if (this.yahooInstance) {
+      return this.yahooInstance;
+    }
+
     // Dynamic import for ESM module — typed as any to avoid TS issues
     // with yahoo-finance2's complex conditional module types
     // eslint-disable-next-line @typescript-eslint/no-implied-eval
@@ -61,7 +69,15 @@ export class YahooMarketDataProvider implements MarketDataProvider {
       s: string
     ) => Promise<any>;
     const mod = await dynamicImport('yahoo-finance2');
-    return mod.default ?? mod;
+    const YahooFinance = mod.default ?? mod;
+
+    // yahoo-finance2 v3: must instantiate the class
+    this.yahooInstance =
+      typeof YahooFinance === 'function' && YahooFinance.prototype
+        ? new YahooFinance({ suppressNotices: ['yahooSurvey'] })
+        : YahooFinance;
+
+    return this.yahooInstance;
   }
 
   public async fetchQuotes(symbols: string[]): Promise<QuoteResult> {
