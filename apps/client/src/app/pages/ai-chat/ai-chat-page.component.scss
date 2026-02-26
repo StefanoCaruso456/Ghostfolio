@@ -172,6 +172,16 @@
     .send-btn.active {
       box-shadow: 0 2px 8px rgba(var(--gf-theme-primary-500-rgb), 0.3);
     }
+
+    .drag-overlay {
+      border-radius: 16px;
+      font-size: 0.9rem;
+      padding: 1.25rem;
+
+      .drag-icon {
+        font-size: 1.75rem;
+      }
+    }
   }
 
   // ── History Toggle & Panel ─────────────────────────────────────────
