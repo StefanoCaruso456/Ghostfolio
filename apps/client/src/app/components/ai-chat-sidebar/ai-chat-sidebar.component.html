@@ -224,6 +224,7 @@
     class="input-area"
     [class.dragging]="isDragging"
     (dragover)="onDragOver($event)"
+    (dragenter)="onDragEnter($event)"
     (dragleave)="onDragLeave($event)"
     (drop)="onDrop($event)"
   >
