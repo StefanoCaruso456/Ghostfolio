@@ -1,3 +1,28 @@
-<div class="ai-chat-fullscreen">
-  <gf-ai-chat-sidebar mode="fullscreen" [user]="user" />
-</div>
+<mat-tab-nav-panel #tabPanel class="flex-grow-1 overflow-auto">
+  <router-outlet />
+</mat-tab-nav-panel>
+
+<nav
+  mat-align-tabs="center"
+  mat-tab-nav-bar
+  [disablePagination]="true"
+  [tabPanel]="tabPanel"
+>
+  @for (tab of tabs; track tab) {
+    <a
+      #rla="routerLinkActive"
+      class="no-min-width px-3"
+      mat-tab-link
+      routerLinkActive
+      [active]="rla.isActive"
+      [routerLink]="tab.routerLink"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      <ion-icon
+        [name]="tab.iconName"
+        [size]="deviceType === 'mobile' ? 'large' : 'small'"
+      />
+      <div class="d-none d-sm-block ml-2">{{ tab.label }}</div>
+    </a>
+  }
+</nav>
