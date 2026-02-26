@@ -25,6 +25,7 @@ import {
   type VerificationResult
 } from '../../import-auditor/schemas/verification.schema';
 import { enforceVerificationGate } from '../../import-auditor/verification/enforce';
+import { AiConversationService } from './conversation/conversation.service';
 import { BraintrustTelemetryService } from './telemetry/braintrust-telemetry.service';
 import { buildRebalanceResult } from './tools/compute-rebalance.tool';
 import { buildAllocationsResult } from './tools/get-allocations.tool';
@@ -205,7 +206,14 @@ function buildReActSystemPrompt(
     '- When a tool fails, your response MUST explicitly state: "The [toolName] tool was unable to retrieve data: [error message]."',
     '- NEVER say "based on the data" or "according to market data" when a tool returned an error.',
     '- If ALL tools fail, respond with ONLY the error acknowledgment — no market commentary, no speculation.',
-    '- If SOME tools succeed and some fail, report the available data AND explicitly note which tools failed.'
+    '- If SOME tools succeed and some fail, report the available data AND explicitly note which tools failed.',
+    '',
+    '# File Attachments',
+    '- Users may attach CSV, PDF, or image files to their messages.',
+    '- CSV content is provided inline as text — analyze it directly.',
+    '- PDF text content is provided inline — analyze it directly.',
+    '- Image descriptions are noted but cannot be visually analyzed unless the model supports vision.',
+    '- When an attachment is present, acknowledge it and analyze the data it contains.'
   ].join('\n');
 }
 
@@ -235,6 +243,7 @@ export class AiService {
   ];
 
   public constructor(
+    private readonly conversationService: AiConversationService,
     private readonly orderService: OrderService,
     private readonly portfolioService: PortfolioService,
     private readonly propertyService: PropertyService,
@@ -242,6 +251,7 @@ export class AiService {
   ) {}
 
   public async chat({
+    attachments,
     conversationId,
     history,
     languageCode,
@@ -249,6 +259,12 @@ export class AiService {
     userCurrency,
     userId
   }: {
+    attachments?: {
+      content: string;
+      fileName: string;
+      mimeType: string;
+      size: number;
+    }[];
     conversationId?: string;
     history: { content: string; role: 'assistant' | 'user' }[];
     languageCode: string;
@@ -312,6 +328,30 @@ export class AiService {
     // ── Build ReAct system prompt ───────────────────────────────────
     const systemMessage = buildReActSystemPrompt(languageCode, userCurrency);
 
+    // ── Build user message with attachment context ──────────────────
+    let userMessageContent = message;
+
+    if (attachments?.length > 0) {
+      const attachmentDescriptions = attachments.map((att) => {
+        if (att.mimeType === 'text/csv') {
+          return `[Attached CSV: ${att.fileName}]\n${att.content}`;
+        }
+
+        if (att.mimeType === 'application/pdf') {
+          return `[Attached PDF: ${att.fileName}]\n${att.content}`;
+        }
+
+        if (att.mimeType.startsWith('image/')) {
+          return `[Attached image: ${att.fileName} — image data provided but cannot be visually analyzed in this context]`;
+        }
+
+        return `[Attached file: ${att.fileName}]`;
+      });
+
+      userMessageContent +=
+        '\n\n--- Attachments ---\n' + attachmentDescriptions.join('\n\n');
+    }
+
     const messages: {
       content: string;
       role: 'assistant' | 'system' | 'user';
@@ -321,7 +361,7 @@ export class AiService {
         content: msg.content,
         role: msg.role as 'assistant' | 'user'
       })),
-      { content: message, role: 'user' as const }
+      { content: userMessageContent, role: 'user' as const }
     ];
 
     // ── executeWithGuardrails wrapper ────────────────────────────────
@@ -754,6 +794,23 @@ export class AiService {
         );
       });
 
+      // ── Persist conversation (non-blocking) ────────────────────────
+      this.persistConversation({
+        conversationId: activeConversationId,
+        isNew: !conversationId,
+        messages: [
+          { content: message, role: 'user' },
+          { content: result.text, role: 'assistant' }
+        ],
+        title: message.slice(0, 80) + (message.length > 80 ? '...' : ''),
+        userId
+      }).catch((persistError) => {
+        Logger.warn(
+          `Conversation persistence failed: ${persistError instanceof Error ? persistError.message : String(persistError)}`,
+          'AiService'
+        );
+      });
+
       return {
         conversationId: activeConversationId,
         message: {
@@ -883,6 +940,37 @@ export class AiService {
     const confidence = passed ? 0.9 : Math.max(0.3, 0.9 - flags.length * 0.2);
 
     return { passed, confidence, flags };
+  }
+
+  /**
+   * Persist conversation + messages to the database (non-blocking).
+   * Creates a new conversation if `isNew` is true, otherwise appends messages.
+   */
+  private async persistConversation({
+    conversationId,
+    isNew,
+    messages,
+    title,
+    userId
+  }: {
+    conversationId: string;
+    isNew: boolean;
+    messages: { content: string; role: string }[];
+    title: string;
+    userId: string;
+  }) {
+    if (isNew) {
+      await this.conversationService.createConversation({
+        id: conversationId,
+        title,
+        userId
+      });
+    }
+
+    await this.conversationService.addMessages({
+      conversationId,
+      messages
+    });
   }
 
   /**

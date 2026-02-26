@@ -25,10 +25,12 @@ import { Module } from '@nestjs/common';
 
 import { AiController } from './ai.controller';
 import { AiService } from './ai.service';
+import { AiConversationController } from './conversation/conversation.controller';
+import { AiConversationService } from './conversation/conversation.service';
 import { BraintrustTelemetryService } from './telemetry/braintrust-telemetry.service';
 
 @Module({
-  controllers: [AiController],
+  controllers: [AiController, AiConversationController],
   imports: [
     ApiModule,
     BenchmarkModule,
@@ -49,6 +51,7 @@ import { BraintrustTelemetryService } from './telemetry/braintrust-telemetry.ser
   providers: [
     AccountBalanceService,
     AccountService,
+    AiConversationService,
     AiService,
     BraintrustTelemetryService,
     CurrentRateService,

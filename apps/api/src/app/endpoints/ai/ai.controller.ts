@@ -34,6 +34,7 @@ export class AiController {
   @UseGuards(AuthGuard('jwt'), HasPermissionGuard)
   public async chat(@Body() body: AiChatDto): Promise<AiChatResponse> {
     return this.aiService.chat({
+      attachments: body.attachments ?? [],
       history: body.history ?? [],
       message: body.message,
       conversationId: body.conversationId,
