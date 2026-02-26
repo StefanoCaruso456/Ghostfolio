@@ -213,6 +213,16 @@
         font-size: 0.7rem;
       }
     }
+
+    .drag-overlay {
+      border-radius: 16px;
+      font-size: 0.9rem;
+      padding: 1.25rem;
+
+      .drag-icon {
+        font-size: 1.75rem;
+      }
+    }
   }
 }
 
