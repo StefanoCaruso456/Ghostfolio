@@ -120,12 +120,16 @@ interface ToolCallRecord {
 }
 
 /**
- * Strip Unicode smart quotes and non-ASCII characters that break HTTP headers.
+ * Strip quotes (ASCII + Unicode smart quotes) and non-ASCII characters
+ * that break HTTP headers or API identifiers.
+ *
+ * Common cause: admin settings stored with literal "value" wrapping.
  */
 function sanitizePropertyString(value: string): string {
   return value
-    .replace(/[\u2018\u2019\u201C\u201D\u201A\u201B\u201E\u201F]/g, '')
-    .replace(/[\u0080-\uFFFF]/g, '')
+    .replace(/['"]+/g, '') // Strip ASCII single/double quotes
+    .replace(/[\u2018\u2019\u201C\u201D\u201A\u201B\u201E\u201F]/g, '') // Smart quotes
+    .replace(/[\u0080-\uFFFF]/g, '') // Non-ASCII
     .trim();
 }
 
