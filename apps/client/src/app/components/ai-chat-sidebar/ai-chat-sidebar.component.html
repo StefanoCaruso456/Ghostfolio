@@ -213,6 +213,12 @@
         <span i18n>Generating response...</span>
       </div>
     }
+    @if (isRecording) {
+      <div class="recording-indicator">
+        <div class="recording-dot"></div>
+        <span i18n>Listening...</span>
+      </div>
+    }
     <!-- Attachment Preview Strip -->
     @if (attachments.length > 0) {
       <div class="attachment-preview-strip">
@@ -248,6 +254,21 @@
       >
         <ion-icon name="attach-outline" />
       </button>
+      @if (isSpeechSupported) {
+        <button
+          class="voice-btn"
+          [class.recording]="isRecording"
+          [matTooltip]="isRecording ? 'Stop recording' : 'Voice input'"
+          [disabled]="isGenerating"
+          (click)="onToggleVoiceInput()"
+        >
+          @if (isRecording) {
+            <ion-icon name="mic-off-outline" />
+          } @else {
+            <ion-icon name="mic-outline" />
+          }
+        </button>
+      }
       <textarea
         #chatInput
         class="chat-input"

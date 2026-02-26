@@ -33,6 +33,8 @@ import {
   createOutline,
   documentOutline,
   imageOutline,
+  micOffOutline,
+  micOutline,
   pencilOutline,
   refreshOutline,
   sparklesOutline,
@@ -91,7 +93,11 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
   public editingTitle = '';
   public inputValue = '';
   public isGenerating = false;
+  public isRecording = false;
+  public isSpeechSupported = false;
   public showHistory = false;
+
+  private speechRecognition: any = null;
 
   private readonly ALLOWED_TYPES = [
     'application/pdf',
@@ -147,6 +153,8 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
       createOutline,
       documentOutline,
       imageOutline,
+      micOffOutline,
+      micOutline,
       pencilOutline,
       refreshOutline,
       sparklesOutline,
@@ -157,6 +165,7 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
 
   public ngOnInit() {
     this.loadConversations();
+    this.initSpeechRecognition();
 
     this.userService.stateChanged
       .pipe(takeUntil(this.unsubscribeSubject))
@@ -494,6 +503,22 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
     }
   }
 
+  public onToggleVoiceInput(): void {
+    if (!this.speechRecognition) {
+      return;
+    }
+
+    if (this.isRecording) {
+      this.speechRecognition.stop();
+      this.isRecording = false;
+    } else {
+      this.speechRecognition.start();
+      this.isRecording = true;
+    }
+
+    this.changeDetectorRef.markForCheck();
+  }
+
   public adjustTextareaHeight(event: Event) {
     const textarea = event.target as HTMLTextAreaElement;
     textarea.style.height = 'auto';
@@ -506,8 +531,58 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
   }
 
   public ngOnDestroy() {
+    if (this.speechRecognition && this.isRecording) {
+      this.speechRecognition.stop();
+    }
+
     this.unsubscribeSubject.next();
     this.unsubscribeSubject.complete();
+  }
+
+  private initSpeechRecognition(): void {
+    const SpeechRecognitionCtor =
+      (window as any).SpeechRecognition ||
+      (window as any).webkitSpeechRecognition;
+
+    if (!SpeechRecognitionCtor) {
+      this.isSpeechSupported = false;
+
+      return;
+    }
+
+    this.isSpeechSupported = true;
+    this.speechRecognition = new SpeechRecognitionCtor();
+    this.speechRecognition.continuous = true;
+    this.speechRecognition.interimResults = true;
+    this.speechRecognition.lang =
+      this.user?.settings?.language ?? 'en-US';
+
+    this.speechRecognition.onresult = (event: any) => {
+      let finalTranscript = '';
+
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        if (event.results[i].isFinal) {
+          finalTranscript += event.results[i][0].transcript;
+        }
+      }
+
+      if (finalTranscript) {
+        this.inputValue +=
+          (this.inputValue ? ' ' : '') + finalTranscript.trim();
+        this.changeDetectorRef.markForCheck();
+      }
+    };
+
+    this.speechRecognition.onend = () => {
+      this.isRecording = false;
+      this.changeDetectorRef.markForCheck();
+    };
+
+    this.speechRecognition.onerror = (event: any) => {
+      console.warn('Speech recognition error:', event.error);
+      this.isRecording = false;
+      this.changeDetectorRef.markForCheck();
+    };
   }
 
   private focusInput() {
