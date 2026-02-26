@@ -85,6 +85,13 @@ function sanitizeForSnapshot(
     }));
   }
 
+  if (p.timing) {
+    p.timing.startEpochS = '<epochS>';
+    p.timing.endEpochS = '<epochS>';
+    p.timing.llmStartEpochS = '<epochS>';
+    p.timing.llmEndEpochS = '<epochS>';
+  }
+
   return p;
 }
 

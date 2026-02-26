@@ -264,7 +264,27 @@ export interface ReactIteration {
 }
 
 // ---------------------------------------------------------------------------
-// 5. Derived / Computed Metrics (for Braintrust dashboard filters)
+// 5. Tool Policy & Groundedness Decisions
+// ---------------------------------------------------------------------------
+
+/** Why tools were or were not used in this query */
+export type ToolPolicyDecision =
+  | 'no_tool_needed' // Model decided no tools required
+  | 'tool_selected' // Tools were called successfully
+  | 'tool_failed' // Tools were called but all failed
+  | 'tool_skipped_cost' // Skipped due to cost limit
+  | 'tool_skipped_timeout' // Skipped due to timeout
+  | 'tool_mixed' // Some succeeded, some failed
+  | 'unknown'; // Not yet determined
+
+/** How groundedness was assessed */
+export type GroundednessMode =
+  | 'computed' // Tools were called, groundedness was evaluated
+  | 'no_tools_default' // No tools used, default score applied
+  | 'verification_blocked'; // Verification gate blocked the response
+
+// ---------------------------------------------------------------------------
+// 6. Derived / Computed Metrics (for Braintrust dashboard filters)
 // ---------------------------------------------------------------------------
 
 export interface DerivedMetrics {
@@ -294,4 +314,26 @@ export interface TelemetryPayload {
   verification: VerificationSummary;
   reactIterations: ReactIteration[];
   derived: DerivedMetrics;
+
+  /** Why tools were or were not used */
+  toolPolicyDecision: ToolPolicyDecision;
+
+  /** How groundedness was assessed */
+  groundednessMode: GroundednessMode;
+
+  /** Epoch timestamps (seconds) for accurate Braintrust span timing */
+  timing: {
+    startEpochS: number; // request start
+    endEpochS: number; // response complete
+    llmStartEpochS: number;
+    llmEndEpochS: number;
+  };
+
+  /** Config versioning for debugging regressions */
+  versions: {
+    systemPromptVersion: string;
+    toolSchemaVersion: string;
+    reactEnabled: boolean;
+    verificationEnabled: boolean;
+  };
 }
