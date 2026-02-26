@@ -2,7 +2,7 @@
   <!-- Header -->
   <div class="sidebar-header">
     <div class="header-left">
-      <ion-icon name="sparkles-outline" class="header-icon" />
+      <ion-icon class="header-icon" name="sparkles-outline" />
       <span class="header-title">Ghostfolio AI</span>
     </div>
     <div class="header-actions">
@@ -41,7 +41,7 @@
           (click)="onSelectConversation(conversation)"
         >
           <div class="history-item-content">
-            <ion-icon name="chatbubble-ellipses-outline" class="history-icon" />
+            <ion-icon class="history-icon" name="chatbubble-ellipses-outline" />
             <span class="history-item-title">{{ conversation.title }}</span>
           </div>
           <button
@@ -62,7 +62,7 @@
       <!-- Welcome State -->
       <div class="welcome-state">
         <div class="welcome-icon-wrapper">
-          <ion-icon name="sparkles-outline" class="welcome-icon" />
+          <ion-icon class="welcome-icon" name="sparkles-outline" />
         </div>
         <h2 class="welcome-title" i18n>How can I help you?</h2>
         <p class="welcome-subtitle" i18n>
@@ -70,15 +70,12 @@
           questions.
         </p>
         <div class="suggested-prompts">
-          @for (
-            suggestion of suggestedPrompts;
-            track suggestion.label
-          ) {
+          @for (suggestion of suggestedPrompts; track suggestion.label) {
             <button
               class="suggested-prompt-btn"
               (click)="onUseSuggestedPrompt(suggestion.prompt)"
             >
-              <ion-icon [name]="suggestion.icon" class="suggestion-icon" />
+              <ion-icon class="suggestion-icon" [name]="suggestion.icon" />
               <span>{{ suggestion.label }}</span>
             </button>
           }
@@ -104,6 +101,26 @@
           }
           <div class="message-body">
             @if (message.role === 'user') {
+              @if (message.attachments?.length) {
+                <div class="message-attachments">
+                  @for (att of message.attachments; track att.name) {
+                    <div class="message-attachment-thumb">
+                      @if (att.type === 'image') {
+                        <img
+                          class="msg-thumb-image"
+                          [alt]="att.name"
+                          [src]="att.previewUrl"
+                        />
+                      } @else {
+                        <div class="msg-thumb-file">
+                          <ion-icon name="document-text-outline" />
+                          <span>{{ att.name }}</span>
+                        </div>
+                      }
+                    </div>
+                  }
+                </div>
+              }
               <div class="message-content user-content">
                 {{ message.content }}
               </div>
@@ -126,7 +143,9 @@
                   (click)="onCopyMessage(message)"
                 >
                   <ion-icon
-                    [name]="message.isCopied ? 'checkmark-outline' : 'copy-outline'"
+                    [name]="
+                      message.isCopied ? 'checkmark-outline' : 'copy-outline'
+                    "
                   />
                   @if (message.isCopied) {
                     <span class="action-label" i18n>Copied</span>
@@ -163,7 +182,51 @@
 
   <!-- Input Area -->
   <div class="input-area">
+    <!-- Attachment Previews -->
+    @if (attachments.length > 0) {
+      <div class="attachment-previews">
+        @for (attachment of attachments; track attachment.name) {
+          <div class="attachment-thumbnail">
+            @if (attachment.type === 'image') {
+              <img
+                class="thumbnail-image"
+                [alt]="attachment.name"
+                [src]="attachment.previewUrl"
+              />
+            } @else {
+              <div class="thumbnail-file">
+                <ion-icon name="document-text-outline" />
+              </div>
+            }
+            <span class="thumbnail-name">{{ attachment.name }}</span>
+            <button
+              class="thumbnail-remove"
+              (click)="onRemoveAttachment(attachment)"
+            >
+              <ion-icon name="close-outline" />
+            </button>
+          </div>
+        }
+      </div>
+    }
+
     <div class="input-wrapper">
+      <input
+        #fileInput
+        accept="image/png,image/jpeg,image/gif,image/webp,.csv"
+        hidden
+        multiple
+        type="file"
+        (change)="onFilesSelected($event)"
+      />
+      <button
+        class="attach-btn"
+        matTooltip="Attach image or CSV"
+        [disabled]="isGenerating"
+        (click)="fileInput.click()"
+      >
+        <ion-icon name="attach-outline" />
+      </button>
       <textarea
         #chatInput
         class="chat-input"
@@ -177,8 +240,10 @@
       ></textarea>
       <button
         class="send-btn"
-        [class.active]="inputValue.trim().length > 0"
-        [disabled]="!inputValue.trim() || isGenerating"
+        [class.active]="inputValue.trim().length > 0 || attachments.length > 0"
+        [disabled]="
+          (!inputValue.trim() && attachments.length === 0) || isGenerating
+        "
         (click)="onSendMessage()"
       >
         @if (isGenerating) {
