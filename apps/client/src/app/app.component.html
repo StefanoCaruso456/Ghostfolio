@@ -62,8 +62,10 @@
   @if (isAiSidebarOpen && user) {
     <aside class="ai-sidebar">
       <gf-ai-chat-sidebar
+        mode="sidebar"
         [user]="user"
         (closed)="onToggleAiSidebar()"
+        (expandClicked)="onExpandAiChat()"
       />
     </aside>
   }

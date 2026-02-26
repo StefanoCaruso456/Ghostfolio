@@ -1,0 +1,7 @@
+:host {
+  display: block;
+}
+
+.ai-chat-fullscreen {
+  height: calc(100svh - var(--mat-toolbar-standard-height));
+}

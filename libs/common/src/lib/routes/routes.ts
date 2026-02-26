@@ -16,6 +16,12 @@ if (typeof window !== 'undefined') {
 }
 
 export const internalRoutes: Record<string, InternalRoute> = {
+  aiChat: {
+    excludeFromAssistant: true,
+    path: 'ai-chat',
+    routerLink: ['/ai-chat'],
+    title: 'Ghostfolio AI'
+  },
   account: {
     path: 'account',
     routerLink: ['/account'],

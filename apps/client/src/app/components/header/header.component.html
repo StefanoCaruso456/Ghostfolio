@@ -125,6 +125,18 @@
       </li>
       @if (hasPermissionToAccessAssistant) {
         <li class="list-inline-item">
+          <a
+            class="d-none d-sm-block"
+            mat-flat-button
+            [ngClass]="{
+              'font-weight-bold': currentRoute === routeAiChat,
+              'text-decoration-underline': currentRoute === routeAiChat
+            }"
+            [routerLink]="routerLinkAiChat"
+            >Ghostfolio AI</a
+          >
+        </li>
+        <li class="list-inline-item">
           <button
             class="h-100 no-min-width px-2 ai-trigger-btn"
             mat-button
@@ -298,6 +310,17 @@
               }"
               [routerLink]="routerLinkAdminControl"
               >Admin Control</a
+            >
+          }
+          @if (hasPermissionToAccessAssistant) {
+            <a
+              class="d-flex d-sm-none"
+              mat-menu-item
+              [ngClass]="{
+                'font-weight-bold': currentRoute === routeAiChat
+              }"
+              [routerLink]="routerLinkAiChat"
+              >Ghostfolio AI</a
             >
           }
           <hr class="m-0" />
