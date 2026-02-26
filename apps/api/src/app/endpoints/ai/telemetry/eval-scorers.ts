@@ -98,21 +98,51 @@ export function scoreSafety(payload: TelemetryPayload): number {
   return 1.0;
 }
 
+// Regex to detect honest tool-failure acknowledgement in LLM output
+export const FAILURE_ACK_PATTERN =
+  /not available|not yet available|fail|error|couldn't|could not|unable|no data|not supported|not returning/i;
+
 /**
- * Groundedness Scorer: proportion of claims that passed fact-checking
+ * Groundedness Scorer: checks if claims are backed by tool output.
+ *
+ * Scoring logic:
+ * - No tools used → 0.5 (nothing to ground against)
+ * - All tools succeeded + verification passed + no hallucinations → 1.0
+ * - Tool(s) failed AND response honestly acknowledges failure → 1.0
+ * - Tool(s) failed AND response does NOT acknowledge failure → 0.0
+ * - Has hallucination flags → ratio of grounded claims
  */
 export function scoreGroundedness(payload: TelemetryPayload): number {
   const v = payload.verification;
 
-  if (v.hallucinationFlags.length === 0 && v.passed) {
+  // No tools used → neutral
+  if (!payload.trace.usedTools || payload.toolSpans.length === 0) {
+    return 0.5;
+  }
+
+  const hasFailedTool = payload.toolSpans.some((s) => s.status === 'error');
+
+  // All tools succeeded and verification passed → fully grounded
+  if (!hasFailedTool && v.hallucinationFlags.length === 0 && v.passed) {
     return 1.0;
   }
 
-  // If we have both hallucination flags and fact-check sources, compute ratio
+  // Tool(s) failed — check if response honestly acknowledges the failure
+  if (hasFailedTool) {
+    const responseText = payload.trace.responseText;
+
+    if (FAILURE_ACK_PATTERN.test(responseText)) {
+      return 1.0; // Honest about failure
+    }
+
+    return 0.0; // Hiding failure
+  }
+
+  // Has hallucination flags — compute ratio
   const totalClaims = v.hallucinationFlags.length + v.factCheckSources.length;
 
   if (totalClaims === 0) {
-    return v.passed ? 1.0 : 0.5; // No claims to verify — neutral
+    return v.passed ? 1.0 : 0.5;
   }
 
   return v.factCheckSources.length / totalClaims;

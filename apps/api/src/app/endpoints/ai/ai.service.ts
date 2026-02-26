@@ -198,7 +198,14 @@ function buildReActSystemPrompt(
     '- Do NOT reference holdings that were not returned by tools.',
     '- If the portfolio is empty, say: "Your portfolio has no holdings."',
     '- When performing calculations, show your work using tool-provided values.',
-    '- Always call tools BEFORE stating any numbers.'
+    '- Always call tools BEFORE stating any numbers.',
+    '',
+    '# Output Hygiene (MANDATORY)',
+    '- If a tool returns status="error": DO NOT include a "Sources:" section in your response.',
+    '- When a tool fails, your response MUST explicitly state: "The [toolName] tool was unable to retrieve data: [error message]."',
+    '- NEVER say "based on the data" or "according to market data" when a tool returned an error.',
+    '- If ALL tools fail, respond with ONLY the error acknowledgment — no market commentary, no speculation.',
+    '- If SOME tools succeed and some fail, report the available data AND explicitly note which tools failed.'
   ].join('\n');
 }
 
@@ -411,7 +418,14 @@ export class AiService {
           );
         }
 
-        // Record tool span
+        // Record tool span — extract error details when tool fails
+        const spanError =
+          result.status === 'error'
+            ? ((result as Record<string, unknown>).message as string) ??
+              result.verification?.errors?.[0] ??
+              'Tool returned error without details'
+            : undefined;
+
         trace.addToolSpan(
           spanBuilder.end({
             status: result.status === 'error' ? 'error' : 'success',
@@ -419,7 +433,8 @@ export class AiService {
               status: result.status,
               message: (result as Record<string, unknown>).message,
               confidence: result.verification?.confidence
-            }
+            },
+            error: spanError
           })
         );
 
@@ -712,10 +727,15 @@ export class AiService {
         trace.setConfidence(Math.min(groundednessResult.confidence, 0.6));
 
         for (const flag of groundednessResult.flags) {
-          trace.addHallucinationFlag(flag);
+          // Route Sources-despite-failure to domainViolations, rest to hallucinationFlags
+          if (flag.includes('Sources cited despite')) {
+            trace.addDomainViolation(flag);
+          } else {
+            trace.addHallucinationFlag(flag);
+          }
         }
       } else {
-        trace.setConfidence(toolCallRecords.length > 0 ? 0.9 : 0.6);
+        trace.setConfidence(toolCallRecords.length > 0 ? 0.9 : 0.5);
       }
 
       if (toolCallRecords.length === 0) {
@@ -837,11 +857,26 @@ export class AiService {
       failedTools.length > 0 &&
       !lowerResponse.includes('error') &&
       !lowerResponse.includes('unavailable') &&
-      !lowerResponse.includes('issue')
+      !lowerResponse.includes('unable') &&
+      !lowerResponse.includes('issue') &&
+      !lowerResponse.includes('fail') &&
+      !lowerResponse.includes('not available') &&
+      !lowerResponse.includes('could not')
     ) {
       flags.push(
         `${failedTools.length} tool(s) failed verification but response doesn't mention errors`
       );
+    }
+
+    // Domain violation: response includes "Sources:" despite all tools failing
+    const errorToolCalls = toolCalls.filter((tc) => tc.status !== 'success');
+
+    if (
+      errorToolCalls.length > 0 &&
+      errorToolCalls.length === toolCalls.length &&
+      /\bsources?\s*:/i.test(responseText)
+    ) {
+      flags.push('Sources cited despite all tools failing');
     }
 
     const passed = flags.length === 0;

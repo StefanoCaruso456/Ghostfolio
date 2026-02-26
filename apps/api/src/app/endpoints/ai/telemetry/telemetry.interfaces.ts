@@ -188,6 +188,16 @@ export interface ToolSpan {
 
   /** ISO-8601 span end */
   endedAt: string;
+
+  // Optional provider-level fields (additive — populated when known)
+  /** Name of the upstream data provider (e.g. "yahoo-finance") */
+  providerName?: string | null;
+  /** Asset type classification (e.g. "equity", "crypto", "etf") */
+  assetType?: string | null;
+  /** Normalized symbol sent to the provider (e.g. "BTC-USD") */
+  normalizedSymbol?: string | null;
+  /** Correlation ID for cross-referencing provider logs */
+  requestId?: string | null;
 }
 
 // ---------------------------------------------------------------------------
@@ -269,6 +279,9 @@ export interface DerivedMetrics {
 
   /** success_count / total_count per tool (computed across multiple traces) */
   toolSuccessRates: Record<string, number>;
+
+  /** Count of tool spans with status === 'error'. Enables quick Braintrust filtering. */
+  failedToolCount: number;
 }
 
 // ---------------------------------------------------------------------------

@@ -7,6 +7,7 @@ import {
   getMarketDataCacheStats,
   resetMarketDataCacheHits
 } from '../providers';
+import { scoreGroundedness } from './eval-scorers';
 import type {
   DerivedMetrics,
   GuardrailType,
@@ -156,7 +157,14 @@ export class BraintrustTelemetryService implements OnModuleInit {
             iterationIndex: span.iterationIndex,
             wasCorrectTool: span.wasCorrectTool,
             startedAt: span.startedAt,
-            endedAt: span.endedAt
+            endedAt: span.endedAt,
+            // Optional provider fields
+            ...(span.providerName && { providerName: span.providerName }),
+            ...(span.assetType && { assetType: span.assetType }),
+            ...(span.normalizedSymbol && {
+              normalizedSymbol: span.normalizedSymbol
+            }),
+            ...(span.requestId && { requestId: span.requestId })
           })),
 
           // ── 3. Verification Summary ────────────────────────────────
@@ -187,7 +195,8 @@ export class BraintrustTelemetryService implements OnModuleInit {
             toolOverheadRatio: payload.derived.toolOverheadRatio,
             costPerToolCall: payload.derived.costPerToolCall,
             latencyPerIteration: payload.derived.latencyPerIteration,
-            toolSuccessRates: payload.derived.toolSuccessRates
+            toolSuccessRates: payload.derived.toolSuccessRates,
+            failedToolCount: payload.derived.failedToolCount
           },
 
           // ── Extended Metadata ──────────────────────────────────────
@@ -208,8 +217,7 @@ export class BraintrustTelemetryService implements OnModuleInit {
             : 0,
           confidence: payload.verification.confidenceScore,
           safety: payload.verification.escalationTriggered ? 0 : 1,
-          groundedness:
-            payload.trace.success && payload.verification.passed ? 1 : 0
+          groundedness: scoreGroundedness(payload)
         }
       });
 
@@ -620,7 +628,8 @@ export class TraceContext {
           : 0,
       latencyPerIteration:
         this.iterationCount > 0 ? totalLatencyMs / this.iterationCount : 0,
-      toolSuccessRates
+      toolSuccessRates,
+      failedToolCount: this.toolSpans.filter((s) => s.status === 'error').length
     };
 
     // Reset per-query cache hit counter after capturing the snapshot
