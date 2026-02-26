@@ -34,6 +34,9 @@ export interface Environment extends CleanedEnvAccessors {
   GOOGLE_SHEETS_ID: string;
   GOOGLE_SHEETS_PRIVATE_KEY: string;
   JWT_SECRET_KEY: string;
+  LANGFUSE_BASEURL: string;
+  LANGFUSE_PUBLIC_KEY: string;
+  LANGFUSE_SECRET_KEY: string;
   MARKET_DATA_CACHE_ENABLED: boolean;
   MARKET_DATA_PROVIDER: string;
   MAX_ACTIVITIES_TO_IMPORT: number;

@@ -1,458 +1,349 @@
+import { ImportService } from '@ghostfolio/api/app/import/import.service';
+import { OrderService } from '@ghostfolio/api/app/order/order.service';
+import { ConfigurationService } from '@ghostfolio/api/services/configuration/configuration.service';
 import { PropertyService } from '@ghostfolio/api/services/property/property.service';
 import {
   PROPERTY_API_KEY_OPENROUTER,
-  PROPERTY_OPENROUTER_MODEL,
-  PROPERTY_OPENROUTER_MODEL_LIGHT
+  PROPERTY_OPENROUTER_MODEL
 } from '@ghostfolio/common/config';
+import type { UserWithSettings } from '@ghostfolio/common/types';
 
 import { Injectable, Logger } from '@nestjs/common';
 import { createOpenRouter } from '@openrouter/ai-sdk-provider';
 import { generateText, tool } from 'ai';
-import type { ZodType } from 'zod';
+import { Langfuse } from 'langfuse';
+import { z } from 'zod';
 
-import { CircuitBreaker } from './guardrails/circuit-breaker';
-import { CostLimiter } from './guardrails/cost-limiter';
-import { checkPayloadLimits } from './guardrails/payload-limiter';
-import { ToolFailureTracker } from './guardrails/tool-failure-tracker';
+import type { ExistingActivity } from './schemas/detect-duplicates.schema';
+import { MappedActivitySchema } from './schemas/validate-transactions.schema';
+import type { VerificationResult } from './schemas/verification.schema';
 import {
-  AgentMetrics,
-  createAgentMetrics,
-  estimateCost,
-  finalizeMetrics
-} from './schemas/agent-metrics.schema';
+  transformToCreateOrderDtos
+} from './tools/commit-import.tool';
+import { detectDuplicates } from './tools/detect-duplicates.tool';
 import {
-  DetectBrokerFormatInputSchema,
-  DetectBrokerFormatOutputSchema
-} from './schemas/detect-broker-format.schema';
-import {
-  GenerateImportPreviewInputSchema,
-  GenerateImportPreviewOutputSchema
-} from './schemas/generate-import-preview.schema';
-import {
-  MapBrokerFieldsInputSchema,
-  MapBrokerFieldsOutputSchema
-} from './schemas/map-broker-fields.schema';
-import {
-  NormalizeActivitiesInputSchema,
-  NormalizeActivitiesOutputSchema
-} from './schemas/normalize-activities.schema';
-import {
-  ParseCsvInputSchema,
-  ParseCsvOutputSchema
-} from './schemas/parse-csv.schema';
-import { TOOL_RESULT_SCHEMA_VERSION } from './schemas/tool-result.schema';
-import {
-  ValidateTransactionsInputSchema,
-  ValidateTransactionsOutputSchema
-} from './schemas/validate-transactions.schema';
-import {
-  createVerificationResult,
-  type VerificationResult
-} from './schemas/verification.schema';
-import { detectBrokerFormat } from './tools/detect-broker-format.tool';
-import { generateImportPreview } from './tools/generate-import-preview.tool';
-import { mapBrokerFields } from './tools/map-broker-fields.tool';
-import { normalizeToActivityDTO } from './tools/normalize-to-activity-dto.tool';
+  mapBrokerFieldsWithFallback,
+  type LlmMappingResult
+} from './tools/map-broker-fields.tool';
 import { parseCsv } from './tools/parse-csv.tool';
+import { previewImportReport } from './tools/preview-import-report.tool';
 import { validateTransactions } from './tools/validate-transactions.tool';
-import { enforceVerificationGate } from './verification/enforce';
 
-/**
- * Strip Unicode smart quotes and non-ASCII characters that break HTTP headers.
- */
-function sanitizePropertyString(value: string): string {
-  return value
-    .replace(/[\u2018\u2019\u201C\u201D\u201A\u201B\u201E\u201F]/g, '')
-    .replace(/[\u0080-\uFFFF]/g, '')
-    .trim();
+interface SessionData {
+  csvContent?: string;
+  lastAccessedAt: number;
+  messages: { role: 'user' | 'assistant'; content: string }[];
+  toolResults: Record<string, unknown>;
+  user?: UserWithSettings;
+  userId: string;
 }
-
-// ─── Types ──────────────────────────────────────────────────────────
-
-/**
- * Zod 3.25's z.infer can produce types where fields appear optional to TS
- * even when the schema marks them required. This helper forces the required
- * shape that executeWithGuardrails expects.
- */
-type ToolOutput<T> = T & {
-  status: string;
-  verification: VerificationResult;
-};
 
 interface ToolCallRecord {
   tool: string;
-  args?: Record<string, unknown>;
   status: string;
   verification: VerificationResult;
   durationMs: number;
 }
 
-export interface ChatRequest {
-  csvContent?: string;
-  history?: { role: 'user' | 'assistant'; content: string }[];
-  message: string;
-  sessionId: string;
-  userId: string;
-}
-
-export interface ChatResponse {
+interface ChatResponse {
   sessionId: string;
   response: string;
   toolCalls: ToolCallRecord[];
   canCommit: boolean;
-  metrics: AgentMetrics;
+  stateHash?: string;
 }
 
-// ─── Production Guardrails (Non-Negotiable) ──────────────────────────
-
-/** MAX_ITERATIONS: 10-15 — prevent infinite loops + runaway cost */
 const MAX_ITERATIONS = 10;
-
-/** TIMEOUT: 30-45s — matches user patience + gateway timeouts */
 const TIMEOUT_MS = 45_000;
-
-/** COST_LIMIT: $1/query — prevent bill explosions */
-const COST_LIMIT_USD = 1.0;
-
-/** CIRCUIT_BREAKER: same action 3x → abort */
-const CIRCUIT_BREAKER_MAX_REPETITIONS = 3;
-
-// ─── Output Schema Registry (prevents schema drift) ──────────────────
-
-/**
- * Maps tool names to their Zod output schemas.
- * Used by executeWithGuardrails to validate tool outputs at runtime.
- * If a tool's output doesn't match its schema, it's converted to an error.
- */
-const OUTPUT_SCHEMA_REGISTRY: Record<string, ZodType> = {
-  detectBrokerFormat: DetectBrokerFormatOutputSchema,
-  parseCSV: ParseCsvOutputSchema,
-  mapBrokerFields: MapBrokerFieldsOutputSchema,
-  validateTransactions: ValidateTransactionsOutputSchema,
-  normalizeActivities: NormalizeActivitiesOutputSchema,
-  generateImportPreview: GenerateImportPreviewOutputSchema
-};
-
-// ─── Service ─────────────────────────────────────────────────────────
+const SESSION_TTL_MS = 60 * 60 * 1000; // 1 hour
+const MAX_SESSIONS = 100;
 
 @Injectable()
 export class ImportAuditorService {
+  private langfuseClient: Langfuse | null = null;
+  private langfuseInitialized = false;
   private readonly logger = new Logger(ImportAuditorService.name);
+  private readonly sessions = new Map<string, SessionData>();
 
-  public constructor(private readonly propertyService: PropertyService) {}
+  public constructor(
+    private readonly configurationService: ConfigurationService,
+    private readonly importService: ImportService,
+    private readonly orderService: OrderService,
+    private readonly propertyService: PropertyService
+  ) {}
+
+  private getLangfuse(): Langfuse | null {
+    if (this.langfuseInitialized) {
+      return this.langfuseClient;
+    }
+
+    this.langfuseInitialized = true;
+
+    try {
+      const publicKey = this.configurationService.get(
+        'LANGFUSE_PUBLIC_KEY'
+      );
+      const secretKey = this.configurationService.get(
+        'LANGFUSE_SECRET_KEY'
+      );
+
+      if (!publicKey || !secretKey) {
+        this.logger.log(
+          'Langfuse keys not configured, observability disabled'
+        );
+        return null;
+      }
+
+      const baseUrl = this.configurationService.get('LANGFUSE_BASEURL');
+
+      this.langfuseClient = new Langfuse({
+        publicKey,
+        secretKey,
+        baseUrl
+      });
+
+      this.logger.log('Langfuse observability initialized');
+
+      return this.langfuseClient;
+    } catch (error) {
+      this.logger.warn(
+        `Failed to initialize Langfuse: ${error instanceof Error ? error.message : String(error)}`
+      );
+      return null;
+    }
+  }
 
   public getHealth(): { status: string } {
     return { status: 'OK' };
   }
 
-  /**
-   * Stateless chat endpoint.
-   *
-   * The frontend sends the full conversation history + csvContent each call.
-   * No in-memory session map — safe for multi-instance / serverless deployments.
-   */
   public async chat({
     csvContent,
-    history,
     message,
-    sessionId
-  }: ChatRequest): Promise<ChatResponse> {
-    // Initialize metrics for this run
-    const metrics = createAgentMetrics(sessionId);
+    sessionId,
+    user
+  }: {
+    csvContent?: string;
+    message: string;
+    sessionId: string;
+    user: UserWithSettings;
+  }): Promise<ChatResponse> {
+    // Clean up expired sessions before processing
+    this.cleanupExpiredSessions();
 
-    // ─── Payload limit guardrail (early reject) ───────────────────
-    const payloadCheck = checkPayloadLimits(csvContent);
+    // Initialize or retrieve session
+    let session = this.sessions.get(sessionId);
 
-    if (!payloadCheck.ok) {
-      metrics.success = false;
-      metrics.guardrailTriggered = 'payload_limit';
-      metrics.error = payloadCheck.reason;
-
-      return {
-        sessionId,
-        response: `I cannot process this CSV: ${payloadCheck.reason}. Please reduce the file size and try again.`,
-        toolCalls: [],
-        canCommit: false,
-        metrics: finalizeMetrics(metrics)
+    if (!session) {
+      session = {
+        lastAccessedAt: Date.now(),
+        messages: [],
+        toolResults: {},
+        user,
+        userId: user.id
       };
+      this.sessions.set(sessionId, session);
+    } else {
+      session.lastAccessedAt = Date.now();
+      session.user = user;
     }
 
-    // Build messages from history + current message
-    const messages: { role: 'user' | 'assistant'; content: string }[] = [
-      ...(history ?? []),
-      { role: 'user', content: message }
-    ];
+    // Store CSV content if provided
+    if (csvContent) {
+      session.csvContent = csvContent;
+    }
+
+    // Add user message to history
+    session.messages.push({ role: 'user', content: message });
 
     const toolCallRecords: ToolCallRecord[] = [];
     let canCommit = false;
+    let stateHash: string | undefined;
 
-    // Initialize guardrails
-    const circuitBreaker = new CircuitBreaker({
-      maxRepetitions: CIRCUIT_BREAKER_MAX_REPETITIONS
+    const langfuse = this.getLangfuse();
+    const trace = langfuse?.trace({
+      name: 'import-auditor-chat',
+      sessionId,
+      userId: user.id,
+      input: { message, hasCsv: !!csvContent }
     });
-    const costLimiter = new CostLimiter({ maxCostUsd: COST_LIMIT_USD });
-    const failureTracker = new ToolFailureTracker();
 
     try {
-      const rawApiKey = await this.propertyService.getByKey<string>(
-        PROPERTY_API_KEY_OPENROUTER
-      );
+      const openRouterApiKey =
+        await this.propertyService.getByKey<string>(
+          PROPERTY_API_KEY_OPENROUTER
+        );
 
-      const rawModelLight = await this.propertyService.getByKey<string>(
-        PROPERTY_OPENROUTER_MODEL_LIGHT
-      );
-
-      const rawModel =
-        rawModelLight ??
-        (await this.propertyService.getByKey<string>(
+      const openRouterModel =
+        await this.propertyService.getByKey<string>(
           PROPERTY_OPENROUTER_MODEL
-        ));
+        );
 
-      if (!rawApiKey || !rawModel) {
-        metrics.success = false;
-        metrics.error = 'AI service not configured';
+      if (!openRouterApiKey || !openRouterModel) {
+        const response =
+          'The AI service is not configured. Please set the OpenRouter API key and model in the admin settings.';
+
+        session.messages.push({
+          role: 'assistant',
+          content: response
+        });
 
         return {
           sessionId,
-          response:
-            'The AI service is not configured. Please set the OpenRouter API key and model in the admin settings.',
+          response,
           toolCalls: [],
-          canCommit: false,
-          metrics: finalizeMetrics(metrics)
+          canCommit: false
         };
       }
-
-      // Sanitize to prevent ByteString errors from smart quotes / non-ASCII chars
-      const openRouterApiKey = sanitizePropertyString(rawApiKey);
-      const openRouterModel = sanitizePropertyString(rawModel);
 
       const openRouterService = createOpenRouter({
         apiKey: openRouterApiKey
       });
 
-      const systemPrompt = this.buildSystemPrompt(csvContent);
+      const systemPrompt = this.buildSystemPrompt(session);
 
-      // Log thought: starting ReAct loop
-      metrics.thoughtLog.push(
-        `Starting ReAct loop for session ${sessionId}. CSV present: ${!!csvContent}`
-      );
-
-      // Create a timeout with AbortController for proper cancellation.
-      // When timeout fires, abortController.abort() cancels the generateText
-      // call, preventing orphaned background token consumption.
-      const abortController = new AbortController();
+      // Create a timeout with proper cleanup
       let timeoutId: ReturnType<typeof setTimeout>;
 
       const timeoutPromise = new Promise<never>((_, reject) => {
-        timeoutId = setTimeout(() => {
-          metrics.guardrailTriggered = 'timeout';
-          abortController.abort();
-          reject(
-            new Error(
-              `Guardrail: Request timed out after ${TIMEOUT_MS / 1000}s`
-            )
-          );
-        }, TIMEOUT_MS);
+        timeoutId = setTimeout(
+          () =>
+            reject(new Error('Request timed out after 45 seconds')),
+          TIMEOUT_MS
+        );
       });
 
-      /**
-       * Helper to wrap tool execution with guardrails:
-       * circuit breaker, cost limit, tool failure backoff,
-       * runtime output schema validation, verification gate, schemaVersion.
-       */
-      const executeWithGuardrails = <
-        T extends { status: string; verification: VerificationResult }
-      >(
-        toolName: string,
-        args: Record<string, unknown>,
-        executeFn: () => T
-      ): T & { schemaVersion: string } => {
-        // Circuit breaker check
-        if (circuitBreaker.recordAction(toolName, args)) {
-          metrics.guardrailTriggered = 'circuit_breaker';
-          const reason = circuitBreaker.getTripReason();
-          metrics.error = reason;
-
-          throw new Error(`Guardrail: ${reason}`);
-        }
-
-        // Cost limit check
-        if (costLimiter.isExceeded()) {
-          metrics.guardrailTriggered = 'cost_limit';
-          metrics.error = `Cost limit exceeded: $${costLimiter.getAccumulatedCost().toFixed(4)}`;
-
-          throw new Error(`Guardrail: ${metrics.error}`);
-        }
-
-        // Tool failure backoff check
-        if (failureTracker.isAborted()) {
-          metrics.guardrailTriggered = 'tool_failure_backoff';
-          metrics.error = failureTracker.getAbortReason();
-
-          throw new Error(`Guardrail: ${metrics.error}`);
-        }
-
-        // Log action
-        metrics.actionLog.push(
-          `${toolName}(${JSON.stringify(args).slice(0, 200)})`
-        );
-        metrics.iterations++;
-
-        const start = Date.now();
-        let result = executeFn();
-        const durationMs = Date.now() - start;
-
-        // Log observation
-        metrics.observationLog.push(`${toolName} completed in ${durationMs}ms`);
-        metrics.toolsCalled.push(toolName);
-
-        // ─── Runtime output schema validation ─────────────────────────
-        const outputSchema = OUTPUT_SCHEMA_REGISTRY[toolName];
-
-        if (outputSchema) {
-          const validation = outputSchema.safeParse(result);
-
-          if (!validation.success) {
-            const zodErrors = validation.error.issues
-              .map((i) => i.message)
-              .join('; ');
-            metrics.observationLog.push(
-              `${toolName} OUTPUT SCHEMA VALIDATION FAILED: ${zodErrors}`
-            );
-
-            // Replace result with a structured error
-            result = {
-              status: 'error',
-              data: (result as Record<string, unknown>).data,
-              verification: createVerificationResult({
-                passed: false,
-                confidence: 0,
-                errors: [`Tool output schema validation failed: ${zodErrors}`],
-                sources: [toolName]
-              })
-            } as unknown as T;
-          }
-        }
-
-        // Track tool failures for backoff
-        if (result.status === 'error') {
-          if (failureTracker.recordFailure(toolName)) {
-            metrics.guardrailTriggered = 'tool_failure_backoff';
-            metrics.error = failureTracker.getAbortReason();
-
-            throw new Error(`Guardrail: ${metrics.error}`);
-          }
-        }
-
-        // Central verification gate enforcement
-        const gate = enforceVerificationGate(result.verification, {
-          highStakes: true, // CSV import is always high-stakes (financial data)
-          minConfidence: 0.7
-        });
-
-        if (gate.decision === 'block') {
-          canCommit = false;
-          metrics.thoughtLog.push(
-            `Verification gate BLOCKED after ${toolName}: ${gate.reason}`
-          );
-          // Don't throw — the LLM should see the error and report it to the user.
-          // The block is informational: it prevents canCommit but lets the agent explain.
-        } else if (gate.decision === 'human_review') {
-          metrics.thoughtLog.push(
-            `Verification gate requires HUMAN REVIEW after ${toolName}: ${gate.reason}`
-          );
-        }
-
-        // Inject schemaVersion for contract evolution tracking
-        return { ...result, schemaVersion: TOOL_RESULT_SCHEMA_VERSION };
-      };
-
       const generatePromise = generateText({
-        abortSignal: abortController.signal,
         maxSteps: MAX_ITERATIONS,
         model: openRouterService.chat(openRouterModel),
-        messages: [{ role: 'system', content: systemPrompt }, ...messages],
+        messages: [
+          { role: 'system', content: systemPrompt },
+          ...session.messages
+        ],
         tools: {
-          detectBrokerFormat: tool({
-            description:
-              'Auto-detect which broker produced the CSV file based on header patterns and data shapes. Use this FIRST before parsing to get a broker hint. Returns the detected broker name and confidence score.',
-            parameters: DetectBrokerFormatInputSchema,
-            execute: async (args) => {
-              const start = Date.now();
-              const result = executeWithGuardrails(
-                'detectBrokerFormat',
-                args as unknown as Record<string, unknown>,
-                () =>
-                  detectBrokerFormat(args) as ToolOutput<
-                    ReturnType<typeof detectBrokerFormat>
-                  >
-              );
-              const durationMs = Date.now() - start;
-
-              toolCallRecords.push({
-                tool: 'detectBrokerFormat',
-                args: args as unknown as Record<string, unknown>,
-                status: result.status,
-                verification: result.verification,
-                durationMs
-              });
-
-              return result;
-            }
-          }),
           parseCSV: tool({
             description:
               'Parse raw CSV content into structured rows with headers. Use this when the user provides a CSV file or asks to import/parse a CSV.',
-            parameters: ParseCsvInputSchema,
+            parameters: z.object({
+              csvContent: z
+                .string()
+                .describe('The raw CSV content to parse'),
+              delimiter: z
+                .enum([',', ';', '\t', '|'])
+                .default(',')
+                .describe('CSV delimiter character')
+            }),
             execute: async (args) => {
+              const span = trace?.span({
+                name: 'tool:parseCSV',
+                input: { delimiter: args.delimiter, contentLength: args.csvContent.length }
+              });
               const start = Date.now();
-              const result = executeWithGuardrails(
-                'parseCSV',
-                args as unknown as Record<string, unknown>,
-                () =>
-                  parseCsv({
-                    csvContent: args.csvContent,
-                    delimiter: args.delimiter
-                  }) as ToolOutput<ReturnType<typeof parseCsv>>
-              );
+              const result = parseCsv({
+                csvContent: args.csvContent,
+                delimiter: args.delimiter
+              });
               const durationMs = Date.now() - start;
+
+              span?.end({ output: { status: result.status, rowCount: result.data?.rowCount }, metadata: { durationMs } });
 
               toolCallRecords.push({
                 tool: 'parseCSV',
-                args: args as unknown as Record<string, unknown>,
                 status: result.status,
                 verification: result.verification,
                 durationMs
               });
+
+              session.toolResults['parseCSV'] = result;
 
               return result;
             }
           }),
           mapBrokerFields: tool({
             description:
-              'Map CSV column headers to Ghostfolio activity fields using deterministic matching. Use this after parsing CSV to identify which columns correspond to date, symbol, quantity, price, etc.',
-            parameters: MapBrokerFieldsInputSchema,
+              'Map CSV column headers to Ghostfolio activity fields. Uses deterministic matching first, then LLM inference for unknown headers. Use this after parsing CSV to identify which columns correspond to date, symbol, quantity, price, etc.',
+            parameters: z.object({
+              headers: z
+                .array(z.string())
+                .describe('CSV column headers to map'),
+              sampleRows: z
+                .array(z.record(z.unknown()))
+                .min(1)
+                .max(5)
+                .describe('1-5 sample data rows for context'),
+              brokerHint: z
+                .string()
+                .optional()
+                .describe(
+                  'Optional hint about the broker (e.g., "Interactive Brokers")'
+                ),
+              useLlmFallback: z
+                .boolean()
+                .default(true)
+                .describe(
+                  'If true and deterministic matching is partial, use LLM to infer remaining field mappings'
+                )
+            }),
             execute: async (args) => {
+              const span = trace?.span({
+                name: 'tool:mapBrokerFields',
+                input: { headerCount: args.headers.length, useLlmFallback: args.useLlmFallback }
+              });
               const start = Date.now();
-              const result = executeWithGuardrails(
-                'mapBrokerFields',
-                args as unknown as Record<string, unknown>,
-                () =>
-                  mapBrokerFields({
-                    headers: args.headers,
-                    sampleRows: args.sampleRows,
-                    brokerHint: args.brokerHint
-                  }) as ToolOutput<ReturnType<typeof mapBrokerFields>>
-              );
+              const result = await mapBrokerFieldsWithFallback({
+                headers: args.headers,
+                sampleRows: args.sampleRows,
+                brokerHint: args.brokerHint,
+                useLlmFallback: args.useLlmFallback,
+                llmMapper: async (context) => {
+                  const prompt = [
+                    'You are a CSV column mapping specialist for financial data.',
+                    'Map the following unmapped CSV column headers to Ghostfolio target fields.',
+                    '',
+                    `Unmapped headers: ${JSON.stringify(context.unmappedHeaders)}`,
+                    `Sample data: ${JSON.stringify(context.sampleRows.slice(0, 2))}`,
+                    `Required unmapped fields: ${JSON.stringify(context.unmappedRequiredFields)}`,
+                    `Already mapped: ${context.existingMappings.map((m) => `${m.sourceHeader} → ${m.targetField}`).join(', ')}`,
+                    '',
+                    'Valid target fields: currency, date, fee, quantity, symbol, type, unitPrice, account, comment, dataSource',
+                    '',
+                    'Respond ONLY with valid JSON: { "mappings": [{ "sourceHeader": "...", "targetField": "...", "confidence": 0.0-1.0, "reasoning": "..." }] }',
+                    'Only include mappings you are confident about. Do not guess.'
+                  ].join('\n');
+
+                  const llmResponse = await generateText({
+                    model: openRouterService.chat(openRouterModel),
+                    messages: [
+                      {
+                        role: 'user',
+                        content: prompt
+                      }
+                    ],
+                    maxSteps: 1
+                  });
+
+                  try {
+                    const parsed = JSON.parse(
+                      llmResponse.text
+                    ) as LlmMappingResult;
+                    return parsed;
+                  } catch {
+                    return { mappings: [] };
+                  }
+                }
+              });
               const durationMs = Date.now() - start;
+
+              span?.end({ output: { status: result.status, mappingCount: result.data?.mappings?.length }, metadata: { durationMs } });
 
               toolCallRecords.push({
                 tool: 'mapBrokerFields',
-                args: args as unknown as Record<string, unknown>,
                 status: result.status,
                 verification: result.verification,
                 durationMs
               });
+
+              session.toolResults['mapBrokerFields'] = result;
 
               return result;
             }
@@ -460,280 +351,509 @@ export class ImportAuditorService {
           validateTransactions: tool({
             description:
               'Validate mapped activities against financial rules: required fields, valid types, numeric invariants (fee >= 0, quantity >= 0), date validity, and currency codes. Use this after mapping broker fields.',
-            parameters: ValidateTransactionsInputSchema,
+            parameters: z.object({
+              activities: z
+                .array(MappedActivitySchema)
+                .min(1)
+                .describe('Array of mapped activities to validate')
+            }),
             execute: async (args) => {
+              const span = trace?.span({
+                name: 'tool:validateTransactions',
+                input: { activityCount: args.activities.length }
+              });
               const start = Date.now();
-              const result = executeWithGuardrails(
-                'validateTransactions',
-                args as unknown as Record<string, unknown>,
-                () =>
-                  validateTransactions({
-                    activities: args.activities
-                  }) as ToolOutput<ReturnType<typeof validateTransactions>>
-              );
+              const result = validateTransactions({
+                activities: args.activities
+              });
               const durationMs = Date.now() - start;
+
+              span?.end({ output: { status: result.status }, metadata: { durationMs } });
 
               toolCallRecords.push({
                 tool: 'validateTransactions',
-                args: { activitiesCount: args.activities.length },
                 status: result.status,
                 verification: result.verification,
                 durationMs
               });
 
-              if (result.status === 'pass' || result.status === 'warnings') {
+              session.toolResults['validateTransactions'] = result;
+
+              if (
+                result.status === 'pass' ||
+                result.status === 'warnings'
+              ) {
                 canCommit = true;
               }
 
               return result;
             }
           }),
-          normalizeActivities: tool({
+          detectDuplicates: tool({
             description:
-              'Normalize validated activities into Ghostfolio ActivityImportDTO format. Normalizes types (buy→BUY), dates (to YYYY-MM-DD), coerces numerics, uppercases currency, and optionally injects accountId. Use this AFTER validateTransactions and BEFORE generateImportPreview.',
-            parameters: NormalizeActivitiesInputSchema,
+              'Detect duplicate activities within the CSV batch and optionally against the user\'s existing portfolio. Use this after validation to check for duplicates before importing.',
+            parameters: z.object({
+              activities: z
+                .array(MappedActivitySchema)
+                .min(1)
+                .describe('Array of mapped activities to check'),
+              checkDatabase: z
+                .boolean()
+                .default(true)
+                .describe(
+                  'If true, also check against existing activities in the database'
+                )
+            }),
             execute: async (args) => {
+              const span = trace?.span({
+                name: 'tool:detectDuplicates',
+                input: { activityCount: args.activities.length, checkDatabase: args.checkDatabase }
+              });
               const start = Date.now();
-              const result = executeWithGuardrails(
-                'normalizeActivities',
-                { activitiesCount: args.activities.length } as Record<
-                  string,
-                  unknown
-                >,
-                () =>
-                  normalizeToActivityDTO({
-                    activities: args.activities,
-                    accountId: args.accountId
-                  })
-              );
+
+              let existingActivities: ExistingActivity[] = [];
+
+              if (args.checkDatabase && session.userId) {
+                try {
+                  const userCurrency =
+                    session.user?.settings?.settings?.baseCurrency ?? 'USD';
+
+                  const { activities: dbActivities } =
+                    await this.orderService.getOrders({
+                      userCurrency,
+                      userId: session.userId,
+                      includeDrafts: true,
+                      withExcludedAccountsAndActivities: true
+                    });
+
+                  existingActivities = dbActivities.map((a) => ({
+                    accountId: a.accountId,
+                    comment: a.comment,
+                    currency:
+                      a.currency ?? a.SymbolProfile?.currency ?? null,
+                    dataSource:
+                      a.SymbolProfile?.dataSource ?? null,
+                    date: a.date.toISOString(),
+                    fee: a.fee,
+                    quantity: a.quantity,
+                    symbol: a.SymbolProfile?.symbol ?? '',
+                    type: a.type,
+                    unitPrice: a.unitPrice
+                  }));
+                } catch (error) {
+                  this.logger.warn(
+                    `Failed to fetch existing activities: ${error instanceof Error ? error.message : String(error)}`
+                  );
+                }
+              }
+
+              const result = detectDuplicates({
+                activities: args.activities,
+                existingActivities
+              });
               const durationMs = Date.now() - start;
 
+              span?.end({ output: { status: result.status, duplicatesFound: result.data?.batchDuplicatesFound + result.data?.databaseDuplicatesFound }, metadata: { durationMs } });
+
               toolCallRecords.push({
-                tool: 'normalizeActivities',
-                args: {
-                  activitiesCount: args.activities.length,
-                  accountId: args.accountId
-                },
+                tool: 'detectDuplicates',
                 status: result.status,
                 verification: result.verification,
                 durationMs
               });
 
+              session.toolResults['detectDuplicates'] = result;
+
               return result;
             }
           }),
-          generateImportPreview: tool({
+          previewImportReport: tool({
             description:
-              'Generate a human-readable preview of what the import will produce. Use this AFTER normalizeActivities to show the user a summary before committing. Includes total value, activity breakdown, and commit decision. canCommit is only true when DTO normalization passed.',
-            parameters: GenerateImportPreviewInputSchema,
+              'Generate a human-readable import preview report showing activity counts, type breakdown, date range, currencies, and estimated total value. Use this before committing to show the user what will be imported.',
+            parameters: z.object({
+              activities: z
+                .array(MappedActivitySchema)
+                .min(1)
+                .describe('Array of validated activities to preview'),
+              warningsCount: z
+                .number()
+                .default(0)
+                .describe('Number of warnings from validation'),
+              errorsCount: z
+                .number()
+                .default(0)
+                .describe('Number of errors from validation')
+            }),
             execute: async (args) => {
+              const span = trace?.span({
+                name: 'tool:previewImportReport',
+                input: { activityCount: args.activities.length }
+              });
               const start = Date.now();
-              const result = executeWithGuardrails(
-                'generateImportPreview',
-                args as unknown as Record<string, unknown>,
-                () =>
-                  generateImportPreview({
-                    validActivities: args.validActivities,
-                    totalErrors: args.totalErrors,
-                    totalWarnings: args.totalWarnings
-                  }) as ToolOutput<ReturnType<typeof generateImportPreview>> & {
-                    data: { canCommit: boolean };
+              const result = previewImportReport({
+                activities: args.activities,
+                warningsCount: args.warningsCount,
+                errorsCount: args.errorsCount
+              });
+              const durationMs = Date.now() - start;
+
+              span?.end({ output: { status: result.status, totalCount: result.data?.totalCount }, metadata: { durationMs } });
+
+              toolCallRecords.push({
+                tool: 'previewImportReport',
+                status: result.status,
+                verification: result.verification,
+                durationMs
+              });
+
+              session.toolResults['previewImportReport'] = result;
+
+              return result;
+            }
+          }),
+          commitImport: tool({
+            description:
+              'Commit validated activities to the Ghostfolio portfolio. IMPORTANT: Only use this after the user has explicitly confirmed they want to import. Supports dry-run mode to preview without saving.',
+            parameters: z.object({
+              activities: z
+                .array(MappedActivitySchema)
+                .min(1)
+                .describe(
+                  'Array of validated activities to import'
+                ),
+              isDryRun: z
+                .boolean()
+                .default(false)
+                .describe(
+                  'If true, simulate the import without saving to the database'
+                )
+            }),
+            execute: async (args) => {
+              const span = trace?.span({
+                name: 'tool:commitImport',
+                input: { activityCount: args.activities.length, isDryRun: args.isDryRun }
+              });
+              const start = Date.now();
+
+              try {
+                if (!session.user) {
+                  const durationMs = Date.now() - start;
+
+                  const errorResult = {
+                    status: 'error' as const,
+                    data: {
+                      importedCount: 0,
+                      skippedCount: args.activities.length,
+                      errors: [
+                        { row: 0, message: 'User session not found' }
+                      ],
+                      isDryRun: args.isDryRun
+                    },
+                    verification: {
+                      passed: false,
+                      confidence: 0,
+                      warnings: [] as string[],
+                      errors: ['User session not found'],
+                      sources: ['commit-import'] as string[]
+                    }
+                  };
+
+                  span?.end({ output: { status: 'error' }, metadata: { durationMs } });
+
+                  toolCallRecords.push({
+                    tool: 'commitImport',
+                    status: 'error',
+                    verification: errorResult.verification,
+                    durationMs
+                  });
+
+                  return errorResult;
+                }
+
+                const { orders, errors: transformErrors } =
+                  transformToCreateOrderDtos(args.activities);
+
+                if (orders.length === 0) {
+                  const durationMs = Date.now() - start;
+
+                  const errorResult = {
+                    status: 'error' as const,
+                    data: {
+                      importedCount: 0,
+                      skippedCount: args.activities.length,
+                      errors: transformErrors,
+                      isDryRun: args.isDryRun
+                    },
+                    verification: {
+                      passed: false,
+                      confidence: 0,
+                      warnings: [] as string[],
+                      errors: transformErrors.map((e) => e.message),
+                      sources: ['commit-import'] as string[]
+                    }
+                  };
+
+                  span?.end({ output: { status: 'error' }, metadata: { durationMs } });
+
+                  toolCallRecords.push({
+                    tool: 'commitImport',
+                    status: 'error',
+                    verification: errorResult.verification,
+                    durationMs
+                  });
+
+                  return errorResult;
+                }
+
+                const maxActivitiesToImport =
+                  this.configurationService.get(
+                    'MAX_ACTIVITIES_TO_IMPORT'
+                  );
+
+                const importedActivities =
+                  await this.importService.import({
+                    activitiesDto: orders,
+                    isDryRun: args.isDryRun,
+                    maxActivitiesToImport,
+                    user: session.user,
+                    accountsWithBalancesDto: [],
+                    assetProfilesWithMarketDataDto: [],
+                    tagsDto: []
+                  });
+
+                const durationMs = Date.now() - start;
+                const importedCount = importedActivities.length;
+                const skippedCount =
+                  args.activities.length - importedCount;
+
+                const status =
+                  transformErrors.length > 0
+                    ? 'partial'
+                    : importedCount > 0
+                      ? 'success'
+                      : 'error';
+
+                const result = {
+                  status: status as 'success' | 'partial' | 'error',
+                  data: {
+                    importedCount,
+                    skippedCount,
+                    errors: transformErrors,
+                    isDryRun: args.isDryRun
+                  },
+                  verification: {
+                    passed: importedCount > 0,
+                    confidence:
+                      importedCount / args.activities.length,
+                    warnings: args.isDryRun
+                      ? ['Dry run mode - no changes were saved']
+                      : ([] as string[]),
+                    errors: transformErrors.map((e) => e.message),
+                    sources: ['commit-import'] as string[]
                   }
-              );
-              const durationMs = Date.now() - start;
+                };
 
-              toolCallRecords.push({
-                tool: 'generateImportPreview',
-                args: {
-                  validActivitiesCount: args.validActivities.length,
-                  totalErrors: args.totalErrors,
-                  totalWarnings: args.totalWarnings
-                },
-                status: result.status,
-                verification: result.verification,
-                durationMs
-              });
+                span?.end({ output: { status: result.status, importedCount }, metadata: { durationMs } });
 
-              // Update canCommit based on preview
-              if (result.data.canCommit) {
-                canCommit = true;
+                toolCallRecords.push({
+                  tool: 'commitImport',
+                  status: result.status,
+                  verification: result.verification,
+                  durationMs
+                });
+
+                session.toolResults['commitImport'] = result;
+
+                return result;
+              } catch (error) {
+                const durationMs = Date.now() - start;
+                const errorMessage =
+                  error instanceof Error
+                    ? error.message
+                    : String(error);
+
+                const errorResult = {
+                  status: 'error' as const,
+                  data: {
+                    importedCount: 0,
+                    skippedCount: args.activities.length,
+                    errors: [{ row: 0, message: errorMessage }],
+                    isDryRun: args.isDryRun
+                  },
+                  verification: {
+                    passed: false,
+                    confidence: 0,
+                    warnings: [] as string[],
+                    errors: [errorMessage],
+                    sources: ['commit-import'] as string[]
+                  }
+                };
+
+                span?.end({ output: { status: 'error' }, metadata: { durationMs } });
+
+                toolCallRecords.push({
+                  tool: 'commitImport',
+                  status: 'error',
+                  verification: errorResult.verification,
+                  durationMs
+                });
+
+                return errorResult;
               }
-
-              // Check for human-in-the-loop escalation
-              if (result.verification.requiresHumanReview) {
-                metrics.thoughtLog.push(
-                  `Human review required: ${result.verification.escalationReason}`
-                );
-              }
-
-              return result;
             }
           })
         }
       });
 
+      const generation = trace?.generation({
+        name: 'generateText',
+        model: openRouterModel,
+        input: session.messages
+      });
+
       try {
-        const result = await Promise.race([generatePromise, timeoutPromise]);
-
-        // Track token usage and cost
-        if (result.usage) {
-          metrics.promptTokens = result.usage.promptTokens ?? 0;
-          metrics.completionTokens = result.usage.completionTokens ?? 0;
-          metrics.totalTokens = metrics.promptTokens + metrics.completionTokens;
-          metrics.totalCostUsd = estimateCost(
-            openRouterModel,
-            metrics.promptTokens,
-            metrics.completionTokens
-          );
-
-          // Check cost limit after completion
-          costLimiter.addCost(metrics.totalCostUsd);
-
-          if (costLimiter.isWarning()) {
-            this.logger.warn(
-              `Cost warning for session ${sessionId}: $${metrics.totalCostUsd.toFixed(4)} (limit: $${COST_LIMIT_USD})`
-            );
-          }
-        }
+        const result = await Promise.race([
+          generatePromise,
+          timeoutPromise
+        ]);
 
         const responseText =
           result.text ||
           'I processed your request. Check the tool results for details.';
 
-        metrics.success = true;
-        metrics.toolCallLog = toolCallRecords.map((tc) => ({
-          tool: tc.tool,
-          args: tc.args,
-          status: tc.verification.passed ? 'success' : 'error',
-          durationMs: tc.durationMs
-        }));
+        generation?.end({
+          output: responseText,
+          usage: result.usage
+            ? {
+                input: result.usage.promptTokens,
+                output: result.usage.completionTokens,
+                total: result.usage.totalTokens
+              }
+            : undefined
+        });
 
-        // Log final metrics
-        const finalMetrics = finalizeMetrics(metrics);
+        trace?.update({
+          output: { response: responseText, toolCalls: toolCallRecords.length, canCommit }
+        });
 
-        this.logger.log(
-          `Agent run completed: session=${sessionId} ` +
-            `iterations=${finalMetrics.iterations} ` +
-            `tools=[${finalMetrics.toolsCalled.join(',')}] ` +
-            `tokens=${finalMetrics.totalTokens} ` +
-            `cost=$${finalMetrics.totalCostUsd.toFixed(4)} ` +
-            `duration=${finalMetrics.durationMs}ms ` +
-            `success=${finalMetrics.success}`
-        );
+        session.messages.push({
+          role: 'assistant',
+          content: responseText
+        });
 
         return {
           sessionId,
           response: responseText,
           toolCalls: toolCallRecords,
           canCommit,
-          metrics: finalMetrics
+          stateHash
         };
       } finally {
         clearTimeout(timeoutId);
+
+        if (langfuse) {
+          await langfuse.flushAsync().catch((err) => {
+            this.logger.warn(`Langfuse flush failed: ${err instanceof Error ? err.message : String(err)}`);
+          });
+        }
       }
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
 
-      this.logger.error(`Chat error for session ${sessionId}: ${errorMessage}`);
-
-      metrics.success = false;
-      metrics.error = errorMessage;
-
-      const finalMetrics = finalizeMetrics(metrics);
-
-      // Log failed run metrics
-      this.logger.warn(
-        `Agent run FAILED: session=${sessionId} ` +
-          `guardrail=${finalMetrics.guardrailTriggered ?? 'none'} ` +
-          `iterations=${finalMetrics.iterations} ` +
-          `error="${finalMetrics.error}" ` +
-          `duration=${finalMetrics.durationMs}ms`
+      this.logger.error(
+        `Chat error for session ${sessionId}: ${errorMessage}`
       );
 
-      const errorResponse = finalMetrics.guardrailTriggered
-        ? `I stopped processing due to a safety guardrail: ${errorMessage}. Please try a simpler request or contact support.`
-        : `I encountered an error: ${errorMessage}. Please try again.`;
+      trace?.update({
+        output: { error: errorMessage }
+      });
+
+      if (langfuse) {
+        await langfuse.flushAsync().catch(() => {});
+      }
+
+      const errorResponse = `I encountered an error: ${errorMessage}. Please try again.`;
+
+      session.messages.push({
+        role: 'assistant',
+        content: errorResponse
+      });
 
       return {
         sessionId,
         response: errorResponse,
         toolCalls: toolCallRecords,
-        canCommit: false,
-        metrics: finalMetrics
+        canCommit: false
       };
     }
   }
 
-  /**
-   * Hardened system prompt with AgentForge guardrails.
-   */
-  private buildSystemPrompt(csvContent?: string): string {
+  private buildSystemPrompt(session: SessionData): string {
     const parts = [
       'You are the Ghostfolio CSV Import Auditor, a financial data validation assistant.',
       'You help users safely import broker CSV files into their Ghostfolio portfolio.',
       '',
-      '## ReAct Workflow',
-      'You follow a strict Reason → Action → Observe → Repeat/Answer loop:',
-      '1. THINK about what information you need next',
-      '2. ACT by calling exactly one tool',
-      '3. OBSERVE the tool result and verify it',
-      '4. DECIDE whether to call another tool or finalize your answer',
+      'Your capabilities:',
+      '1. parseCSV - Parse raw CSV content into structured rows',
+      '2. mapBrokerFields - Map CSV headers to Ghostfolio fields (date, symbol, quantity, price, fee, currency, type)',
+      '3. validateTransactions - Validate activities against financial rules',
+      '4. detectDuplicates - Check for duplicate activities within the CSV and against the user\'s existing portfolio',
+      '5. previewImportReport - Generate a summary of what will be imported',
+      '6. commitImport - Actually import the validated activities into Ghostfolio',
       '',
-      '## Available Tools (6)',
-      '1. detectBrokerFormat — Auto-detect which broker produced the CSV (use FIRST)',
-      '2. parseCSV — Parse raw CSV content into structured rows',
-      '3. mapBrokerFields — Map CSV headers to Ghostfolio fields (date, symbol, quantity, price, fee, currency, type)',
-      '4. validateTransactions — Validate activities against financial rules',
-      '5. normalizeActivities — Normalize validated activities into Ghostfolio DTO format (types, dates, numerics, currency)',
-      '6. generateImportPreview — Generate a summary preview before committing (use LAST)',
+      'When a user provides a CSV file:',
+      '1. First use parseCSV to parse the raw content',
+      '2. Then use mapBrokerFields to map the headers to Ghostfolio fields',
+      '3. Then use validateTransactions to check all activities are valid',
+      '4. Use detectDuplicates to check for duplicates',
+      '5. Use previewImportReport to show the user a summary',
+      '6. Only use commitImport after the user explicitly confirms they want to import',
       '',
-      '## Standard Workflow for CSV Import',
-      'When a user provides a CSV file, follow this exact sequence:',
-      '1. detectBrokerFormat — detect the broker from headers/data',
-      '2. parseCSV — parse the raw content into rows',
-      '3. mapBrokerFields — map headers using the broker hint from step 1',
-      '4. validateTransactions — check all activities against financial rules',
-      '5. normalizeActivities — normalize valid activities to import DTO format',
-      '6. generateImportPreview — show the user a summary before they commit',
-      '',
-      '## Safety Guardrails (MUST FOLLOW)',
-      '- NEVER fabricate or guess financial data. Only report what the tools return.',
-      '- NEVER display raw CSV data in full. Only show summaries and specific issues.',
-      '- If a tool returns low confidence (< 0.7), explicitly warn the user.',
-      '- If verification.requiresHumanReview is true, tell the user they must review before committing.',
-      '- If you cannot determine something, say "I\'m not sure" — do NOT guess.',
-      '- Always cite which tool produced each finding (e.g., "The validator found...").',
-      '- Do not call the same tool with the same arguments more than twice.',
-      '',
-      '## Anti-Hallucination Rules',
-      '- Only reference data that came from tool results.',
-      '- Do not invent ticker symbols, prices, or dates.',
-      '- If asked about data not in the CSV, respond: "That information is not available in the uploaded file."',
-      '',
-      '## Confidence & Escalation',
-      '- Report overall confidence after validation (from verification.confidence).',
-      '- If confidence < 0.5: "Warning: Low confidence — I recommend manual review before importing."',
-      '- If there are validation errors: clearly list them with row numbers.',
-      '- For large imports (50+ rows) or high-value imports: recommend the user reviews the preview carefully.',
-      '',
-      '## Response Format',
-      '- Be concise but thorough.',
-      '- Use markdown for readability.',
-      '- Structure results with clear sections: Summary, Issues, Recommendation.',
-      '- Report validation errors and warnings clearly with row numbers.'
+      'Important rules:',
+      '- Always run tools in sequence when processing a CSV (parse → map → validate → duplicates → preview)',
+      '- After mapping fields, transform the raw rows into MappedActivity objects before validating',
+      '- Be concise but thorough in your responses',
+      '- Report validation errors and warnings clearly with row numbers',
+      '- Never display raw CSV data in full, only summaries and specific issues',
+      '- NEVER call commitImport without explicitly asking the user for confirmation first',
+      '- Always offer a dry-run before the real import'
     ];
 
-    if (csvContent) {
+    if (session.csvContent) {
       parts.push(
         '',
-        `## Context`,
-        `The user has uploaded a CSV file (${csvContent.length} characters).`,
-        'When you need to parse it, pass the CSV content to the parseCSV tool.',
-        'Start with detectBrokerFormat to identify the broker, then proceed through the standard workflow.'
+        `The user has uploaded a CSV file (${session.csvContent.length} characters).`,
+        'When you need to parse it, pass the CSV content to the parseCSV tool.'
       );
     }
 
     return parts.join('\n');
+  }
+
+  private cleanupExpiredSessions(): void {
+    const now = Date.now();
+
+    for (const [sessionId, session] of this.sessions.entries()) {
+      if (now - session.lastAccessedAt > SESSION_TTL_MS) {
+        this.sessions.delete(sessionId);
+      }
+    }
+
+    // Hard cap: evict oldest sessions if over limit
+    if (this.sessions.size > MAX_SESSIONS) {
+      const sortedEntries = [...this.sessions.entries()].sort(
+        (a, b) => a[1].lastAccessedAt - b[1].lastAccessedAt
+      );
+
+      const toEvict = sortedEntries.slice(
+        0,
+        this.sessions.size - MAX_SESSIONS
+      );
+
+      for (const [sessionId] of toEvict) {
+        this.sessions.delete(sessionId);
+      }
+    }
   }
 }

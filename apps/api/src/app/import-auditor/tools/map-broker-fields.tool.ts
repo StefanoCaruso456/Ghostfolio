@@ -139,6 +139,161 @@ export function mapBrokerFields(
   };
 }
 
+export interface LlmMappingResult {
+  mappings: Array<{
+    sourceHeader: string;
+    targetField: string;
+    confidence: number;
+    reasoning: string;
+  }>;
+}
+
+export type LlmMapper = (context: {
+  unmappedHeaders: string[];
+  sampleRows: Record<string, unknown>[];
+  unmappedRequiredFields: string[];
+  existingMappings: FieldMapping[];
+}) => Promise<LlmMappingResult>;
+
+/**
+ * Async wrapper that runs deterministic matching first, then falls back
+ * to LLM inference if required fields remain unmapped.
+ */
+export async function mapBrokerFieldsWithFallback(
+  input: MapBrokerFieldsInput & {
+    useLlmFallback?: boolean;
+    llmMapper?: LlmMapper;
+  }
+): Promise<MapBrokerFieldsOutput> {
+  const deterministicResult = mapBrokerFields(input);
+
+  if (
+    deterministicResult.status !== 'partial' ||
+    !input.useLlmFallback ||
+    !input.llmMapper
+  ) {
+    return deterministicResult;
+  }
+
+  try {
+    const llmResult = await input.llmMapper({
+      unmappedHeaders: deterministicResult.data.unmappedHeaders,
+      sampleRows: input.sampleRows,
+      unmappedRequiredFields: deterministicResult.data.unmappedRequiredFields,
+      existingMappings: deterministicResult.data.mappings
+    });
+
+    // Merge LLM mappings with deterministic ones
+    const existingTargetFields = new Set(
+      deterministicResult.data.mappings.map((m) => m.targetField)
+    );
+    const existingSourceHeaders = new Set(
+      deterministicResult.data.mappings.map((m) => m.sourceHeader)
+    );
+
+    const mergedMappings = [...deterministicResult.data.mappings];
+
+    for (const llmMapping of llmResult.mappings) {
+      if (
+        existingTargetFields.has(
+          llmMapping.targetField as (typeof GHOSTFOLIO_TARGET_FIELDS)[number]
+        ) ||
+        existingSourceHeaders.has(llmMapping.sourceHeader)
+      ) {
+        continue;
+      }
+
+      if (
+        !GHOSTFOLIO_TARGET_FIELDS.includes(
+          llmMapping.targetField as (typeof GHOSTFOLIO_TARGET_FIELDS)[number]
+        )
+      ) {
+        continue;
+      }
+
+      // Clamp LLM confidence to 0.6-0.8 range
+      const clampedConfidence = Math.min(
+        0.8,
+        Math.max(0.6, llmMapping.confidence)
+      );
+
+      mergedMappings.push({
+        sourceHeader: llmMapping.sourceHeader,
+        targetField:
+          llmMapping.targetField as (typeof GHOSTFOLIO_TARGET_FIELDS)[number],
+        confidence: clampedConfidence,
+        transformRule: llmMapping.reasoning
+      });
+
+      existingTargetFields.add(
+        llmMapping.targetField as (typeof GHOSTFOLIO_TARGET_FIELDS)[number]
+      );
+      existingSourceHeaders.add(llmMapping.sourceHeader);
+    }
+
+    // Recalculate unmapped fields
+    const unmappedHeaders = input.headers.filter(
+      (h) => !existingSourceHeaders.has(h)
+    );
+    const unmappedRequiredFields = REQUIRED_TARGET_FIELDS.filter(
+      (field) => !existingTargetFields.has(field)
+    );
+
+    const totalRequired = REQUIRED_TARGET_FIELDS.length;
+    const mappedRequired = totalRequired - unmappedRequiredFields.length;
+    const overallConfidence =
+      totalRequired > 0 ? mappedRequired / totalRequired : 0;
+
+    const allRequiredMapped = unmappedRequiredFields.length === 0;
+    const status = allRequiredMapped
+      ? 'success'
+      : mergedMappings.length > 0
+        ? 'partial'
+        : 'error';
+
+    const llmMappingsAdded =
+      mergedMappings.length - deterministicResult.data.mappings.length;
+
+    const explanationParts: string[] = [];
+    explanationParts.push(
+      `Mapped ${mergedMappings.length} of ${input.headers.length} headers (${deterministicResult.data.mappings.length} deterministic, ${llmMappingsAdded} LLM-inferred).`
+    );
+
+    if (allRequiredMapped) {
+      explanationParts.push('All required fields are mapped.');
+    } else {
+      explanationParts.push(
+        `Missing required fields: ${unmappedRequiredFields.join(', ')}.`
+      );
+    }
+
+    return {
+      status,
+      data: {
+        mappings: mergedMappings,
+        unmappedHeaders,
+        unmappedRequiredFields,
+        overallConfidence,
+        explanation: explanationParts.join(' ')
+      },
+      verification: createVerificationResult({
+        passed: allRequiredMapped,
+        confidence: overallConfidence,
+        warnings: unmappedHeaders.length > 0
+          ? [`${unmappedHeaders.length} headers not mapped`]
+          : [],
+        errors: unmappedRequiredFields.map(
+          (f) => `Required field "${f}" could not be mapped`
+        ),
+        sources: ['deterministic-key-matching', 'llm-inference']
+      })
+    };
+  } catch {
+    // If LLM call fails, return deterministic result as-is
+    return deterministicResult;
+  }
+}
+
 function getTransformRule(
   targetField: string,
   sampleRows: Record<string, unknown>[],
