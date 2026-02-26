@@ -220,7 +220,19 @@
   }
 
   <!-- Input Area -->
-  <div class="input-area">
+  <div
+    class="input-area"
+    [class.dragging]="isDragging"
+    (dragover)="onDragOver($event)"
+    (dragleave)="onDragLeave($event)"
+    (drop)="onDrop($event)"
+  >
+    @if (isDragging) {
+      <div class="drag-overlay">
+        <ion-icon name="cloud-upload-outline" class="drag-icon" />
+        <span i18n>Drop files here</span>
+      </div>
+    }
     @if (isGenerating) {
       <div class="generating-indicator">
         <div class="generating-dot"></div>
@@ -269,29 +281,6 @@
         type="file"
         (change)="onFilesSelected($event)"
       />
-      <button
-        class="attach-btn"
-        matTooltip="Attach image or CSV"
-        [disabled]="isGenerating"
-        (click)="fileInput.click()"
-      >
-        <ion-icon name="attach-outline" />
-      </button>
-      @if (isSpeechSupported) {
-        <button
-          class="voice-btn"
-          [class.recording]="isRecording"
-          [matTooltip]="isRecording ? 'Stop recording' : 'Voice input'"
-          [disabled]="isGenerating"
-          (click)="onToggleVoiceInput()"
-        >
-          @if (isRecording) {
-            <ion-icon name="mic-off-outline" />
-          } @else {
-            <ion-icon name="mic-outline" />
-          }
-        </button>
-      }
       <textarea
         #chatInput
         class="chat-input"
@@ -302,20 +291,47 @@
         (input)="adjustTextareaHeight($event)"
         (keydown)="onKeydown($event)"
       ></textarea>
-      <button
-        class="send-btn"
-        [class.active]="inputValue.trim().length > 0 || attachments.length > 0"
-        [disabled]="
-          (!inputValue.trim() && attachments.length === 0) || isGenerating
-        "
-        (click)="onSendMessage()"
-      >
-        @if (isGenerating) {
-          <ion-icon name="stop-circle-outline" />
-        } @else {
-          <ion-icon name="arrow-up-outline" />
-        }
-      </button>
+      <div class="input-actions">
+        <div class="input-actions-left">
+          <button
+            class="attach-btn"
+            matTooltip="Attach image or CSV"
+            [disabled]="isGenerating"
+            (click)="fileInput.click()"
+          >
+            <ion-icon name="attach-outline" />
+          </button>
+          @if (isSpeechSupported) {
+            <button
+              class="voice-btn"
+              [class.recording]="isRecording"
+              [matTooltip]="isRecording ? 'Stop recording' : 'Voice input'"
+              [disabled]="isGenerating"
+              (click)="onToggleVoiceInput()"
+            >
+              @if (isRecording) {
+                <ion-icon name="mic-off-outline" />
+              } @else {
+                <ion-icon name="mic-outline" />
+              }
+            </button>
+          }
+        </div>
+        <button
+          class="send-btn"
+          [class.active]="inputValue.trim().length > 0 || attachments.length > 0"
+          [disabled]="
+            (!inputValue.trim() && attachments.length === 0) || isGenerating
+          "
+          (click)="onSendMessage()"
+        >
+          @if (isGenerating) {
+            <ion-icon name="stop-circle-outline" />
+          } @else {
+            <ion-icon name="arrow-up-outline" />
+          }
+        </button>
+      </div>
     </div>
     <div class="input-footer">
       <span class="disclaimer" i18n

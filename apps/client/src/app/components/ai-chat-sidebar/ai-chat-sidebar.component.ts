@@ -28,6 +28,7 @@ import {
   checkmarkOutline,
   chevronDownOutline,
   closeOutline,
+  cloudUploadOutline,
   copyOutline,
   createOutline,
   documentTextOutline,
@@ -100,6 +101,7 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
   public editingConversationId: string | null = null;
   public editingTitle = '';
   public inputValue = '';
+  public isDragging = false;
   public isGenerating = false;
   public isRecording = false;
   public isSpeechSupported = false;
@@ -155,6 +157,7 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
       checkmarkOutline,
       chevronDownOutline,
       closeOutline,
+      cloudUploadOutline,
       copyOutline,
       createOutline,
       documentTextOutline,
@@ -401,68 +404,39 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
 
   public onFilesSelected(event: Event) {
     const input = event.target as HTMLInputElement;
-    const files = input.files;
 
-    if (!files) {
-      return;
-    }
-
-    for (const file of Array.from(files)) {
-      if (file.size > GfAiChatSidebarComponent.MAX_FILE_SIZE) {
-        continue;
-      }
-
-      const isImage =
-        GfAiChatSidebarComponent.ALLOWED_IMAGE_TYPES.includes(file.type);
-      const isCsv =
-        file.type === 'text/csv' ||
-        file.name.toLowerCase().endsWith('.csv');
-
-      if (!isImage && !isCsv) {
-        continue;
-      }
-
-      if (isImage) {
-        // Read images as base64 data URL (needed for preview + vision API)
-        const reader = new FileReader();
-
-        reader.onload = () => {
-          const dataUrl = reader.result as string;
-
-          this.attachments.push({
-            content: dataUrl,
-            mimeType: file.type,
-            name: file.name,
-            previewUrl: dataUrl,
-            type: 'image'
-          });
-          this.changeDetectorRef.markForCheck();
-        };
-
-        reader.readAsDataURL(file);
-      } else {
-        // Read CSVs as raw text (needed for inline analysis)
-        const reader = new FileReader();
-
-        reader.onload = () => {
-          const text = reader.result as string;
-
-          this.attachments.push({
-            content: text,
-            mimeType: 'text/csv',
-            name: file.name,
-            previewUrl: '',
-            type: 'csv'
-          });
-          this.changeDetectorRef.markForCheck();
-        };
-
-        reader.readAsText(file);
-      }
+    if (input.files) {
+      this.processFiles(input.files);
     }
 
     // Reset so the same file can be re-selected
     input.value = '';
+  }
+
+  public onDragOver(event: DragEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragging = true;
+    this.changeDetectorRef.markForCheck();
+  }
+
+  public onDragLeave(event: DragEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragging = false;
+    this.changeDetectorRef.markForCheck();
+  }
+
+  public onDrop(event: DragEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragging = false;
+
+    if (event.dataTransfer?.files?.length) {
+      this.processFiles(event.dataTransfer.files);
+    }
+
+    this.changeDetectorRef.markForCheck();
   }
 
   public onRemoveAttachment(attachment: Attachment) {
@@ -588,6 +562,60 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
       this.isRecording = false;
       this.changeDetectorRef.markForCheck();
     };
+  }
+
+  private processFiles(files: FileList) {
+    for (const file of Array.from(files)) {
+      if (file.size > GfAiChatSidebarComponent.MAX_FILE_SIZE) {
+        continue;
+      }
+
+      const isImage =
+        GfAiChatSidebarComponent.ALLOWED_IMAGE_TYPES.includes(file.type);
+      const isCsv =
+        file.type === 'text/csv' ||
+        file.name.toLowerCase().endsWith('.csv');
+
+      if (!isImage && !isCsv) {
+        continue;
+      }
+
+      if (isImage) {
+        const reader = new FileReader();
+
+        reader.onload = () => {
+          const dataUrl = reader.result as string;
+
+          this.attachments.push({
+            content: dataUrl,
+            mimeType: file.type,
+            name: file.name,
+            previewUrl: dataUrl,
+            type: 'image'
+          });
+          this.changeDetectorRef.markForCheck();
+        };
+
+        reader.readAsDataURL(file);
+      } else {
+        const reader = new FileReader();
+
+        reader.onload = () => {
+          const text = reader.result as string;
+
+          this.attachments.push({
+            content: text,
+            mimeType: 'text/csv',
+            name: file.name,
+            previewUrl: '',
+            type: 'csv'
+          });
+          this.changeDetectorRef.markForCheck();
+        };
+
+        reader.readAsText(file);
+      }
+    }
   }
 
   private focusInput() {
