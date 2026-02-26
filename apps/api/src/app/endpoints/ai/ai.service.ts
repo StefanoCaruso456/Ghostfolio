@@ -80,8 +80,11 @@ import {
 /** MAX_ITERATIONS: 8-10 steps — prevent infinite loops + runaway cost */
 const MAX_ITERATIONS = 10;
 
-/** TIMEOUT: 45s — matches user patience + gateway timeouts */
+/** TIMEOUT: 45s base — matches user patience + gateway timeouts */
 const TIMEOUT_MS = 45_000;
+
+/** TIMEOUT_MULTIMODAL: 90s — image/vision requests need more time */
+const TIMEOUT_MULTIMODAL_MS = 90_000;
 
 /** COST_LIMIT: $1/query — prevent bill explosions */
 const COST_LIMIT_USD = 1.0;
@@ -349,16 +352,38 @@ export class AiService {
     }
 
     // Build the text portion: user message + inline CSV/PDF content
+    // Limit inline text to ~50K chars (~12K tokens) to prevent token explosion
+    const MAX_INLINE_TEXT_CHARS = 50_000;
     let textContent = message;
 
     if (textAttachments.length > 0) {
       const descriptions = textAttachments.map((att) => {
+        let content = att.content;
+
+        // Truncate very large text attachments to avoid token overflow
+        if (content.length > MAX_INLINE_TEXT_CHARS) {
+          const truncatedRows = content
+            .slice(0, MAX_INLINE_TEXT_CHARS)
+            .split('\n');
+
+          // Remove partial last line
+          truncatedRows.pop();
+          content =
+            truncatedRows.join('\n') +
+            `\n\n[... truncated — showing first ${truncatedRows.length} rows of a large file]`;
+
+          Logger.warn(
+            `Attachment "${att.fileName}" truncated from ${att.content.length} to ${content.length} chars`,
+            'AiService'
+          );
+        }
+
         if (att.mimeType === 'text/csv') {
-          return `[Attached CSV: ${att.fileName}]\n${att.content}`;
+          return `[Attached CSV: ${att.fileName}]\n${content}`;
         }
 
         if (att.mimeType === 'application/pdf') {
-          return `[Attached PDF: ${att.fileName}]\n${att.content}`;
+          return `[Attached PDF: ${att.fileName}]\n${content}`;
         }
 
         return `[Attached file: ${att.fileName}]`;
@@ -537,6 +562,10 @@ export class AiService {
     };
 
     // ── Timeout with AbortController ────────────────────────────────
+    // Use extended timeout for multimodal (image) requests
+    const hasImages = imageAttachments.length > 0;
+    const effectiveTimeoutMs = hasImages ? TIMEOUT_MULTIMODAL_MS : TIMEOUT_MS;
+
     const abortController = new AbortController();
     let timeoutId: ReturnType<typeof setTimeout>;
 
@@ -545,9 +574,11 @@ export class AiService {
         trace.addGuardrail('timeout');
         abortController.abort();
         reject(
-          new Error(`Guardrail: Request timed out after ${TIMEOUT_MS / 1000}s`)
+          new Error(
+            `Guardrail: Request timed out after ${effectiveTimeoutMs / 1000}s`
+          )
         );
-      }, TIMEOUT_MS);
+      }, effectiveTimeoutMs);
     });
 
     // ── ReAct loop via generateText with tools ──────────────────────
@@ -892,11 +923,15 @@ export class AiService {
 
       // For guardrail-triggered aborts, return a friendly message
       if (isGuardrail) {
+        const isTimeout = errorMessage.includes('timed out');
+        const friendlyMessage = isTimeout
+          ? 'Your request took too long to process. This can happen with large files or complex images. Try a smaller file, or ask a more specific question about the content.'
+          : 'I had to stop processing your request due to a safety guardrail. Please try rephrasing your question or ask something simpler.';
+
         return {
           conversationId: activeConversationId,
           message: {
-            content:
-              'I had to stop processing your request due to a safety guardrail. Please try rephrasing your question or ask something simpler.',
+            content: friendlyMessage,
             role: 'assistant',
             timestamp: new Date().toISOString()
           }
