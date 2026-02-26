@@ -14,7 +14,7 @@ import { GfAiChatSidebarComponent } from '../../components/ai-chat-sidebar/ai-ch
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'page' },
+  host: { class: 'ai-chat-page' },
   imports: [GfAiChatSidebarComponent],
   selector: 'gf-ai-chat-page',
   styleUrls: ['./ai-chat-page.component.scss'],
