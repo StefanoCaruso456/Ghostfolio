@@ -1,3 +1,4 @@
+import { BraintrustTelemetryService } from '@ghostfolio/api/app/endpoints/ai/telemetry/braintrust-telemetry.service';
 import { ImportModule } from '@ghostfolio/api/app/import/import.module';
 import { OrderModule } from '@ghostfolio/api/app/order/order.module';
 import { ConfigurationModule } from '@ghostfolio/api/services/configuration/configuration.module';
@@ -17,6 +18,6 @@ import { ImportAuditorService } from './import-auditor.service';
     OrderModule,
     PropertyModule
   ],
-  providers: [ImportAuditorService]
+  providers: [BraintrustTelemetryService, ImportAuditorService]
 })
 export class ImportAuditorModule {}

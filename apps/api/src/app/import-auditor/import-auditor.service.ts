@@ -11,8 +11,12 @@ import type { UserWithSettings } from '@ghostfolio/common/types';
 import { Injectable, Logger } from '@nestjs/common';
 import { createOpenRouter } from '@openrouter/ai-sdk-provider';
 import { generateText, tool } from 'ai';
-import { Langfuse } from 'langfuse';
 import { z } from 'zod';
+
+import {
+  BraintrustTelemetryService,
+  TraceContext
+} from '../endpoints/ai/telemetry/braintrust-telemetry.service';
 
 import type { ExistingActivity } from './schemas/detect-duplicates.schema';
 import { MappedActivitySchema } from './schemas/validate-transactions.schema';
@@ -60,8 +64,6 @@ const MAX_SESSIONS = 100;
 
 @Injectable()
 export class ImportAuditorService {
-  private langfuseClient: Langfuse | null = null;
-  private langfuseInitialized = false;
   private readonly logger = new Logger(ImportAuditorService.name);
   private readonly sessions = new Map<string, SessionData>();
 
@@ -69,49 +71,9 @@ export class ImportAuditorService {
     private readonly configurationService: ConfigurationService,
     private readonly importService: ImportService,
     private readonly orderService: OrderService,
-    private readonly propertyService: PropertyService
+    private readonly propertyService: PropertyService,
+    private readonly telemetryService: BraintrustTelemetryService
   ) {}
-
-  private getLangfuse(): Langfuse | null {
-    if (this.langfuseInitialized) {
-      return this.langfuseClient;
-    }
-
-    this.langfuseInitialized = true;
-
-    try {
-      const publicKey = this.configurationService.get(
-        'LANGFUSE_PUBLIC_KEY'
-      );
-      const secretKey = this.configurationService.get(
-        'LANGFUSE_SECRET_KEY'
-      );
-
-      if (!publicKey || !secretKey) {
-        this.logger.log(
-          'Langfuse keys not configured, observability disabled'
-        );
-        return null;
-      }
-
-      const baseUrl = this.configurationService.get('LANGFUSE_BASEURL');
-
-      this.langfuseClient = new Langfuse({
-        publicKey,
-        secretKey,
-        baseUrl
-      });
-
-      this.logger.log('Langfuse observability initialized');
-
-      return this.langfuseClient;
-    } catch (error) {
-      this.logger.warn(
-        `Failed to initialize Langfuse: ${error instanceof Error ? error.message : String(error)}`
-      );
-      return null;
-    }
-  }
 
   public getHealth(): { status: string } {
     return { status: 'OK' };
@@ -159,43 +121,45 @@ export class ImportAuditorService {
     const toolCallRecords: ToolCallRecord[] = [];
     let canCommit = false;
     let stateHash: string | undefined;
+    let toolCallIndex = 0;
 
-    const langfuse = this.getLangfuse();
-    const trace = langfuse?.trace({
-      name: 'import-auditor-chat',
+    // Resolve model first — needed for telemetry trace
+    const openRouterApiKey =
+      await this.propertyService.getByKey<string>(
+        PROPERTY_API_KEY_OPENROUTER
+      );
+
+    const openRouterModel =
+      await this.propertyService.getByKey<string>(
+        PROPERTY_OPENROUTER_MODEL
+      );
+
+    if (!openRouterApiKey || !openRouterModel) {
+      const response =
+        'The AI service is not configured. Please set the OpenRouter API key and model in the admin settings.';
+
+      session.messages.push({
+        role: 'assistant',
+        content: response
+      });
+
+      return {
+        sessionId,
+        response,
+        toolCalls: [],
+        canCommit: false
+      };
+    }
+
+    // Braintrust telemetry — degradation-safe (no API key → no-op)
+    const traceCtx: TraceContext = this.telemetryService.startTrace({
       sessionId,
       userId: user.id,
-      input: { message, hasCsv: !!csvContent }
+      queryText: message,
+      model: openRouterModel
     });
 
     try {
-      const openRouterApiKey =
-        await this.propertyService.getByKey<string>(
-          PROPERTY_API_KEY_OPENROUTER
-        );
-
-      const openRouterModel =
-        await this.propertyService.getByKey<string>(
-          PROPERTY_OPENROUTER_MODEL
-        );
-
-      if (!openRouterApiKey || !openRouterModel) {
-        const response =
-          'The AI service is not configured. Please set the OpenRouter API key and model in the admin settings.';
-
-        session.messages.push({
-          role: 'assistant',
-          content: response
-        });
-
-        return {
-          sessionId,
-          response,
-          toolCalls: [],
-          canCommit: false
-        };
-      }
-
       const openRouterService = createOpenRouter({
         apiKey: openRouterApiKey
       });
@@ -234,10 +198,11 @@ export class ImportAuditorService {
                 .describe('CSV delimiter character')
             }),
             execute: async (args) => {
-              const span = trace?.span({
-                name: 'tool:parseCSV',
-                input: { delimiter: args.delimiter, contentLength: args.csvContent.length }
-              });
+              const spanBuilder = traceCtx.startToolSpan(
+                'parseCSV',
+                { delimiter: args.delimiter, contentLength: args.csvContent.length },
+                toolCallIndex++
+              );
               const start = Date.now();
               const result = parseCsv({
                 csvContent: args.csvContent,
@@ -245,7 +210,11 @@ export class ImportAuditorService {
               });
               const durationMs = Date.now() - start;
 
-              span?.end({ output: { status: result.status, rowCount: result.data?.rowCount }, metadata: { durationMs } });
+              const toolSpan = spanBuilder.end({
+                status: result.status === 'error' ? 'error' : 'success',
+                toolOutput: { status: result.status, rowCount: result.data?.rowCount }
+              });
+              traceCtx.addToolSpan(toolSpan);
 
               toolCallRecords.push({
                 tool: 'parseCSV',
@@ -285,10 +254,11 @@ export class ImportAuditorService {
                 )
             }),
             execute: async (args) => {
-              const span = trace?.span({
-                name: 'tool:mapBrokerFields',
-                input: { headerCount: args.headers.length, useLlmFallback: args.useLlmFallback }
-              });
+              const spanBuilder = traceCtx.startToolSpan(
+                'mapBrokerFields',
+                { headerCount: args.headers.length, useLlmFallback: args.useLlmFallback },
+                toolCallIndex++
+              );
               const start = Date.now();
               const result = await mapBrokerFieldsWithFallback({
                 headers: args.headers,
@@ -334,7 +304,11 @@ export class ImportAuditorService {
               });
               const durationMs = Date.now() - start;
 
-              span?.end({ output: { status: result.status, mappingCount: result.data?.mappings?.length }, metadata: { durationMs } });
+              const mapSpan = spanBuilder.end({
+                status: result.status === 'error' ? 'error' : 'success',
+                toolOutput: { status: result.status, mappingCount: result.data?.mappings?.length }
+              });
+              traceCtx.addToolSpan(mapSpan);
 
               toolCallRecords.push({
                 tool: 'mapBrokerFields',
@@ -358,17 +332,22 @@ export class ImportAuditorService {
                 .describe('Array of mapped activities to validate')
             }),
             execute: async (args) => {
-              const span = trace?.span({
-                name: 'tool:validateTransactions',
-                input: { activityCount: args.activities.length }
-              });
+              const spanBuilder = traceCtx.startToolSpan(
+                'validateTransactions',
+                { activityCount: args.activities.length },
+                toolCallIndex++
+              );
               const start = Date.now();
               const result = validateTransactions({
                 activities: args.activities
               });
               const durationMs = Date.now() - start;
 
-              span?.end({ output: { status: result.status }, metadata: { durationMs } });
+              const valSpan = spanBuilder.end({
+                status: result.status === 'fail' ? 'error' : 'success',
+                toolOutput: { status: result.status }
+              });
+              traceCtx.addToolSpan(valSpan);
 
               toolCallRecords.push({
                 tool: 'validateTransactions',
@@ -405,10 +384,11 @@ export class ImportAuditorService {
                 )
             }),
             execute: async (args) => {
-              const span = trace?.span({
-                name: 'tool:detectDuplicates',
-                input: { activityCount: args.activities.length, checkDatabase: args.checkDatabase }
-              });
+              const spanBuilder = traceCtx.startToolSpan(
+                'detectDuplicates',
+                { activityCount: args.activities.length, checkDatabase: args.checkDatabase },
+                toolCallIndex++
+              );
               const start = Date.now();
 
               let existingActivities: ExistingActivity[] = [];
@@ -453,7 +433,11 @@ export class ImportAuditorService {
               });
               const durationMs = Date.now() - start;
 
-              span?.end({ output: { status: result.status, duplicatesFound: result.data?.batchDuplicatesFound + result.data?.databaseDuplicatesFound }, metadata: { durationMs } });
+              const dupSpan = spanBuilder.end({
+                status: result.status === 'error' ? 'error' : 'success',
+                toolOutput: { status: result.status, duplicatesFound: result.data?.batchDuplicatesFound + result.data?.databaseDuplicatesFound }
+              });
+              traceCtx.addToolSpan(dupSpan);
 
               toolCallRecords.push({
                 tool: 'detectDuplicates',
@@ -485,10 +469,11 @@ export class ImportAuditorService {
                 .describe('Number of errors from validation')
             }),
             execute: async (args) => {
-              const span = trace?.span({
-                name: 'tool:previewImportReport',
-                input: { activityCount: args.activities.length }
-              });
+              const spanBuilder = traceCtx.startToolSpan(
+                'previewImportReport',
+                { activityCount: args.activities.length },
+                toolCallIndex++
+              );
               const start = Date.now();
               const result = previewImportReport({
                 activities: args.activities,
@@ -497,7 +482,11 @@ export class ImportAuditorService {
               });
               const durationMs = Date.now() - start;
 
-              span?.end({ output: { status: result.status, totalCount: result.data?.totalCount }, metadata: { durationMs } });
+              const previewSpan = spanBuilder.end({
+                status: result.status === 'error' ? 'error' : 'success',
+                toolOutput: { status: result.status, totalCount: result.data?.totalCount }
+              });
+              traceCtx.addToolSpan(previewSpan);
 
               toolCallRecords.push({
                 tool: 'previewImportReport',
@@ -529,10 +518,11 @@ export class ImportAuditorService {
                 )
             }),
             execute: async (args) => {
-              const span = trace?.span({
-                name: 'tool:commitImport',
-                input: { activityCount: args.activities.length, isDryRun: args.isDryRun }
-              });
+              const commitSpanBuilder = traceCtx.startToolSpan(
+                'commitImport',
+                { activityCount: args.activities.length, isDryRun: args.isDryRun },
+                toolCallIndex++
+              );
               const start = Date.now();
 
               try {
@@ -558,7 +548,11 @@ export class ImportAuditorService {
                     }
                   };
 
-                  span?.end({ output: { status: 'error' }, metadata: { durationMs } });
+                  traceCtx.addToolSpan(commitSpanBuilder.end({
+                    status: 'error',
+                    toolOutput: { status: 'error' },
+                    error: 'User session not found'
+                  }));
 
                   toolCallRecords.push({
                     tool: 'commitImport',
@@ -593,7 +587,11 @@ export class ImportAuditorService {
                     }
                   };
 
-                  span?.end({ output: { status: 'error' }, metadata: { durationMs } });
+                  traceCtx.addToolSpan(commitSpanBuilder.end({
+                    status: 'error',
+                    toolOutput: { status: 'error' },
+                    error: 'No valid orders after transformation'
+                  }));
 
                   toolCallRecords.push({
                     tool: 'commitImport',
@@ -653,7 +651,10 @@ export class ImportAuditorService {
                   }
                 };
 
-                span?.end({ output: { status: result.status, importedCount }, metadata: { durationMs } });
+                traceCtx.addToolSpan(commitSpanBuilder.end({
+                  status: result.status === 'error' ? 'error' : 'success',
+                  toolOutput: { status: result.status, importedCount }
+                }));
 
                 toolCallRecords.push({
                   tool: 'commitImport',
@@ -689,7 +690,11 @@ export class ImportAuditorService {
                   }
                 };
 
-                span?.end({ output: { status: 'error' }, metadata: { durationMs } });
+                traceCtx.addToolSpan(commitSpanBuilder.end({
+                  status: 'error',
+                  toolOutput: { status: 'error' },
+                  error: errorMessage
+                }));
 
                 toolCallRecords.push({
                   tool: 'commitImport',
@@ -705,11 +710,7 @@ export class ImportAuditorService {
         }
       });
 
-      const generation = trace?.generation({
-        name: 'generateText',
-        model: openRouterModel,
-        input: session.messages
-      });
+      traceCtx.markLlmStart();
 
       try {
         const result = await Promise.race([
@@ -717,24 +718,23 @@ export class ImportAuditorService {
           timeoutPromise
         ]);
 
+        traceCtx.markLlmEnd();
+
         const responseText =
           result.text ||
           'I processed your request. Check the tool results for details.';
 
-        generation?.end({
-          output: responseText,
-          usage: result.usage
-            ? {
-                input: result.usage.promptTokens,
-                output: result.usage.completionTokens,
-                total: result.usage.totalTokens
-              }
-            : undefined
-        });
+        // Record token usage and response in trace context
+        if (result.usage) {
+          traceCtx.setTokens(
+            result.usage.promptTokens,
+            result.usage.completionTokens
+          );
+        }
 
-        trace?.update({
-          output: { response: responseText, toolCalls: toolCallRecords.length, canCommit }
-        });
+        traceCtx.setResponse(responseText);
+        traceCtx.setIterationCount(toolCallIndex);
+        traceCtx.setQueryCategory('general');
 
         session.messages.push({
           role: 'assistant',
@@ -751,11 +751,14 @@ export class ImportAuditorService {
       } finally {
         clearTimeout(timeoutId);
 
-        if (langfuse) {
-          await langfuse.flushAsync().catch((err) => {
-            this.logger.warn(`Langfuse flush failed: ${err instanceof Error ? err.message : String(err)}`);
+        // Log completed trace to Braintrust (no-op if disabled)
+        await this.telemetryService
+          .logTrace(traceCtx.finalize())
+          .catch((err) => {
+            this.logger.warn(
+              `Braintrust telemetry flush failed: ${err instanceof Error ? err.message : String(err)}`
+            );
           });
-        }
       }
     } catch (error) {
       const errorMessage =
@@ -765,13 +768,12 @@ export class ImportAuditorService {
         `Chat error for session ${sessionId}: ${errorMessage}`
       );
 
-      trace?.update({
-        output: { error: errorMessage }
-      });
+      traceCtx.markError(errorMessage);
 
-      if (langfuse) {
-        await langfuse.flushAsync().catch(() => {});
-      }
+      // Log error trace to Braintrust (non-blocking)
+      await this.telemetryService
+        .logTrace(traceCtx.finalize())
+        .catch(() => {});
 
       const errorResponse = `I encountered an error: ${errorMessage}. Please try again.`;
 
