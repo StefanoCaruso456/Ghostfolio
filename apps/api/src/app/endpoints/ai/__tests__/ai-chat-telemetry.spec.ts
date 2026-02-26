@@ -39,6 +39,55 @@ jest.mock('@openrouter/ai-sdk-provider', () => ({
 import { AiService } from '../ai.service';
 import { AiConversationService } from '../conversation/conversation.service';
 
+// ── Snapshot helper — replaces non-deterministic fields with stable placeholders ──
+
+function sanitizeForSnapshot(
+  payload: TelemetryPayload
+): Record<string, unknown> {
+  const p: any = JSON.parse(JSON.stringify(payload));
+
+  if (p.trace) {
+    p.trace.traceId = '<uuid>';
+    p.trace.timestamp = '<timestamp>';
+    p.trace.totalLatencyMs = '<ms>';
+    p.trace.llmLatencyMs = '<ms>';
+    p.trace.toolLatencyTotalMs = '<ms>';
+    p.trace.overheadLatencyMs = '<ms>';
+    p.trace.estimatedCostUsd = '<cost>';
+  }
+
+  if (Array.isArray(p.toolSpans)) {
+    p.toolSpans = p.toolSpans.map((span: any) => ({
+      ...span,
+      spanId: '<uuid>',
+      traceId: '<uuid>',
+      latencyMs: '<ms>',
+      startedAt: '<timestamp>',
+      endedAt: '<timestamp>'
+    }));
+  }
+
+  if (p.verification) {
+    p.verification.traceId = '<uuid>';
+  }
+
+  if (p.derived) {
+    p.derived.toolOverheadRatio = '<ratio>';
+    p.derived.costPerToolCall = '<cost>';
+    p.derived.latencyPerIteration = '<ms>';
+  }
+
+  if (Array.isArray(p.reactIterations)) {
+    p.reactIterations = p.reactIterations.map((ri: any) => ({
+      ...ri,
+      traceId: '<uuid>',
+      latencyMs: '<ms>'
+    }));
+  }
+
+  return p;
+}
+
 describe('AI Chat Telemetry Integration', () => {
   let aiService: AiService;
   let telemetryService: BraintrustTelemetryService;
@@ -274,6 +323,23 @@ describe('AI Chat Telemetry Integration', () => {
         capturedPayload!.verification.confidenceScore
       ).toBeLessThanOrEqual(1);
     });
+
+    it('should match telemetry payload snapshot (tool call)', async () => {
+      await aiService.chat({
+        attachments: [],
+        conversationId: 'test-conv-1',
+        history: [],
+        languageCode: 'en',
+        message: 'What is the price of AAPL?',
+        userCurrency: 'USD',
+        userId: 'user-123'
+      });
+
+      expect(logTraceSpy).toHaveBeenCalledTimes(1);
+
+      const payload = logTraceSpy.mock.calls[0][0];
+      expect(sanitizeForSnapshot(payload)).toMatchSnapshot();
+    });
   });
 
   // ========================================================================
@@ -407,6 +473,23 @@ describe('AI Chat Telemetry Integration', () => {
       expect(capturedPayload!.trace.responseText).toBeTruthy();
       expect(capturedPayload!.trace.responseText).toContain('Ghostfolio');
     });
+
+    it('should match telemetry payload snapshot (no tools)', async () => {
+      await aiService.chat({
+        attachments: [],
+        conversationId: 'test-conv-2',
+        history: [],
+        languageCode: 'en',
+        message: 'Hello, how are you?',
+        userCurrency: 'USD',
+        userId: 'user-456'
+      });
+
+      expect(logTraceSpy).toHaveBeenCalledTimes(1);
+
+      const payload = logTraceSpy.mock.calls[0][0];
+      expect(sanitizeForSnapshot(payload)).toMatchSnapshot();
+    });
   });
 
   // ========================================================================
@@ -455,6 +538,23 @@ describe('AI Chat Telemetry Integration', () => {
       const derived = capturedPayload!.derived;
       expect(typeof derived.toolOverheadRatio).toBe('number');
       expect(typeof derived.failedToolCount).toBe('number');
+    });
+
+    it('should match telemetry payload snapshot (structure)', async () => {
+      await aiService.chat({
+        attachments: [],
+        conversationId: 'test-conv-3',
+        history: [],
+        languageCode: 'en',
+        message: 'Test prompt',
+        userCurrency: 'USD',
+        userId: 'user-789'
+      });
+
+      expect(logTraceSpy).toHaveBeenCalledTimes(1);
+
+      const payload = logTraceSpy.mock.calls[0][0];
+      expect(sanitizeForSnapshot(payload)).toMatchSnapshot();
     });
   });
 });
