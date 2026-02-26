@@ -57,10 +57,9 @@ export class ImportAuditorController {
     try {
       return await this.importAuditorService.chat({
         csvContent: body.csvContent,
-        history: body.history,
         message: body.message,
         sessionId: body.sessionId,
-        userId: this.request.user.id
+        user: this.request.user
       });
     } catch (error) {
       this.logger.error(error);

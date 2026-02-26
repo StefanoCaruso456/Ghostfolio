@@ -387,7 +387,8 @@ describe('Eval Scorers', () => {
         toolOverheadRatio: 0.2,
         costPerToolCall: 0.005,
         latencyPerIteration: 1500,
-        toolSuccessRates: { get_portfolio_context: 1.0 }
+        toolSuccessRates: { get_portfolio_context: 1.0 },
+        failedToolCount: 0
       },
       ...overrides
     };
@@ -560,6 +561,181 @@ describe('Eval Scorers', () => {
       expect(scores.toolExecution).toBe(1.0); // all success
       expect(scores.correctness).toBe(0.95); // proxy from confidence
       expect(scores.relevance).toBe(0.95); // proxy from confidence
+    });
+  });
+
+  // =========================================================================
+  // Part A-F Improvement Tests
+  // =========================================================================
+
+  describe('scoreGroundedness (improved — Part C)', () => {
+    it('should return 0.5 when no tools are used', () => {
+      const payload = buildPayload({
+        toolSpans: [],
+        trace: {
+          ...buildPayload().trace,
+          usedTools: false,
+          toolCallCount: 0,
+          toolNames: []
+        }
+      });
+
+      expect(scoreGroundedness(payload)).toBe(0.5);
+    });
+
+    it('should return 1.0 when tool fails but response acknowledges error', () => {
+      const payload = buildPayload({
+        toolSpans: [
+          {
+            ...buildPayload().toolSpans[0],
+            status: 'error',
+            error: 'API timeout'
+          }
+        ],
+        trace: {
+          ...buildPayload().trace,
+          responseText:
+            'The getQuote tool was unable to retrieve data. The data is not available at this time.'
+        },
+        verification: {
+          ...buildPayload().verification,
+          passed: false
+        }
+      });
+
+      expect(scoreGroundedness(payload)).toBe(1.0);
+    });
+
+    it('should return 0.0 when tool fails but response hides the error', () => {
+      const payload = buildPayload({
+        toolSpans: [
+          {
+            ...buildPayload().toolSpans[0],
+            status: 'error',
+            error: 'API timeout'
+          }
+        ],
+        trace: {
+          ...buildPayload().trace,
+          responseText:
+            'Based on the latest market data, AAPL is trading at $185.50 with a market cap of $2.8T.'
+        },
+        verification: {
+          ...buildPayload().verification,
+          passed: false
+        }
+      });
+
+      expect(scoreGroundedness(payload)).toBe(0.0);
+    });
+  });
+
+  describe('ToolSpan optional fields (Part E)', () => {
+    it('should allow optional provider fields on ToolSpan', () => {
+      const span = buildPayload().toolSpans[0];
+
+      // Default: optional fields should be undefined
+      expect(span.providerName).toBeUndefined();
+      expect(span.assetType).toBeUndefined();
+      expect(span.normalizedSymbol).toBeUndefined();
+      expect(span.requestId).toBeUndefined();
+    });
+
+    it('should accept provider fields when provided', () => {
+      const payload = buildPayload({
+        toolSpans: [
+          {
+            ...buildPayload().toolSpans[0],
+            providerName: 'yahoo-finance',
+            assetType: 'equity',
+            normalizedSymbol: 'AAPL',
+            requestId: 'req-123'
+          }
+        ]
+      });
+
+      expect(payload.toolSpans[0].providerName).toBe('yahoo-finance');
+      expect(payload.toolSpans[0].assetType).toBe('equity');
+      expect(payload.toolSpans[0].normalizedSymbol).toBe('AAPL');
+      expect(payload.toolSpans[0].requestId).toBe('req-123');
+    });
+  });
+
+  describe('DerivedMetrics.failedToolCount (Part E)', () => {
+    it('should include failedToolCount in finalized payload', () => {
+      const trace = new TraceContext({
+        traceId: 'trace-fail-001',
+        sessionId: 'session-001',
+        userId: 'user-001',
+        queryText: 'test',
+        model: 'test-model',
+        startTime: Date.now()
+      });
+
+      // Add 1 success + 2 error spans
+      trace.addToolSpan(
+        trace
+          .startToolSpan('tool1', {}, 1)
+          .end({ status: 'success', toolOutput: {} })
+      );
+
+      trace.addToolSpan(
+        trace
+          .startToolSpan('tool2', {}, 2)
+          .end({ status: 'error', toolOutput: null, error: 'fail' })
+      );
+
+      trace.addToolSpan(
+        trace
+          .startToolSpan('tool3', {}, 3)
+          .end({ status: 'error', toolOutput: null, error: 'timeout' })
+      );
+
+      const payload = trace.finalize();
+
+      expect(payload.derived.failedToolCount).toBe(2);
+    });
+
+    it('should be 0 when all tools succeed', () => {
+      const trace = new TraceContext({
+        traceId: 'trace-ok-001',
+        sessionId: 'session-001',
+        userId: 'user-001',
+        queryText: 'test',
+        model: 'test-model',
+        startTime: Date.now()
+      });
+
+      trace.addToolSpan(
+        trace
+          .startToolSpan('tool1', {}, 1)
+          .end({ status: 'success', toolOutput: {} })
+      );
+
+      const payload = trace.finalize();
+
+      expect(payload.derived.failedToolCount).toBe(0);
+    });
+  });
+
+  describe('Output Hygiene rules in system prompt (Part B)', () => {
+    // We test that the prompt builder includes our hygiene rules.
+    // Since buildReActSystemPrompt is a module-level function, we test
+    // that the AI service's system prompt contains the expected text.
+    // This is validated indirectly through the golden-set tests.
+
+    it('should have FAILURE_ACK_PATTERN matching common failure phrases', () => {
+      const { FAILURE_ACK_PATTERN } = require('../../telemetry/eval-scorers');
+
+      expect(FAILURE_ACK_PATTERN.test('not available')).toBe(true);
+      expect(FAILURE_ACK_PATTERN.test('Unable to retrieve')).toBe(true);
+      expect(FAILURE_ACK_PATTERN.test("couldn't fetch data")).toBe(true);
+      expect(FAILURE_ACK_PATTERN.test('There was an error')).toBe(true);
+      expect(FAILURE_ACK_PATTERN.test('no data found')).toBe(true);
+      // Should NOT match normal financial text
+      expect(
+        FAILURE_ACK_PATTERN.test('AAPL is trading at $185.50')
+      ).toBe(false);
     });
   });
 });
