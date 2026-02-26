@@ -11,13 +11,20 @@ import {
 import { scoreGroundedness } from './eval-scorers';
 import type {
   DerivedMetrics,
+  GroundednessMode,
   GuardrailType,
   ReactIteration,
   TelemetryPayload,
+  ToolPolicyDecision,
   ToolSpan,
   TraceLevelSummary,
   VerificationSummary
 } from './telemetry.interfaces';
+
+// ─── Config Versioning ──────────────────────────────────────────────
+// Bump these when you change the system prompt or tool schemas.
+const SYSTEM_PROMPT_VERSION = '2.1.0'; // multimodal + image analysis
+const TOOL_SCHEMA_VERSION = '1.3.0'; // yahoo-finance2 v3
 
 /**
  * BraintrustTelemetryService
@@ -105,6 +112,12 @@ export class BraintrustTelemetryService implements OnModuleInit {
 
   /**
    * Log a completed trace with all spans and verification to Braintrust.
+   *
+   * Architecture:
+   *   Root span  — accurate start/end timing + metrics + metadata + tags
+   *   └─ LLM span — covers the generateText() call
+   *   └─ Tool span × N — one real child span per tool invocation
+   *   └─ Verification span — groundedness check
    */
   public async logTrace(payload: TelemetryPayload): Promise<void> {
     // ── Always persist trace metric to DB (independent of Braintrust) ──
@@ -139,38 +152,89 @@ export class BraintrustTelemetryService implements OnModuleInit {
     }
 
     try {
-      // ── 1. Trace-Level Summary (top-level log row) ─────────────────
-      this.logger.log({
+      // ── Build tags for Braintrust filtering ─────────────────────────
+      const tags: string[] = [
+        payload.trace.queryCategory,
+        payload.trace.success ? 'success' : 'error',
+        payload.trace.usedTools ? 'tools_used' : 'no_tools',
+        payload.toolPolicyDecision,
+        payload.groundednessMode
+      ];
+
+      if (payload.trace.aborted) {
+        tags.push('aborted');
+      }
+
+      if (payload.trace.guardrailsTriggered.length > 0) {
+        tags.push('guardrail_triggered');
+      }
+
+      // ── 1. Root span with accurate timing + metrics ─────────────────
+      const rootSpan = this.logger.startSpan({
+        name: 'ai-chat',
+        spanAttributes: { type: 'task' },
+        startTime: payload.timing.startEpochS
+      });
+
+      rootSpan.log({
         id: payload.trace.traceId,
         input: payload.trace.queryText,
         output: payload.trace.responseText,
+        tags,
+
+        // ── Braintrust metrics layer (surfaced as table columns) ──────
+        metrics: {
+          start: payload.timing.startEpochS,
+          end: payload.timing.endEpochS,
+          total_latency_ms: payload.trace.totalLatencyMs,
+          llm_latency_ms: payload.trace.llmLatencyMs,
+          tool_latency_ms: payload.trace.toolLatencyTotalMs,
+          overhead_latency_ms: payload.trace.overheadLatencyMs,
+          total_tokens: payload.trace.totalTokenCount,
+          input_tokens: payload.trace.inputTokenCount,
+          output_tokens: payload.trace.outputTokenCount,
+          estimated_cost_usd: payload.trace.estimatedCostUsd,
+          tool_call_count: payload.trace.toolCallCount,
+          iteration_count: payload.trace.iterationCount,
+          confidence: payload.verification.confidenceScore
+        },
+
+        // ── Scores (eval dashboard) ──────────────────────────────────
+        scores: {
+          latency: payload.trace.success
+            ? this.scoreLatency(payload.trace.totalLatencyMs)
+            : 0,
+          cost: payload.trace.success
+            ? this.scoreCost(payload.trace.estimatedCostUsd)
+            : 0,
+          confidence: payload.verification.confidenceScore,
+          safety: payload.verification.escalationTriggered ? 0 : 1,
+          groundedness: scoreGroundedness(payload)
+        },
+
+        // ── Metadata (rich debug info) ───────────────────────────────
         metadata: {
-          // Trace-level summary fields
           sessionId: payload.trace.sessionId,
           userId: payload.trace.userId,
           queryCategory: payload.trace.queryCategory,
           model: payload.trace.model,
           timestamp: payload.trace.timestamp,
 
-          // Latency breakdown
-          totalLatencyMs: payload.trace.totalLatencyMs,
-          llmLatencyMs: payload.trace.llmLatencyMs,
-          toolLatencyTotalMs: payload.trace.toolLatencyTotalMs,
-          overheadLatencyMs: payload.trace.overheadLatencyMs,
+          // Decision fields
+          toolPolicyDecision: payload.toolPolicyDecision,
+          groundednessMode: payload.groundednessMode,
 
-          // Token & cost
-          inputTokenCount: payload.trace.inputTokenCount,
-          outputTokenCount: payload.trace.outputTokenCount,
-          totalTokenCount: payload.trace.totalTokenCount,
-          estimatedCostUsd: payload.trace.estimatedCostUsd,
+          // Config versioning
+          systemPromptVersion: payload.versions.systemPromptVersion,
+          toolSchemaVersion: payload.versions.toolSchemaVersion,
+          reactEnabled: payload.versions.reactEnabled,
+          verificationEnabled: payload.versions.verificationEnabled,
 
           // Tool usage
           usedTools: payload.trace.usedTools,
           toolNames: payload.trace.toolNames,
-          toolCallCount: payload.trace.toolCallCount,
 
-          // ReAct loop
-          iterationCount: payload.trace.iterationCount,
+          // Guardrails
           guardrailsTriggered: payload.trace.guardrailsTriggered,
 
           // Outcome
@@ -178,30 +242,7 @@ export class BraintrustTelemetryService implements OnModuleInit {
           error: payload.trace.error,
           aborted: payload.trace.aborted,
 
-          // ── 2. Tool Spans (nested under metadata) ──────────────────
-          toolSpans: payload.toolSpans.map((span) => ({
-            spanId: span.spanId,
-            toolName: span.toolName,
-            toolInput: span.toolInput,
-            toolOutput: span.toolOutput,
-            latencyMs: span.latencyMs,
-            status: span.status,
-            error: span.error,
-            retryCount: span.retryCount,
-            iterationIndex: span.iterationIndex,
-            wasCorrectTool: span.wasCorrectTool,
-            startedAt: span.startedAt,
-            endedAt: span.endedAt,
-            // Optional provider fields
-            ...(span.providerName && { providerName: span.providerName }),
-            ...(span.assetType && { assetType: span.assetType }),
-            ...(span.normalizedSymbol && {
-              normalizedSymbol: span.normalizedSymbol
-            }),
-            ...(span.requestId && { requestId: span.requestId })
-          })),
-
-          // ── 3. Verification Summary ────────────────────────────────
+          // Verification summary
           verification: {
             passed: payload.verification.passed,
             confidenceScore: payload.verification.confidenceScore,
@@ -214,17 +255,7 @@ export class BraintrustTelemetryService implements OnModuleInit {
             escalationReason: payload.verification.escalationReason
           },
 
-          // ReAct thought chain
-          reactIterations: payload.reactIterations.map((iter) => ({
-            iterationIndex: iter.iterationIndex,
-            thought: iter.thought,
-            action: iter.action,
-            observation: iter.observation,
-            decision: iter.decision,
-            latencyMs: iter.latencyMs
-          })),
-
-          // Derived / computed metrics
+          // Derived / computed
           derived: {
             toolOverheadRatio: payload.derived.toolOverheadRatio,
             costPerToolCall: payload.derived.costPerToolCall,
@@ -233,27 +264,92 @@ export class BraintrustTelemetryService implements OnModuleInit {
             failedToolCount: payload.derived.failedToolCount
           },
 
-          // ── Extended Metadata ──────────────────────────────────────
+          // Extended metadata
           requestShape: payload.trace.requestShape,
           toolDataVolume: payload.trace.toolDataVolume,
           providerMeta: payload.trace.providerMeta,
           cachingMeta: payload.trace.cachingMeta,
-          answerQualitySignals: payload.trace.answerQualitySignals
-        },
-        scores: {
-          // Pre-computed eval scores logged inline for Braintrust dashboard.
-          // When the trace errored, scores reflect failure instead of defaults.
-          latency: payload.trace.success
-            ? this.scoreLatency(payload.trace.totalLatencyMs)
-            : 0,
-          cost: payload.trace.success
-            ? this.scoreCost(payload.trace.estimatedCostUsd)
-            : 0,
-          confidence: payload.verification.confidenceScore,
-          safety: payload.verification.escalationTriggered ? 0 : 1,
-          groundedness: scoreGroundedness(payload)
+          answerQualitySignals: payload.trace.answerQualitySignals,
+
+          // ReAct thought chain
+          reactIterations: payload.reactIterations.map((iter) => ({
+            iterationIndex: iter.iterationIndex,
+            thought: iter.thought,
+            action: iter.action,
+            observation: iter.observation,
+            decision: iter.decision,
+            latencyMs: iter.latencyMs
+          }))
         }
       });
+
+      // ── 2. LLM child span ──────────────────────────────────────────
+      if (payload.timing.llmStartEpochS > 0) {
+        const llmSpan = rootSpan.startSpan({
+          name: 'llm-generate',
+          spanAttributes: { type: 'llm' },
+          startTime: payload.timing.llmStartEpochS
+        });
+
+        llmSpan.log({
+          metadata: {
+            model: payload.trace.model,
+            inputTokens: payload.trace.inputTokenCount,
+            outputTokens: payload.trace.outputTokenCount
+          },
+          metrics: {
+            start: payload.timing.llmStartEpochS,
+            end: payload.timing.llmEndEpochS,
+            tokens: payload.trace.totalTokenCount,
+            cost: payload.trace.estimatedCostUsd
+          }
+        });
+
+        llmSpan.end({ endTime: payload.timing.llmEndEpochS });
+      }
+
+      // ── 3. Tool child spans (one per tool invocation) ──────────────
+      for (const span of payload.toolSpans) {
+        const toolStartS = new Date(span.startedAt).getTime() / 1000;
+        const toolEndS = new Date(span.endedAt).getTime() / 1000;
+
+        const toolSpan = rootSpan.startSpan({
+          name: `tool:${span.toolName}`,
+          spanAttributes: { type: 'tool' },
+          startTime: toolStartS
+        });
+
+        toolSpan.log({
+          input: span.toolInput,
+          output: span.toolOutput,
+          metadata: {
+            toolName: span.toolName,
+            status: span.status,
+            error: span.error,
+            retryCount: span.retryCount,
+            iterationIndex: span.iterationIndex,
+            wasCorrectTool: span.wasCorrectTool,
+            ...(span.providerName && { providerName: span.providerName }),
+            ...(span.assetType && { assetType: span.assetType }),
+            ...(span.normalizedSymbol && {
+              normalizedSymbol: span.normalizedSymbol
+            })
+          },
+          metrics: {
+            start: toolStartS,
+            end: toolEndS,
+            latency_ms: span.latencyMs
+          },
+          scores: {
+            success: span.status === 'success' ? 1 : 0
+          }
+        });
+
+        toolSpan.end({ endTime: toolEndS });
+      }
+
+      // ── 4. Close root span ─────────────────────────────────────────
+      rootSpan.end({ endTime: payload.timing.endEpochS });
 
       this.nestLogger.debug(
         `Logged trace ${payload.trace.traceId} — ${payload.trace.totalLatencyMs}ms, ${payload.toolSpans.length} tool spans, confidence=${payload.verification.confidenceScore}`
@@ -263,7 +359,6 @@ export class BraintrustTelemetryService implements OnModuleInit {
         `Failed to log trace to Braintrust: ${error instanceof Error ? error.message : String(error)}`
       );
     }
-
   }
 
   /**
@@ -709,12 +804,73 @@ export class TraceContext {
     // Reset per-query cache hit counter after capturing the snapshot
     resetMarketDataCacheHits();
 
+    // ── Compute toolPolicyDecision ───────────────────────────────────
+    let toolPolicyDecision: ToolPolicyDecision = 'unknown';
+
+    if (this.toolSpans.length === 0) {
+      if (
+        this.guardrailsTriggered.includes('cost_limit') ||
+        this.guardrailsTriggered.includes('tool_failure_backoff')
+      ) {
+        toolPolicyDecision = 'tool_skipped_cost';
+      } else if (this.guardrailsTriggered.includes('timeout')) {
+        toolPolicyDecision = 'tool_skipped_timeout';
+      } else {
+        toolPolicyDecision = 'no_tool_needed';
+      }
+    } else {
+      const allFailed = this.toolSpans.every((s) => s.status === 'error');
+      const allSucceeded = this.toolSpans.every(
+        (s) => s.status === 'success'
+      );
+
+      if (allFailed) {
+        toolPolicyDecision = 'tool_failed';
+      } else if (allSucceeded) {
+        toolPolicyDecision = 'tool_selected';
+      } else {
+        toolPolicyDecision = 'tool_mixed';
+      }
+    }
+
+    // ── Compute groundednessMode ─────────────────────────────────────
+    let groundednessMode: GroundednessMode = 'no_tools_default';
+
+    if (this.toolSpans.length > 0) {
+      groundednessMode = 'computed';
+    }
+
+    if (
+      this.verification.domainViolations.some((v) =>
+        v.includes('Verification gate BLOCKED')
+      )
+    ) {
+      groundednessMode = 'verification_blocked';
+    }
+
+    // ── Epoch timestamps for accurate Braintrust span timing ─────────
+    const timing = {
+      startEpochS: this.startTime / 1000,
+      endEpochS: endTime / 1000,
+      llmStartEpochS: this.llmStartTime > 0 ? this.llmStartTime / 1000 : 0,
+      llmEndEpochS: this.llmEndTime > 0 ? this.llmEndTime / 1000 : 0
+    };
+
     return {
       trace,
       toolSpans: this.toolSpans,
       verification: this.verification,
       reactIterations: this.reactIterations,
-      derived
+      derived,
+      toolPolicyDecision,
+      groundednessMode,
+      timing,
+      versions: {
+        systemPromptVersion: SYSTEM_PROMPT_VERSION,
+        toolSchemaVersion: TOOL_SCHEMA_VERSION,
+        reactEnabled: true,
+        verificationEnabled: true
+      }
     };
   }
 }

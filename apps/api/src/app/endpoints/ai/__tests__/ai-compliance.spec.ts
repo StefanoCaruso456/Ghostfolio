@@ -727,6 +727,8 @@ describe('Trace Metric Persistence', () => {
 // ─── Helper: Build minimal TelemetryPayload ─────────────────────────────
 
 function buildMinimalPayload() {
+  const now = Date.now();
+
   return {
     trace: {
       traceId: 'test-trace-001',
@@ -774,6 +776,20 @@ function buildMinimalPayload() {
       latencyPerIteration: 2500,
       toolSuccessRates: { getQuote: 1.0 },
       failedToolCount: 0
+    },
+    toolPolicyDecision: 'tool_selected' as const,
+    groundednessMode: 'computed' as const,
+    timing: {
+      startEpochS: now / 1000,
+      endEpochS: (now + 2500) / 1000,
+      llmStartEpochS: (now + 100) / 1000,
+      llmEndEpochS: (now + 2100) / 1000
+    },
+    versions: {
+      systemPromptVersion: '2.1.0',
+      toolSchemaVersion: '1.3.0',
+      reactEnabled: true,
+      verificationEnabled: true
     }
   };
 }
