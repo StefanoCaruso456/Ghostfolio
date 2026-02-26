@@ -107,6 +107,7 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
   public isSpeechSupported = false;
   public showHistory = false;
 
+  private dragCounter = 0;
   private speechRecognition: any = null;
 
   private static readonly ALLOWED_IMAGE_TYPES = [
@@ -416,20 +417,34 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
   public onDragOver(event: DragEvent) {
     event.preventDefault();
     event.stopPropagation();
-    this.isDragging = true;
-    this.changeDetectorRef.markForCheck();
+  }
+
+  public onDragEnter(event: DragEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.dragCounter++;
+
+    if (this.dragCounter === 1) {
+      this.isDragging = true;
+      this.changeDetectorRef.markForCheck();
+    }
   }
 
   public onDragLeave(event: DragEvent) {
     event.preventDefault();
     event.stopPropagation();
-    this.isDragging = false;
-    this.changeDetectorRef.markForCheck();
+    this.dragCounter--;
+
+    if (this.dragCounter === 0) {
+      this.isDragging = false;
+      this.changeDetectorRef.markForCheck();
+    }
   }
 
   public onDrop(event: DragEvent) {
     event.preventDefault();
     event.stopPropagation();
+    this.dragCounter = 0;
     this.isDragging = false;
 
     if (event.dataTransfer?.files?.length) {
