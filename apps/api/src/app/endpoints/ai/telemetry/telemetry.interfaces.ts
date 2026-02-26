@@ -327,6 +327,14 @@ export interface TelemetryPayload {
     endEpochS: number; // response complete
     llmStartEpochS: number;
     llmEndEpochS: number;
+    /** Verification phase start (0 = not tracked) */
+    verificationStartEpochS?: number;
+    /** Verification phase end (0 = not tracked) */
+    verificationEndEpochS?: number;
+    /** Final response formatting start (0 = not tracked) */
+    responseStartEpochS?: number;
+    /** Final response formatting end (0 = not tracked) */
+    responseEndEpochS?: number;
   };
 
   /** Config versioning for debugging regressions */
