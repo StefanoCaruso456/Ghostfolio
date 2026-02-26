@@ -283,10 +283,10 @@ export class BraintrustTelemetryService implements OnModuleInit {
         }
       });
 
-      // ── 2. LLM child span ──────────────────────────────────────────
+      // ── 2. LLM generation span ──────────────────────────────────────
       if (payload.timing.llmStartEpochS > 0) {
         const llmSpan = rootSpan.startSpan({
-          name: 'llm-generate',
+          name: 'llm_generation',
           spanAttributes: { type: 'llm' },
           startTime: payload.timing.llmStartEpochS
         });
@@ -308,47 +308,178 @@ export class BraintrustTelemetryService implements OnModuleInit {
         llmSpan.end({ endTime: payload.timing.llmEndEpochS });
       }
 
-      // ── 3. Tool child spans (one per tool invocation) ──────────────
-      for (const span of payload.toolSpans) {
-        const toolStartS = new Date(span.startedAt).getTime() / 1000;
-        const toolEndS = new Date(span.endedAt).getTime() / 1000;
+      // ── 3. ReAct iteration spans with nested tool spans ─────────────
+      // Group tool spans by iterationIndex for nesting
+      const toolsByIteration = new Map<number, typeof payload.toolSpans>();
 
-        const toolSpan = rootSpan.startSpan({
-          name: `tool:${span.toolName}`,
-          spanAttributes: { type: 'tool' },
-          startTime: toolStartS
+      for (const ts of payload.toolSpans) {
+        const key = ts.iterationIndex;
+
+        if (!toolsByIteration.has(key)) {
+          toolsByIteration.set(key, []);
+        }
+
+        toolsByIteration.get(key)!.push(ts);
+      }
+
+      // Track which tool spans were nested under an iteration
+      const nestedToolSpanIds = new Set<string>();
+
+      if (payload.reactIterations.length > 0) {
+        // Create one span per ReAct iteration with tool children
+        for (const iter of payload.reactIterations) {
+          const iterTools = toolsByIteration.get(iter.iterationIndex) ?? [];
+
+          // Compute iteration timing from its tool spans (if available)
+          let iterStartS: number;
+          let iterEndS: number;
+
+          if (iterTools.length > 0) {
+            iterStartS =
+              Math.min(
+                ...iterTools.map(
+                  (t) => new Date(t.startedAt).getTime() / 1000
+                )
+              ) - 0.001; // Nudge before first tool
+            iterEndS =
+              Math.max(
+                ...iterTools.map((t) => new Date(t.endedAt).getTime() / 1000)
+              ) + 0.001;
+          } else {
+            // No tools — estimate from cumulative latency
+            iterStartS =
+              payload.timing.llmEndEpochS > 0
+                ? payload.timing.llmEndEpochS
+                : payload.timing.startEpochS;
+            iterEndS = iterStartS + iter.latencyMs / 1000;
+          }
+
+          const iterSpan = rootSpan.startSpan({
+            name: `react_iteration_${iter.iterationIndex}`,
+            spanAttributes: { type: 'task' },
+            startTime: iterStartS
+          });
+
+          iterSpan.log({
+            metadata: {
+              thought: iter.thought,
+              action: iter.action,
+              observation:
+                iter.observation.length > 500
+                  ? iter.observation.slice(0, 500) + '…'
+                  : iter.observation,
+              decision: iter.decision
+            },
+            metrics: {
+              start: iterStartS,
+              end: iterEndS,
+              iteration_latency_ms: iter.latencyMs,
+              tools_called: iterTools.length
+            }
+          });
+
+          // Nest tool spans under this iteration span
+          for (const ts of iterTools) {
+            this.logToolSpan(iterSpan, ts);
+            nestedToolSpanIds.add(ts.spanId);
+          }
+
+          iterSpan.end({ endTime: iterEndS });
+        }
+      }
+
+      // ── 4. Orphan tool spans (no matching iteration) ────────────────
+      // Tools not claimed by any iteration become direct root children
+      for (const ts of payload.toolSpans) {
+        if (!nestedToolSpanIds.has(ts.spanId)) {
+          this.logToolSpan(rootSpan, ts);
+        }
+      }
+
+      // ── 5. Verification span ────────────────────────────────────────
+      {
+        const vStart =
+          payload.timing.verificationStartEpochS ??
+          (payload.timing.llmEndEpochS > 0
+            ? payload.timing.llmEndEpochS
+            : payload.timing.endEpochS - 0.01);
+        const vEnd =
+          payload.timing.verificationEndEpochS ??
+          (payload.timing.responseStartEpochS ??
+            payload.timing.endEpochS - 0.005);
+        const verificationLatencyMs = Math.max(0, (vEnd - vStart) * 1000);
+
+        const verifySpan = rootSpan.startSpan({
+          name: 'verification',
+          spanAttributes: { type: 'eval' },
+          startTime: vStart
         });
 
-        toolSpan.log({
-          input: span.toolInput,
-          output: span.toolOutput,
+        verifySpan.log({
           metadata: {
-            toolName: span.toolName,
-            status: span.status,
-            error: span.error,
-            retryCount: span.retryCount,
-            iterationIndex: span.iterationIndex,
-            wasCorrectTool: span.wasCorrectTool,
-            ...(span.providerName && { providerName: span.providerName }),
-            ...(span.assetType && { assetType: span.assetType }),
-            ...(span.normalizedSymbol && {
-              normalizedSymbol: span.normalizedSymbol
-            })
+            passed: payload.verification.passed,
+            confidenceScore: payload.verification.confidenceScore,
+            hallucinationFlags: payload.verification.hallucinationFlags,
+            factCheckSources: payload.verification.factCheckSources,
+            domainViolations: payload.verification.domainViolations,
+            warnings: payload.verification.warnings,
+            errors: payload.verification.errors,
+            escalationTriggered: payload.verification.escalationTriggered,
+            escalationReason: payload.verification.escalationReason
           },
           metrics: {
-            start: toolStartS,
-            end: toolEndS,
-            latency_ms: span.latencyMs
+            start: vStart,
+            end: vEnd,
+            verification_latency_ms: verificationLatencyMs,
+            passed: payload.verification.passed ? 1 : 0,
+            hallucination_count:
+              payload.verification.hallucinationFlags.length,
+            domain_violation_count:
+              payload.verification.domainViolations.length
           },
           scores: {
-            success: span.status === 'success' ? 1 : 0
+            confidence: payload.verification.confidenceScore,
+            safety: payload.verification.escalationTriggered ? 0 : 1,
+            groundedness: scoreGroundedness(payload)
           }
         });
 
-        toolSpan.end({ endTime: toolEndS });
+        verifySpan.end({ endTime: vEnd });
       }
 
-      // ── 4. Close root span ─────────────────────────────────────────
+      // ── 6. Final response span (post-processing / formatting) ───────
+      if (
+        payload.timing.responseStartEpochS &&
+        payload.timing.responseStartEpochS > 0
+      ) {
+        const rStart = payload.timing.responseStartEpochS;
+        const rEnd =
+          payload.timing.responseEndEpochS ?? payload.timing.endEpochS;
+        const responseLatencyMs = Math.max(0, (rEnd - rStart) * 1000);
+
+        const respSpan = rootSpan.startSpan({
+          name: 'final_response',
+          spanAttributes: { type: 'task' },
+          startTime: rStart
+        });
+
+        respSpan.log({
+          output: payload.trace.responseText,
+          metadata: {
+            responseLength: payload.trace.responseText.length,
+            answerQualitySignals: payload.trace.answerQualitySignals
+          },
+          metrics: {
+            start: rStart,
+            end: rEnd,
+            response_latency_ms: responseLatencyMs
+          }
+        });
+
+        respSpan.end({ endTime: rEnd });
+      }
+
+      // ── 7. Close root span ─────────────────────────────────────────
       rootSpan.end({ endTime: payload.timing.endEpochS });
 
       this.nestLogger.debug(
@@ -420,6 +551,67 @@ export class BraintrustTelemetryService implements OnModuleInit {
   }
 
   // =========================================================================
+  // Span helpers
+  // =========================================================================
+
+  /**
+   * Create a tool child span under a parent span (iteration or root).
+   * Extracted to avoid duplication between iteration-nested and orphan tools.
+   */
+  private logToolSpan(
+    parentSpan: any,
+    span: TelemetryPayload['toolSpans'][number]
+  ): void {
+    const toolStartS = new Date(span.startedAt).getTime() / 1000;
+    const toolEndS = new Date(span.endedAt).getTime() / 1000;
+
+    const toolSpan = parentSpan.startSpan({
+      name: `tool:${span.toolName}`,
+      spanAttributes: { type: 'tool' },
+      startTime: toolStartS
+    });
+
+    toolSpan.log({
+      input: span.toolInput,
+      output: span.toolOutput,
+      metadata: {
+        toolName: span.toolName,
+        status: span.status,
+        error: span.error,
+        retryCount: span.retryCount,
+        iterationIndex: span.iterationIndex,
+        wasCorrectTool: span.wasCorrectTool,
+        ...(span.providerName && { providerName: span.providerName }),
+        ...(span.assetType && { assetType: span.assetType }),
+        ...(span.normalizedSymbol && {
+          normalizedSymbol: span.normalizedSymbol
+        })
+      },
+      metrics: {
+        start: toolStartS,
+        end: toolEndS,
+        latency_ms: span.latencyMs,
+        retry_count: span.retryCount,
+        output_rows:
+          span.toolOutput && typeof span.toolOutput === 'object'
+            ? Object.values(span.toolOutput).reduce(
+                (sum: number, v) => sum + (Array.isArray(v) ? v.length : 0),
+                0
+              ) || 1
+            : 0,
+        output_bytes: span.toolOutput
+          ? JSON.stringify(span.toolOutput).length
+          : 0
+      },
+      scores: {
+        success: span.status === 'success' ? 1 : 0
+      }
+    });
+
+    toolSpan.end({ endTime: toolEndS });
+  }
+
+  // =========================================================================
   // Scoring helpers (inline scores for Braintrust dashboard)
   // =========================================================================
 
@@ -466,6 +658,10 @@ export class TraceContext {
   private queryCategory: TraceLevelSummary['queryCategory'] = 'general';
   private llmStartTime = 0;
   private llmEndTime = 0;
+  private verificationStartTime = 0;
+  private verificationEndTime = 0;
+  private responseStartTime = 0;
+  private responseEndTime = 0;
   private inputTokens = 0;
   private outputTokens = 0;
   private estimatedCostUsd = 0;
@@ -526,6 +722,22 @@ export class TraceContext {
 
   public markLlmEnd(): void {
     this.llmEndTime = Date.now();
+  }
+
+  public markVerificationStart(): void {
+    this.verificationStartTime = Date.now();
+  }
+
+  public markVerificationEnd(): void {
+    this.verificationEndTime = Date.now();
+  }
+
+  public markResponseStart(): void {
+    this.responseStartTime = Date.now();
+  }
+
+  public markResponseEnd(): void {
+    this.responseEndTime = Date.now();
   }
 
   public setTokens(input: number, output: number): void {
@@ -849,11 +1061,25 @@ export class TraceContext {
     }
 
     // ── Epoch timestamps for accurate Braintrust span timing ─────────
-    const timing = {
+    const timing: TelemetryPayload['timing'] = {
       startEpochS: this.startTime / 1000,
       endEpochS: endTime / 1000,
       llmStartEpochS: this.llmStartTime > 0 ? this.llmStartTime / 1000 : 0,
-      llmEndEpochS: this.llmEndTime > 0 ? this.llmEndTime / 1000 : 0
+      llmEndEpochS: this.llmEndTime > 0 ? this.llmEndTime / 1000 : 0,
+      verificationStartEpochS:
+        this.verificationStartTime > 0
+          ? this.verificationStartTime / 1000
+          : undefined,
+      verificationEndEpochS:
+        this.verificationEndTime > 0
+          ? this.verificationEndTime / 1000
+          : undefined,
+      responseStartEpochS:
+        this.responseStartTime > 0
+          ? this.responseStartTime / 1000
+          : undefined,
+      responseEndEpochS:
+        this.responseEndTime > 0 ? this.responseEndTime / 1000 : undefined
     };
 
     return {
