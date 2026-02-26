@@ -1,7 +1,11 @@
 :host {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  height: calc(100svh - var(--mat-toolbar-standard-height));
+  overflow: hidden;
 }
 
 .ai-chat-fullscreen {
-  height: calc(100svh - var(--mat-toolbar-standard-height));
+  flex: 1;
+  min-height: 0;
 }
