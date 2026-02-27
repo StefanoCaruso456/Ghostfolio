@@ -179,6 +179,11 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
   }
 
   public ngOnInit() {
+    // In fullscreen mode, always show history sidebar
+    if (this.mode === 'fullscreen') {
+      this.showHistory = true;
+    }
+
     this.loadConversations();
     this.initSpeechRecognition();
 
@@ -203,7 +208,12 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
     this.currentTraceId = null;
     this.inputValue = '';
     this.attachments = [];
-    this.showHistory = false;
+
+    // Only hide history in sidebar mode; keep it open in fullscreen
+    if (this.mode === 'sidebar') {
+      this.showHistory = false;
+    }
+
     this.reasoningTraceService.reset();
     this.changeDetectorRef.markForCheck();
     this.focusInput();
@@ -211,7 +221,12 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
 
   public onSelectConversation(conversation: Conversation) {
     this.currentConversation = conversation;
-    this.showHistory = false;
+
+    // Only hide history in sidebar mode; keep it open in fullscreen
+    if (this.mode === 'sidebar') {
+      this.showHistory = false;
+    }
+
     this.changeDetectorRef.markForCheck();
 
     // Load messages from API if not already loaded
@@ -678,6 +693,7 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
             this.conversations = [];
           }
 
+          this.autoSelectRecentConversation();
           this.changeDetectorRef.markForCheck();
         },
         next: (apiConversations) => {
@@ -686,9 +702,22 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
             messages: [],
             title: c.title
           }));
+
+          this.autoSelectRecentConversation();
           this.changeDetectorRef.markForCheck();
         }
       });
+  }
+
+  private autoSelectRecentConversation() {
+    // In fullscreen mode, auto-select the most recent conversation
+    if (
+      this.mode === 'fullscreen' &&
+      this.conversations.length > 0 &&
+      !this.currentConversation
+    ) {
+      this.onSelectConversation(this.conversations[0]);
+    }
   }
 
   private saveConversations() {

@@ -9,45 +9,74 @@
     padding: 0 !important;
   }
 
-  // ── Perplexity-style overrides (pierce into child component) ──────
+  // ── Fullscreen overrides (pierce into child component) ────────────
   ::ng-deep .ai-chat-fullscreen {
     display: flex;
     flex: 1;
     flex-direction: column;
     min-height: 0;
 
-    // ── Container ───────────────────────────────────────────────────
+    // ── Container — switch to row layout for two-column ────────────
     .sidebar-container {
       border-left: none;
-      margin: 0 auto;
+      flex-direction: row;
       max-width: 100%;
       width: 100%;
     }
 
-    // ── Header (minimal chrome) ─────────────────────────────────────
-    .sidebar-header {
-      border-bottom: 1px solid rgba(128, 128, 128, 0.08);
-      padding: 0.75rem 2rem;
+    // ── Left History Sidebar ───────────────────────────────────────
+    .history-sidebar {
+      border-bottom: none;
+      border-right: 1px solid rgba(128, 128, 128, 0.12);
+      box-shadow: inset -4px 0 8px rgba(0, 0, 0, 0.03);
+      display: flex;
+      flex-shrink: 0;
+      max-height: none;
+      width: 260px;
 
-      .header-icon {
-        font-size: 1.4rem;
+      .sidebar-brand {
+        padding: 0.875rem 1rem 0.75rem;
+
+        .brand-icon {
+          font-size: 1.25rem;
+        }
+
+        .brand-title {
+          font-size: 0.9rem;
+        }
+
+        .new-chat-btn {
+          height: 32px;
+          width: 32px;
+
+          ion-icon {
+            font-size: 1.1rem;
+          }
+        }
       }
 
-      .header-title {
-        font-size: 1.05rem;
-      }
+      .history-item {
+        padding: 0.5rem 0.625rem;
 
-      .icon-btn {
-        height: 36px;
-        width: 36px;
-
-        ion-icon {
-          font-size: 1.15rem;
+        .history-item-title {
+          font-size: 0.82rem;
         }
       }
     }
 
-    // ── Messages Area ───────────────────────────────────────────────
+    // ── Chat Main Area ────────────────────────────────────────────
+    .chat-main {
+      flex: 1;
+      min-width: 0;
+    }
+
+    // ── Header (minimal in fullscreen — no buttons needed) ────────
+    .sidebar-header {
+      border-bottom: 1px solid rgba(128, 128, 128, 0.08);
+      display: none;
+    }
+
+    // ── Messages Area ─────────────────────────────────────────────
     .messages-container {
       padding: 2rem 2.5rem;
     }
@@ -71,7 +100,7 @@
       }
     }
 
-    // ── Welcome State (Perplexity hero) ─────────────────────────────
+    // ── Welcome State (Perplexity hero) ───────────────────────────
     .welcome-state {
       padding: 2rem 2rem 3rem;
 
@@ -137,7 +166,7 @@
       }
     }
 
-    // ── Input Area (prominent, centered) ────────────────────────────
+    // ── Input Area (prominent, centered) ──────────────────────────
     .input-area {
       border-top: 1px solid rgba(128, 128, 128, 0.08);
       margin: 0 auto;
@@ -184,18 +213,12 @@
       }
     }
 
-    // ── History Toggle & Panel ──────────────────────────────────────
+    // ── History Toggle — hidden in fullscreen ─────────────────────
     .history-toggle {
-      margin: 0 auto;
-      max-width: 840px;
-      padding: 0.5rem 1.5rem;
+      display: none;
     }
 
-    .history-panel {
-      max-height: 50vh;
-    }
-
-    // ── Input Footer ────────────────────────────────────────────────
+    // ── Input Footer ──────────────────────────────────────────────
     .input-footer {
       padding-top: 0.5rem;
       text-align: center;
@@ -217,11 +240,15 @@
   }
 }
 
-// ── Dark Theme ────────────────────────────────────────────────────────
+// ── Dark Theme ──────────────────────────────────────────────────────
 :host-context(.theme-dark) {
   color: rgb(var(--light-primary-text));
 
   ::ng-deep .ai-chat-fullscreen {
+    .history-sidebar {
+      box-shadow: inset -4px 0 8px rgba(0, 0, 0, 0.15);
+    }
+
     .welcome-state {
       .welcome-icon-wrapper {
         box-shadow:
@@ -263,9 +290,22 @@
   }
 }
 
-// ── Responsive ────────────────────────────────────────────────────────
+// ── Responsive ──────────────────────────────────────────────────────
 @media (max-width: 768px) {
   :host ::ng-deep .ai-chat-fullscreen {
+    // Collapse left sidebar on tablet
+    .sidebar-container {
+      flex-direction: column;
+    }
+
+    .history-sidebar {
+      border-bottom: 1px solid rgba(128, 128, 128, 0.12);
+      border-right: none;
+      box-shadow: none;
+      max-height: 200px;
+      width: 100%;
+    }
+
     .messages-container {
       padding: 1.5rem;
     }
@@ -289,6 +329,7 @@
     }
 
     .history-toggle {
+      display: block;
       padding: 0.5rem 1rem;
     }
   }
