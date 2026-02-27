@@ -140,6 +140,20 @@ model AuthDevice {
   @@index([userId])
 }
 
+model LastKnownQuote {
+  symbol    String   @id
+  price     Float
+  currency  String
+  dayHigh   Float?
+  dayLow    Float?
+  open      Float?
+  prevClose Float?
+  source    String
+  updatedAt DateTime @updatedAt
+
+  @@index([updatedAt])
+}
+
 model MarketData {
   createdAt   DateTime        @default(now())
   dataSource  DataSource

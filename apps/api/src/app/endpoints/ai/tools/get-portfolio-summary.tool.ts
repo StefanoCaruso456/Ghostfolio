@@ -14,6 +14,7 @@ import type {
   GetPortfolioSummaryOutput,
   PortfolioSummaryData
 } from './schemas/portfolio-summary.schema';
+import type { QuoteMetadata } from './schemas/quote-metadata.schema';
 
 const DOMAIN_RULES_CHECKED = [
   'portfolio-data-available',
@@ -97,10 +98,21 @@ export function buildPortfolioSummary(
       baseCurrency: input.userCurrency
     };
 
+    const quoteMetadata: QuoteMetadata = details.hasErrors
+      ? {
+          quoteStatus: 'partial',
+          quotesAsOf: new Date().toISOString(),
+          message:
+            'Some market data was unavailable — prices may use last-known values'
+        }
+      : { quoteStatus: 'fresh', quotesAsOf: new Date().toISOString() };
+
     return {
       status: 'success',
       data,
-      message: `Portfolio has ${holdings.length} holdings across ${data.accountsCount} accounts.`,
+      message: details.hasErrors
+        ? `Portfolio has ${holdings.length} holdings across ${data.accountsCount} accounts. Note: some prices may be stale due to market data provider issues.`
+        : `Portfolio has ${holdings.length} holdings across ${data.accountsCount} accounts.`,
       verification: createVerificationResult({
         passed: true,
         confidence: details.hasErrors ? 0.7 : 0.95,
@@ -108,7 +120,8 @@ export function buildPortfolioSummary(
         sources: ['ghostfolio-portfolio-service'],
         domainRulesChecked: DOMAIN_RULES_CHECKED,
         verificationType: 'confidence_scoring'
-      })
+      }),
+      quoteMetadata
     };
   } catch (error) {
     return {

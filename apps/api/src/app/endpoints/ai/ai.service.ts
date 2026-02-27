@@ -562,6 +562,10 @@ export class AiService {
         let result = await executeFn();
         const durationMs = Date.now() - start;
 
+        // Estimate per-step cost: each tool call involves ~1K prompt tokens
+        // + ~500 completion tokens for the LLM's reasoning step
+        costLimiter.addCost(estimateCost(modelId, 1000, 500));
+
         // Runtime output schema validation
         const outputSchema = OUTPUT_SCHEMA_REGISTRY[toolName];
 
@@ -612,6 +616,19 @@ export class AiService {
           trace.addDomainViolation(
             `Verification gate BLOCKED after ${toolName}: ${gate.reason}`
           );
+
+          // Replace result with error so the LLM does not use blocked data
+          result = {
+            status: 'error',
+            data: undefined,
+            message: `Verification gate blocked: ${gate.reason}`,
+            verification: createVerificationResult({
+              passed: false,
+              confidence: 0,
+              errors: [`Blocked by verification gate: ${gate.reason}`],
+              sources: result.verification?.sources ?? [toolName]
+            })
+          } as unknown as T;
         } else if (gate.decision === 'human_review') {
           trace.addWarning(
             `Verification gate requires review after ${toolName}: ${gate.reason}`
@@ -683,6 +700,80 @@ export class AiService {
       }, effectiveTimeoutMs);
     });
 
+    // ── Safe portfolio data fetcher ─────────────────────────────────
+    // Wraps portfolioService calls to never throw; returns hasErrors: true
+    // on failure so portfolio tools degrade gracefully instead of aborting.
+    const safeGetDetails = async (
+      opts: { withSummary?: boolean } = {}
+    ): Promise<
+      Awaited<ReturnType<typeof this.portfolioService.getDetails>> & {
+        hasErrors: boolean;
+        _degraded?: boolean;
+      }
+    > => {
+      try {
+        return await this.portfolioService.getDetails({
+          userId,
+          impersonationId: undefined,
+          withSummary: opts.withSummary
+        });
+      } catch (err) {
+        Logger.warn(
+          `portfolioService.getDetails() failed, returning degraded result: ${err instanceof Error ? err.message : String(err)}`,
+          'AiService'
+        );
+
+        // Return a minimal result so tools can produce a meaningful "unavailable" response
+        // instead of crashing the entire tool call
+        return {
+          holdings: {},
+          accounts: {},
+          platforms: {},
+          hasErrors: true,
+          _degraded: true
+        } as any;
+      }
+    };
+
+    const safeGetPerformance = async (
+      dateRange: DateRange
+    ): Promise<
+      Awaited<ReturnType<typeof this.portfolioService.getPerformance>> & {
+        hasErrors: boolean;
+        _degraded?: boolean;
+      }
+    > => {
+      try {
+        return await this.portfolioService.getPerformance({
+          userId,
+          impersonationId: undefined,
+          dateRange
+        });
+      } catch (err) {
+        Logger.warn(
+          `portfolioService.getPerformance() failed, returning degraded result: ${err instanceof Error ? err.message : String(err)}`,
+          'AiService'
+        );
+
+        return {
+          chart: [],
+          hasErrors: true,
+          performance: {
+            currentNetWorth: 0,
+            currentValueInBaseCurrency: 0,
+            totalInvestment: 0,
+            netPerformance: 0,
+            netPerformancePercentage: 0,
+            netPerformanceWithCurrencyEffect: 0,
+            netPerformancePercentageWithCurrencyEffect: 0,
+            annualizedPerformancePercent: null
+          },
+          firstOrderDate: null,
+          _degraded: true
+        } as any;
+      }
+    };
+
     // ── ReAct loop via generateText with tools ──────────────────────
     trace.markLlmStart();
 
@@ -702,11 +793,7 @@ export class AiService {
                 'getPortfolioSummary',
                 args as unknown as Record<string, unknown>,
                 async () => {
-                  const details = await this.portfolioService.getDetails({
-                    userId,
-                    impersonationId: undefined,
-                    withSummary: true
-                  });
+                  const details = await safeGetDetails({ withSummary: true });
 
                   return buildPortfolioSummary(details, {
                     userCurrency: args.userCurrency || userCurrency
@@ -768,10 +855,7 @@ export class AiService {
                 'getAllocations',
                 args as unknown as Record<string, unknown>,
                 async () => {
-                  const details = await this.portfolioService.getDetails({
-                    userId,
-                    impersonationId: undefined
-                  });
+                  const details = await safeGetDetails();
 
                   return buildAllocationsResult(details) as ToolOutput<
                     ReturnType<typeof buildAllocationsResult>
@@ -790,17 +874,25 @@ export class AiService {
                 'getPerformance',
                 args as unknown as Record<string, unknown>,
                 async () => {
-                  const perf = await this.portfolioService.getPerformance({
-                    userId,
-                    impersonationId: undefined,
-                    dateRange: (args.dateRange as DateRange) || 'max'
-                  });
+                  const dateRange = (args.dateRange as DateRange) || 'max';
+                  const perf = await safeGetPerformance(dateRange);
 
-                  return buildPerformanceResult(
+                  const result = buildPerformanceResult(
                     perf,
-                    args.dateRange || 'max',
+                    dateRange,
                     userCurrency
-                  ) as ToolOutput<ReturnType<typeof buildPerformanceResult>>;
+                  );
+
+                  // Add quoteMetadata for degraded results
+                  if ((perf as any)._degraded) {
+                    (result as any).quoteMetadata = {
+                      quoteStatus: 'unavailable',
+                      message:
+                        'Performance data is based on last available prices — live market data was unreachable'
+                    };
+                  }
+
+                  return result as ToolOutput<typeof result>;
                 }
               );
             }
@@ -883,10 +975,7 @@ export class AiService {
                 'computeRebalance',
                 args as unknown as Record<string, unknown>,
                 async () => {
-                  const details = await this.portfolioService.getDetails({
-                    userId,
-                    impersonationId: undefined
-                  });
+                  const details = await safeGetDetails();
 
                   return buildRebalanceResult(details, args) as ToolOutput<
                     ReturnType<typeof buildRebalanceResult>
@@ -905,10 +994,7 @@ export class AiService {
                 'scenarioImpact',
                 args as unknown as Record<string, unknown>,
                 async () => {
-                  const details = await this.portfolioService.getDetails({
-                    userId,
-                    impersonationId: undefined
-                  });
+                  const details = await safeGetDetails();
 
                   return buildScenarioImpactResult(details, args) as ToolOutput<
                     ReturnType<typeof buildScenarioImpactResult>
@@ -928,9 +1014,13 @@ export class AiService {
       // Record token usage and cost
       const inputTokens = result.usage?.promptTokens ?? 0;
       const outputTokens = result.usage?.completionTokens ?? 0;
+      const estimatedCost = estimateCost(modelId, inputTokens, outputTokens);
 
       trace.setTokens(inputTokens, outputTokens);
-      trace.setCost(estimateCost(modelId, inputTokens, outputTokens));
+      trace.setCost(estimatedCost);
+
+      // Wire cost limiter — accumulate actual cost so the guardrail works
+      costLimiter.addCost(estimatedCost);
       trace.setResponse(result.text);
       trace.setQueryCategory(this.classifyQuery(message));
       trace.setIterationCount(iterationCount);
