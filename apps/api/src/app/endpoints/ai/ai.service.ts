@@ -1065,7 +1065,16 @@ export class AiService {
         };
       }
 
-      throw error;
+      // Return the actual error message so the frontend can display it
+      return {
+        conversationId: activeConversationId,
+        message: {
+          content: `Something went wrong: ${errorMessage}`,
+          role: 'assistant',
+          timestamp: new Date().toISOString()
+        },
+        traceId: reasoningTraceId
+      };
     }
   }
 
