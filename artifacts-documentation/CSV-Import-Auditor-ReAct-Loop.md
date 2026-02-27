@@ -94,7 +94,35 @@ Sessions are evicted on access when expired. Tool results persist in `toolResult
 
 ---
 
-## 4. Tool Registry (6 Tools)
+## 4. System Prompt
+
+**Source:** `buildSystemPrompt()` in `import-auditor.service.ts`
+
+The system prompt is built dynamically per session and defines the agent's role, tool catalog, execution protocol, and safety rules.
+
+**Core directives:**
+
+- Role: "Ghostfolio CSV Import Auditor, a financial data validation assistant"
+- Lists all 6 tools with descriptions
+- Prescribes sequential execution order: parse → map → validate → duplicates → preview → commit
+- Requires explicit user confirmation before calling `commitImport`
+- Must offer a dry-run before real import
+- Report validation errors with row numbers
+- Never display raw CSV data in full — only summaries and specific issues
+- Be concise but thorough
+
+**Dynamic context:** When the session contains uploaded CSV content, the prompt appends:
+
+```
+The user has uploaded a CSV file ({length} characters).
+When you need to parse it, pass the CSV content to the parseCSV tool.
+```
+
+This provides the LLM with file awareness without embedding the raw CSV in the system message.
+
+---
+
+## 5. Tool Registry (6 Tools)
 
 All tools are registered with the Vercel AI SDK's `tool()` function. The LLM selects tools autonomously based on descriptions and conversation context.
 
@@ -118,9 +146,9 @@ All tools are registered with the Vercel AI SDK's `tool()` function. The LLM sel
 
 ---
 
-## 5. Tool Specifications
+## 6. Tool Specifications
 
-### 5.1 parseCSV
+### 6.1 parseCSV
 
 Parses raw CSV text into structured data using PapaParse.
 
@@ -152,7 +180,7 @@ Parses raw CSV text into structured data using PapaParse.
 
 ---
 
-### 5.2 mapBrokerFields
+### 6.2 mapBrokerFields
 
 Maps CSV column headers to Ghostfolio's canonical fields using deterministic matching with optional LLM fallback.
 
@@ -183,7 +211,7 @@ Maps CSV column headers to Ghostfolio's canonical fields using deterministic mat
 
 ---
 
-### 5.3 validateTransactions
+### 6.3 validateTransactions
 
 Applies 8 domain validation rules to each mapped transaction.
 
@@ -201,7 +229,7 @@ Applies 8 domain validation rules to each mapped transaction.
 
 ---
 
-### 5.4 detectDuplicates
+### 6.4 detectDuplicates
 
 Identifies duplicate transactions within the CSV batch and against existing portfolio records.
 
@@ -220,7 +248,7 @@ Identifies duplicate transactions within the CSV batch and against existing port
 
 ---
 
-### 5.5 previewImportReport
+### 6.5 previewImportReport
 
 Generates a human-readable summary for user review before committing.
 
@@ -236,7 +264,7 @@ Generates a human-readable summary for user review before committing.
 
 ---
 
-### 5.6 commitImport
+### 6.6 commitImport
 
 Transforms validated activities into `CreateOrderDto` objects for Ghostfolio's import system.
 
@@ -258,7 +286,7 @@ Errors are reported per-row without halting the entire batch.
 
 ---
 
-### 5.7 normalizeToActivityDTO
+### 6.7 normalizeToActivityDTO
 
 Normalizes raw broker data into Ghostfolio's DTO format with extensive type alias support.
 
@@ -283,7 +311,7 @@ Normalizes raw broker data into Ghostfolio's DTO format with extensive type alia
 
 ---
 
-### 5.8 detectBrokerFormat
+### 6.8 detectBrokerFormat
 
 Identifies the broker source from CSV headers and file patterns.
 
@@ -313,7 +341,7 @@ Falls back to `'generic'` if no broker exceeds the detection threshold.
 
 ---
 
-## 6. Verification Layer
+## 7. Verification Layer
 
 Every tool returns a `VerificationResult` envelope (defined in `schemas/verification.schema.ts`):
 
@@ -364,7 +392,7 @@ When combining results from multiple tools, `mergeVerificationResults()`:
 
 ---
 
-## 7. Guardrails
+## 8. Guardrails
 
 | Guardrail | File | Config | Trigger | Action |
 |-----------|------|--------|---------|--------|
@@ -390,7 +418,7 @@ When combining results from multiple tools, `mergeVerificationResults()`:
 
 ---
 
-## 8. Typical Import Sequence
+## 9. Typical Import Sequence
 
 ```
 User: "Here's my Interactive Brokers CSV"
@@ -424,7 +452,7 @@ Six tool calls, six LLM round-trips, one final answer with human-in-the-loop con
 
 ---
 
-## 9. Response Shape
+## 10. Response Shape
 
 ```typescript
 interface ChatResponse {
@@ -447,7 +475,7 @@ interface ToolCallRecord {
 
 ---
 
-## 10. Dependencies
+## 11. Dependencies
 
 | Dependency | Purpose |
 |------------|---------|
@@ -463,7 +491,7 @@ interface ToolCallRecord {
 
 ---
 
-## 11. Key Source Files
+## 12. Key Source Files
 
 | File | Purpose |
 |------|---------|
