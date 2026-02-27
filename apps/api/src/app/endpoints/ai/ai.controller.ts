@@ -2,7 +2,10 @@ import { HasPermission } from '@ghostfolio/api/decorators/has-permission.decorat
 import { HasPermissionGuard } from '@ghostfolio/api/guards/has-permission.guard';
 import { ApiService } from '@ghostfolio/api/services/api/api.service';
 import { AiChatDto } from '@ghostfolio/common/dtos';
-import { AiChatResponse, AiPromptResponse } from '@ghostfolio/common/interfaces';
+import {
+  AiChatResponse,
+  AiPromptResponse
+} from '@ghostfolio/common/interfaces';
 import { permissions } from '@ghostfolio/common/permissions';
 import type { AiPromptMode, RequestWithUser } from '@ghostfolio/common/types';
 
@@ -41,6 +44,7 @@ export class AiController {
       message: body.message,
       conversationId: body.conversationId,
       languageCode: this.request.user.settings.settings.language,
+      traceId: body.traceId,
       triggerSource: body.triggerSource,
       userCurrency: this.request.user.settings.settings.baseCurrency,
       userId: this.request.user.id

@@ -68,9 +68,7 @@ export class McpClientService {
       if (!response.ok) {
         const errorText = await response.text().catch(() => 'unknown error');
 
-        throw new Error(
-          `MCP server returned ${response.status}: ${errorText}`
-        );
+        throw new Error(`MCP server returned ${response.status}: ${errorText}`);
       }
 
       const data = (await response.json()) as T;

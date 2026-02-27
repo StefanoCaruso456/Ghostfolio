@@ -352,6 +352,12 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
     this.currentConversation.messages.push(loadingMessage);
 
     this.isGenerating = true;
+
+    // Generate traceId upfront so we can connect SSE immediately
+    const traceId = crypto.randomUUID();
+    this.currentTraceId = traceId;
+    this.reasoningTraceService.connect(traceId);
+
     this.changeDetectorRef.markForCheck();
     this.scrollToBottom();
     this.focusInput();
@@ -374,6 +380,7 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
         history,
         message,
         conversationId: this.currentConversation.id,
+        traceId,
         triggerSource
       })
       .pipe(takeUntil(this.unsubscribeSubject))
@@ -400,22 +407,6 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
           lastMessage.content = response.message.content;
           lastMessage.isLoading = false;
           lastMessage.timestamp = response.message.timestamp;
-
-          // Capture traceId and load the reasoning trace for the panel
-          if (response.traceId) {
-            this.currentTraceId = response.traceId;
-            this.reasoningTraceService
-              .getTrace(response.traceId)
-              .pipe(takeUntil(this.unsubscribeSubject))
-              .subscribe({
-                error: () => {
-                  // Trace may not be persisted yet; ignore
-                },
-                next: () => {
-                  this.changeDetectorRef.markForCheck();
-                }
-              });
-          }
 
           this.isGenerating = false;
           this.saveConversations();

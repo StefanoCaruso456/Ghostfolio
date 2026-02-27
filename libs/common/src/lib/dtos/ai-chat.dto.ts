@@ -9,6 +9,10 @@ export class AiChatDto {
   conversationId?: string;
 
   @IsOptional()
+  @IsString()
+  traceId?: string;
+
+  @IsOptional()
   @IsArray()
   history?: { content: string; role: 'assistant' | 'user' }[];
 

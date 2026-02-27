@@ -283,6 +283,7 @@ export class AiService {
     history,
     languageCode,
     message,
+    traceId,
     triggerSource,
     userCurrency,
     userId
@@ -297,6 +298,7 @@ export class AiService {
     history: { content: string; role: 'assistant' | 'user' }[];
     languageCode: string;
     message: string;
+    traceId?: string;
     triggerSource?: string;
     userCurrency: string;
     userId: string;
@@ -359,7 +361,7 @@ export class AiService {
     let iterationCount = 0;
 
     // ── Initialize reasoning trace context (SSE) ─────────────────
-    const reasoningTraceId = randomUUID();
+    const reasoningTraceId = traceId || randomUUID();
     const reasoningCtx = new TraceContext(reasoningTraceId, (event) => {
       this.reasoningTraceService.emit(event);
     });
