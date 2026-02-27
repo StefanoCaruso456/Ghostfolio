@@ -43,6 +43,7 @@ export interface Environment extends CleanedEnvAccessors {
   MCP_SERVER_URL: string;
   MAX_ACTIVITIES_TO_IMPORT: number;
   MAX_CHART_ITEMS: number;
+  PLAID_API_KEY: string;
   PLAID_CLIENT_ID: string;
   PLAID_SECRET: string;
   PLAID_ENV: string;
