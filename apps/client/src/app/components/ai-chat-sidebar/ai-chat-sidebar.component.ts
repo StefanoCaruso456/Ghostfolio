@@ -308,10 +308,10 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
 
   public onUseSuggestedPrompt(prompt: string) {
     this.inputValue = prompt;
-    this.onSendMessage();
+    this.onSendMessage('suggested_prompt');
   }
 
-  public onSendMessage() {
+  public onSendMessage(triggerSource: string = 'manual') {
     const message = this.inputValue.trim();
     const hasAttachments = this.attachments.length > 0;
 
@@ -373,7 +373,8 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
           : undefined,
         history,
         message,
-        conversationId: this.currentConversation.id
+        conversationId: this.currentConversation.id,
+        triggerSource
       })
       .pipe(takeUntil(this.unsubscribeSubject))
       .subscribe({

@@ -95,6 +95,9 @@ export interface TraceLevelSummary {
   /** ISO-8601 timestamp */
   timestamp: string;
 
+  /** How the message was triggered (e.g. 'manual', 'suggested_prompt') */
+  triggerSource?: string;
+
   // ── Extended Metadata (Telemetry Additions) ────────────────────────
 
   /** Shape of the user request */

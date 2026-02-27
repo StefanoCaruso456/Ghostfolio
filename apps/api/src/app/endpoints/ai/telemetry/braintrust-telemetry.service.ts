@@ -169,6 +169,10 @@ export class BraintrustTelemetryService implements OnModuleInit {
         tags.push('guardrail_triggered');
       }
 
+      if (payload.trace.triggerSource) {
+        tags.push(`trigger:${payload.trace.triggerSource}`);
+      }
+
       // ── 1. Root span with accurate timing + metrics ─────────────────
       const rootSpan = this.logger.startSpan({
         name: 'ai-chat',
@@ -219,6 +223,9 @@ export class BraintrustTelemetryService implements OnModuleInit {
           queryCategory: payload.trace.queryCategory,
           model: payload.trace.model,
           timestamp: payload.trace.timestamp,
+
+          // Input source
+          triggerSource: payload.trace.triggerSource ?? 'manual',
 
           // Decision fields
           toolPolicyDecision: payload.toolPolicyDecision,
@@ -666,6 +673,7 @@ export class TraceContext {
   private aborted = false;
   private iterationCount = 0;
   private historyMessageCount = 0;
+  private triggerSource: string | undefined = undefined;
   private guardrailsTriggered: GuardrailType[] = [];
 
   private toolSpans: ToolSpan[] = [];
@@ -761,6 +769,10 @@ export class TraceContext {
 
   public setHistoryMessageCount(count: number): void {
     this.historyMessageCount = count;
+  }
+
+  public setTriggerSource(source: string): void {
+    this.triggerSource = source;
   }
 
   public addGuardrail(guardrail: GuardrailType): void {
@@ -969,6 +981,7 @@ export class TraceContext {
       aborted: this.aborted,
       model: this.model,
       timestamp: new Date(endTime).toISOString(),
+      triggerSource: this.triggerSource,
       requestShape,
       toolDataVolume: {
         toolOutputBytesTotal,
