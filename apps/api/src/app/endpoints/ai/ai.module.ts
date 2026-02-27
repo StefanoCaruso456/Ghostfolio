@@ -27,6 +27,7 @@ import { AiController } from './ai.controller';
 import { AiService } from './ai.service';
 import { AiConversationController } from './conversation/conversation.controller';
 import { AiConversationService } from './conversation/conversation.service';
+import { McpClientService } from './mcp/mcp-client.service';
 import { AiMetricsController } from './metrics/ai-metrics.controller';
 import { AiMetricsService } from './metrics/ai-metrics.service';
 import { ReasoningTraceService } from './reasoning/reasoning-trace.service';
@@ -67,6 +68,7 @@ import { BraintrustTelemetryService } from './telemetry/braintrust-telemetry.ser
     CurrentRateService,
     ReasoningTraceService,
     MarketDataService,
+    McpClientService,
     PortfolioCalculatorFactory,
     PortfolioService,
     RulesService

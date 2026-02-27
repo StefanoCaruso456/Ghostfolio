@@ -39,6 +39,8 @@ export interface Environment extends CleanedEnvAccessors {
   LANGFUSE_SECRET_KEY: string;
   MARKET_DATA_CACHE_ENABLED: boolean;
   MARKET_DATA_PROVIDER: string;
+  MCP_API_KEY: string;
+  MCP_SERVER_URL: string;
   MAX_ACTIVITIES_TO_IMPORT: number;
   MAX_CHART_ITEMS: number;
   OIDC_AUTHORIZATION_URL: string;

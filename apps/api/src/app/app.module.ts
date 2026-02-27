@@ -41,6 +41,7 @@ import { PlatformsModule } from './endpoints/platforms/platforms.module';
 import { PublicModule } from './endpoints/public/public.module';
 import { SitemapModule } from './endpoints/sitemap/sitemap.module';
 import { TagsModule } from './endpoints/tags/tags.module';
+import { VersionController } from './endpoints/version/version.controller';
 import { WatchlistModule } from './endpoints/watchlist/watchlist.module';
 import { ExchangeRateModule } from './exchange-rate/exchange-rate.module';
 import { ExportModule } from './export/export.module';
@@ -58,7 +59,7 @@ import { SymbolModule } from './symbol/symbol.module';
 import { UserModule } from './user/user.module';
 
 @Module({
-  controllers: [AppController],
+  controllers: [AppController, VersionController],
   imports: [
     AdminModule,
     AccessModule,

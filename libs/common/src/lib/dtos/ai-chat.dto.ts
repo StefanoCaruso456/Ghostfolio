@@ -24,4 +24,8 @@ export class AiChatDto {
     mimeType: string;
     size: number;
   }[];
+
+  @IsOptional()
+  @IsString()
+  triggerSource?: string;
 }

@@ -64,6 +64,8 @@ export class ConfigurationService {
       LANGFUSE_SECRET_KEY: str({ default: '' }),
       MARKET_DATA_CACHE_ENABLED: bool({ default: true }),
       MARKET_DATA_PROVIDER: str({ default: 'yahoo' }),
+      MCP_API_KEY: str({ default: '' }),
+      MCP_SERVER_URL: str({ default: '' }),
       MAX_ACTIVITIES_TO_IMPORT: num({ default: Number.MAX_SAFE_INTEGER }),
       MAX_CHART_ITEMS: num({ default: 365 }),
       OIDC_AUTHORIZATION_URL: str({ default: '' }),
