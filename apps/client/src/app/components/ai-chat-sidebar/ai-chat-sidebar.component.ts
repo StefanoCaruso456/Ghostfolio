@@ -1,3 +1,5 @@
+import { GfReasoningPanelComponent } from '@ghostfolio/client/components/reasoning-panel/reasoning-panel.component';
+import { ReasoningTraceService } from '@ghostfolio/client/services/reasoning-trace.service';
 import { UserService } from '@ghostfolio/client/services/user/user.service';
 import { User } from '@ghostfolio/common/interfaces';
 import { DataService } from '@ghostfolio/ui/services';
@@ -74,6 +76,7 @@ interface Conversation {
   imports: [
     CommonModule,
     FormsModule,
+    GfReasoningPanelComponent,
     IonIcon,
     MarkdownModule,
     MatButtonModule,
@@ -98,6 +101,7 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
   public attachments: Attachment[] = [];
   public conversations: Conversation[] = [];
   public currentConversation: Conversation | null = null;
+  public currentTraceId: string | null = null;
   public editingConversationId: string | null = null;
   public editingTitle = '';
   public inputValue = '';
@@ -149,6 +153,7 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
   public constructor(
     private changeDetectorRef: ChangeDetectorRef,
     private dataService: DataService,
+    private reasoningTraceService: ReasoningTraceService,
     private userService: UserService
   ) {
     addIcons({
@@ -195,9 +200,11 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
 
   public onNewConversation() {
     this.currentConversation = null;
+    this.currentTraceId = null;
     this.inputValue = '';
     this.attachments = [];
     this.showHistory = false;
+    this.reasoningTraceService.reset();
     this.changeDetectorRef.markForCheck();
     this.focusInput();
   }
@@ -318,8 +325,7 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
     this.attachments = [];
 
     if (!this.currentConversation) {
-      const title =
-        message || `${currentAttachments.length} file(s) attached`;
+      const title = message || `${currentAttachments.length} file(s) attached`;
       this.currentConversation = {
         id: crypto.randomUUID(),
         messages: [],
@@ -393,6 +399,22 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
           lastMessage.content = response.message.content;
           lastMessage.isLoading = false;
           lastMessage.timestamp = response.message.timestamp;
+
+          // Capture traceId and load the reasoning trace for the panel
+          if (response.traceId) {
+            this.currentTraceId = response.traceId;
+            this.reasoningTraceService
+              .getTrace(response.traceId)
+              .pipe(takeUntil(this.unsubscribeSubject))
+              .subscribe({
+                error: () => {
+                  // Trace may not be persisted yet; ignore
+                },
+                next: () => {
+                  this.changeDetectorRef.markForCheck();
+                }
+              });
+          }
 
           this.isGenerating = false;
           this.saveConversations();
@@ -516,8 +538,7 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
   public adjustTextareaHeight(event: Event) {
     const textarea = event.target as HTMLTextAreaElement;
     textarea.style.height = 'auto';
-    textarea.style.height =
-      Math.min(textarea.scrollHeight, 150) + 'px';
+    textarea.style.height = Math.min(textarea.scrollHeight, 150) + 'px';
   }
 
   public trackByIndex(index: number) {
@@ -529,6 +550,7 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
       this.speechRecognition.stop();
     }
 
+    this.reasoningTraceService.reset();
     this.unsubscribeSubject.next();
     this.unsubscribeSubject.complete();
   }
@@ -548,8 +570,7 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
     this.speechRecognition = new SpeechRecognitionCtor();
     this.speechRecognition.continuous = true;
     this.speechRecognition.interimResults = true;
-    this.speechRecognition.lang =
-      this.user?.settings?.language ?? 'en-US';
+    this.speechRecognition.lang = this.user?.settings?.language ?? 'en-US';
 
     this.speechRecognition.onresult = (event: any) => {
       let finalTranscript = '';
@@ -585,11 +606,11 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
         continue;
       }
 
-      const isImage =
-        GfAiChatSidebarComponent.ALLOWED_IMAGE_TYPES.includes(file.type);
+      const isImage = GfAiChatSidebarComponent.ALLOWED_IMAGE_TYPES.includes(
+        file.type
+      );
       const isCsv =
-        file.type === 'text/csv' ||
-        file.name.toLowerCase().endsWith('.csv');
+        file.type === 'text/csv' || file.name.toLowerCase().endsWith('.csv');
 
       if (!isImage && !isCsv) {
         continue;

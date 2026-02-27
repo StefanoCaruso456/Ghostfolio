@@ -7,4 +7,5 @@ export interface AiChatMessage {
 export interface AiChatResponse {
   conversationId: string;
   message: AiChatMessage;
+  traceId?: string;
 }

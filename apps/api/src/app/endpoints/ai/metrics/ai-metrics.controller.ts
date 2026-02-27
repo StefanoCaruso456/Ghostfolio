@@ -1,9 +1,6 @@
 import { HasPermission } from '@ghostfolio/api/decorators/has-permission.decorator';
 import { HasPermissionGuard } from '@ghostfolio/api/guards/has-permission.guard';
-import {
-  AiFeedbackDto,
-  AiVerificationLabelDto
-} from '@ghostfolio/common/dtos';
+import { AiFeedbackDto, AiVerificationLabelDto } from '@ghostfolio/common/dtos';
 import { permissions } from '@ghostfolio/common/permissions';
 import type { RequestWithUser } from '@ghostfolio/common/types';
 
