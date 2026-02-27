@@ -2,383 +2,198 @@
   display: block;
 }
 
-.reasoning-panel {
-  background: var(--mat-app-background-color);
-  border: 1px solid rgba(128, 128, 128, 0.12);
-  border-radius: 14px;
-  box-shadow:
-    4px 4px 8px rgba(0, 0, 0, 0.06),
-    -3px -3px 6px rgba(255, 255, 255, 0.7);
-  margin: 0.5rem 0;
-  overflow: hidden;
-  transition: all 0.2s ease;
+// ── Inline reasoning (no box, no border, no shadow) ──────────────────
+.reasoning-inline {
+  padding: 0.25rem 0;
+  transition: opacity 0.4s ease;
+
+  &.completed {
+    opacity: 0.7;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
 }
 
-// Header
-.panel-header {
+// ── Toggle button (the "Thinking..." / "Thought for Xs" line) ────────
+.reasoning-toggle {
   align-items: center;
-  background: transparent;
+  background: none;
   border: none;
-  color: inherit;
+  color: rgba(128, 128, 128, 0.6);
   cursor: pointer;
   display: flex;
   font-family: inherit;
-  justify-content: space-between;
-  padding: 0.625rem 0.875rem;
-  width: 100%;
+  font-size: 0.8rem;
+  gap: 0.375rem;
+  padding: 0.25rem 0;
+  transition: color 0.2s ease;
 
   &:hover {
-    background: rgba(128, 128, 128, 0.04);
+    color: rgba(128, 128, 128, 0.85);
   }
 
-  .header-left {
-    align-items: center;
-    display: flex;
-    gap: 0.5rem;
-
-    .header-icon {
-      color: rgba(var(--gf-theme-primary-500-rgb), 0.8);
-      font-size: 1rem;
-    }
-
-    .header-title {
-      font-size: 0.78rem;
-      font-weight: 600;
-      letter-spacing: -0.01em;
-    }
-
-    .step-count {
-      background: rgba(var(--gf-theme-primary-500-rgb), 0.12);
-      border-radius: 10px;
-      color: rgba(var(--gf-theme-primary-500-rgb), 1);
-      font-size: 0.6rem;
-      font-weight: 700;
-      padding: 0.1rem 0.45rem;
-    }
+  .toggle-chevron {
+    font-size: 0.7rem;
+    transition: transform 0.2s ease;
   }
 
-  .header-right {
-    align-items: center;
-    display: flex;
-    gap: 0.5rem;
+  &.expanded .toggle-chevron {
+    transform: rotate(90deg);
+  }
 
-    .total-duration {
-      align-items: center;
-      color: rgba(128, 128, 128, 0.6);
-      display: flex;
-      font-size: 0.7rem;
-      gap: 0.2rem;
-
-      ion-icon {
-        font-size: 0.75rem;
-      }
-    }
-
-    .collapse-icon {
-      color: rgba(128, 128, 128, 0.5);
-      font-size: 0.85rem;
-    }
+  .toggle-label {
+    font-weight: 500;
+    letter-spacing: -0.01em;
   }
 }
 
-// Body
-.panel-body {
-  animation: expandBody 0.25s ease-out;
-  border-top: 1px solid rgba(128, 128, 128, 0.08);
-  padding: 0.625rem 0.875rem;
+// ── Thinking dots animation ──────────────────────────────────────────
+.thinking-indicator {
+  align-items: center;
+  display: flex;
+  gap: 3px;
 }
 
-@keyframes expandBody {
+.thinking-dot {
+  animation: thinkPulse 1.4s infinite ease-in-out both;
+  background: rgba(var(--gf-theme-primary-500-rgb), 0.5);
+  border-radius: 50%;
+  display: block;
+  height: 4px;
+  width: 4px;
+
+  &:nth-child(1) {
+    animation-delay: 0s;
+  }
+
+  &:nth-child(2) {
+    animation-delay: 0.16s;
+  }
+
+  &:nth-child(3) {
+    animation-delay: 0.32s;
+  }
+}
+
+@keyframes thinkPulse {
+  0%,
+  80%,
+  100% {
+    opacity: 0.3;
+    transform: scale(0.8);
+  }
+
+  40% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+// ── Step list ────────────────────────────────────────────────────────
+.reasoning-steps {
+  animation: fadeInSteps 0.2s ease-out;
+  border-left: 1.5px solid rgba(128, 128, 128, 0.15);
+  display: flex;
+  flex-direction: column;
+  margin-left: 0.375rem;
+  margin-top: 0.25rem;
+  padding-left: 0.75rem;
+}
+
+@keyframes fadeInSteps {
   from {
-    max-height: 0;
     opacity: 0;
-    padding-bottom: 0;
-    padding-top: 0;
   }
 
   to {
-    max-height: 600px;
     opacity: 1;
-    padding-bottom: 0.625rem;
-    padding-top: 0.625rem;
   }
 }
 
-// Trace ID Bar
-.trace-id-bar {
+// ── Individual step ──────────────────────────────────────────────────
+.step-line {
   align-items: center;
+  color: rgba(128, 128, 128, 0.55);
   display: flex;
+  font-size: 0.75rem;
   gap: 0.375rem;
-  margin-bottom: 0.75rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid rgba(128, 128, 128, 0.06);
-
-  .trace-id-label {
-    color: rgba(128, 128, 128, 0.5);
-    font-size: 0.65rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-  }
-
-  .trace-id-value {
-    background: rgba(128, 128, 128, 0.06);
-    border-radius: 4px;
-    color: rgba(128, 128, 128, 0.7);
-    font-family: 'SF Mono', 'Consolas', monospace;
-    font-size: 0.65rem;
-    padding: 0.1rem 0.35rem;
-  }
-
-  .copy-trace-btn {
-    align-items: center;
-    background: transparent;
-    border: none;
-    border-radius: 4px;
-    color: rgba(128, 128, 128, 0.5);
-    cursor: pointer;
-    display: flex;
-    font-family: inherit;
-    font-size: 0.65rem;
-    gap: 0.2rem;
-    padding: 0.1rem 0.3rem;
-
-    ion-icon {
-      font-size: 0.8rem;
-    }
-
-    &:hover {
-      background: rgba(128, 128, 128, 0.08);
-      color: rgba(var(--gf-theme-primary-500-rgb), 0.8);
-    }
-
-    .copy-label {
-      color: rgba(var(--gf-theme-primary-500-rgb), 1);
-      font-size: 0.6rem;
-    }
-  }
-}
-
-// Step Tree
-.step-tree {
-  display: flex;
-  flex-direction: column;
-  gap: 0.125rem;
-}
-
-.step-node {
-  border-radius: 8px;
   opacity: 0;
-  transform: translateY(6px);
+  padding: 0.15rem 0;
+  transform: translateY(4px);
   transition:
-    background 0.15s ease,
-    opacity 0.3s ease,
-    transform 0.3s ease;
+    opacity 0.25s ease,
+    transform 0.25s ease;
 
   &.step-enter {
     opacity: 1;
     transform: translateY(0);
   }
 
-  &:hover > .step-header {
-    background: rgba(128, 128, 128, 0.04);
+  &.step-running {
+    color: rgba(var(--gf-theme-primary-500-rgb), 0.65);
   }
 
-  // Vertical connector line
-  position: relative;
-
-  &:not(:last-child)::after {
-    background: rgba(128, 128, 128, 0.12);
-    content: '';
-    height: calc(100% - 20px);
-    left: 11px;
-    position: absolute;
-    top: 24px;
-    width: 1px;
+  &.step-error {
+    color: rgba(239, 68, 68, 0.6);
   }
 }
 
-.step-header {
-  align-items: center;
-  cursor: pointer;
-  display: flex;
-  justify-content: space-between;
-  padding: 0.35rem 0.5rem;
-  border-radius: 6px;
-
-  .step-left {
-    align-items: center;
-    display: flex;
-    gap: 0.375rem;
-    min-width: 0;
-
-    .status-icon {
-      flex-shrink: 0;
-      font-size: 0.85rem;
-    }
-
-    .kind-icon {
-      color: rgba(128, 128, 128, 0.45);
-      flex-shrink: 0;
-      font-size: 0.75rem;
-    }
-
-    .step-title {
-      font-size: 0.75rem;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-  }
-
-  .step-right {
-    align-items: center;
-    display: flex;
-    flex-shrink: 0;
-    gap: 0.375rem;
-
-    .step-duration {
-      color: rgba(128, 128, 128, 0.5);
-      font-size: 0.65rem;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .expand-icon {
-      color: rgba(128, 128, 128, 0.4);
-      font-size: 0.7rem;
-    }
-  }
+.step-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-// Status colors
-.step-success .status-icon {
-  color: #22c55e;
-}
-
-.step-error .status-icon {
-  color: #ef4444;
-}
-
-.step-running .status-icon {
-  color: rgba(var(--gf-theme-primary-500-rgb), 0.8);
-}
-
-.step-pending .status-icon {
+.step-time {
   color: rgba(128, 128, 128, 0.35);
+  flex-shrink: 0;
+  font-size: 0.65rem;
+  font-variant-numeric: tabular-nums;
 }
 
-// Spinning animation for running steps
-.spinning {
-  animation: spin 1.2s linear infinite;
+// ── Running step spinner ─────────────────────────────────────────────
+.step-spinner {
+  animation: spin 1s linear infinite;
+  border: 1.5px solid rgba(var(--gf-theme-primary-500-rgb), 0.2);
+  border-radius: 50%;
+  border-top-color: rgba(var(--gf-theme-primary-500-rgb), 0.6);
+  display: inline-block;
+  flex-shrink: 0;
+  height: 10px;
+  width: 10px;
 }
 
 @keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-
   to {
     transform: rotate(360deg);
   }
 }
 
-// Redacted badge
-.redacted-badge {
-  background: rgba(245, 158, 11, 0.12);
-  border-radius: 3px;
-  color: rgba(245, 158, 11, 0.8);
-  font-size: 0.55rem;
-  font-weight: 700;
-  padding: 0.05rem 0.25rem;
-}
-
-// Detail panel
-.step-detail {
-  background: rgba(128, 128, 128, 0.03);
-  border-left: 2px solid rgba(128, 128, 128, 0.1);
-  border-radius: 0 6px 6px 0;
-  margin: 0.15rem 0 0.15rem 1.5rem;
-  padding: 0.375rem 0.625rem;
-
-  pre {
-    color: rgba(128, 128, 128, 0.7);
-    font-family: 'SF Mono', 'Consolas', monospace;
-    font-size: 0.65rem;
-    line-height: 1.5;
-    margin: 0;
-    max-height: 150px;
-    overflow: auto;
-    white-space: pre-wrap;
-    word-break: break-word;
-  }
-}
-
-// Child steps
-.step-child {
-  margin-left: 1.5rem;
-
-  .child-header {
-    align-items: center;
-    cursor: pointer;
-    display: flex;
-    gap: 0.375rem;
-    padding: 0.2rem 0.5rem;
-    border-radius: 4px;
+// ── Dark theme ───────────────────────────────────────────────────────
+:host-context(.theme-dark) {
+  .reasoning-toggle {
+    color: rgba(180, 180, 180, 0.5);
 
     &:hover {
-      background: rgba(128, 128, 128, 0.04);
-    }
-
-    .child-status {
-      font-size: 0.7rem;
-    }
-
-    .child-title {
-      color: rgba(128, 128, 128, 0.6);
-      font-size: 0.7rem;
+      color: rgba(180, 180, 180, 0.75);
     }
   }
 
-  .child-detail {
-    margin-left: 1.25rem;
-  }
-}
+  .step-line {
+    color: rgba(180, 180, 180, 0.4);
 
-// Reasoning progress indicator
-.reasoning-progress {
-  align-items: center;
-  color: rgba(var(--gf-theme-primary-500-rgb), 0.7);
-  display: flex;
-  font-size: 0.7rem;
-  gap: 0.375rem;
-  margin-top: 0.5rem;
-  padding: 0.25rem 0.5rem;
-
-  .progress-dot {
-    animation: pulse 1.4s infinite ease-in-out;
-    background: rgba(var(--gf-theme-primary-500-rgb), 0.7);
-    border-radius: 50%;
-    height: 6px;
-    width: 6px;
-  }
-}
-
-@keyframes pulse {
-  0%,
-  100% {
-    opacity: 0.4;
+    &.step-running {
+      color: rgba(var(--gf-theme-primary-500-rgb), 0.55);
+    }
   }
 
-  50% {
-    opacity: 1;
+  .step-time {
+    color: rgba(180, 180, 180, 0.25);
   }
-}
 
-// Dark theme overrides
-:host-context(.theme-dark) {
-  .reasoning-panel {
-    box-shadow:
-      4px 4px 8px rgba(0, 0, 0, 0.3),
-      -3px -3px 6px rgba(255, 255, 255, 0.03);
+  .reasoning-steps {
+    border-left-color: rgba(180, 180, 180, 0.1);
   }
 }

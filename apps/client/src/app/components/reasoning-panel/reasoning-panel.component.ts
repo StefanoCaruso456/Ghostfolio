@@ -1,8 +1,7 @@
 import { ReasoningTraceService } from '@ghostfolio/client/services/reasoning-trace.service';
 import type {
   ReasoningPreview,
-  ReasoningStep,
-  ReasoningStepStatus
+  ReasoningStep
 } from '@ghostfolio/common/interfaces';
 
 import { CommonModule } from '@angular/common';
@@ -15,29 +14,15 @@ import {
   OnDestroy,
   OnInit
 } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { IonIcon } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import {
-  checkmarkCircleOutline,
-  chevronDownOutline,
-  chevronForwardOutline,
-  clipboardOutline,
-  closeCircleOutline,
-  codeWorkingOutline,
-  ellipseOutline,
-  flashOutline,
-  layersOutline,
-  reloadOutline,
-  timeOutline
-} from 'ionicons/icons';
+import { chevronForwardOutline } from 'ionicons/icons';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, IonIcon, MatButtonModule, MatTooltipModule],
+  imports: [CommonModule, IonIcon],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   selector: 'gf-reasoning-panel',
   styleUrls: ['./reasoning-panel.component.scss'],
@@ -48,11 +33,10 @@ export class GfReasoningPanelComponent implements OnInit, OnDestroy {
 
   public preview: ReasoningPreview | null = null;
   public isCollapsed = false;
-  public expandedSteps = new Set<string>();
-  public traceIdCopied = false;
   public visibleStepIds = new Set<string>();
 
   private previousStepCount = 0;
+  private wasCompleted = false;
   private unsubscribeSubject = new Subject<void>();
 
   public constructor(
@@ -60,17 +44,7 @@ export class GfReasoningPanelComponent implements OnInit, OnDestroy {
     private readonly traceService: ReasoningTraceService
   ) {
     addIcons({
-      checkmarkCircleOutline,
-      chevronDownOutline,
-      chevronForwardOutline,
-      clipboardOutline,
-      closeCircleOutline,
-      codeWorkingOutline,
-      ellipseOutline,
-      flashOutline,
-      layersOutline,
-      reloadOutline,
-      timeOutline
+      chevronForwardOutline
     });
   }
 
@@ -80,22 +54,44 @@ export class GfReasoningPanelComponent implements OnInit, OnDestroy {
       .subscribe((preview) => {
         this.preview = preview;
 
-        // Auto-expand when first steps arrive
-        if (preview && preview.steps.length > 0) {
+        if (!preview) {
+          return;
+        }
+
+        // Auto-expand when first steps arrive (live)
+        if (preview.steps.length > 0 && !this.wasCompleted) {
           this.isCollapsed = false;
         }
 
-        // Stagger-animate new steps
-        if (preview && preview.steps.length > this.previousStepCount) {
+        // Auto-collapse when trace completes (like Claude)
+        if (preview.completedAt !== null && !this.wasCompleted) {
+          this.wasCompleted = true;
+          this.isCollapsed = true;
+        }
+
+        // If loaded from persistence (already completed), start collapsed
+        if (
+          preview.completedAt !== null &&
+          this.previousStepCount === 0 &&
+          preview.steps.length > 0
+        ) {
+          this.isCollapsed = true;
+          this.wasCompleted = true;
+
+          for (const step of preview.steps) {
+            this.visibleStepIds.add(step.id);
+          }
+        }
+
+        // Stagger-animate new steps (live only)
+        if (preview.steps.length > this.previousStepCount) {
           const newSteps = preview.steps.slice(this.previousStepCount);
 
-          // If trace is already completed (loaded from persistence), show all instantly
           if (preview.completedAt !== null) {
             for (const step of newSteps) {
               this.visibleStepIds.add(step.id);
             }
           } else {
-            // Live stream — stagger the entrance
             let delay = 0;
 
             for (const step of newSteps) {
@@ -123,69 +119,6 @@ export class GfReasoningPanelComponent implements OnInit, OnDestroy {
     this.changeDetectorRef.markForCheck();
   }
 
-  public onToggleStep(stepId: string): void {
-    if (this.expandedSteps.has(stepId)) {
-      this.expandedSteps.delete(stepId);
-    } else {
-      this.expandedSteps.add(stepId);
-    }
-
-    this.changeDetectorRef.markForCheck();
-  }
-
-  public isStepExpanded(stepId: string): boolean {
-    return this.expandedSteps.has(stepId);
-  }
-
-  public async onCopyTraceId(): Promise<void> {
-    if (!this.preview?.traceId) {
-      return;
-    }
-
-    await this.traceService.copyTraceId(this.preview.traceId);
-    this.traceIdCopied = true;
-    this.changeDetectorRef.markForCheck();
-
-    setTimeout(() => {
-      this.traceIdCopied = false;
-      this.changeDetectorRef.markForCheck();
-    }, 2000);
-  }
-
-  public getStatusIcon(status: ReasoningStepStatus): string {
-    switch (status) {
-      case 'success':
-        return 'checkmark-circle-outline';
-      case 'error':
-        return 'close-circle-outline';
-      case 'running':
-        return 'reload-outline';
-      case 'pending':
-        return 'ellipse-outline';
-      case 'skipped':
-        return 'ellipse-outline';
-      default:
-        return 'ellipse-outline';
-    }
-  }
-
-  public getStepIcon(kind: string): string {
-    switch (kind) {
-      case 'plan':
-        return 'flash-outline';
-      case 'analysis':
-        return 'layers-outline';
-      case 'tool_call':
-        return 'code-working-outline';
-      case 'tool_result':
-        return 'checkmark-circle-outline';
-      case 'answer':
-        return 'flash-outline';
-      default:
-        return 'ellipse-outline';
-    }
-  }
-
   public formatDuration(ms: number | null): string {
     if (ms === null) {
       return '...';
@@ -195,7 +128,8 @@ export class GfReasoningPanelComponent implements OnInit, OnDestroy {
       return `${ms}ms`;
     }
 
-    return `${(ms / 1000).toFixed(1)}s`;
+    const seconds = Math.round(ms / 1000);
+    return `${seconds}s`;
   }
 
   public trackByStepId(_index: number, step: ReasoningStep): string {
