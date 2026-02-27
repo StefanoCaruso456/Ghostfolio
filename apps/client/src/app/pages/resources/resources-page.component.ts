@@ -3,11 +3,9 @@ import { RouterModule } from '@angular/router';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { Subject } from 'rxjs';
 
-import { ResourcesMarketsComponent } from './markets/resources-markets.component';
-
 @Component({
   host: { class: 'page' },
-  imports: [ResourcesMarketsComponent, RouterModule],
+  imports: [RouterModule],
   selector: 'gf-resources-page',
   styleUrls: ['./resources-page.scss'],
   templateUrl: './resources-page.html'
