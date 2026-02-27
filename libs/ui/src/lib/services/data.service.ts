@@ -856,6 +856,27 @@ export class DataService {
     return this.http.post('/api/v1/watchlist', watchlistItem);
   }
 
+  public postPlaidCreateLinkToken() {
+    return this.http.post<{ linkToken: string }>(
+      '/api/v1/plaid/create-link-token',
+      {}
+    );
+  }
+
+  public postPlaidExchangePublicToken(publicToken: string) {
+    return this.http.post<{ itemId: string; accounts: any[] }>(
+      '/api/v1/plaid/exchange-public-token',
+      { publicToken }
+    );
+  }
+
+  public postPlaidSyncBalances() {
+    return this.http.post<{ synced: number }>(
+      '/api/v1/plaid/sync-balances',
+      {}
+    );
+  }
+
   public putAccess(aAccess: UpdateAccessDto) {
     return this.http.put<Access>(`/api/v1/access/${aAccess.id}`, aAccess);
   }

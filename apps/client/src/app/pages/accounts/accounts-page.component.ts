@@ -146,6 +146,23 @@ export class GfAccountsPageComponent implements OnDestroy, OnInit {
       );
   }
 
+  public onConnectBroker() {
+    this.dataService
+      .postPlaidCreateLinkToken()
+      .pipe(
+        catchError((error) => {
+          this.notificationService.alert({
+            title: $localize`Oops, broker connection failed. ${error?.error?.message || 'Please check your Plaid API credentials in Admin Settings.'}`
+          });
+          return EMPTY;
+        }),
+        takeUntil(this.unsubscribeSubject)
+      )
+      .subscribe(({ linkToken }) => {
+        this.openPlaidLink(linkToken);
+      });
+  }
+
   public onDeleteAccount(aId: string) {
     this.reset();
 
@@ -354,6 +371,72 @@ export class GfAccountsPageComponent implements OnDestroy, OnInit {
 
         this.router.navigate(['.'], { relativeTo: this.route });
       });
+  }
+
+  private openPlaidLink(linkToken: string) {
+    this.loadPlaidScript().then(() => {
+      const Plaid = (window as any).Plaid;
+
+      if (!Plaid) {
+        this.notificationService.alert({
+          title: $localize`Oops, broker connection failed. Could not load Plaid Link.`
+        });
+        return;
+      }
+
+      const handler = Plaid.create({
+        token: linkToken,
+        onSuccess: (publicToken: string, metadata: any) => {
+          this.dataService
+            .postPlaidExchangePublicToken(publicToken)
+            .pipe(
+              catchError(() => {
+                this.notificationService.alert({
+                  title: $localize`Oops, broker connection failed.`
+                });
+                return EMPTY;
+              }),
+              takeUntil(this.unsubscribeSubject)
+            )
+            .subscribe((result) => {
+              this.notificationService.alert({
+                title: $localize`Successfully connected ${result.accounts.length} account(s) from your broker!`
+              });
+
+              this.userService
+                .get(true)
+                .pipe(takeUntil(this.unsubscribeSubject))
+                .subscribe();
+
+              this.fetchAccounts();
+            });
+        },
+        onExit: (err: any) => {
+          if (err) {
+            this.notificationService.alert({
+              title: $localize`Oops, broker connection failed.`
+            });
+          }
+        }
+      });
+
+      handler.open();
+    });
+  }
+
+  private loadPlaidScript(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if ((window as any).Plaid) {
+        resolve();
+        return;
+      }
+
+      const script = document.createElement('script');
+      script.src = 'https://cdn.plaid.com/link/v2/stable/link-initialize.js';
+      script.onload = () => resolve();
+      script.onerror = () => reject(new Error('Failed to load Plaid Link'));
+      document.head.appendChild(script);
+    });
   }
 
   private reset() {
