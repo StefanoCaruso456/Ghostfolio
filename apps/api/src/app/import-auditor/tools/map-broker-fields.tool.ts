@@ -140,12 +140,12 @@ export function mapBrokerFields(
 }
 
 export interface LlmMappingResult {
-  mappings: Array<{
+  mappings: {
     sourceHeader: string;
     targetField: string;
     confidence: number;
     reasoning: string;
-  }>;
+  }[];
 }
 
 export type LlmMapper = (context: {
@@ -279,9 +279,10 @@ export async function mapBrokerFieldsWithFallback(
       verification: createVerificationResult({
         passed: allRequiredMapped,
         confidence: overallConfidence,
-        warnings: unmappedHeaders.length > 0
-          ? [`${unmappedHeaders.length} headers not mapped`]
-          : [],
+        warnings:
+          unmappedHeaders.length > 0
+            ? [`${unmappedHeaders.length} headers not mapped`]
+            : [],
         errors: unmappedRequiredFields.map(
           (f) => `Required field "${f}" could not be mapped`
         ),

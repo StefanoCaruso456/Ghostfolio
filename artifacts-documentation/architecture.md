@@ -65,32 +65,32 @@ GfAiChatSidebarComponent renders response with Markdown
 
 ## Two AI Paths (Do Not Confuse)
 
-| Path | Endpoint | Method | Purpose |
-|------|----------|--------|---------|
-| **Chat (primary)** | `POST /api/v1/ai/chat` | `AiService.chat()` | Full ReAct loop with 10 tools + telemetry + persistence |
+| Path                | Endpoint                      | Method                  | Purpose                                                   |
+| ------------------- | ----------------------------- | ----------------------- | --------------------------------------------------------- |
+| **Chat (primary)**  | `POST /api/v1/ai/chat`        | `AiService.chat()`      | Full ReAct loop with 10 tools + telemetry + persistence   |
 | **Prompt (legacy)** | `GET /api/v1/ai/prompt/:mode` | `AiService.getPrompt()` | Generates markdown text for clipboard copy to external AI |
 
 The legacy prompt path has **no tools, no ReAct loop, no telemetry**. It only builds a text string.
 
 ## Conversation Endpoints (DB-Backed History)
 
-| Endpoint | Method | Purpose |
-|----------|--------|---------|
-| `GET /ai/conversations` | List | All conversations for authenticated user |
-| `GET /ai/conversations/:id` | Detail | Single conversation with messages |
-| `PATCH /ai/conversations/:id` | Update | Rename conversation title |
+| Endpoint                       | Method | Purpose                                    |
+| ------------------------------ | ------ | ------------------------------------------ |
+| `GET /ai/conversations`        | List   | All conversations for authenticated user   |
+| `GET /ai/conversations/:id`    | Detail | Single conversation with messages          |
+| `PATCH /ai/conversations/:id`  | Update | Rename conversation title                  |
 | `DELETE /ai/conversations/:id` | Delete | Remove conversation and messages (cascade) |
 
 All guarded with JWT + `readAiPrompt` permission. Controller: `AiConversationController`.
 
 ## Production Guardrails
 
-| Guardrail | Value | Purpose |
-|-----------|-------|---------|
-| `MAX_ITERATIONS` | 10 | Prevent infinite ReAct loops |
-| `TIMEOUT_MS` | 45,000 | User experience limit |
-| `COST_LIMIT_USD` | $1.00 | Prevent bill explosions |
-| `CIRCUIT_BREAKER_MAX_REPETITIONS` | 3 | Same action 3x -> abort |
+| Guardrail                         | Value  | Purpose                      |
+| --------------------------------- | ------ | ---------------------------- |
+| `MAX_ITERATIONS`                  | 10     | Prevent infinite ReAct loops |
+| `TIMEOUT_MS`                      | 45,000 | User experience limit        |
+| `COST_LIMIT_USD`                  | $1.00  | Prevent bill explosions      |
+| `CIRCUIT_BREAKER_MAX_REPETITIONS` | 3      | Same action 3x -> abort      |
 
 ## Feature Gates
 
@@ -100,13 +100,13 @@ All guarded with JWT + `readAiPrompt` permission. Controller: `AiConversationCon
 
 ## Key Dependencies
 
-| Package | Role |
-|---------|------|
-| `ai` (Vercel AI SDK) | `generateText()`, `tool()` for ReAct loop |
-| `@openrouter/ai-sdk-provider` | LLM provider for OpenRouter |
-| `braintrust` | Telemetry -- traces, tool spans, inline scores |
-| `zod` | Schema validation for tool inputs/outputs |
-| `yahoo-finance2` | Market data provider (quotes, history, fundamentals, news) |
+| Package                       | Role                                                       |
+| ----------------------------- | ---------------------------------------------------------- |
+| `ai` (Vercel AI SDK)          | `generateText()`, `tool()` for ReAct loop                  |
+| `@openrouter/ai-sdk-provider` | LLM provider for OpenRouter                                |
+| `braintrust`                  | Telemetry -- traces, tool spans, inline scores             |
+| `zod`                         | Schema validation for tool inputs/outputs                  |
+| `yahoo-finance2`              | Market data provider (quotes, history, fundamentals, news) |
 
 ## File Map
 

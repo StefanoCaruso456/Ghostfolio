@@ -34,9 +34,8 @@ describe('A) User Feedback Mechanism', () => {
       } as any;
 
       // Dynamic import to avoid module-level issues
-      const { AiMetricsService } = await import(
-        '../metrics/ai-metrics.service'
-      );
+      const { AiMetricsService } =
+        await import('../metrics/ai-metrics.service');
       const service = new AiMetricsService(prismaService);
 
       const result = await service.createFeedback({
@@ -77,9 +76,8 @@ describe('A) User Feedback Mechanism', () => {
         aiFeedback: { create: mockCreate }
       } as any;
 
-      const { AiMetricsService } = await import(
-        '../metrics/ai-metrics.service'
-      );
+      const { AiMetricsService } =
+        await import('../metrics/ai-metrics.service');
       const service = new AiMetricsService(prismaService);
 
       const result = await service.createFeedback({
@@ -95,9 +93,8 @@ describe('A) User Feedback Mechanism', () => {
 
   describe('BraintrustTelemetryService.logFeedbackEvent', () => {
     it('should log feedback event to Braintrust logger', async () => {
-      const { BraintrustTelemetryService } = await import(
-        '../telemetry/braintrust-telemetry.service'
-      );
+      const { BraintrustTelemetryService } =
+        await import('../telemetry/braintrust-telemetry.service');
 
       const configService = {
         get: jest.fn().mockReturnValue(undefined)
@@ -132,11 +129,12 @@ describe('A) User Feedback Mechanism', () => {
     });
 
     it('should score DOWN feedback as 0.0', async () => {
-      const { BraintrustTelemetryService } = await import(
-        '../telemetry/braintrust-telemetry.service'
-      );
+      const { BraintrustTelemetryService } =
+        await import('../telemetry/braintrust-telemetry.service');
 
-      const configService = { get: jest.fn().mockReturnValue(undefined) } as any;
+      const configService = {
+        get: jest.fn().mockReturnValue(undefined)
+      } as any;
       const service = new BraintrustTelemetryService(configService);
       (service as any).enabled = true;
       const mockLog = jest.fn();
@@ -205,9 +203,14 @@ describe('B) Measured Latency Baselines', () => {
   });
 
   describe('computeLatencyPercentiles (composite)', () => {
-    let computeLatencyPercentiles: (
-      values: number[]
-    ) => { p50: number; p95: number; count: number; min: number; max: number; mean: number };
+    let computeLatencyPercentiles: (values: number[]) => {
+      p50: number;
+      p95: number;
+      count: number;
+      min: number;
+      max: number;
+      mean: number;
+    };
 
     beforeAll(async () => {
       const mod = await import('../metrics/ai-metrics.service');
@@ -229,8 +232,8 @@ describe('B) Measured Latency Baselines', () => {
     it('should compute correct stats for typical latencies', () => {
       // Simulate 20 traces with latencies from 500ms to 5000ms
       const values = [
-        500, 800, 1000, 1200, 1500, 1800, 2000, 2200, 2500, 2800, 3000,
-        3200, 3500, 3800, 4000, 4200, 4500, 4700, 4800, 5000
+        500, 800, 1000, 1200, 1500, 1800, 2000, 2200, 2500, 2800, 3000, 3200,
+        3500, 3800, 4000, 4200, 4500, 4700, 4800, 5000
       ];
 
       const result = computeLatencyPercentiles(values);
@@ -260,9 +263,8 @@ describe('B) Measured Latency Baselines', () => {
         aiTraceMetric: { findMany: mockFindMany }
       } as any;
 
-      const { AiMetricsService } = await import(
-        '../metrics/ai-metrics.service'
-      );
+      const { AiMetricsService } =
+        await import('../metrics/ai-metrics.service');
       const service = new AiMetricsService(prismaService);
 
       const result = await service.getLatencyBaselines(7);
@@ -302,9 +304,8 @@ describe('C) Hallucination Rate', () => {
         aiTraceMetric: { findMany: jest.fn().mockResolvedValue(mockData) }
       } as any;
 
-      const { AiMetricsService } = await import(
-        '../metrics/ai-metrics.service'
-      );
+      const { AiMetricsService } =
+        await import('../metrics/ai-metrics.service');
       const service = new AiMetricsService(prismaService);
 
       const result = await service.getHallucinationRate(7);
@@ -318,17 +319,18 @@ describe('C) Hallucination Rate', () => {
     it('should return rate=0 when no traces have hallucinations', async () => {
       const prismaService = {
         aiTraceMetric: {
-          findMany: jest.fn().mockResolvedValue([
-            { hallucinationFlagCount: 0 },
-            { hallucinationFlagCount: 0 },
-            { hallucinationFlagCount: 0 }
-          ])
+          findMany: jest
+            .fn()
+            .mockResolvedValue([
+              { hallucinationFlagCount: 0 },
+              { hallucinationFlagCount: 0 },
+              { hallucinationFlagCount: 0 }
+            ])
         }
       } as any;
 
-      const { AiMetricsService } = await import(
-        '../metrics/ai-metrics.service'
-      );
+      const { AiMetricsService } =
+        await import('../metrics/ai-metrics.service');
       const service = new AiMetricsService(prismaService);
 
       const result = await service.getHallucinationRate(7);
@@ -341,9 +343,8 @@ describe('C) Hallucination Rate', () => {
         aiTraceMetric: { findMany: jest.fn().mockResolvedValue([]) }
       } as any;
 
-      const { AiMetricsService } = await import(
-        '../metrics/ai-metrics.service'
-      );
+      const { AiMetricsService } =
+        await import('../metrics/ai-metrics.service');
       const service = new AiMetricsService(prismaService);
 
       const result = await service.getHallucinationRate(7);
@@ -413,9 +414,8 @@ describe('D) Verification Accuracy', () => {
         aiTraceMetric: { findMany: jest.fn().mockResolvedValue(mockMetrics) }
       } as any;
 
-      const { AiMetricsService } = await import(
-        '../metrics/ai-metrics.service'
-      );
+      const { AiMetricsService } =
+        await import('../metrics/ai-metrics.service');
       const service = new AiMetricsService(prismaService);
 
       const result = await service.getVerificationAccuracy(30);
@@ -438,9 +438,8 @@ describe('D) Verification Accuracy', () => {
         aiTraceMetric: { findMany: jest.fn().mockResolvedValue([]) }
       } as any;
 
-      const { AiMetricsService } = await import(
-        '../metrics/ai-metrics.service'
-      );
+      const { AiMetricsService } =
+        await import('../metrics/ai-metrics.service');
       const service = new AiMetricsService(prismaService);
 
       const result = await service.getVerificationAccuracy(30);
@@ -465,9 +464,8 @@ describe('D) Verification Accuracy', () => {
         aiTraceMetric: { findMany: jest.fn().mockResolvedValue([]) } // no matching metrics
       } as any;
 
-      const { AiMetricsService } = await import(
-        '../metrics/ai-metrics.service'
-      );
+      const { AiMetricsService } =
+        await import('../metrics/ai-metrics.service');
       const service = new AiMetricsService(prismaService);
 
       const result = await service.getVerificationAccuracy(30);
@@ -494,9 +492,8 @@ describe('D) Verification Accuracy', () => {
         aiVerificationLabel: { create: mockCreate }
       } as any;
 
-      const { AiMetricsService } = await import(
-        '../metrics/ai-metrics.service'
-      );
+      const { AiMetricsService } =
+        await import('../metrics/ai-metrics.service');
       const service = new AiMetricsService(prismaService);
 
       const result = await service.createVerificationLabel({
@@ -592,9 +589,8 @@ describe('E) Cost Projections', () => {
 
   describe('cost projection snapshot', () => {
     it('should match snapshot for default assumptions', async () => {
-      const { computeCostProjections, DEFAULT_ASSUMPTIONS } = await import(
-        '../telemetry/cost-projections'
-      );
+      const { computeCostProjections, DEFAULT_ASSUMPTIONS } =
+        await import('../telemetry/cost-projections');
 
       const rows = computeCostProjections(
         [100, 1_000, 10_000, 100_000],
@@ -625,9 +621,8 @@ describe('Trace Metric Persistence', () => {
         aiTraceMetric: { create: mockCreate }
       } as any;
 
-      const { AiMetricsService } = await import(
-        '../metrics/ai-metrics.service'
-      );
+      const { AiMetricsService } =
+        await import('../metrics/ai-metrics.service');
       const service = new AiMetricsService(prismaService);
 
       await service.persistTraceMetric({
@@ -663,9 +658,8 @@ describe('Trace Metric Persistence', () => {
         aiTraceMetric: { create: mockCreate }
       } as any;
 
-      const { AiMetricsService } = await import(
-        '../metrics/ai-metrics.service'
-      );
+      const { AiMetricsService } =
+        await import('../metrics/ai-metrics.service');
       const service = new AiMetricsService(prismaService);
 
       // Should NOT throw
@@ -688,9 +682,8 @@ describe('Trace Metric Persistence', () => {
 
   describe('BraintrustTelemetryService.logTrace calls persistTraceMetric', () => {
     it('should call metricsService.persistTraceMetric when wired', async () => {
-      const { BraintrustTelemetryService } = await import(
-        '../telemetry/braintrust-telemetry.service'
-      );
+      const { BraintrustTelemetryService } =
+        await import('../telemetry/braintrust-telemetry.service');
 
       const configService = {
         get: jest.fn().mockReturnValue(undefined)

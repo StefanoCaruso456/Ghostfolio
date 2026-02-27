@@ -749,9 +749,9 @@ describe('Eval Scorers', () => {
       expect(FAILURE_ACK_PATTERN.test('There was an error')).toBe(true);
       expect(FAILURE_ACK_PATTERN.test('no data found')).toBe(true);
       // Should NOT match normal financial text
-      expect(
-        FAILURE_ACK_PATTERN.test('AAPL is trading at $185.50')
-      ).toBe(false);
+      expect(FAILURE_ACK_PATTERN.test('AAPL is trading at $185.50')).toBe(
+        false
+      );
     });
   });
 });

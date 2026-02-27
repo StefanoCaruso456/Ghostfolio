@@ -2,18 +2,18 @@
 
 ## Assumptions
 
-| Parameter | Value |
-|---|---|
-| Model | `anthropic/claude-sonnet-4` |
-| Queries/user/day | 3 |
-| Avg input tokens/query | 1,200 |
-| Avg output tokens/query | 400 |
-| Tool call rate | 70% |
-| Avg tool calls/query | 2.1 |
-| Tokens per tool result | 350 |
-| Verification overhead rate | 15% |
-| Verification extra tokens | 200 |
-| Days/month | 30 |
+| Parameter                  | Value                       |
+| -------------------------- | --------------------------- |
+| Model                      | `anthropic/claude-sonnet-4` |
+| Queries/user/day           | 3                           |
+| Avg input tokens/query     | 1,200                       |
+| Avg output tokens/query    | 400                         |
+| Tool call rate             | 70%                         |
+| Avg tool calls/query       | 2.1                         |
+| Tokens per tool result     | 350                         |
+| Verification overhead rate | 15%                         |
+| Verification extra tokens  | 200                         |
+| Days/month                 | 30                          |
 
 ### Derivation
 
@@ -24,12 +24,12 @@
 
 ## Cost Projections
 
-| Users | Queries/mo | Input Tokens/mo | Output Tokens/mo | Monthly Cost | $/query | $/user/mo |
-|------:|-----------:|----------------:|-----------------:|-------------:|--------:|----------:|
-| 100 | 9,000 | 15,700,500 | 3,600,000 | $101.10 | $0.0112 | $1.01 |
-| 1,000 | 90,000 | 157,005,000 | 36,000,000 | $1,011.02 | $0.0112 | $1.01 |
-| 10,000 | 900,000 | 1,570,050,000 | 360,000,000 | $10,110.15 | $0.0112 | $1.01 |
-| 100,000 | 9,000,000 | 15,700,500,000 | 3,600,000,000 | $101,101.50 | $0.0112 | $1.01 |
+|   Users | Queries/mo | Input Tokens/mo | Output Tokens/mo | Monthly Cost | $/query | $/user/mo |
+| ------: | ---------: | --------------: | ---------------: | -----------: | ------: | --------: |
+|     100 |      9,000 |      15,700,500 |        3,600,000 |      $101.10 | $0.0112 |     $1.01 |
+|   1,000 |     90,000 |     157,005,000 |       36,000,000 |    $1,011.02 | $0.0112 |     $1.01 |
+|  10,000 |    900,000 |   1,570,050,000 |      360,000,000 |   $10,110.15 | $0.0112 |     $1.01 |
+| 100,000 |  9,000,000 |  15,700,500,000 |    3,600,000,000 |  $101,101.50 | $0.0112 |     $1.01 |
 
 ## Pricing Reference
 
@@ -39,17 +39,18 @@
 
 ## Cost Reduction Strategies
 
-| Strategy | Estimated Savings | Implementation Effort |
-|---|---|---|
-| Switch to `openai/gpt-4o-mini` for simple queries | 80-90% on those queries | Medium (query classifier) |
-| Response caching (identical portfolio questions) | 10-20% overall | Low (Redis key by query hash) |
-| Market data cache (already partially in place) | 5-10% via fewer tool calls | Already started |
-| Prompt compression (shorter system prompt) | 5-15% on input tokens | Low |
-| Tiered model routing (haiku for simple, sonnet for complex) | 40-60% overall | Medium |
+| Strategy                                                    | Estimated Savings          | Implementation Effort         |
+| ----------------------------------------------------------- | -------------------------- | ----------------------------- |
+| Switch to `openai/gpt-4o-mini` for simple queries           | 80-90% on those queries    | Medium (query classifier)     |
+| Response caching (identical portfolio questions)            | 10-20% overall             | Low (Redis key by query hash) |
+| Market data cache (already partially in place)              | 5-10% via fewer tool calls | Already started               |
+| Prompt compression (shorter system prompt)                  | 5-15% on input tokens      | Low                           |
+| Tiered model routing (haiku for simple, sonnet for complex) | 40-60% overall             | Medium                        |
 
 ## Break-Even Analysis
 
 At **$5/user/month** subscription price (common SaaS tier):
+
 - AI cost/user = ~$1.01/mo → **20% of subscription revenue**
 - With tiered routing: ~$0.50/mo → **10% of subscription revenue** ✅
 
@@ -65,13 +66,15 @@ At **$5/user/month** subscription price (common SaaS tier):
 ## Verification
 
 Run the projection script:
+
 ```bash
 npx ts-node apps/api/src/app/endpoints/ai/telemetry/cost-projections.ts
 ```
 
 Or run the snapshot test:
+
 ```bash
 npx nx test api --testPathPatterns="ai-compliance" --skipNxCache
 ```
 
-*Generated: 2026-02-26*
+_Generated: 2026-02-26_
