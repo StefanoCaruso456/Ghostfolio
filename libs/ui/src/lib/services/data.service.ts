@@ -377,6 +377,33 @@ export class DataService {
     return this.http.delete<any>(`/api/v1/account-balance/${aId}`);
   }
 
+  public createPlaidLinkToken() {
+    return this.http.post<{ linkToken: string }>(
+      '/api/v1/plaid/link-token',
+      {}
+    );
+  }
+
+  public exchangePlaidPublicToken(data: {
+    publicToken: string;
+    institutionId: string;
+    institutionName: string;
+    accountId?: string;
+  }) {
+    return this.http.post<any>('/api/v1/plaid/exchange-token', data);
+  }
+
+  public syncPlaidItem(id: string) {
+    return this.http.post<{ synced: number }>(
+      `/api/v1/plaid/${id}/sync`,
+      {}
+    );
+  }
+
+  public disconnectPlaidItem(id: string) {
+    return this.http.delete<void>(`/api/v1/plaid/${id}`);
+  }
+
   public deleteActivities({ filters }) {
     const params = this.buildFiltersAsQueryParams({ filters });
 

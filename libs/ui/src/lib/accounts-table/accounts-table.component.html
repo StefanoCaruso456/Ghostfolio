@@ -1,5 +1,13 @@
 @if (showActions()) {
-  <div class="d-flex justify-content-end">
+  <div class="d-flex justify-content-end gap-2">
+    <button
+      class="align-items-center d-flex"
+      mat-stroked-button
+      (click)="onConnectBroker()"
+    >
+      <ion-icon class="mr-2" name="link-outline" />
+      <span i18n>Connect Broker (Plaid)</span>
+    </button>
     <button
       class="align-items-center d-flex"
       mat-stroked-button
