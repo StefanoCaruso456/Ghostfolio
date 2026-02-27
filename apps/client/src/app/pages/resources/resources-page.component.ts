@@ -1,19 +1,16 @@
 import { TabConfiguration } from '@ghostfolio/common/interfaces';
 import { publicRoutes } from '@ghostfolio/common/routes/routes';
 
-import { ResourcesMarketsComponent } from './markets/resources-markets.component';
-
 import { Component, OnInit } from '@angular/core';
 import { MatTabsModule } from '@angular/material/tabs';
 import { RouterModule } from '@angular/router';
 import { IonIcon } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import {
-  bookOutline,
-  libraryOutline
-} from 'ionicons/icons';
+import { bookOutline, libraryOutline } from 'ionicons/icons';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { Subject } from 'rxjs';
+
+import { ResourcesMarketsComponent } from './markets/resources-markets.component';
 
 @Component({
   host: { class: 'page has-tabs' },

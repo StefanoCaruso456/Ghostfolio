@@ -36,10 +36,10 @@ export class PlaidLinkService {
 
     return new Promise((resolve, reject) => {
       const handler = window.Plaid.create({
-        onEvent: (_eventName, _metadata) => {
+        onEvent: () => {
           // Optional: can be used for analytics
         },
-        onExit: (err, _metadata) => {
+        onExit: (err) => {
           handler.destroy();
 
           if (err) {

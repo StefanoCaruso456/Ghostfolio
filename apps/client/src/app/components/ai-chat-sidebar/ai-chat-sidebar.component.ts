@@ -722,9 +722,7 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
 
           // Merge: API conversations take priority, local-only ones are preserved
           const apiIds = new Set(apiConversations.map((c) => c.id));
-          const localOnly = this.conversations.filter(
-            (c) => !apiIds.has(c.id)
-          );
+          const localOnly = this.conversations.filter((c) => !apiIds.has(c.id));
           const merged = [
             ...apiConversations.map((c) => {
               // Preserve locally-cached messages if available

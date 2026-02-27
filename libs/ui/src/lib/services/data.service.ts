@@ -395,10 +395,7 @@ export class DataService {
   }
 
   public syncPlaidItem(id: string) {
-    return this.http.post<{ synced: number }>(
-      `/api/v1/plaid/${id}/sync`,
-      {}
-    );
+    return this.http.post<{ synced: number }>(`/api/v1/plaid/${id}/sync`, {});
   }
 
   public disconnectPlaidItem(id: string) {

@@ -28,7 +28,9 @@
   </div>
 
   <!-- Range selector -->
-  <div class="d-flex align-items-center justify-content-center mb-3 gap-2 flex-wrap">
+  <div
+    class="d-flex align-items-center justify-content-center mb-3 gap-2 flex-wrap"
+  >
     <mat-button-toggle-group
       [value]="selectedRange"
       (change)="onRangeChange($event.value)"
@@ -62,8 +64,8 @@
             <span class="chart-label">{{ config.label }}</span>
             @if (config.userAdded) {
               <button
-                mat-icon-button
                 class="remove-btn"
+                mat-icon-button
                 (click)="onRemoveChart(config)"
               >
                 <mat-icon>close</mat-icon>
@@ -73,14 +75,16 @@
           <div class="chart-meta">
             @if (latestValueMap.get(config.symbol) != null) {
               <span class="chart-value">
-                {{ formatValue(latestValueMap.get(config.symbol), config.symbol) }}
+                {{
+                  formatValue(latestValueMap.get(config.symbol), config.symbol)
+                }}
               </span>
             }
             @if (changePercentMap.get(config.symbol) != null) {
               <span
                 class="chart-change"
-                [class.positive]="changePercentMap.get(config.symbol) >= 0"
                 [class.negative]="changePercentMap.get(config.symbol) < 0"
+                [class.positive]="changePercentMap.get(config.symbol) >= 0"
               >
                 {{ formatChangePercent(changePercentMap.get(config.symbol)) }}
               </span>

@@ -255,8 +255,13 @@ export const LABELED_SCENARIOS: LabeledScenario[] = [
     expectedTools: ['getPerformance', 'listActivities', 'getFundamentals'],
     mustContain: [],
     mustNotContain: ['I predict', 'will increase'],
-    expectedSources: ['ghostfolio-portfolio-service', 'ghostfolio-order-service', 'yahoo-finance2'],
-    description: 'Three-step chain: performance + dividends → identify top payer → fundamentals',
+    expectedSources: [
+      'ghostfolio-portfolio-service',
+      'ghostfolio-order-service',
+      'yahoo-finance2'
+    ],
+    description:
+      'Three-step chain: performance + dividends → identify top payer → fundamentals',
     category: 'multi_tool',
     complexity: 'complex',
     difficulty: 'nuanced',
@@ -270,7 +275,8 @@ export const LABELED_SCENARIOS: LabeledScenario[] = [
     mustContain: [],
     mustNotContain: ['will drop', 'will lose'],
     expectedSources: ['ghostfolio-portfolio-service'],
-    description: 'Two-step chain: allocation lookup → scenario impact on largest sector',
+    description:
+      'Two-step chain: allocation lookup → scenario impact on largest sector',
     category: 'multi_tool',
     complexity: 'complex',
     difficulty: 'straightforward',
@@ -284,7 +290,8 @@ export const LABELED_SCENARIOS: LabeledScenario[] = [
     mustContain: [],
     mustNotContain: ['I cannot'],
     expectedSources: ['yahoo-finance2'],
-    description: 'Three-step parallel chain: quotes → history for both → fundamentals comparison',
+    description:
+      'Three-step parallel chain: quotes → history for both → fundamentals comparison',
     category: 'multi_tool',
     complexity: 'complex',
     difficulty: 'nuanced',

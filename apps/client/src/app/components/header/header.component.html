@@ -114,40 +114,17 @@
           <span class="ml-1">More</span>
         </button>
         <mat-menu #moreMenu="matMenu" xPosition="before">
-          <a
-            i18n
-            mat-menu-item
-            [routerLink]="routerLinkHoldings"
-            >Holdings</a
-          >
-          <a
-            i18n
-            mat-menu-item
-            [routerLink]="routerLinkSummary"
-            >Summary</a
-          >
-          <a
-            i18n
-            mat-menu-item
-            [routerLink]="routerLinkWatchlist"
-            >Watchlist</a
-          >
+          <a i18n mat-menu-item [routerLink]="routerLinkHoldings">Holdings</a>
+          <a i18n mat-menu-item [routerLink]="routerLinkSummary">Summary</a>
+          <a i18n mat-menu-item [routerLink]="routerLinkWatchlist">Watchlist</a>
           @if (hasPermissionToAccessAdminControl) {
             <hr class="m-0" />
-            <a
-              i18n
-              mat-menu-item
-              [routerLink]="routerLinkAdminControl"
+            <a i18n mat-menu-item [routerLink]="routerLinkAdminControl"
               >Admin Control</a
             >
           }
           <hr class="m-0" />
-          <a
-            i18n
-            mat-menu-item
-            [routerLink]="routerLinkAbout"
-            >About</a
-          >
+          <a i18n mat-menu-item [routerLink]="routerLinkAbout">About</a>
         </mat-menu>
       </li>
       <li class="list-inline-item">
@@ -275,10 +252,7 @@
             [routerLink]="routerLinkWatchlist"
             >Watchlist</a
           >
-          <a
-            i18n
-            mat-menu-item
-            [routerLink]="routerLinkAccount"
+          <a i18n mat-menu-item [routerLink]="routerLinkAccount"
             >My Ghostfolio</a
           >
           @if (hasPermissionToAccessAdminControl) {

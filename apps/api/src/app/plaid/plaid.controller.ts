@@ -37,13 +37,8 @@ export class PlaidController {
   @Post('exchange-token')
   @HasPermission(permissions.connectPlaid)
   @UseGuards(AuthGuard('jwt'), HasPermissionGuard)
-  public async exchangePublicToken(
-    @Body() body: ExchangePlaidTokenDto
-  ) {
-    return this.plaidService.exchangePublicToken(
-      this.request.user.id,
-      body
-    );
+  public async exchangePublicToken(@Body() body: ExchangePlaidTokenDto) {
+    return this.plaidService.exchangePublicToken(this.request.user.id, body);
   }
 
   @Post(':id/sync')

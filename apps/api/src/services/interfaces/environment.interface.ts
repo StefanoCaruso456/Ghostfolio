@@ -67,6 +67,9 @@ export interface Environment extends CleanedEnvAccessors {
   REDIS_PORT: number;
   REQUEST_TIMEOUT: number;
   ROOT_URL: string;
+  PLAID_CLIENT_ID: string;
+  PLAID_ENV: string;
+  PLAID_SECRET: string;
   STAGING_PASSWORD: string;
   STRIPE_SECRET_KEY: string;
   TWITTER_ACCESS_TOKEN: string;

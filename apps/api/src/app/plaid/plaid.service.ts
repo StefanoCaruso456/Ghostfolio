@@ -57,9 +57,7 @@ export class PlaidService {
     }
   }
 
-  public async createLinkToken(
-    userId: string
-  ): Promise<{ linkToken: string }> {
+  public async createLinkToken(userId: string): Promise<{ linkToken: string }> {
     this.ensureConfigured();
 
     const response = await this.plaidClient.linkTokenCreate({
@@ -125,10 +123,7 @@ export class PlaidService {
     }
 
     const encryptionKey = this.configurationService.get('PLAID_ENCRYPTION_KEY');
-    const accessToken = decrypt(
-      plaidItem.encryptedAccessToken,
-      encryptionKey
-    );
+    const accessToken = decrypt(plaidItem.encryptedAccessToken, encryptionKey);
 
     const holdingsResponse = await this.plaidClient.investmentsHoldingsGet({
       access_token: accessToken
@@ -233,9 +228,7 @@ export class PlaidService {
       where: { id: plaidItemId }
     });
 
-    this.logger.log(
-      `Synced ${synced} holdings from PlaidItem ${plaidItemId}`
-    );
+    this.logger.log(`Synced ${synced} holdings from PlaidItem ${plaidItemId}`);
 
     return { synced };
   }
@@ -260,8 +253,9 @@ export class PlaidService {
 
     // Revoke access token at Plaid
     try {
-      const encryptionKey =
-        this.configurationService.get('PLAID_ENCRYPTION_KEY');
+      const encryptionKey = this.configurationService.get(
+        'PLAID_ENCRYPTION_KEY'
+      );
       const accessToken = decrypt(
         plaidItem.encryptedAccessToken,
         encryptionKey

@@ -138,7 +138,8 @@ export class GfHeaderComponent implements OnChanges {
   public routerLinkRegister = publicRoutes.register.routerLink;
   public routerLinkResources = publicRoutes.resources.routerLink;
   public routerLinkSummary = internalRoutes.home.subRoutes.summary.routerLink;
-  public routerLinkWatchlist = internalRoutes.home.subRoutes.watchlist.routerLink;
+  public routerLinkWatchlist =
+    internalRoutes.home.subRoutes.watchlist.routerLink;
 
   private unsubscribeSubject = new Subject<void>();
 

@@ -61,7 +61,7 @@ This system adds AI-driven dashboard configuration to Ghostfolio via an MCP (Met
 - **Body:**
 
 ```json
-{ "id": "optional", "method": "string", "params": { } }
+{ "id": "optional", "method": "string", "params": {} }
 ```
 
 ### Dispatch Model

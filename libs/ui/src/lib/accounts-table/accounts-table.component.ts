@@ -142,6 +142,10 @@ export class GfAccountsTableComponent {
     });
   }
 
+  protected onConnectBroker() {
+    this.connectBroker.emit();
+  }
+
   protected onDeleteAccount(aId: string) {
     this.notificationService.confirm({
       confirmFn: () => {
@@ -164,10 +168,6 @@ export class GfAccountsTableComponent {
     this.notificationService.alert({
       title: aComment
     });
-  }
-
-  protected onConnectBroker() {
-    this.connectBroker.emit();
   }
 
   protected onTransferBalance() {

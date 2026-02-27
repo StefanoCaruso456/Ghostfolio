@@ -83,11 +83,11 @@ import {
 /** MAX_ITERATIONS: 8-10 steps — prevent infinite loops + runaway cost */
 const MAX_ITERATIONS = 10;
 
-/** TIMEOUT: 45s base — matches user patience + gateway timeouts */
-const TIMEOUT_MS = 45_000;
+/** TIMEOUT: 90s base — generous budget for multi-step tool chains */
+const TIMEOUT_MS = 90_000;
 
-/** TIMEOUT_MULTIMODAL: 90s — image/vision requests need more time */
-const TIMEOUT_MULTIMODAL_MS = 90_000;
+/** TIMEOUT_MULTIMODAL: 180s — image/vision requests need more time */
+const TIMEOUT_MULTIMODAL_MS = 180_000;
 
 /** COST_LIMIT: $1/query — prevent bill explosions */
 const COST_LIMIT_USD = 1.0;
@@ -1051,7 +1051,7 @@ export class AiService {
       if (isGuardrail) {
         const isTimeout = errorMessage.includes('timed out');
         const friendlyMessage = isTimeout
-          ? 'Your request took too long to process. This can happen with large files or complex images. Try a smaller file, or ask a more specific question about the content.'
+          ? 'Your request took too long to process. This can happen with complex portfolio analysis, large files, or when market data providers are slow. Try a more specific question or ask about fewer symbols at once.'
           : 'I had to stop processing your request due to a safety guardrail. Please try rephrasing your question or ask something simpler.';
 
         return {

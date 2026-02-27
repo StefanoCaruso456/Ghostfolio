@@ -117,6 +117,9 @@ export class ConfigurationService {
       ROOT_URL: url({
         default: environment.rootUrl
       }),
+      PLAID_CLIENT_ID: str({ default: '' }),
+      PLAID_ENV: str({ default: 'sandbox' }),
+      PLAID_SECRET: str({ default: '' }),
       STAGING_PASSWORD: str({ default: '' }),
       STRIPE_SECRET_KEY: str({ default: '' }),
       TWITTER_ACCESS_TOKEN: str({ default: 'dummyAccessToken' }),

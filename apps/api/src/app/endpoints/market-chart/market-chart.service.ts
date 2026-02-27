@@ -1,12 +1,7 @@
 import { RedisCacheService } from '@ghostfolio/api/app/redis-cache/redis-cache.service';
 import { MarketChartResponse } from '@ghostfolio/common/interfaces';
 
-import {
-  HttpException,
-  HttpStatus,
-  Injectable,
-  Logger
-} from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { subDays, subMonths, subYears } from 'date-fns';
 import ms from 'ms';
 import YahooFinance from 'yahoo-finance2';
@@ -19,9 +14,7 @@ export class MarketChartService {
     suppressNotices: ['yahooSurvey']
   });
 
-  public constructor(
-    private readonly redisCacheService: RedisCacheService
-  ) {}
+  public constructor(private readonly redisCacheService: RedisCacheService) {}
 
   public async getChart(
     symbol: string,
@@ -34,8 +27,7 @@ export class MarketChartService {
       const cached = await this.redisCacheService.get(cacheKey);
 
       if (cached) {
-        const parsed =
-          typeof cached === 'string' ? JSON.parse(cached) : cached;
+        const parsed = typeof cached === 'string' ? JSON.parse(cached) : cached;
 
         return { ...parsed, cached: true };
       }
@@ -91,9 +83,7 @@ export class MarketChartService {
 
       return response;
     } catch (error) {
-      this.logger.error(
-        `Yahoo Finance error for ${symbol}: ${error.message}`
-      );
+      this.logger.error(`Yahoo Finance error for ${symbol}: ${error.message}`);
 
       throw new HttpException(
         'Yahoo Finance unavailable',

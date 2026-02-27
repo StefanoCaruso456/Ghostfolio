@@ -15,12 +15,12 @@ The integration is secure, versioned, and environment-driven.
 
 ## Repositories
 
-| Repo | Purpose | Runtime |
-|------|---------|---------|
-| `Ghostfolio` | Main product (NestJS API + Angular UI) | Railway |
-| `ghostfolio-mcp-server` | RPC execution service | Railway |
-| `MCP` | Shared protocol + dispatch conventions | Library |
-| `AI_AGENT_SKILLS` | Tool/skill implementations | Library |
+| Repo                    | Purpose                                | Runtime |
+| ----------------------- | -------------------------------------- | ------- |
+| `Ghostfolio`            | Main product (NestJS API + Angular UI) | Railway |
+| `ghostfolio-mcp-server` | RPC execution service                  | Railway |
+| `MCP`                   | Shared protocol + dispatch conventions | Library |
+| `AI_AGENT_SKILLS`       | Tool/skill implementations             | Library |
 
 ---
 
@@ -101,6 +101,7 @@ NODE_ENV=production
 ```
 
 **Security boundary:**
+
 - MCP server only accepts requests with valid `x-mcp-api-key`
 - Ghostfolio endpoint requires JWT authentication
 
@@ -129,7 +130,7 @@ Content-Type: application/json
 {
   "id": "optional",
   "method": "string",
-  "params": { }
+  "params": {}
 }
 ```
 
@@ -224,12 +225,12 @@ User Browser
 
 ## Error Flow
 
-| Scenario | Response | Handling |
-|----------|----------|----------|
-| JWT Failure | `401 Unauthorized` | Handled before MCP call |
-| Permission Failure | `403 Forbidden` | Handled before MCP call |
-| MCP Method Missing | MCP returns `404 METHOD_NOT_FOUND` | Ghostfolio maps to `502 Bad Gateway` |
-| MCP Network Failure | Timeout / connection error | Ghostfolio returns `502` |
+| Scenario            | Response                           | Handling                             |
+| ------------------- | ---------------------------------- | ------------------------------------ |
+| JWT Failure         | `401 Unauthorized`                 | Handled before MCP call              |
+| Permission Failure  | `403 Forbidden`                    | Handled before MCP call              |
+| MCP Method Missing  | MCP returns `404 METHOD_NOT_FOUND` | Ghostfolio maps to `502 Bad Gateway` |
+| MCP Network Failure | Timeout / connection error         | Ghostfolio returns `502`             |
 
 ---
 
@@ -260,6 +261,7 @@ method: getDashboardConfig
 ```
 
 Used to validate:
+
 - Deployment correctness
 - Method availability
 - API key alignment
@@ -268,11 +270,11 @@ Used to validate:
 
 ## Security Model
 
-| Layer | Protection |
-|-------|------------|
-| Client -> Ghostfolio | JWT Authentication |
-| Ghostfolio -> MCP | Shared Secret (`x-mcp-api-key`) |
-| Environment | Secrets stored in Railway |
+| Layer                | Protection                      |
+| -------------------- | ------------------------------- |
+| Client -> Ghostfolio | JWT Authentication              |
+| Ghostfolio -> MCP    | Shared Secret (`x-mcp-api-key`) |
+| Environment          | Secrets stored in Railway       |
 
 No direct public access to skill layer.
 

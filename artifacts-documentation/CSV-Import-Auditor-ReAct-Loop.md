@@ -85,10 +85,10 @@ interface SessionData {
 }
 ```
 
-| Parameter | Value | Purpose |
-|-----------|-------|---------|
-| `SESSION_TTL_MS` | 3,600,000 (1 hour) | Auto-expire idle sessions |
-| `MAX_SESSIONS` | 100 | Memory ceiling for concurrent imports |
+| Parameter        | Value              | Purpose                               |
+| ---------------- | ------------------ | ------------------------------------- |
+| `SESSION_TTL_MS` | 3,600,000 (1 hour) | Auto-expire idle sessions             |
+| `MAX_SESSIONS`   | 100                | Memory ceiling for concurrent imports |
 
 Sessions are evicted on access when expired. Tool results persist in `toolResults` so the LLM can reference prior step outputs without re-execution.
 
@@ -135,21 +135,21 @@ All tools are registered with the Vercel AI SDK's `tool()` function. The LLM sel
 
 ### Pipeline Tools
 
-| Tool | File | Purpose | Typical Step |
-|------|------|---------|-------------|
-| `parseCSV` | `parse-csv.tool.ts` | Parse raw CSV into structured rows + headers | 1st |
-| `mapBrokerFields` | `map-broker-fields.tool.ts` | Map CSV headers to Ghostfolio fields | 2nd |
-| `validateTransactions` | `validate-transactions.tool.ts` | Apply domain rules to mapped transactions | 3rd |
-| `detectDuplicates` | `detect-duplicates.tool.ts` | Find duplicates within batch and against DB | 4th |
-| `previewImportReport` | `preview-import-report.tool.ts` | Generate human-readable summary for review | 5th |
-| `commitImport` | `commit-import.tool.ts` | Transform to DTOs for final import | 6th |
+| Tool                   | File                            | Purpose                                      | Typical Step |
+| ---------------------- | ------------------------------- | -------------------------------------------- | ------------ |
+| `parseCSV`             | `parse-csv.tool.ts`             | Parse raw CSV into structured rows + headers | 1st          |
+| `mapBrokerFields`      | `map-broker-fields.tool.ts`     | Map CSV headers to Ghostfolio fields         | 2nd          |
+| `validateTransactions` | `validate-transactions.tool.ts` | Apply domain rules to mapped transactions    | 3rd          |
+| `detectDuplicates`     | `detect-duplicates.tool.ts`     | Find duplicates within batch and against DB  | 4th          |
+| `previewImportReport`  | `preview-import-report.tool.ts` | Generate human-readable summary for review   | 5th          |
+| `commitImport`         | `commit-import.tool.ts`         | Transform to DTOs for final import           | 6th          |
 
 ### Supporting Tools (used internally by pipeline tools)
 
-| Tool | File | Purpose |
-|------|------|---------|
+| Tool                     | File                                | Purpose                                        |
+| ------------------------ | ----------------------------------- | ---------------------------------------------- |
 | `normalizeToActivityDTO` | `normalize-to-activity-dto.tool.ts` | Normalize types, dates, numerics to DTO format |
-| `detectBrokerFormat` | `detect-broker-format.tool.ts` | Identify broker source from headers + patterns |
+| `detectBrokerFormat`     | `detect-broker-format.tool.ts`      | Identify broker source from headers + patterns |
 
 ---
 
@@ -193,28 +193,28 @@ Maps CSV column headers to Ghostfolio's canonical fields using deterministic mat
 
 **Deterministic Field Map:**
 
-| Target Field | Recognized Headers |
-|--------------|--------------------|
-| `account` | account, accountid |
-| `comment` | comment, note |
-| `currency` | ccy, currency, currencyprimary |
-| `date` | date, tradedate |
-| `fee` | commission, fee, ibcommission |
-| `quantity` | qty, quantity, shares, units |
-| `symbol` | code, symbol, ticker |
-| `type` | action, activitytype, buy/sell, type |
-| `unitPrice` | price, tradeprice, unitprice, value |
+| Target Field | Recognized Headers                   |
+| ------------ | ------------------------------------ |
+| `account`    | account, accountid                   |
+| `comment`    | comment, note                        |
+| `currency`   | ccy, currency, currencyprimary       |
+| `date`       | date, tradedate                      |
+| `fee`        | commission, fee, ibcommission        |
+| `quantity`   | qty, quantity, shares, units         |
+| `symbol`     | code, symbol, ticker                 |
+| `type`       | action, activitytype, buy/sell, type |
+| `unitPrice`  | price, tradeprice, unitprice, value  |
 
 **LLM Fallback:** Invoked only when deterministic matching is `'partial'` and `useLlmFallback = true`. LLM confidence is clamped to 0.6–0.8 range to reflect uncertainty.
 
 **Transform Rules:**
 
-| Field | Transformation |
-|-------|---------------|
-| `date` | Parse as date string |
-| `fee`, `quantity`, `unitPrice` | Parse as number, take absolute value |
-| `type` | Normalize to uppercase enum: BUY, SELL, DIVIDEND, FEE, INTEREST, LIABILITY |
-| `currency` | Validate as 3-character ISO 4217 code |
+| Field                          | Transformation                                                             |
+| ------------------------------ | -------------------------------------------------------------------------- |
+| `date`                         | Parse as date string                                                       |
+| `fee`, `quantity`, `unitPrice` | Parse as number, take absolute value                                       |
+| `type`                         | Normalize to uppercase enum: BUY, SELL, DIVIDEND, FEE, INTEREST, LIABILITY |
+| `currency`                     | Validate as 3-character ISO 4217 code                                      |
 
 ---
 
@@ -248,10 +248,10 @@ Identifies duplicate transactions within the CSV batch and against existing port
 
 **Detection Tiers:**
 
-| Tier | Match Source | Confidence | Date Precision |
-|------|-------------|------------|----------------|
-| `batch` | Within CSV rows | 1.0 | Exact key match |
-| `database` | Against existing activities | 0.95 | Second-level (`isSameSecond()`) |
+| Tier       | Match Source                | Confidence | Date Precision                  |
+| ---------- | --------------------------- | ---------- | ------------------------------- |
+| `batch`    | Within CSV rows             | 1.0        | Exact key match                 |
+| `database` | Against existing activities | 0.95       | Second-level (`isSameSecond()`) |
 
 ---
 
@@ -277,17 +277,17 @@ Transforms validated activities into `CreateOrderDto` objects for Ghostfolio's i
 
 **DTO Fields:**
 
-| Field | Required | Default |
-|-------|----------|---------|
-| `currency` | Yes | — |
-| `date` | Yes | — |
-| `symbol` | Yes | — |
-| `type` | Yes | — |
-| `fee` | No | 0 |
-| `quantity` | No | 0 |
-| `unitPrice` | No | 0 |
-| `accountId` | No | — |
-| `comment` | No | — |
+| Field       | Required | Default |
+| ----------- | -------- | ------- |
+| `currency`  | Yes      | —       |
+| `date`      | Yes      | —       |
+| `symbol`    | Yes      | —       |
+| `type`      | Yes      | —       |
+| `fee`       | No       | 0       |
+| `quantity`  | No       | 0       |
+| `unitPrice` | No       | 0       |
+| `accountId` | No       | —       |
+| `comment`   | No       | —       |
 
 Errors are reported per-row without halting the entire batch.
 
@@ -299,12 +299,12 @@ Normalizes raw broker data into Ghostfolio's DTO format with extensive type alia
 
 **Type Normalization (57 aliases):**
 
-| Input Variants | Normalized To |
-|----------------|---------------|
-| Market buy, Limit buy, PURCHASE | BUY |
-| Market sell, SALE | SELL |
-| DIV | DIVIDEND |
-| COMMISSION | FEE |
+| Input Variants                  | Normalized To |
+| ------------------------------- | ------------- |
+| Market buy, Limit buy, PURCHASE | BUY           |
+| Market sell, SALE               | SELL          |
+| DIV                             | DIVIDEND      |
+| COMMISSION                      | FEE           |
 
 **Date Format Support:**
 
@@ -324,13 +324,13 @@ Identifies the broker source from CSV headers and file patterns.
 
 **Supported Brokers:**
 
-| Broker | Required Headers | File Pattern |
-|--------|-----------------|--------------|
-| Interactive Brokers | currencyprimary, symbol, tradedate, tradeprice, quantity | `/ibkr/i`, `/interactive.?broker/i` |
-| DEGIRO | datum, produkt, isin | — |
-| Trading212 | action, time, ticker, price, no. of shares | — |
-| Swissquote | date, order, symbol, quantity, price | — |
-| Ghostfolio | date, code, datasource, currency, price, quantity, action, fee | — |
+| Broker              | Required Headers                                               | File Pattern                        |
+| ------------------- | -------------------------------------------------------------- | ----------------------------------- |
+| Interactive Brokers | currencyprimary, symbol, tradedate, tradeprice, quantity       | `/ibkr/i`, `/interactive.?broker/i` |
+| DEGIRO              | datum, produkt, isin                                           | —                                   |
+| Trading212          | action, time, ticker, price, no. of shares                     | —                                   |
+| Swissquote          | date, order, symbol, quantity, price                           | —                                   |
+| Ghostfolio          | date, code, datasource, currency, price, quantity, action, fee | —                                   |
 
 **Confidence Calculation:**
 
@@ -355,7 +355,7 @@ Every tool returns a `VerificationResult` envelope (defined in `schemas/verifica
 ```typescript
 interface VerificationResult {
   passed: boolean;
-  confidence: number;              // 0–1
+  confidence: number; // 0–1
   warnings: string[];
   errors: string[];
   sources: string[];
@@ -401,12 +401,12 @@ When combining results from multiple tools, `mergeVerificationResults()`:
 
 ## 8. Guardrails
 
-| Guardrail | File | Config | Trigger | Action |
-|-----------|------|--------|---------|--------|
-| **Circuit Breaker** | `circuit-breaker.ts` | `maxRepetitions: 3` | Same tool + identical args called 3× | Abort loop |
-| **Cost Limiter** | `cost-limiter.ts` | `maxCostUsd: 1.0`, `warnThreshold: 0.8` | Accumulated cost exceeds $1.00 | Abort loop |
-| **Max Iterations** | `import-auditor.service.ts` | `MAX_ITERATIONS: 10` | 10 LLM round-trips | Force exit |
-| **Timeout** | `import-auditor.service.ts` | `TIMEOUT_MS: 45,000` | 45 seconds elapsed | Abort |
+| Guardrail           | File                        | Config                                  | Trigger                              | Action     |
+| ------------------- | --------------------------- | --------------------------------------- | ------------------------------------ | ---------- |
+| **Circuit Breaker** | `circuit-breaker.ts`        | `maxRepetitions: 3`                     | Same tool + identical args called 3× | Abort loop |
+| **Cost Limiter**    | `cost-limiter.ts`           | `maxCostUsd: 1.0`, `warnThreshold: 0.8` | Accumulated cost exceeds $1.00       | Abort loop |
+| **Max Iterations**  | `import-auditor.service.ts` | `MAX_ITERATIONS: 10`                    | 10 LLM round-trips                   | Force exit |
+| **Timeout**         | `import-auditor.service.ts` | `TIMEOUT_MS: 45,000`                    | 45 seconds elapsed                   | Abort      |
 
 ### Circuit Breaker Details
 
@@ -484,33 +484,33 @@ interface ToolCallRecord {
 
 ## 11. Dependencies
 
-| Dependency | Purpose |
-|------------|---------|
-| `@openrouter/ai-sdk-provider` | LLM provider (OpenRouter) |
-| `ai` (Vercel AI SDK) | `generateText`, `tool()` registration |
-| `papaparse` | CSV parsing |
-| `date-fns` | Date comparison (`isSameSecond`) |
-| `zod` | Schema validation |
-| Braintrust | Telemetry and tracing |
-| `OrderService` | Portfolio activity queries (duplicate detection) |
-| `ImportService` | Transaction commit |
-| `ConfigurationService` | Environment config |
+| Dependency                    | Purpose                                          |
+| ----------------------------- | ------------------------------------------------ |
+| `@openrouter/ai-sdk-provider` | LLM provider (OpenRouter)                        |
+| `ai` (Vercel AI SDK)          | `generateText`, `tool()` registration            |
+| `papaparse`                   | CSV parsing                                      |
+| `date-fns`                    | Date comparison (`isSameSecond`)                 |
+| `zod`                         | Schema validation                                |
+| Braintrust                    | Telemetry and tracing                            |
+| `OrderService`                | Portfolio activity queries (duplicate detection) |
+| `ImportService`               | Transaction commit                               |
+| `ConfigurationService`        | Environment config                               |
 
 ---
 
 ## 12. Key Source Files
 
-| File | Purpose |
-|------|---------|
-| `apps/api/src/app/import-auditor/import-auditor.service.ts` | ReAct loop, session management, tool orchestration |
-| `apps/api/src/app/import-auditor/tools/parse-csv.tool.ts` | CSV parsing with PapaParse |
-| `apps/api/src/app/import-auditor/tools/map-broker-fields.tool.ts` | Header mapping (deterministic + LLM fallback) |
-| `apps/api/src/app/import-auditor/tools/validate-transactions.tool.ts` | 8-rule domain validation |
-| `apps/api/src/app/import-auditor/tools/detect-duplicates.tool.ts` | Batch + database deduplication |
-| `apps/api/src/app/import-auditor/tools/preview-import-report.tool.ts` | Pre-commit summary report |
-| `apps/api/src/app/import-auditor/tools/commit-import.tool.ts` | DTO transformation for import |
-| `apps/api/src/app/import-auditor/tools/normalize-to-activity-dto.tool.ts` | Type/date/numeric normalization |
-| `apps/api/src/app/import-auditor/tools/detect-broker-format.tool.ts` | Broker identification |
-| `apps/api/src/app/import-auditor/schemas/verification.schema.ts` | Verification types + escalation logic |
-| `apps/api/src/app/import-auditor/guardrails/circuit-breaker.ts` | Repetition detection |
-| `apps/api/src/app/import-auditor/guardrails/cost-limiter.ts` | Budget enforcement |
+| File                                                                      | Purpose                                            |
+| ------------------------------------------------------------------------- | -------------------------------------------------- |
+| `apps/api/src/app/import-auditor/import-auditor.service.ts`               | ReAct loop, session management, tool orchestration |
+| `apps/api/src/app/import-auditor/tools/parse-csv.tool.ts`                 | CSV parsing with PapaParse                         |
+| `apps/api/src/app/import-auditor/tools/map-broker-fields.tool.ts`         | Header mapping (deterministic + LLM fallback)      |
+| `apps/api/src/app/import-auditor/tools/validate-transactions.tool.ts`     | 8-rule domain validation                           |
+| `apps/api/src/app/import-auditor/tools/detect-duplicates.tool.ts`         | Batch + database deduplication                     |
+| `apps/api/src/app/import-auditor/tools/preview-import-report.tool.ts`     | Pre-commit summary report                          |
+| `apps/api/src/app/import-auditor/tools/commit-import.tool.ts`             | DTO transformation for import                      |
+| `apps/api/src/app/import-auditor/tools/normalize-to-activity-dto.tool.ts` | Type/date/numeric normalization                    |
+| `apps/api/src/app/import-auditor/tools/detect-broker-format.tool.ts`      | Broker identification                              |
+| `apps/api/src/app/import-auditor/schemas/verification.schema.ts`          | Verification types + escalation logic              |
+| `apps/api/src/app/import-auditor/guardrails/circuit-breaker.ts`           | Repetition detection                               |
+| `apps/api/src/app/import-auditor/guardrails/cost-limiter.ts`              | Budget enforcement                                 |

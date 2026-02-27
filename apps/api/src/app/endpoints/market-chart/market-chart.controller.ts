@@ -7,9 +7,7 @@ import { MarketChartService } from './market-chart.service';
 
 @Controller('market-chart')
 export class MarketChartController {
-  public constructor(
-    private readonly marketChartService: MarketChartService
-  ) {}
+  public constructor(private readonly marketChartService: MarketChartService) {}
 
   @Get()
   @UseGuards(AuthGuard('jwt'))
