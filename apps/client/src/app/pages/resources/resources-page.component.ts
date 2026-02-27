@@ -1,44 +1,23 @@
-import { TabConfiguration } from '@ghostfolio/common/interfaces';
-import { publicRoutes } from '@ghostfolio/common/routes/routes';
-
 import { Component, OnInit } from '@angular/core';
-import { MatTabsModule } from '@angular/material/tabs';
 import { RouterModule } from '@angular/router';
-import { IonIcon } from '@ionic/angular/standalone';
-import { addIcons } from 'ionicons';
-import { bookOutline, libraryOutline } from 'ionicons/icons';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { Subject } from 'rxjs';
 
 import { ResourcesMarketsComponent } from './markets/resources-markets.component';
 
 @Component({
-  host: { class: 'page has-tabs' },
-  imports: [IonIcon, MatTabsModule, ResourcesMarketsComponent, RouterModule],
+  host: { class: 'page' },
+  imports: [ResourcesMarketsComponent, RouterModule],
   selector: 'gf-resources-page',
   styleUrls: ['./resources-page.scss'],
   templateUrl: './resources-page.html'
 })
 export class ResourcesPageComponent implements OnInit {
   public deviceType: string;
-  public tabs: TabConfiguration[] = [
-    {
-      label: $localize`Guides`,
-      iconName: 'book-outline',
-      routerLink: publicRoutes.resources.routerLink
-    },
-    {
-      iconName: 'library-outline',
-      label: $localize`Glossary`,
-      routerLink: publicRoutes.resources.subRoutes.glossary.routerLink
-    }
-  ];
 
   private unsubscribeSubject = new Subject<void>();
 
-  public constructor(private deviceService: DeviceDetectorService) {
-    addIcons({ bookOutline, libraryOutline });
-  }
+  public constructor(private deviceService: DeviceDetectorService) {}
 
   public ngOnInit() {
     this.deviceType = this.deviceService.getDeviceInfo().deviceType;
