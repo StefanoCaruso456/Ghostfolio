@@ -65,13 +65,40 @@ export class McpClientService {
         signal: controller.signal
       });
 
-      if (!response.ok) {
-        const errorText = await response.text().catch(() => 'unknown error');
+      const status = response.status;
+      const responseText = await response.text().catch(() => '');
 
-        throw new Error(`MCP server returned ${response.status}: ${errorText}`);
+      this.logger.log(`MCP RPC ${method} → ${status} @ ${url}`);
+
+      if (!response.ok) {
+        this.logger.error(
+          `MCP RPC ${method} failed: status=${status} body=${responseText}`
+        );
+
+        let mcpBody: unknown;
+
+        try {
+          mcpBody = JSON.parse(responseText);
+        } catch {
+          mcpBody = responseText;
+        }
+
+        const err = new Error(`MCP server returned ${status}`);
+        (err as any).mcpStatus = status;
+        (err as any).mcpBody = mcpBody;
+
+        throw err;
       }
 
-      const data = (await response.json()) as T;
+      let data: T;
+
+      try {
+        data = JSON.parse(responseText) as T;
+      } catch {
+        throw new Error(
+          `MCP server returned invalid JSON for method ${method}`
+        );
+      }
 
       this.logger.debug(`MCP RPC ← ${method} OK`);
 
@@ -87,6 +114,11 @@ export class McpClientService {
         );
       }
 
+      // Re-throw enriched errors from above as-is
+      if ((error as any)?.mcpStatus) {
+        throw error;
+      }
+
       this.logger.error(
         `MCP RPC error for method ${method}: ${error?.message ?? error}`
       );
@@ -98,9 +130,27 @@ export class McpClientService {
   }
 
   /**
-   * Check if the MCP server is configured and reachable.
+   * Check if the MCP server is configured.
    */
   public isConfigured(): boolean {
     return !!this.mcpServerUrl;
+  }
+
+  /**
+   * Check if an API key is configured (without revealing it).
+   */
+  public hasApiKey(): boolean {
+    return !!this.mcpApiKey;
+  }
+
+  /**
+   * Get the resolved RPC URL (safe to expose in diagnostics).
+   */
+  public getResolvedRpcUrl(): string | null {
+    if (!this.mcpServerUrl) {
+      return null;
+    }
+
+    return `${this.mcpServerUrl.replace(/\/+$/, '')}/rpc`;
   }
 }
