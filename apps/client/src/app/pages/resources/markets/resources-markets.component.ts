@@ -78,7 +78,7 @@ export class ResourcesMarketsComponent implements OnInit, OnDestroy {
   public errorMap = new Map<string, string>();
   public latestValueMap = new Map<string, number>();
   public loadingMap = new Map<string, boolean>();
-  public ranges = ['5D', '1M', '6M', '1Y'];
+  public ranges = ['5D', '1M', '6M', '1Y', '5Y', '10Y', 'MAX'];
   public searchControl = new FormControl('');
   public searchResults: LookupItem[] = [];
   public selectedRange = '1M';

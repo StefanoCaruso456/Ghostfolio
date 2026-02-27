@@ -50,12 +50,14 @@ export class MarketChartService {
       const now = new Date();
       const period1 = this.getPeriodStart(range, now);
 
+      const interval = this.getInterval(range);
+
       const result: ChartResultArray = await this.yahooFinance.chart(
         yahooSymbol,
         {
           events: '',
           includePrePost: false,
-          interval: '1d',
+          interval,
           period1: format(period1, DATE_FORMAT),
           period2: format(now, DATE_FORMAT)
         }
@@ -109,6 +111,18 @@ export class MarketChartService {
     }
   }
 
+  private getInterval(range: string): '1d' | '1wk' | '1mo' {
+    switch (range) {
+      case '5Y':
+      case '10Y':
+        return '1wk';
+      case 'MAX':
+        return '1mo';
+      default:
+        return '1d';
+    }
+  }
+
   private getPeriodStart(range: string, now: Date): Date {
     switch (range) {
       case '5D':
@@ -117,6 +131,12 @@ export class MarketChartService {
         return subMonths(now, 6);
       case '1Y':
         return subYears(now, 1);
+      case '5Y':
+        return subYears(now, 5);
+      case '10Y':
+        return subYears(now, 10);
+      case 'MAX':
+        return new Date('1970-01-01');
       case '1M':
       default:
         return subMonths(now, 1);
