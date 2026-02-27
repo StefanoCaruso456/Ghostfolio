@@ -10,8 +10,7 @@ import { IonIcon } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
   bookOutline,
-  libraryOutline,
-  readerOutline
+  libraryOutline
 } from 'ionicons/icons';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { Subject } from 'rxjs';
@@ -27,14 +26,9 @@ export class ResourcesPageComponent implements OnInit {
   public deviceType: string;
   public tabs: TabConfiguration[] = [
     {
-      iconName: 'reader-outline',
-      label: $localize`Overview`,
-      routerLink: publicRoutes.resources.routerLink
-    },
-    {
       label: $localize`Guides`,
       iconName: 'book-outline',
-      routerLink: publicRoutes.resources.subRoutes.guides.routerLink
+      routerLink: publicRoutes.resources.routerLink
     },
     {
       iconName: 'library-outline',
@@ -46,7 +40,7 @@ export class ResourcesPageComponent implements OnInit {
   private unsubscribeSubject = new Subject<void>();
 
   public constructor(private deviceService: DeviceDetectorService) {
-    addIcons({ bookOutline, libraryOutline, readerOutline });
+    addIcons({ bookOutline, libraryOutline });
   }
 
   public ngOnInit() {
