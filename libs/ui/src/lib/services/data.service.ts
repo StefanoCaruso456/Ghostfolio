@@ -40,6 +40,7 @@ import {
   ImportResponse,
   InfoItem,
   LookupResponse,
+  MarketChartResponse,
   MarketDataDetailsResponse,
   MarketDataOfMarketsResponse,
   OAuthResponse,
@@ -402,6 +403,12 @@ export class DataService {
 
   public disconnectPlaidItem(id: string) {
     return this.http.delete<void>(`/api/v1/plaid/${id}`);
+  }
+
+  public fetchMarketChart(symbol: string, range: string) {
+    return this.http.get<MarketChartResponse>('/api/v1/market-chart', {
+      params: { symbol, range }
+    });
   }
 
   public deleteActivities({ filters }) {
