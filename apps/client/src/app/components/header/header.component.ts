@@ -42,6 +42,7 @@ import { IonIcon } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
   closeOutline,
+  ellipsisHorizontalOutline,
   logoGithub,
   menuOutline,
   optionsOutline,
@@ -130,11 +131,14 @@ export class GfHeaderComponent implements OnChanges {
   public routerLinkAdminControl = internalRoutes.adminControl.routerLink;
   public routerLinkAiChat = internalRoutes.aiChat.routerLink;
   public routerLinkFeatures = publicRoutes.features.routerLink;
+  public routerLinkHoldings = internalRoutes.home.subRoutes.holdings.routerLink;
   public routerLinkMarkets = publicRoutes.markets.routerLink;
   public routerLinkPortfolio = internalRoutes.portfolio.routerLink;
   public routerLinkPricing = publicRoutes.pricing.routerLink;
   public routerLinkRegister = publicRoutes.register.routerLink;
   public routerLinkResources = publicRoutes.resources.routerLink;
+  public routerLinkSummary = internalRoutes.home.subRoutes.summary.routerLink;
+  public routerLinkWatchlist = internalRoutes.home.subRoutes.watchlist.routerLink;
 
   private unsubscribeSubject = new Subject<void>();
 
@@ -159,6 +163,7 @@ export class GfHeaderComponent implements OnChanges {
 
     addIcons({
       closeOutline,
+      ellipsisHorizontalOutline,
       logoGithub,
       menuOutline,
       optionsOutline,
