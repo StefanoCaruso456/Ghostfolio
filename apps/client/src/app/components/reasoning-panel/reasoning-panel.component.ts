@@ -47,10 +47,12 @@ export class GfReasoningPanelComponent implements OnInit, OnDestroy {
   @Input() traceId: string | null = null;
 
   public preview: ReasoningPreview | null = null;
-  public isCollapsed = true;
+  public isCollapsed = false;
   public expandedSteps = new Set<string>();
   public traceIdCopied = false;
+  public visibleStepIds = new Set<string>();
 
+  private previousStepCount = 0;
   private unsubscribeSubject = new Subject<void>();
 
   public constructor(
@@ -77,8 +79,43 @@ export class GfReasoningPanelComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.unsubscribeSubject))
       .subscribe((preview) => {
         this.preview = preview;
+
+        // Auto-expand when first steps arrive
+        if (preview && preview.steps.length > 0) {
+          this.isCollapsed = false;
+        }
+
+        // Stagger-animate new steps
+        if (preview && preview.steps.length > this.previousStepCount) {
+          const newSteps = preview.steps.slice(this.previousStepCount);
+
+          // If trace is already completed (loaded from persistence), show all instantly
+          if (preview.completedAt !== null) {
+            for (const step of newSteps) {
+              this.visibleStepIds.add(step.id);
+            }
+          } else {
+            // Live stream — stagger the entrance
+            let delay = 0;
+
+            for (const step of newSteps) {
+              setTimeout(() => {
+                this.visibleStepIds.add(step.id);
+                this.changeDetectorRef.markForCheck();
+              }, delay);
+              delay += 80;
+            }
+          }
+
+          this.previousStepCount = preview.steps.length;
+        }
+
         this.changeDetectorRef.markForCheck();
       });
+  }
+
+  public isStepVisible(stepId: string): boolean {
+    return this.visibleStepIds.has(stepId);
   }
 
   public onToggleCollapse(): void {

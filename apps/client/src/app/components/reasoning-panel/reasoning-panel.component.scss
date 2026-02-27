@@ -83,8 +83,25 @@
 
 // Body
 .panel-body {
+  animation: expandBody 0.25s ease-out;
   border-top: 1px solid rgba(128, 128, 128, 0.08);
   padding: 0.625rem 0.875rem;
+}
+
+@keyframes expandBody {
+  from {
+    max-height: 0;
+    opacity: 0;
+    padding-bottom: 0;
+    padding-top: 0;
+  }
+
+  to {
+    max-height: 600px;
+    opacity: 1;
+    padding-bottom: 0.625rem;
+    padding-top: 0.625rem;
+  }
 }
 
 // Trace ID Bar
@@ -151,7 +168,17 @@
 
 .step-node {
   border-radius: 8px;
-  transition: background 0.15s ease;
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    background 0.15s ease,
+    opacity 0.3s ease,
+    transform 0.3s ease;
+
+  &.step-enter {
+    opacity: 1;
+    transform: translateY(0);
+  }
 
   &:hover > .step-header {
     background: rgba(128, 128, 128, 0.04);

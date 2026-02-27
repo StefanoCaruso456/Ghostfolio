@@ -54,6 +54,7 @@
           @for (step of preview.steps; track trackByStepId($index, step)) {
             <div
               class="step-node"
+              [class.step-enter]="isStepVisible(step.id)"
               [class.step-error]="step.status === 'error'"
               [class.step-pending]="step.status === 'pending'"
               [class.step-running]="step.status === 'running'"
