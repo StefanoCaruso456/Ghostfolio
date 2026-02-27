@@ -9,27 +9,16 @@
  * Also validates a sample tool output against its Zod schema to prove
  * runtime schema validation works end-to-end.
  */
-
 import { GetAllocationsOutputSchema } from '../schemas/allocations.schema';
-import {
-  ComputeRebalanceOutputSchema
-} from '../schemas/compute-rebalance.schema';
-import {
-  GetFundamentalsOutputSchema
-} from '../schemas/get-fundamentals.schema';
+import { ComputeRebalanceOutputSchema } from '../schemas/compute-rebalance.schema';
+import { GetFundamentalsOutputSchema } from '../schemas/get-fundamentals.schema';
 import { GetHistoryOutputSchema } from '../schemas/get-history.schema';
 import { GetNewsOutputSchema } from '../schemas/get-news.schema';
 import { GetQuoteOutputSchema } from '../schemas/get-quote.schema';
 import { ListActivitiesOutputSchema } from '../schemas/list-activities.schema';
-import {
-  GetPerformanceOutputSchema
-} from '../schemas/performance.schema';
-import {
-  GetPortfolioSummaryOutputSchema
-} from '../schemas/portfolio-summary.schema';
-import {
-  ScenarioImpactOutputSchema
-} from '../schemas/scenario-impact.schema';
+import { GetPerformanceOutputSchema } from '../schemas/performance.schema';
+import { GetPortfolioSummaryOutputSchema } from '../schemas/portfolio-summary.schema';
+import { ScenarioImpactOutputSchema } from '../schemas/scenario-impact.schema';
 
 // ─── Mirror of OUTPUT_SCHEMA_REGISTRY from ai.service.ts ────────────
 // This MUST match the definition at ai.service.ts lines 93-104 exactly.
@@ -101,7 +90,7 @@ describe('Tool Registry ↔ Schema Registry Match', () => {
   it('schemas are real Zod objects with safeParse method', () => {
     for (const key of registryKeys) {
       const schema = OUTPUT_SCHEMA_REGISTRY_MIRROR[key] as {
-        safeParse: Function;
+        safeParse: (...args: unknown[]) => unknown;
       };
 
       expect(typeof schema.safeParse).toBe('function');

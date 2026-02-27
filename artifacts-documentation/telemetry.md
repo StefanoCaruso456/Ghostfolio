@@ -10,20 +10,20 @@ Both the AI chat and CSV import-auditor systems use **Braintrust** for observabi
 
 Environment variables (via `ConfigurationService`):
 
-| Variable | Purpose |
-|----------|---------|
-| `BRAINTRUST_API_KEY` | Braintrust project API key (required to enable) |
+| Variable             | Purpose                                               |
+| -------------------- | ----------------------------------------------------- |
+| `BRAINTRUST_API_KEY` | Braintrust project API key (required to enable)       |
 | `BRAINTRUST_PROJECT` | Braintrust project name (defaults to `ghostfolio-ai`) |
 
 ## Architecture
 
 ### Core Classes
 
-| Class | Location | Purpose |
-|-------|----------|---------|
+| Class                        | Location                                    | Purpose                                                                               |
+| ---------------------------- | ------------------------------------------- | ------------------------------------------------------------------------------------- |
 | `BraintrustTelemetryService` | `telemetry/braintrust-telemetry.service.ts` | NestJS injectable; manages Braintrust logger, exposes `startTrace()` and `logTrace()` |
-| `TraceContext` | Same file | Mutable builder for a single query lifecycle; collects all metrics |
-| `ToolSpanBuilder` | Same file | Records a single tool call's start/end/status/output |
+| `TraceContext`               | Same file                                   | Mutable builder for a single query lifecycle; collects all metrics                    |
+| `ToolSpanBuilder`            | Same file                                   | Records a single tool call's start/end/status/output                                  |
 
 ### Shared Conventions
 
@@ -146,11 +146,11 @@ Computed from the above layers:
 
 ```typescript
 {
-  toolOverheadRatio: number;    // toolLatency / totalLatency
-  costPerToolCall: number;      // cost / toolCallCount
-  latencyPerIteration: number;  // totalLatency / iterationCount
-  toolSuccessRates: Record<string, number>;  // per-tool success rate
-  failedToolCount: number;      // spans with status === 'error'
+  toolOverheadRatio: number; // toolLatency / totalLatency
+  costPerToolCall: number; // cost / toolCallCount
+  latencyPerIteration: number; // totalLatency / iterationCount
+  toolSuccessRates: Record<string, number>; // per-tool success rate
+  failedToolCount: number; // spans with status === 'error'
 }
 ```
 
@@ -211,27 +211,27 @@ ImportAuditorService.chat() called
 
 Logged with every trace for dashboard filtering:
 
-| Score | Calculation |
-|-------|-------------|
-| `latency` | 1.0 (<2s), 0.5 (<5s), 0.0 (>=5s) |
-| `cost` | 1.0 (<$0.10), 0.5 (<$1.00), 0.0 (>=$1.00) |
-| `confidence` | From verification.confidenceScore |
-| `safety` | 0 if escalation triggered, 1 otherwise |
+| Score          | Calculation                                                        |
+| -------------- | ------------------------------------------------------------------ |
+| `latency`      | 1.0 (<2s), 0.5 (<5s), 0.0 (>=5s)                                   |
+| `cost`         | 1.0 (<$0.10), 0.5 (<$1.00), 0.0 (>=$1.00)                          |
+| `confidence`   | From verification.confidenceScore                                  |
+| `safety`       | 0 if escalation triggered, 1 otherwise                             |
 | `groundedness` | Computed by `scoreGroundedness()` -- penalizes hallucination flags |
 
 ## Eval Scorers (8 Types)
 
 Located in `telemetry/eval-scorers.ts`:
 
-| Scorer | Range | Purpose |
-|--------|-------|---------|
-| `scoreLatency` | 0-1 | Penalizes slow responses |
-| `scoreCost` | 0-1 | Penalizes expensive queries |
-| `scoreSafety` | 0-1 | Penalizes escalations and domain violations |
-| `scoreGroundedness` | 0-1 | Penalizes hallucination flags |
-| `scoreToolSelection` | 0-1 | Validates correct tool was chosen |
-| `scoreToolExecution` | 0-1 | Ratio of successful tool calls |
-| `computeAllScores` | object | Computes all 8 scores in one call |
+| Scorer               | Range  | Purpose                                     |
+| -------------------- | ------ | ------------------------------------------- |
+| `scoreLatency`       | 0-1    | Penalizes slow responses                    |
+| `scoreCost`          | 0-1    | Penalizes expensive queries                 |
+| `scoreSafety`        | 0-1    | Penalizes escalations and domain violations |
+| `scoreGroundedness`  | 0-1    | Penalizes hallucination flags               |
+| `scoreToolSelection` | 0-1    | Validates correct tool was chosen           |
+| `scoreToolExecution` | 0-1    | Ratio of successful tool calls              |
+| `computeAllScores`   | object | Computes all 8 scores in one call           |
 
 ## GuardrailTypes
 
@@ -247,7 +247,7 @@ type GuardrailType =
 
 ## Test Coverage
 
-| Test File | Count | What It Tests |
-|-----------|-------|---------------|
-| `braintrust-telemetry.spec.ts` | 56 | TraceContext, ToolSpanBuilder, eval scorers |
-| `ai-chat-telemetry.spec.ts` | 21 | Full pipeline: tool call + no-tool + payload structure |
+| Test File                      | Count | What It Tests                                          |
+| ------------------------------ | ----- | ------------------------------------------------------ |
+| `braintrust-telemetry.spec.ts` | 56    | TraceContext, ToolSpanBuilder, eval scorers            |
+| `ai-chat-telemetry.spec.ts`    | 21    | Full pipeline: tool call + no-tool + payload structure |
