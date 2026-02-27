@@ -1,4 +1,4 @@
-<div class="sidebar-container">
+<div class="sidebar-container" [class.fullscreen]="mode === 'fullscreen'">
   <!-- Left History Sidebar -->
   <div
     class="history-sidebar"
@@ -9,14 +9,26 @@
         <ion-icon class="brand-icon" name="sparkles-outline" />
         <span class="brand-title">Ghostfolio AI</span>
       </div>
-      <button
-        class="new-chat-btn"
-        mat-icon-button
-        matTooltip="New conversation"
-        (click)="onNewConversation()"
-      >
-        <ion-icon name="create-outline" />
-      </button>
+      <div class="brand-actions">
+        <button
+          class="new-chat-btn"
+          mat-icon-button
+          matTooltip="New conversation"
+          (click)="onNewConversation()"
+        >
+          <ion-icon name="create-outline" />
+        </button>
+        @if (mode === 'fullscreen') {
+          <button
+            class="sidebar-collapse-btn"
+            mat-icon-button
+            matTooltip="Close sidebar"
+            (click)="onToggleHistory()"
+          >
+            <ion-icon name="chevron-back-outline" />
+          </button>
+        }
+      </div>
     </div>
     <div class="conversation-list">
       @if (conversations.length === 0) {
@@ -77,6 +89,16 @@
     <!-- Header -->
     <div class="sidebar-header">
       <div class="header-left">
+        @if (mode === 'fullscreen' && !showHistory) {
+          <button
+            class="sidebar-open-btn"
+            mat-icon-button
+            matTooltip="Open sidebar"
+            (click)="onToggleHistory()"
+          >
+            <ion-icon name="menu-outline" />
+          </button>
+        }
         @if (mode === 'sidebar') {
           <ion-icon class="header-icon" name="sparkles-outline" />
           <span class="header-title">Ghostfolio AI</span>
@@ -107,6 +129,16 @@
             (click)="onClose()"
           >
             <ion-icon name="close-outline" />
+          </button>
+        }
+        @if (mode === 'fullscreen') {
+          <button
+            class="icon-btn"
+            mat-icon-button
+            matTooltip="New conversation"
+            (click)="onNewConversation()"
+          >
+            <ion-icon name="create-outline" />
           </button>
         }
       </div>
