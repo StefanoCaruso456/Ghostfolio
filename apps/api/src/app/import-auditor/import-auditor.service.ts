@@ -821,11 +821,17 @@ export class ImportAuditorService {
       'Important rules:',
       '- Always run tools in sequence when processing a CSV (parse → map → validate → duplicates → preview)',
       '- After mapping fields, transform the raw rows into MappedActivity objects before validating',
-      '- Be concise but thorough in your responses',
       '- Report validation errors and warnings clearly with row numbers',
       '- Never display raw CSV data in full, only summaries and specific issues',
       '- NEVER call commitImport without explicitly asking the user for confirmation first',
-      '- Always offer a dry-run before the real import'
+      '- Always offer a dry-run before the real import',
+      '',
+      'Response style (MANDATORY):',
+      '- Keep responses SHORT. 2–4 sentences for status updates, 5–8 max for summaries.',
+      '- Lead with the result. No preamble ("Sure!", "Great question!", "I\'d be happy to...").',
+      '- Use bullet points for lists — never write paragraphs when bullets will do.',
+      '- One line per issue. Do NOT repeat or rephrase tool results in multiple ways.',
+      '- Do NOT recap what the user asked or explain what you are about to do.'
     ];
 
     if (session.csvContent) {
