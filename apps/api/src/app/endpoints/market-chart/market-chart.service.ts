@@ -1,4 +1,5 @@
 import { RedisCacheService } from '@ghostfolio/api/app/redis-cache/redis-cache.service';
+import { YahooFinanceDataEnhancerService } from '@ghostfolio/api/services/data-provider/data-enhancer/yahoo-finance/yahoo-finance.service';
 import { DATE_FORMAT } from '@ghostfolio/common/helper';
 import { MarketChartResponse } from '@ghostfolio/common/interfaces';
 
@@ -15,7 +16,10 @@ export class MarketChartService {
     suppressNotices: ['yahooSurvey']
   });
 
-  public constructor(private readonly redisCacheService: RedisCacheService) {}
+  public constructor(
+    private readonly redisCacheService: RedisCacheService,
+    private readonly yahooFinanceDataEnhancerService: YahooFinanceDataEnhancerService
+  ) {}
 
   public async getChart(
     symbol: string,
@@ -36,18 +40,26 @@ export class MarketChartService {
       this.logger.warn(`Cache read error: ${error.message}`);
     }
 
+    // Convert Ghostfolio internal symbol to Yahoo Finance format
+    // e.g. BTCUSD -> BTC-USD, EURUSD -> EURUSD=X
+    const yahooSymbol =
+      this.yahooFinanceDataEnhancerService.convertToYahooFinanceSymbol(symbol);
+
     // Fetch from Yahoo Finance
     try {
       const now = new Date();
       const period1 = this.getPeriodStart(range, now);
 
-      const result: ChartResultArray = await this.yahooFinance.chart(symbol, {
-        events: '',
-        includePrePost: false,
-        interval: '1d',
-        period1: format(period1, DATE_FORMAT),
-        period2: format(now, DATE_FORMAT)
-      });
+      const result: ChartResultArray = await this.yahooFinance.chart(
+        yahooSymbol,
+        {
+          events: '',
+          includePrePost: false,
+          interval: '1d',
+          period1: format(period1, DATE_FORMAT),
+          period2: format(now, DATE_FORMAT)
+        }
+      );
 
       const points: { t: number; v: number }[] = [];
 
@@ -87,7 +99,7 @@ export class MarketChartService {
       return response;
     } catch (error) {
       this.logger.error(
-        `Yahoo Finance chart error for ${symbol} (range=${range}): [${error.name}] ${error.message}`
+        `Yahoo Finance chart error for ${symbol} (yahoo=${yahooSymbol}, range=${range}): [${error.name}] ${error.message}`
       );
 
       throw new HttpException(

@@ -14,6 +14,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  CUSTOM_ELEMENTS_SCHEMA,
   OnDestroy,
   OnInit
 } from '@angular/core';
@@ -23,7 +24,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import {
   Subject,
@@ -52,10 +52,10 @@ interface ChartConfig {
     MatButtonToggleModule,
     MatCheckboxModule,
     MatFormFieldModule,
-    MatIconModule,
     MatInputModule,
     ReactiveFormsModule
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   selector: 'gf-resources-markets',
   styleUrls: ['./resources-markets.component.scss'],
   templateUrl: './resources-markets.component.html'
