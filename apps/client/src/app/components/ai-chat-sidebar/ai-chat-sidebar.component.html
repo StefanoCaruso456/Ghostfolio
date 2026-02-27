@@ -210,14 +210,21 @@
                   {{ message.content }}
                 </div>
               } @else if (message.isLoading) {
-                <div class="message-content assistant-content">
-                  <div class="typing-indicator">
-                    <span class="dot"></span>
-                    <span class="dot"></span>
-                    <span class="dot"></span>
+                @if (currentTraceId) {
+                  <gf-reasoning-panel [traceId]="currentTraceId" />
+                } @else {
+                  <div class="message-content assistant-content">
+                    <div class="typing-indicator">
+                      <span class="dot"></span>
+                      <span class="dot"></span>
+                      <span class="dot"></span>
+                    </div>
                   </div>
-                </div>
+                }
               } @else {
+                @if (currentTraceId && isLastAssistantMessage(i)) {
+                  <gf-reasoning-panel [traceId]="currentTraceId" />
+                }
                 <div class="message-content assistant-content">
                   <markdown [data]="message.content" />
                 </div>
@@ -253,13 +260,6 @@
         }
       }
     </div>
-
-    <!-- Reasoning Panel -->
-    @if (currentTraceId) {
-      <div class="reasoning-panel-wrapper">
-        <gf-reasoning-panel [traceId]="currentTraceId" />
-      </div>
-    }
 
     <!-- History Toggle (sidebar mode only) -->
     @if (mode === 'sidebar' && conversations.length > 0) {

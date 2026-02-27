@@ -573,6 +573,22 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
     return index;
   }
 
+  public isLastAssistantMessage(index: number): boolean {
+    if (!this.currentConversation) {
+      return false;
+    }
+
+    const messages = this.currentConversation.messages;
+
+    for (let i = messages.length - 1; i >= 0; i--) {
+      if (messages[i].role === 'assistant') {
+        return i === index;
+      }
+    }
+
+    return false;
+  }
+
   public ngOnDestroy() {
     if (this.speechRecognition && this.isRecording) {
       this.speechRecognition.stop();
