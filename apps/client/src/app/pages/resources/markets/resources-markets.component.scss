@@ -3,6 +3,53 @@
   color: rgb(var(--dark-primary-text));
 }
 
+.search-container {
+  display: flex;
+  justify-content: center;
+}
+
+.search-field {
+  width: 100%;
+  max-width: 480px;
+
+  ::ng-deep .mat-mdc-text-field-wrapper {
+    background: #e8edf1;
+    border-radius: 14px;
+    box-shadow:
+      inset 2px 2px 5px rgba(0, 0, 0, 0.08),
+      inset -2px -2px 5px rgba(255, 255, 255, 0.9);
+  }
+
+  ::ng-deep .mat-mdc-form-field-flex {
+    align-items: center;
+  }
+
+  ::ng-deep .mdc-notched-outline__leading,
+  ::ng-deep .mdc-notched-outline__notch,
+  ::ng-deep .mdc-notched-outline__trailing {
+    border-color: transparent !important;
+  }
+
+  mat-icon {
+    color: rgba(0, 0, 0, 0.45);
+    margin-right: 4px;
+  }
+}
+
+.search-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.search-option-name {
+  color: rgba(0, 0, 0, 0.55);
+  font-size: 0.85rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .chart-grid {
   display: grid;
   gap: 1.5rem;
@@ -35,6 +82,24 @@
   display: flex;
   justify-content: space-between;
   margin-bottom: 0.75rem;
+}
+
+.chart-label-row {
+  align-items: center;
+  display: flex;
+  gap: 0.25rem;
+}
+
+.remove-btn {
+  height: 24px;
+  line-height: 24px;
+  width: 24px;
+
+  ::ng-deep .mat-icon {
+    font-size: 16px;
+    height: 16px;
+    width: 16px;
+  }
 }
 
 .chart-label {
@@ -87,6 +152,23 @@
 // Dark theme overrides
 :host-context(.theme-dark) {
   color: rgb(var(--light-primary-text));
+
+  .search-field {
+    ::ng-deep .mat-mdc-text-field-wrapper {
+      background: #1e2128;
+      box-shadow:
+        inset 2px 2px 5px rgba(0, 0, 0, 0.35),
+        inset -2px -2px 5px rgba(255, 255, 255, 0.04);
+    }
+
+    mat-icon {
+      color: rgba(255, 255, 255, 0.5);
+    }
+  }
+
+  .search-option-name {
+    color: rgba(255, 255, 255, 0.55);
+  }
 
   .chart-card {
     background: #1e2128;
