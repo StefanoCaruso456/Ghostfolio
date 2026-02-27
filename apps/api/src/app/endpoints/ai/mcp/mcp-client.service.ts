@@ -90,17 +90,22 @@ export class McpClientService {
         throw err;
       }
 
-      let data: T;
+      let parsed: any;
 
       try {
-        data = JSON.parse(responseText) as T;
+        parsed = JSON.parse(responseText);
       } catch {
         throw new Error(
           `MCP server returned invalid JSON for method ${method}`
         );
       }
 
-      this.logger.debug(`MCP RPC ← ${method} OK`);
+      // JSON-RPC envelope: unwrap `.result` if present
+      const data: T = parsed?.result !== undefined ? parsed.result : parsed;
+
+      this.logger.debug(
+        `MCP RPC ← ${method} OK (hasResult=${parsed?.result !== undefined})`
+      );
 
       return data;
     } catch (error) {
