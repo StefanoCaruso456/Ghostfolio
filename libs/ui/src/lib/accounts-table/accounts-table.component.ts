@@ -29,6 +29,7 @@ import {
   documentTextOutline,
   ellipsisHorizontal,
   eyeOffOutline,
+  linkOutline,
   trashOutline,
   walletOutline
 } from 'ionicons/icons';
@@ -70,6 +71,7 @@ export class GfAccountsTableComponent {
 
   public readonly accountDeleted = output<string>();
   public readonly accountToUpdate = output<Account>();
+  public readonly connectBroker = output<void>();
   public readonly transferBalance = output<void>();
 
   public readonly sort = viewChild.required(MatSort);
@@ -122,6 +124,7 @@ export class GfAccountsTableComponent {
       documentTextOutline,
       ellipsisHorizontal,
       eyeOffOutline,
+      linkOutline,
       trashOutline,
       walletOutline
     });
@@ -161,6 +164,10 @@ export class GfAccountsTableComponent {
     this.notificationService.alert({
       title: aComment
     });
+  }
+
+  protected onConnectBroker() {
+    this.connectBroker.emit();
   }
 
   protected onTransferBalance() {

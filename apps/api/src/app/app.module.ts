@@ -51,6 +51,7 @@ import { ImportModule } from './import/import.module';
 import { InfoModule } from './info/info.module';
 import { LogoModule } from './logo/logo.module';
 import { OrderModule } from './order/order.module';
+import { PlaidModule } from './plaid/plaid.module';
 import { PlatformModule } from './platform/platform.module';
 import { PortfolioModule } from './portfolio/portfolio.module';
 import { RedisCacheModule } from './redis-cache/redis-cache.module';
@@ -98,6 +99,7 @@ import { UserModule } from './user/user.module';
     LogoModule,
     MarketDataModule,
     OrderModule,
+    PlaidModule,
     PlatformModule,
     PlatformsModule,
     PortfolioModule,

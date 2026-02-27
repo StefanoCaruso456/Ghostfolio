@@ -1,6 +1,7 @@
 import { GfAccountDetailDialogComponent } from '@ghostfolio/client/components/account-detail-dialog/account-detail-dialog.component';
 import { AccountDetailDialogParams } from '@ghostfolio/client/components/account-detail-dialog/interfaces/interfaces';
 import { ImpersonationStorageService } from '@ghostfolio/client/services/impersonation-storage.service';
+import { PlaidLinkService } from '@ghostfolio/client/services/plaid-link.service';
 import { UserService } from '@ghostfolio/client/services/user/user.service';
 import {
   CreateAccountDto,
@@ -57,6 +58,7 @@ export class GfAccountsPageComponent implements OnDestroy, OnInit {
     private dialog: MatDialog,
     private impersonationStorageService: ImpersonationStorageService,
     private notificationService: NotificationService,
+    private plaidLinkService: PlaidLinkService,
     private route: ActivatedRoute,
     private router: Router,
     private userService: UserService
@@ -144,6 +146,46 @@ export class GfAccountsPageComponent implements OnDestroy, OnInit {
           this.changeDetectorRef.markForCheck();
         }
       );
+  }
+
+  public async onConnectBroker() {
+    try {
+      // 1. Get a link token from the backend
+      const { linkToken } = await this.dataService
+        .createPlaidLinkToken()
+        .toPromise();
+
+      // 2. Open Plaid Link and wait for user to connect
+      const { publicToken, metadata } =
+        await this.plaidLinkService.open(linkToken);
+
+      const institution = metadata?.institution ?? {};
+
+      // 3. Exchange the public token server-side
+      const plaidItem: any = await this.dataService
+        .exchangePlaidPublicToken({
+          institutionId: institution.institution_id ?? 'unknown',
+          institutionName: institution.name ?? 'Unknown Institution',
+          publicToken
+        })
+        .toPromise();
+
+      // 4. Sync holdings
+      await this.dataService.syncPlaidItem(plaidItem.id).toPromise();
+
+      // 5. Refresh account list
+      this.fetchAccounts();
+
+      this.notificationService.alert({
+        title: $localize`Broker connected successfully!`
+      });
+    } catch (error) {
+      if (error?.message !== 'User exited Plaid Link') {
+        this.notificationService.alert({
+          title: $localize`Oops, broker connection failed.`
+        });
+      }
+    }
   }
 
   public onDeleteAccount(aId: string) {
