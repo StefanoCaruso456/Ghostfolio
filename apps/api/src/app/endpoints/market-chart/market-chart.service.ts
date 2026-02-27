@@ -1,8 +1,9 @@
 import { RedisCacheService } from '@ghostfolio/api/app/redis-cache/redis-cache.service';
+import { DATE_FORMAT } from '@ghostfolio/common/helper';
 import { MarketChartResponse } from '@ghostfolio/common/interfaces';
 
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
-import { subDays, subMonths, subYears } from 'date-fns';
+import { format, subDays, subMonths, subYears } from 'date-fns';
 import ms from 'ms';
 import YahooFinance from 'yahoo-finance2';
 import { ChartResultArray } from 'yahoo-finance2/esm/src/modules/chart';
@@ -41,9 +42,11 @@ export class MarketChartService {
       const period1 = this.getPeriodStart(range, now);
 
       const result: ChartResultArray = await this.yahooFinance.chart(symbol, {
+        events: '',
+        includePrePost: false,
         interval: '1d',
-        period1,
-        period2: now
+        period1: format(period1, DATE_FORMAT),
+        period2: format(now, DATE_FORMAT)
       });
 
       const points: { t: number; v: number }[] = [];
@@ -83,10 +86,12 @@ export class MarketChartService {
 
       return response;
     } catch (error) {
-      this.logger.error(`Yahoo Finance error for ${symbol}: ${error.message}`);
+      this.logger.error(
+        `Yahoo Finance chart error for ${symbol} (range=${range}): [${error.name}] ${error.message}`
+      );
 
       throw new HttpException(
-        'Yahoo Finance unavailable',
+        `Chart data unavailable for ${symbol}`,
         HttpStatus.BAD_GATEWAY
       );
     }
