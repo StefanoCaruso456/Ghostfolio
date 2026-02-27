@@ -28,6 +28,7 @@ import type { InfoItem } from './info-item.interface';
 import type { InvestmentItem } from './investment-item.interface';
 import type { LineChartItem } from './line-chart-item.interface';
 import type { LookupItem } from './lookup-item.interface';
+import type { MarketChartResponse } from './market-chart-response.interface';
 import type { MarketData } from './market-data.interface';
 import type { PortfolioChart } from './portfolio-chart.interface';
 import type { PortfolioDetails } from './portfolio-details.interface';
@@ -170,6 +171,7 @@ export {
   LineChartItem,
   LookupItem,
   LookupResponse,
+  MarketChartResponse,
   MarketData,
   MarketDataDetailsResponse,
   MarketDataOfMarketsResponse,

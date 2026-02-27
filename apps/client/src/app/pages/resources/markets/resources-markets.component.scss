@@ -1,17 +1,103 @@
 :host {
-  color: rgb(var(--dark-primary-text));
   display: block;
+  color: rgb(var(--dark-primary-text));
+}
 
-  a {
-    color: rgba(var(--palette-primary-500), 1);
-    font-weight: 500;
+.chart-grid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(2, 1fr);
 
-    &:hover {
-      color: rgba(var(--palette-primary-300), 1);
-    }
+  @media (max-width: 767px) {
+    grid-template-columns: 1fr;
   }
 }
 
+.chart-card {
+  background: #e8edf1;
+  border-radius: 16px;
+  box-shadow:
+    6px 6px 12px rgba(0, 0, 0, 0.08),
+    -6px -6px 12px rgba(255, 255, 255, 0.9);
+  overflow: hidden;
+  padding: 1.25rem;
+  transition: box-shadow 0.2s ease;
+
+  &:hover {
+    box-shadow:
+      8px 8px 16px rgba(0, 0, 0, 0.1),
+      -8px -8px 16px rgba(255, 255, 255, 1);
+  }
+}
+
+.chart-header {
+  align-items: flex-start;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.chart-label {
+  font-size: 1rem;
+  font-weight: 600;
+  opacity: 0.85;
+}
+
+.chart-meta {
+  align-items: flex-end;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  text-align: right;
+}
+
+.chart-value {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.chart-change {
+  font-size: 0.8rem;
+  font-weight: 500;
+
+  &.positive {
+    color: #22c55e;
+  }
+
+  &.negative {
+    color: #ef4444;
+  }
+}
+
+.chart-body {
+  min-height: 140px;
+  position: relative;
+}
+
+.chart-error {
+  align-items: center;
+  color: #ef4444;
+  display: flex;
+  font-size: 0.85rem;
+  justify-content: center;
+  min-height: 140px;
+  opacity: 0.8;
+}
+
+// Dark theme overrides
 :host-context(.theme-dark) {
   color: rgb(var(--light-primary-text));
+
+  .chart-card {
+    background: #1e2128;
+    box-shadow:
+      6px 6px 12px rgba(0, 0, 0, 0.35),
+      -6px -6px 12px rgba(255, 255, 255, 0.04);
+
+    &:hover {
+      box-shadow:
+        8px 8px 16px rgba(0, 0, 0, 0.45),
+        -8px -8px 16px rgba(255, 255, 255, 0.06);
+    }
+  }
 }
