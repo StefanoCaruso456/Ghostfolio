@@ -1,5 +1,31 @@
 <div class="container">
-  <h1 class="h3 mb-3 text-center">Markets</h1>
+  <h1 class="h3 mb-3 text-center">Market</h1>
+
+  <!-- Search bar -->
+  <div class="search-container mb-3">
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-icon matPrefix>search</mat-icon>
+      <input
+        matInput
+        placeholder="Search stocks, crypto, ETFs..."
+        [formControl]="searchControl"
+        [matAutocomplete]="auto"
+      />
+      <mat-autocomplete
+        #auto="matAutocomplete"
+        (optionSelected)="onSelectSymbol($event.option.value)"
+      >
+        @for (item of searchResults; track item.symbol) {
+          <mat-option [value]="item">
+            <span class="search-option">
+              <strong>{{ item.symbol }}</strong>
+              <span class="search-option-name">{{ item.name }}</span>
+            </span>
+          </mat-option>
+        }
+      </mat-autocomplete>
+    </mat-form-field>
+  </div>
 
   <!-- Range selector -->
   <div class="d-flex align-items-center justify-content-center mb-3 gap-2 flex-wrap">
@@ -32,7 +58,18 @@
     @for (config of visibleCharts; track config.symbol) {
       <div class="chart-card">
         <div class="chart-header">
-          <span class="chart-label">{{ config.label }}</span>
+          <div class="chart-label-row">
+            <span class="chart-label">{{ config.label }}</span>
+            @if (config.userAdded) {
+              <button
+                mat-icon-button
+                class="remove-btn"
+                (click)="onRemoveChart(config)"
+              >
+                <mat-icon>close</mat-icon>
+              </button>
+            }
+          </div>
           <div class="chart-meta">
             @if (latestValueMap.get(config.symbol) != null) {
               <span class="chart-value">

@@ -1,6 +1,7 @@
 import { UserService } from '@ghostfolio/client/services/user/user.service';
 import {
   LineChartItem,
+  LookupItem,
   MarketChartResponse,
   User
 } from '@ghostfolio/common/interfaces';
@@ -16,16 +17,29 @@ import {
   OnDestroy,
   OnInit
 } from '@angular/core';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { Subject, takeUntil } from 'rxjs';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import {
+  Subject,
+  debounceTime,
+  distinctUntilChanged,
+  filter,
+  switchMap,
+  takeUntil
+} from 'rxjs';
 
 interface ChartConfig {
   label: string;
   symbol: string;
   visible: boolean;
   toggleable?: boolean;
+  userAdded?: boolean;
 }
 
 @Component({
@@ -33,9 +47,14 @@ interface ChartConfig {
   imports: [
     CommonModule,
     GfLineChartComponent,
+    MatAutocompleteModule,
     MatButtonModule,
     MatButtonToggleModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    ReactiveFormsModule
   ],
   selector: 'gf-resources-markets',
   styleUrls: ['./resources-markets.component.scss'],
@@ -60,6 +79,8 @@ export class ResourcesMarketsComponent implements OnInit, OnDestroy {
   public latestValueMap = new Map<string, number>();
   public loadingMap = new Map<string, boolean>();
   public ranges = ['5D', '1M', '6M', '1Y'];
+  public searchControl = new FormControl('');
+  public searchResults: LookupItem[] = [];
   public selectedRange = '1M';
   public user: User;
 
@@ -80,6 +101,21 @@ export class ResourcesMarketsComponent implements OnInit, OnDestroy {
           this.colorScheme = this.user.settings?.colorScheme;
           this.changeDetectorRef.markForCheck();
         }
+      });
+
+    this.searchControl.valueChanges
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        filter((query) => typeof query === 'string' && query.length >= 2),
+        switchMap((query: string) =>
+          this.dataService.fetchSymbols({ query, includeIndices: true })
+        ),
+        takeUntil(this.unsubscribeSubject)
+      )
+      .subscribe((results) => {
+        this.searchResults = results;
+        this.changeDetectorRef.markForCheck();
       });
 
     this.loadAllVisibleCharts();
@@ -115,6 +151,36 @@ export class ResourcesMarketsComponent implements OnInit, OnDestroy {
       this.errorMap.delete(config.symbol);
     }
 
+    this.changeDetectorRef.markForCheck();
+  }
+
+  public onSelectSymbol(item: LookupItem) {
+    const exists = this.chartConfigs.some((c) => c.symbol === item.symbol);
+
+    if (!exists) {
+      this.chartConfigs.push({
+        label: item.name,
+        symbol: item.symbol,
+        visible: true,
+        userAdded: true
+      });
+      this.loadChart(item.symbol);
+    }
+
+    this.searchControl.setValue('');
+    this.searchResults = [];
+    this.changeDetectorRef.markForCheck();
+  }
+
+  public onRemoveChart(config: ChartConfig) {
+    this.chartConfigs = this.chartConfigs.filter(
+      (c) => c.symbol !== config.symbol
+    );
+    this.chartDataMap.delete(config.symbol);
+    this.latestValueMap.delete(config.symbol);
+    this.changePercentMap.delete(config.symbol);
+    this.errorMap.delete(config.symbol);
+    this.loadingMap.delete(config.symbol);
     this.changeDetectorRef.markForCheck();
   }
 
