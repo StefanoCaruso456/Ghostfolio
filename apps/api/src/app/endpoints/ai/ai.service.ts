@@ -8,7 +8,7 @@ import {
 import type { AiChatResponse, Filter } from '@ghostfolio/common/interfaces';
 import type { AiPromptMode, DateRange } from '@ghostfolio/common/types';
 
-import { Injectable, Logger } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { createOpenRouter } from '@openrouter/ai-sdk-provider';
 import { generateText, tool } from 'ai';
 import { randomUUID } from 'node:crypto';
@@ -274,7 +274,55 @@ export class AiService {
     mcpClientService: McpClientService;
     userId: string;
   }) {
-    return mcpClientService.rpc('getDashboardConfig', { userId });
+    try {
+      return await mcpClientService.rpc('getDashboardConfig', { userId });
+    } catch (error) {
+      throw new HttpException(
+        {
+          message: 'MCP request failed',
+          upstreamStatus: (error as any)?.mcpStatus ?? null
+        },
+        HttpStatus.BAD_GATEWAY
+      );
+    }
+  }
+
+  public async getDiagnostics({
+    mcpClientService
+  }: {
+    mcpClientService: McpClientService;
+  }) {
+    const resolvedRpcUrl = mcpClientService.getResolvedRpcUrl();
+
+    let mcpProbe: {
+      body?: unknown;
+      status: string;
+      upstreamStatus?: number;
+    } = { status: 'skipped' };
+
+    if (mcpClientService.isConfigured()) {
+      try {
+        const result = await mcpClientService.rpc('getDashboardConfig', {
+          userId: 'diagnostic'
+        });
+        mcpProbe = { status: 'ok', body: result };
+      } catch (error) {
+        mcpProbe = {
+          body: (error as any)?.mcpBody ?? error?.message ?? 'unknown',
+          status: 'error',
+          upstreamStatus: (error as any)?.mcpStatus ?? null
+        };
+      }
+    }
+
+    return {
+      buildSha: process.env.BUILD_SHA ?? null,
+      hasMcpApiKey: mcpClientService.hasApiKey(),
+      hasMcpServerUrl: mcpClientService.isConfigured(),
+      mcpProbe,
+      nodeEnv: process.env.NODE_ENV ?? 'unknown',
+      resolvedRpcUrl
+    };
   }
 
   public async chat({
