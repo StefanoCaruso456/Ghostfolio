@@ -109,7 +109,14 @@ The system prompt is built dynamically per session and defines the agent's role,
 - Must offer a dry-run before real import
 - Report validation errors with row numbers
 - Never display raw CSV data in full — only summaries and specific issues
-- Be concise but thorough
+
+**Mandatory brevity rules:**
+
+- 2–4 sentences for status updates, 5–8 max for summaries
+- Lead with the result — no preamble or filler phrases
+- Use bullet points over paragraphs
+- One line per issue — no repeating or rephrasing tool results
+- Do not recap what the user asked or narrate upcoming steps
 
 **Dynamic context:** When the session contains uploaded CSV content, the prompt appends:
 

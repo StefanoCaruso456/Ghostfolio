@@ -169,8 +169,13 @@ The system prompt (`buildReActSystemPrompt()`) contains:
 
 1. **Role definition** — "You are Ghostfolio AI, a financial assistant..."
 2. **ReAct protocol** — mandatory THINK → ACT → OBSERVE → DECIDE loop
-3. **Response format rules** — language, currency formatting, markdown
-4. **Anti-hallucination rules:**
+3. **Response brevity rules (MANDATORY):**
+   - 2–4 sentences for simple questions, 5–8 max for complex ones
+   - Lead with the direct answer — no preamble or filler phrases
+   - Bullet points over paragraphs; one line per data point
+   - Never recap what the user asked or rephrase tool results multiple ways
+4. **Response format rules** — language, currency formatting, markdown
+5. **Anti-hallucination rules:**
    - Never invent prices, allocations, or performance figures
    - Never reference holdings not returned by tools
    - Always call tools before stating any numbers
