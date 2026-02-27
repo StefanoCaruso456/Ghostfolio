@@ -26,6 +26,7 @@ import {
 } from '../../import-auditor/schemas/verification.schema';
 import { enforceVerificationGate } from '../../import-auditor/verification/enforce';
 import { AiConversationService } from './conversation/conversation.service';
+import { McpClientService } from './mcp/mcp-client.service';
 import { ReasoningTraceService } from './reasoning/reasoning-trace.service';
 import { TraceContext } from './reasoning/trace-context';
 import { BraintrustTelemetryService } from './telemetry/braintrust-telemetry.service';
@@ -260,6 +261,21 @@ export class AiService {
     private readonly reasoningTraceService: ReasoningTraceService,
     private readonly telemetryService: BraintrustTelemetryService
   ) {}
+
+  /**
+   * Fetches dashboard configuration from the MCP server.
+   * Sends the userId so the MCP server can tailor the response
+   * to the authenticated user's portfolio context.
+   */
+  public async getDashboardConfig({
+    mcpClientService,
+    userId
+  }: {
+    mcpClientService: McpClientService;
+    userId: string;
+  }) {
+    return mcpClientService.rpc('getDashboardConfig', { userId });
+  }
 
   public async chat({
     attachments,
