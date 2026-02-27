@@ -2,7 +2,7 @@
   <!-- Header -->
   <div class="sidebar-header">
     <div class="header-left">
-      <ion-icon name="sparkles-outline" class="header-icon" />
+      <ion-icon class="header-icon" name="sparkles-outline" />
       <span class="header-title">Ghostfolio AI</span>
     </div>
     <div class="header-actions">
@@ -51,16 +51,16 @@
           (click)="onSelectConversation(conversation)"
         >
           <div class="history-item-content">
-            <ion-icon name="chatbubble-ellipses-outline" class="history-icon" />
+            <ion-icon class="history-icon" name="chatbubble-ellipses-outline" />
             @if (editingConversationId === conversation.id) {
               <input
+                autofocus
                 class="history-rename-input"
                 type="text"
                 [(ngModel)]="editingTitle"
                 (blur)="onFinishRename(conversation)"
                 (click)="$event.stopPropagation()"
                 (keydown)="onRenameKeydown($event, conversation)"
-                autofocus
               />
             } @else {
               <span
@@ -100,7 +100,7 @@
       <!-- Welcome State -->
       <div class="welcome-state">
         <div class="welcome-icon-wrapper">
-          <ion-icon name="sparkles-outline" class="welcome-icon" />
+          <ion-icon class="welcome-icon" name="sparkles-outline" />
         </div>
         <h2 class="welcome-title" i18n>How can I help you?</h2>
         <p class="welcome-subtitle" i18n>
@@ -108,15 +108,12 @@
           questions.
         </p>
         <div class="suggested-prompts">
-          @for (
-            suggestion of suggestedPrompts;
-            track suggestion.label
-          ) {
+          @for (suggestion of suggestedPrompts; track suggestion.label) {
             <button
               class="suggested-prompt-btn"
               (click)="onUseSuggestedPrompt(suggestion.prompt)"
             >
-              <ion-icon [name]="suggestion.icon" class="suggestion-icon" />
+              <ion-icon class="suggestion-icon" [name]="suggestion.icon" />
               <span>{{ suggestion.label }}</span>
             </button>
           }
@@ -184,7 +181,9 @@
                   (click)="onCopyMessage(message)"
                 >
                   <ion-icon
-                    [name]="message.isCopied ? 'checkmark-outline' : 'copy-outline'"
+                    [name]="
+                      message.isCopied ? 'checkmark-outline' : 'copy-outline'
+                    "
                   />
                   @if (message.isCopied) {
                     <span class="action-label" i18n>Copied</span>
@@ -208,6 +207,13 @@
     }
   </div>
 
+  <!-- Reasoning Panel -->
+  @if (currentTraceId) {
+    <div class="reasoning-panel-wrapper">
+      <gf-reasoning-panel [traceId]="currentTraceId" />
+    </div>
+  }
+
   <!-- History Toggle -->
   @if (conversations.length > 0) {
     <div class="history-toggle">
@@ -223,14 +229,14 @@
   <div
     class="input-area"
     [class.dragging]="isDragging"
-    (dragover)="onDragOver($event)"
     (dragenter)="onDragEnter($event)"
     (dragleave)="onDragLeave($event)"
+    (dragover)="onDragOver($event)"
     (drop)="onDrop($event)"
   >
     @if (isDragging) {
       <div class="drag-overlay">
-        <ion-icon name="cloud-upload-outline" class="drag-icon" />
+        <ion-icon class="drag-icon" name="cloud-upload-outline" />
         <span i18n>Drop files here</span>
       </div>
     }
@@ -306,8 +312,8 @@
             <button
               class="voice-btn"
               [class.recording]="isRecording"
-              [matTooltip]="isRecording ? 'Stop recording' : 'Voice input'"
               [disabled]="isGenerating"
+              [matTooltip]="isRecording ? 'Stop recording' : 'Voice input'"
               (click)="onToggleVoiceInput()"
             >
               @if (isRecording) {
@@ -320,7 +326,9 @@
         </div>
         <button
           class="send-btn"
-          [class.active]="inputValue.trim().length > 0 || attachments.length > 0"
+          [class.active]="
+            inputValue.trim().length > 0 || attachments.length > 0
+          "
           [disabled]="
             (!inputValue.trim() && attachments.length === 0) || isGenerating
           "
@@ -336,7 +344,10 @@
     </div>
     <div class="input-footer">
       <span class="disclaimer" i18n
-        >AI can make mistakes. Verify important financial information.</span
+        >Disclaimer: Not financial, legal, or tax advice. Responses are
+        AI-generated, may be inaccurate, and should not be relied upon for
+        investment decisions. Consult a licensed professional. Use at your own
+        risk.</span
       >
     </div>
   </div>

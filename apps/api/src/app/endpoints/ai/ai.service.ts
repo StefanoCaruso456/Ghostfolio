@@ -27,6 +27,8 @@ import {
 import { enforceVerificationGate } from '../../import-auditor/verification/enforce';
 import { AiConversationService } from './conversation/conversation.service';
 import { McpClientService } from './mcp/mcp-client.service';
+import { ReasoningTraceService } from './reasoning/reasoning-trace.service';
+import { TraceContext } from './reasoning/trace-context';
 import { BraintrustTelemetryService } from './telemetry/braintrust-telemetry.service';
 import { buildRebalanceResult } from './tools/compute-rebalance.tool';
 import { buildAllocationsResult } from './tools/get-allocations.tool';
@@ -256,6 +258,7 @@ export class AiService {
     private readonly orderService: OrderService,
     private readonly portfolioService: PortfolioService,
     private readonly propertyService: PropertyService,
+    private readonly reasoningTraceService: ReasoningTraceService,
     private readonly telemetryService: BraintrustTelemetryService
   ) {}
 
@@ -349,6 +352,13 @@ export class AiService {
     const toolCallRecords: ToolCallRecord[] = [];
     let iterationCount = 0;
 
+    // ── Initialize reasoning trace context (SSE) ─────────────────
+    const reasoningTraceId = randomUUID();
+    const reasoningCtx = new TraceContext(reasoningTraceId, (event) => {
+      this.reasoningTraceService.emit(event);
+    });
+    reasoningCtx.addPlanStep('Analyzing your question');
+
     // ── Build ReAct system prompt ───────────────────────────────────
     const systemMessage = buildReActSystemPrompt(languageCode, userCurrency);
 
@@ -405,8 +415,7 @@ export class AiService {
         return `[Attached file: ${att.fileName}]`;
       });
 
-      textContent +=
-        '\n\n--- Attachments ---\n' + descriptions.join('\n\n');
+      textContent += '\n\n--- Attachments ---\n' + descriptions.join('\n\n');
     }
 
     // Build the user message — multimodal (content parts) if images, plain string otherwise
@@ -419,9 +428,7 @@ export class AiService {
       | { content: ContentPart[]; role: 'user' };
 
     if (imageAttachments.length > 0) {
-      const contentParts: ContentPart[] = [
-        { type: 'text', text: textContent }
-      ];
+      const contentParts: ContentPart[] = [{ type: 'text', text: textContent }];
 
       for (const img of imageAttachments) {
         // Strip data URL prefix "data:image/xxx;base64," to get pure base64
@@ -481,6 +488,14 @@ export class AiService {
         }
 
         iterationCount++;
+
+        // Emit reasoning analysis summary for user-facing transparency
+        reasoningCtx.addAnalysisSummary(
+          `Retrieving data using ${toolName} tool`
+        );
+
+        // Emit reasoning tool call step (starts as "running")
+        const reasoningStep = reasoningCtx.startToolCall(toolName, args);
 
         const spanBuilder = trace.startToolSpan(toolName, args, iterationCount);
 
@@ -547,9 +562,9 @@ export class AiService {
         // Record tool span — extract error details when tool fails
         const spanError =
           result.status === 'error'
-            ? ((result as Record<string, unknown>).message as string) ??
+            ? (((result as Record<string, unknown>).message as string) ??
               result.verification?.errors?.[0] ??
-              'Tool returned error without details'
+              'Tool returned error without details')
             : undefined;
 
         trace.addToolSpan(
@@ -572,6 +587,18 @@ export class AiService {
           verification: result.verification,
           durationMs
         });
+
+        // Complete reasoning tool call step with redacted result
+        reasoningCtx.completeToolCall(
+          reasoningStep.id,
+          {
+            status: result.status,
+            message: (result as Record<string, unknown>).message,
+            confidence: result.verification?.confidence
+          },
+          result.status === 'error' ? 'error' : 'success',
+          durationMs
+        );
 
         return { ...result, schemaVersion: TOOL_RESULT_SCHEMA_VERSION };
       })();
@@ -886,6 +913,24 @@ export class AiService {
         );
       });
 
+      // ── Complete reasoning trace and persist (non-blocking) ────────
+      reasoningCtx.addAnswerStep();
+      const reasoningPreview = reasoningCtx.complete();
+
+      this.reasoningTraceService
+        .persistTrace({
+          traceId: reasoningTraceId,
+          userId,
+          conversationId: activeConversationId,
+          preview: reasoningPreview
+        })
+        .catch((traceError) => {
+          Logger.warn(
+            `Reasoning trace persistence failed: ${traceError instanceof Error ? traceError.message : String(traceError)}`,
+            'AiService'
+          );
+        });
+
       // ── Persist conversation (non-blocking) ────────────────────────
       this.persistConversation({
         conversationId: activeConversationId,
@@ -909,11 +954,15 @@ export class AiService {
           content: result.text,
           role: 'assistant',
           timestamp: new Date().toISOString()
-        }
+        },
+        traceId: reasoningTraceId
       };
     } catch (error) {
       clearTimeout(timeoutId!);
       trace.markLlmEnd();
+
+      // Complete reasoning trace on error path
+      reasoningCtx.complete();
 
       const errorMessage =
         error instanceof Error ? error.message : String(error);
@@ -950,7 +999,8 @@ export class AiService {
             content: friendlyMessage,
             role: 'assistant',
             timestamp: new Date().toISOString()
-          }
+          },
+          traceId: reasoningTraceId
         };
       }
 

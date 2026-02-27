@@ -4,9 +4,7 @@
       @if (canCreateAccount || user?.systemMessage) {
         <div class="info-message-container">
           <div class="info-message-inner-container position-fixed w-100">
-            <div
-              class="align-items-center d-flex h-100 justify-content-center"
-            >
+            <div class="align-items-center d-flex h-100 justify-content-center">
               @if (canCreateAccount) {
                 <a class="text-center" [routerLink]="routerLinkRegister">
                   <div
@@ -70,10 +68,7 @@
   }
 
   @if (!isAiSidebarOpen && hasPermissionToAccessAssistant && user) {
-    <button
-      class="ai-fab"
-      (click)="onToggleAiSidebar()"
-    >
+    <button class="ai-fab" (click)="onToggleAiSidebar()">
       <ion-icon name="sparkles-outline" />
     </button>
   }

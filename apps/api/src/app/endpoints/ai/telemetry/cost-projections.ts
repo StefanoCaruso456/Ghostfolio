@@ -9,7 +9,6 @@
  *   — OR —
  *   import { computeCostProjections, formatProjectionsMarkdown } from './cost-projections';
  */
-
 import { MODEL_PRICING } from '../../../import-auditor/schemas/agent-metrics.schema';
 
 // ─── Assumptions (configurable) ───────────────────────────────────────────
@@ -67,8 +66,7 @@ export function computeCostProjections(
   userCounts: number[],
   assumptions: CostAssumptions = DEFAULT_ASSUMPTIONS
 ): CostProjectionRow[] {
-  const pricing =
-    MODEL_PRICING[assumptions.model] ?? MODEL_PRICING['default'];
+  const pricing = MODEL_PRICING[assumptions.model] ?? MODEL_PRICING['default'];
 
   return userCounts.map((users) => {
     const queriesPerMonth =
@@ -89,8 +87,7 @@ export function computeCostProjections(
       assumptions.verificationExtraTokens;
 
     const inputTokensPerMonth = queriesPerMonth * avgInputPerQuery;
-    const outputTokensPerMonth =
-      queriesPerMonth * assumptions.avgOutputTokens;
+    const outputTokensPerMonth = queriesPerMonth * assumptions.avgOutputTokens;
     const totalTokensPerMonth = inputTokensPerMonth + outputTokensPerMonth;
 
     const monthlyCostUsd =
@@ -109,9 +106,7 @@ export function computeCostProjections(
           ? Math.round((monthlyCostUsd / queriesPerMonth) * 10000) / 10000
           : 0,
       costPerUser:
-        users > 0
-          ? Math.round((monthlyCostUsd / users) * 100) / 100
-          : 0
+        users > 0 ? Math.round((monthlyCostUsd / users) * 100) / 100 : 0
     };
   });
 }
@@ -152,8 +147,7 @@ export function formatProjectionsMarkdown(
     );
   }
 
-  const pricing =
-    MODEL_PRICING[assumptions.model] ?? MODEL_PRICING['default'];
+  const pricing = MODEL_PRICING[assumptions.model] ?? MODEL_PRICING['default'];
 
   lines.push(
     '',

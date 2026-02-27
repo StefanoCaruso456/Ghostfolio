@@ -321,6 +321,22 @@ model AiVerificationLabel {
   @@index([traceId])
 }
 
+model AiReasoningTrace {
+  id              String    @id
+  userId          String
+  conversationId  String
+  stepsJson       String
+  startedAt       DateTime
+  completedAt     DateTime?
+  totalDurationMs Int       @default(0)
+  stepCount       Int       @default(0)
+  createdAt       DateTime  @default(now())
+
+  @@index([userId])
+  @@index([conversationId])
+  @@index([createdAt])
+}
+
 model AiConversationMessage {
   content        String
   conversation   AiConversation @relation(fields: [conversationId], onDelete: Cascade, references: [id])

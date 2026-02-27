@@ -1,179 +1,208 @@
 :host {
-  display: flex;
-  flex-direction: column;
-  height: calc(100svh - var(--mat-toolbar-standard-height));
-  overflow: hidden;
-}
+  color: rgb(var(--dark-primary-text));
 
-.ai-chat-fullscreen {
-  flex: 1;
-  min-height: 0;
-
-  // ── Container ──────────────────────────────────────────────────────
-  ::ng-deep .sidebar-container {
-    border-left: none;
-    margin: 0 auto;
-    max-width: 100%;
-    width: 100%;
+  // ── Override tab panel for full-bleed chat ────────────────────────
+  ::ng-deep .mat-mdc-tab-nav-panel {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding: 0 !important;
   }
 
-  // ── Header (minimal chrome) ────────────────────────────────────────
-  ::ng-deep .sidebar-header {
-    border-bottom: 1px solid rgba(128, 128, 128, 0.1);
-    padding: 0.75rem 2rem;
+  // ── Perplexity-style overrides (pierce into child component) ──────
+  ::ng-deep .ai-chat-fullscreen {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-height: 0;
 
-    .header-icon {
-      font-size: 1.4rem;
-    }
-
-    .header-title {
-      font-size: 1.05rem;
-    }
-
-    .icon-btn {
-      height: 36px;
-      width: 36px;
-
-      ion-icon {
-        font-size: 1.15rem;
-      }
-    }
-  }
-
-  // ── Messages Area ──────────────────────────────────────────────────
-  ::ng-deep .messages-container {
-    padding: 2rem 2.5rem;
-  }
-
-  ::ng-deep .message {
-    margin: 0 auto 1.5rem;
-    max-width: 800px;
-
-    .message-content {
-      font-size: 0.95rem;
-      line-height: 1.7;
-    }
-
-    &.message-user .message-body {
-      max-width: 75%;
-    }
-
-    .message-avatar {
-      height: 32px;
-      width: 32px;
-    }
-  }
-
-  // ── Welcome State (Perplexity hero) ────────────────────────────────
-  ::ng-deep .welcome-state {
-    padding: 2rem 2rem 3rem;
-
-    .welcome-icon-wrapper {
-      border-radius: 22px;
-      box-shadow:
-        6px 6px 12px rgba(0, 0, 0, 0.06),
-        -4px -4px 10px rgba(255, 255, 255, 0.8);
-      height: 88px;
-      margin-bottom: 1.75rem;
-      width: 88px;
-    }
-
-    .welcome-icon {
-      font-size: 2.5rem;
-    }
-
-    .welcome-title {
-      font-size: 2rem;
-      font-weight: 700;
-      letter-spacing: -0.03em;
-      margin-bottom: 0.75rem;
-    }
-
-    .welcome-subtitle {
-      font-size: 1.05rem;
-      line-height: 1.6;
-      margin-bottom: 2.5rem;
-      max-width: 520px;
-    }
-
-    .suggested-prompts {
-      display: grid;
-      gap: 1rem;
-      grid-template-columns: repeat(2, 1fr);
-      max-width: 680px;
+    // ── Container ───────────────────────────────────────────────────
+    .sidebar-container {
+      border-left: none;
+      margin: 0 auto;
+      max-width: 100%;
       width: 100%;
     }
 
-    .suggested-prompt-btn {
-      background: var(--mat-app-background-color);
-      border: 1px solid rgba(128, 128, 128, 0.1);
-      border-radius: 16px;
-      box-shadow:
-        4px 4px 8px rgba(0, 0, 0, 0.05),
-        -3px -3px 6px rgba(255, 255, 255, 0.7);
-      font-size: 0.95rem;
-      line-height: 1.5;
-      padding: 1.25rem 1.5rem;
-      transition: all 0.2s ease;
+    // ── Header (minimal chrome) ─────────────────────────────────────
+    .sidebar-header {
+      border-bottom: 1px solid rgba(128, 128, 128, 0.08);
+      padding: 0.75rem 2rem;
 
-      .suggestion-icon {
-        font-size: 1.25rem;
+      .header-icon {
+        font-size: 1.4rem;
       }
 
-      &:hover {
-        border-color: rgba(var(--gf-theme-primary-500-rgb), 0.35);
+      .header-title {
+        font-size: 1.05rem;
+      }
+
+      .icon-btn {
+        height: 36px;
+        width: 36px;
+
+        ion-icon {
+          font-size: 1.15rem;
+        }
+      }
+    }
+
+    // ── Messages Area ───────────────────────────────────────────────
+    .messages-container {
+      padding: 2rem 2.5rem;
+    }
+
+    .message {
+      margin: 0 auto 1.5rem;
+      max-width: 800px;
+
+      .message-content {
+        font-size: 0.95rem;
+        line-height: 1.7;
+      }
+
+      &.message-user .message-body {
+        max-width: 75%;
+      }
+
+      .message-avatar {
+        height: 32px;
+        width: 32px;
+      }
+    }
+
+    // ── Welcome State (Perplexity hero) ─────────────────────────────
+    .welcome-state {
+      padding: 2rem 2rem 3rem;
+
+      .welcome-icon-wrapper {
+        border-radius: 22px;
         box-shadow:
-          2px 2px 4px rgba(0, 0, 0, 0.04),
-          -2px -2px 4px rgba(255, 255, 255, 0.6);
-        transform: translateY(1px);
+          6px 6px 12px rgba(0, 0, 0, 0.06),
+          -4px -4px 10px rgba(255, 255, 255, 0.8);
+        height: 88px;
+        margin-bottom: 1.75rem;
+        width: 88px;
       }
-    }
-  }
 
-  // ── Input Area (prominent, centered) ──────────────────────────────
-  ::ng-deep .input-area {
-    border-top: 1px solid rgba(128, 128, 128, 0.08);
-    margin: 0 auto;
-    max-width: 840px;
-    padding: 0.75rem 1.5rem 1.25rem;
+      .welcome-icon {
+        font-size: 2.5rem;
+      }
 
-    .input-wrapper {
-      background: rgba(128, 128, 128, 0.04);
-      border: 1px solid rgba(128, 128, 128, 0.18);
-      border-radius: 16px;
-      box-shadow:
-        inset 2px 2px 4px rgba(0, 0, 0, 0.04),
-        inset -2px -2px 4px rgba(255, 255, 255, 0.5);
-      padding: 0.75rem;
+      .welcome-title {
+        font-size: 2rem;
+        font-weight: 700;
+        letter-spacing: -0.03em;
+        margin-bottom: 0.75rem;
+      }
 
-      &:focus-within {
-        border-color: rgba(var(--gf-theme-primary-500-rgb), 0.4);
+      .welcome-subtitle {
+        font-size: 1.05rem;
+        line-height: 1.6;
+        margin-bottom: 2.5rem;
+        max-width: 520px;
+      }
+
+      .suggested-prompts {
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: repeat(2, 1fr);
+        max-width: 680px;
+        width: 100%;
+      }
+
+      .suggested-prompt-btn {
+        background: var(--mat-app-background-color);
+        border: 1px solid rgba(128, 128, 128, 0.1);
+        border-radius: 16px;
         box-shadow:
-          inset 2px 2px 4px rgba(0, 0, 0, 0.03),
-          inset -2px -2px 4px rgba(255, 255, 255, 0.4),
-          0 0 0 3px rgba(var(--gf-theme-primary-500-rgb), 0.08);
-      }
+          4px 4px 8px rgba(0, 0, 0, 0.05),
+          -3px -3px 6px rgba(255, 255, 255, 0.7);
+        font-size: 0.95rem;
+        line-height: 1.5;
+        padding: 1.25rem 1.5rem;
+        transition: all 0.2s ease;
 
-      .chat-input {
-        font-size: 1rem;
-        max-height: 200px;
-        padding: 0.375rem 0.5rem;
-      }
-    }
+        .suggestion-icon {
+          font-size: 1.25rem;
+        }
 
-    .attach-btn,
-    .voice-btn,
-    .send-btn {
-      height: 36px;
-      width: 36px;
-
-      ion-icon {
-        font-size: 1.15rem;
+        &:hover {
+          border-color: rgba(var(--gf-theme-primary-500-rgb), 0.35);
+          box-shadow:
+            2px 2px 4px rgba(0, 0, 0, 0.04),
+            -2px -2px 4px rgba(255, 255, 255, 0.6);
+          transform: translateY(1px);
+        }
       }
     }
 
-    .send-btn.active {
-      box-shadow: 0 2px 8px rgba(var(--gf-theme-primary-500-rgb), 0.3);
+    // ── Input Area (prominent, centered) ────────────────────────────
+    .input-area {
+      border-top: 1px solid rgba(128, 128, 128, 0.08);
+      margin: 0 auto;
+      max-width: 840px;
+      padding: 0.75rem 1.5rem 1.25rem;
+
+      .input-wrapper {
+        background: rgba(128, 128, 128, 0.04);
+        border: 1px solid rgba(128, 128, 128, 0.18);
+        border-radius: 16px;
+        box-shadow:
+          inset 2px 2px 4px rgba(0, 0, 0, 0.04),
+          inset -2px -2px 4px rgba(255, 255, 255, 0.5);
+        padding: 0.75rem;
+
+        &:focus-within {
+          border-color: rgba(var(--gf-theme-primary-500-rgb), 0.4);
+          box-shadow:
+            inset 2px 2px 4px rgba(0, 0, 0, 0.03),
+            inset -2px -2px 4px rgba(255, 255, 255, 0.4),
+            0 0 0 3px rgba(var(--gf-theme-primary-500-rgb), 0.08);
+        }
+
+        .chat-input {
+          font-size: 1rem;
+          max-height: 200px;
+          padding: 0.375rem 0.5rem;
+        }
+      }
+
+      .attach-btn,
+      .voice-btn,
+      .send-btn {
+        height: 36px;
+        width: 36px;
+
+        ion-icon {
+          font-size: 1.15rem;
+        }
+      }
+
+      .send-btn.active {
+        box-shadow: 0 2px 8px rgba(var(--gf-theme-primary-500-rgb), 0.3);
+      }
+    }
+
+    // ── History Toggle & Panel ──────────────────────────────────────
+    .history-toggle {
+      margin: 0 auto;
+      max-width: 840px;
+      padding: 0.5rem 1.5rem;
+    }
+
+    .history-panel {
+      max-height: 50vh;
+    }
+
+    // ── Input Footer ────────────────────────────────────────────────
+    .input-footer {
+      padding-top: 0.5rem;
+      text-align: center;
+
+      .disclaimer {
+        font-size: 0.7rem;
+      }
     }
 
     .drag-overlay {
@@ -186,31 +215,14 @@
       }
     }
   }
+}
 
-  // ── History Toggle & Panel ─────────────────────────────────────────
-  ::ng-deep .history-toggle {
-    margin: 0 auto;
-    max-width: 840px;
-    padding: 0.5rem 1.5rem;
-  }
+// ── Dark Theme ────────────────────────────────────────────────────────
+:host-context(.theme-dark) {
+  color: rgb(var(--light-primary-text));
 
-  ::ng-deep .history-panel {
-    max-height: 50vh;
-  }
-
-  // ── Input Footer ──────────────────────────────────────────────────
-  ::ng-deep .input-footer {
-    padding-top: 0.5rem;
-    text-align: center;
-
-    .disclaimer {
-      font-size: 0.7rem;
-    }
-  }
-
-  // ── Dark Theme ─────────────────────────────────────────────────────
-  :host-context(.theme-dark) & {
-    ::ng-deep .welcome-state {
+  ::ng-deep .ai-chat-fullscreen {
+    .welcome-state {
       .welcome-icon-wrapper {
         box-shadow:
           6px 6px 12px rgba(0, 0, 0, 0.25),
@@ -230,7 +242,7 @@
       }
     }
 
-    ::ng-deep .input-area .input-wrapper {
+    .input-area .input-wrapper {
       background: rgba(128, 128, 128, 0.08);
       border-color: rgba(128, 128, 128, 0.2);
       box-shadow:
@@ -245,18 +257,20 @@
       }
     }
 
-    ::ng-deep .send-btn.active {
+    .send-btn.active {
       box-shadow: 0 2px 12px rgba(var(--gf-theme-primary-500-rgb), 0.4);
     }
   }
+}
 
-  // ── Responsive ─────────────────────────────────────────────────────
-  @media (max-width: 768px) {
-    ::ng-deep .messages-container {
+// ── Responsive ────────────────────────────────────────────────────────
+@media (max-width: 768px) {
+  :host ::ng-deep .ai-chat-fullscreen {
+    .messages-container {
       padding: 1.5rem;
     }
 
-    ::ng-deep .welcome-state {
+    .welcome-state {
       .welcome-title {
         font-size: 1.5rem;
       }
@@ -270,17 +284,19 @@
       }
     }
 
-    ::ng-deep .input-area {
+    .input-area {
       padding: 0.75rem 1rem 1rem;
     }
 
-    ::ng-deep .history-toggle {
+    .history-toggle {
       padding: 0.5rem 1rem;
     }
   }
+}
 
-  @media (max-width: 480px) {
-    ::ng-deep .welcome-state {
+@media (max-width: 480px) {
+  :host ::ng-deep .ai-chat-fullscreen {
+    .welcome-state {
       .welcome-icon-wrapper {
         height: 72px;
         width: 72px;
@@ -295,8 +311,8 @@
       }
     }
 
-    ::ng-deep .messages-container,
-    ::ng-deep .input-area {
+    .messages-container,
+    .input-area {
       padding-left: 0.75rem;
       padding-right: 0.75rem;
     }

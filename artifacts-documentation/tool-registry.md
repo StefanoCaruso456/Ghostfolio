@@ -12,37 +12,41 @@ The AI chat system uses **10 production tools** registered with the Vercel AI SD
 
 ### Portfolio Tools (4)
 
-| Tool Name | Description | Data Source |
-|-----------|-------------|-------------|
-| `getPortfolioSummary` | Holdings count, top 5 positions, accounts, base currency | PortfolioService |
-| `listActivities` | Orders/transactions with date, symbol, type filters | OrderService |
-| `getAllocations` | Allocation breakdown by asset class, sub-class, currency, sector | PortfolioService |
-| `getPerformance` | Net worth, total investment, returns %, first order date | PortfolioService |
+| Tool Name             | Description                                                      | Data Source      |
+| --------------------- | ---------------------------------------------------------------- | ---------------- |
+| `getPortfolioSummary` | Holdings count, top 5 positions, accounts, base currency         | PortfolioService |
+| `listActivities`      | Orders/transactions with date, symbol, type filters              | OrderService     |
+| `getAllocations`      | Allocation breakdown by asset class, sub-class, currency, sector | PortfolioService |
+| `getPerformance`      | Net worth, total investment, returns %, first order date         | PortfolioService |
 
 ### Market Tools (4)
 
-| Tool Name | Description | Data Source |
-|-----------|-------------|-------------|
-| `getQuote` | Real-time price quotes (1-25 symbols), daily change, source attribution | yahoo-finance2 |
-| `getHistory` | Historical OHLCV data, total returns %, max drawdown, volatility | yahoo-finance2 |
-| `getFundamentals` | P/E, forward P/E, EPS, market cap, dividend yield, sector, industry | yahoo-finance2 |
-| `getNews` | Financial news articles (1-10 items, 1-30 day recency) | yahoo-finance2 |
+| Tool Name         | Description                                                             | Data Source    |
+| ----------------- | ----------------------------------------------------------------------- | -------------- |
+| `getQuote`        | Real-time price quotes (1-25 symbols), daily change, source attribution | yahoo-finance2 |
+| `getHistory`      | Historical OHLCV data, total returns %, max drawdown, volatility        | yahoo-finance2 |
+| `getFundamentals` | P/E, forward P/E, EPS, market cap, dividend yield, sector, industry     | yahoo-finance2 |
+| `getNews`         | Financial news articles (1-10 items, 1-30 day recency)                  | yahoo-finance2 |
 
 ### Decision-Support Tools (2)
 
-| Tool Name | Description | Data Source |
-|-----------|-------------|-------------|
+| Tool Name          | Description                                                                                                   | Data Source      |
+| ------------------ | ------------------------------------------------------------------------------------------------------------- | ---------------- |
 | `computeRebalance` | Current vs target allocation deltas, suggested moves with rationale, constraint violations. NOT trade advice. | PortfolioService |
-| `scenarioImpact` | "What if" portfolio impact simulation with shock scenarios (1-20 shocks) | PortfolioService |
+| `scenarioImpact`   | "What if" portfolio impact simulation with shock scenarios (1-20 shocks)                                      | PortfolioService |
 
 ## Tool Input Schemas
 
 ### getPortfolioSummary
+
 ```typescript
-{ userCurrency: string }
+{
+  userCurrency: string;
+}
 ```
 
 ### listActivities
+
 ```typescript
 {
   startDate?: string,       // ISO date
@@ -54,16 +58,32 @@ The AI chat system uses **10 production tools** registered with the Vercel AI SD
 ```
 
 ### getAllocations
+
 ```typescript
-{ userCurrency: string }
+{
+  userCurrency: string;
+}
 ```
 
 ### getPerformance
+
 ```typescript
-{ dateRange: '1d' | '1w' | '1m' | '3m' | '6m' | 'ytd' | '1y' | '3y' | '5y' | 'max' }
+{
+  dateRange: '1d' |
+    '1w' |
+    '1m' |
+    '3m' |
+    '6m' |
+    'ytd' |
+    '1y' |
+    '3y' |
+    '5y' |
+    'max';
+}
 ```
 
 ### getQuote
+
 ```typescript
 {
   symbols: string[],        // 1-25 symbols
@@ -73,6 +93,7 @@ The AI chat system uses **10 production tools** registered with the Vercel AI SD
 ```
 
 ### getHistory
+
 ```typescript
 {
   symbol: string,
@@ -83,11 +104,15 @@ The AI chat system uses **10 production tools** registered with the Vercel AI SD
 ```
 
 ### getFundamentals
+
 ```typescript
-{ symbol: string }
+{
+  symbol: string;
+}
 ```
 
 ### getNews
+
 ```typescript
 {
   symbol: string,
@@ -97,6 +122,7 @@ The AI chat system uses **10 production tools** registered with the Vercel AI SD
 ```
 
 ### computeRebalance
+
 ```typescript
 {
   baseCurrency?: string,
@@ -114,6 +140,7 @@ The AI chat system uses **10 production tools** registered with the Vercel AI SD
 ```
 
 ### scenarioImpact
+
 ```typescript
 {
   shocks: { symbolOrBucket: string, shockPct: number }[],  // 1-20 shocks
@@ -177,7 +204,7 @@ export const OUTPUT_SCHEMA_REGISTRY: Record<string, z.ZodType> = {
   getFundamentals: GetFundamentalsOutputSchema,
   getNews: GetNewsOutputSchema,
   computeRebalance: ComputeRebalanceOutputSchema,
-  scenarioImpact: ScenarioImpactOutputSchema,
+  scenarioImpact: ScenarioImpactOutputSchema
 };
 ```
 

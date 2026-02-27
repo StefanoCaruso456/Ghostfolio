@@ -1,9 +1,4 @@
 import type { Access } from './access.interface';
-import type { AiChatAttachment } from './ai-chat-attachment.interface';
-import type {
-  AiChatMessage,
-  AiChatResponse
-} from './responses/ai-chat-response.interface';
 import type { AccountBalance } from './account-balance.interface';
 import type { Activity, ActivityError } from './activities.interface';
 import type { AdminData } from './admin-data.interface';
@@ -14,6 +9,7 @@ import type {
   AdminMarketDataItem
 } from './admin-market-data.interface';
 import type { AdminUser } from './admin-user.interface';
+import type { AiChatAttachment } from './ai-chat-attachment.interface';
 import type { AssetClassSelectorOption } from './asset-class-selector-option.interface';
 import type { AssetProfileIdentifier } from './asset-profile-identifier.interface';
 import type { BenchmarkProperty } from './benchmark-property.interface';
@@ -40,6 +36,14 @@ import type { PortfolioPosition } from './portfolio-position.interface';
 import type { PortfolioReportRule } from './portfolio-report-rule.interface';
 import type { PortfolioSummary } from './portfolio-summary.interface';
 import type { Product } from './product';
+import type {
+  ReasoningEvent,
+  ReasoningEventType,
+  ReasoningPreview,
+  ReasoningStep,
+  ReasoningStepKind,
+  ReasoningStepStatus
+} from './reasoning-preview.interface';
 import type { AccessTokenResponse } from './responses/access-token-response.interface';
 import type { AccountBalancesResponse } from './responses/account-balances-response.interface';
 import type { AccountResponse } from './responses/account-response.interface';
@@ -48,6 +52,10 @@ import type { ActivitiesResponse } from './responses/activities-response.interfa
 import type { ActivityResponse } from './responses/activity-response.interface';
 import type { AdminUserResponse } from './responses/admin-user-response.interface';
 import type { AdminUsersResponse } from './responses/admin-users-response.interface';
+import type {
+  AiChatMessage,
+  AiChatResponse
+} from './responses/ai-chat-response.interface';
 import type { AiPromptResponse } from './responses/ai-prompt-response.interface';
 import type { ApiKeyResponse } from './responses/api-key-response.interface';
 import type { AssetResponse } from './responses/asset-response.interface';
@@ -184,6 +192,12 @@ export {
   PublicKeyCredentialRequestOptionsJSON,
   PublicPortfolioResponse,
   QuotesResponse,
+  ReasoningEvent,
+  ReasoningEventType,
+  ReasoningPreview,
+  ReasoningStep,
+  ReasoningStepKind,
+  ReasoningStepStatus,
   ResponseError,
   RuleSettings,
   ScraperConfiguration,

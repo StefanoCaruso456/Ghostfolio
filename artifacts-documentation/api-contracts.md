@@ -45,12 +45,12 @@ Authorization: Bearer <jwt>
 
 ### Error Responses
 
-| Status | Cause |
-|--------|-------|
-| 400 | Missing `message` |
-| 401 | Not authenticated |
-| 403 | Missing `readAiPrompt` permission |
-| 500 | Internal error (LLM failure, timeout, guardrail abort, etc.) |
+| Status | Cause                                                        |
+| ------ | ------------------------------------------------------------ |
+| 400    | Missing `message`                                            |
+| 401    | Not authenticated                                            |
+| 403    | Missing `readAiPrompt` permission                            |
+| 500    | Internal error (LLM failure, timeout, guardrail abort, etc.) |
 
 ---
 
@@ -63,12 +63,12 @@ List all conversations for the authenticated user. Requires JWT + `readAiPrompt`
 ```typescript
 [
   {
-    "id": "conv-uuid-1",
-    "title": "What is the price of AAPL?",
-    "createdAt": "2026-02-25T10:00:00.000Z",
-    "updatedAt": "2026-02-25T10:05:00.000Z"
+    id: 'conv-uuid-1',
+    title: 'What is the price of AAPL?',
+    createdAt: '2026-02-25T10:00:00.000Z',
+    updatedAt: '2026-02-25T10:05:00.000Z'
   }
-]
+];
 ```
 
 ---
@@ -107,9 +107,9 @@ Get a single conversation with all messages. Requires JWT + `readAiPrompt` permi
 
 ### Error Responses
 
-| Status | Cause |
-|--------|-------|
-| 404 | Conversation not found or belongs to another user |
+| Status | Cause                                             |
+| ------ | ------------------------------------------------- |
+| 404    | Conversation not found or belongs to another user |
 
 ---
 

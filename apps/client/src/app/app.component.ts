@@ -27,8 +27,8 @@ import {
   RouterLink,
   RouterOutlet
 } from '@angular/router';
-import { DataSource } from '@prisma/client';
 import { IonIcon } from '@ionic/angular/standalone';
+import { DataSource } from '@prisma/client';
 import { addIcons } from 'ionicons';
 import { openOutline, sparklesOutline } from 'ionicons/icons';
 import { DeviceDetectorService } from 'ngx-device-detector';
