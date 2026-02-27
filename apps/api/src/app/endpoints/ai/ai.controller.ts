@@ -41,6 +41,7 @@ export class AiController {
       message: body.message,
       conversationId: body.conversationId,
       languageCode: this.request.user.settings.settings.language,
+      triggerSource: body.triggerSource,
       userCurrency: this.request.user.settings.settings.baseCurrency,
       userId: this.request.user.id
     });

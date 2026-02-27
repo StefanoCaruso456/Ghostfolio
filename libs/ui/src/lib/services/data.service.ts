@@ -91,7 +91,8 @@ export class DataService {
     attachments,
     conversationId,
     history,
-    message
+    message,
+    triggerSource
   }: {
     attachments?: {
       content: string;
@@ -102,12 +103,14 @@ export class DataService {
     conversationId?: string;
     history?: { content: string; role: 'assistant' | 'user' }[];
     message: string;
+    triggerSource?: string;
   }) {
     return this.http.post<AiChatResponse>('/api/v1/ai/chat', {
       attachments,
       conversationId,
       history,
-      message
+      message,
+      triggerSource
     });
   }
 

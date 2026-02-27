@@ -283,6 +283,7 @@ export class AiService {
     history,
     languageCode,
     message,
+    triggerSource,
     userCurrency,
     userId
   }: {
@@ -296,6 +297,7 @@ export class AiService {
     history: { content: string; role: 'assistant' | 'user' }[];
     languageCode: string;
     message: string;
+    triggerSource?: string;
     userCurrency: string;
     userId: string;
   }): Promise<AiChatResponse> {
@@ -340,7 +342,11 @@ export class AiService {
       model: modelId
     });
 
-    // ── Wire history message count into telemetry ─────────────────
+    // ── Wire trigger source + history message count into telemetry ──
+    if (triggerSource) {
+      trace.setTriggerSource(triggerSource);
+    }
+
     trace.setHistoryMessageCount(history.length);
 
     // ── Initialize guardrails ───────────────────────────────────────
