@@ -68,6 +68,7 @@ export class ConfigurationService {
       MCP_SERVER_URL: str({ default: '' }),
       MAX_ACTIVITIES_TO_IMPORT: num({ default: Number.MAX_SAFE_INTEGER }),
       MAX_CHART_ITEMS: num({ default: 365 }),
+      PLAID_API_KEY: str({ default: '' }),
       PLAID_CLIENT_ID: str({ default: '' }),
       PLAID_SECRET: str({ default: '' }),
       PLAID_ENV: str({ default: 'sandbox' }),

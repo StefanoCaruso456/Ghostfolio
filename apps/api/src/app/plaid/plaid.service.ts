@@ -29,7 +29,9 @@ export class PlaidService {
     private readonly configurationService: ConfigurationService,
     private readonly prismaService: PrismaService
   ) {
-    const clientId = this.configurationService.get('PLAID_CLIENT_ID');
+    const clientId =
+      this.configurationService.get('PLAID_CLIENT_ID') ||
+      this.configurationService.get('PLAID_API_KEY');
     const secret = this.configurationService.get('PLAID_SECRET');
     const env = this.configurationService.get('PLAID_ENV');
 
