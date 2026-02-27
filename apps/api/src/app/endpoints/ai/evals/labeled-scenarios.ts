@@ -247,6 +247,50 @@ export const LABELED_SCENARIOS: LabeledScenario[] = [
     toolCategories: ['performance', 'allocations']
   },
 
+  // ── MULTI-TOOL: Extended Chains ───────────────────────────────────
+  {
+    id: 'ls-043',
+    query:
+      'Show my performance and dividends for the past year, then check the fundamentals of whatever paid the most dividends',
+    expectedTools: ['getPerformance', 'listActivities', 'getFundamentals'],
+    mustContain: [],
+    mustNotContain: ['I predict', 'will increase'],
+    expectedSources: ['ghostfolio-portfolio-service', 'ghostfolio-order-service', 'yahoo-finance2'],
+    description: 'Three-step chain: performance + dividends → identify top payer → fundamentals',
+    category: 'multi_tool',
+    complexity: 'complex',
+    difficulty: 'nuanced',
+    toolCategories: ['performance', 'activities', 'market']
+  },
+  {
+    id: 'ls-044',
+    query:
+      'What is my sector allocation, and run a scenario where my largest sector drops 20%',
+    expectedTools: ['getAllocations', 'scenarioImpact'],
+    mustContain: [],
+    mustNotContain: ['will drop', 'will lose'],
+    expectedSources: ['ghostfolio-portfolio-service'],
+    description: 'Two-step chain: allocation lookup → scenario impact on largest sector',
+    category: 'multi_tool',
+    complexity: 'complex',
+    difficulty: 'straightforward',
+    toolCategories: ['allocations', 'decision']
+  },
+  {
+    id: 'ls-045',
+    query:
+      'Get AAPL and TSLA quotes, then show the 1-year history for both, and compare their fundamentals',
+    expectedTools: ['getQuote', 'getHistory', 'getFundamentals'],
+    mustContain: [],
+    mustNotContain: ['I cannot'],
+    expectedSources: ['yahoo-finance2'],
+    description: 'Three-step parallel chain: quotes → history for both → fundamentals comparison',
+    category: 'multi_tool',
+    complexity: 'complex',
+    difficulty: 'nuanced',
+    toolCategories: ['market']
+  },
+
   // ── EDGE CASES ─────────────────────────────────────────────────────
   {
     id: 'ls-050',

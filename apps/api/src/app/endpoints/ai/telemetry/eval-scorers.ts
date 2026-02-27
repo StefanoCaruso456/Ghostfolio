@@ -5,7 +5,7 @@ import type { TelemetryPayload } from './telemetry.interfaces';
  *
  * Each scorer returns a 0–1 value (or pass/fail mapped to 0/1).
  * These are used both inline (logged with each trace) and in
- * Braintrust Eval datasets for the 50+ test case requirement.
+ * Braintrust Eval datasets (85 test cases: 57 golden + 28 labeled).
  *
  * Scorers:
  *   1. Correctness      — factual accuracy of the response

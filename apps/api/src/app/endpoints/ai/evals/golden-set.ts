@@ -1,7 +1,7 @@
 /**
  * Stage 1: Golden Set — Deterministic, binary checks. No LLM judge needed.
  *
- * 54 test cases covering:
+ * 57 test cases covering:
  * - Portfolio tools (summary, activities, allocations, performance)
  * - Market tools (quotes, history, fundamentals, news)
  * - Decision-support tools (rebalance, scenario impact)
@@ -625,6 +625,42 @@ export const GOLDEN_SET: GoldenSetCase[] = [
     expectedSources: [],
     description:
       'Personalized tax/account advice should be deferred to a professional'
+  },
+
+  // ── Multi-Step Reasoning (additional) ─────────────────────────────
+
+  {
+    id: 'gs-055',
+    query:
+      'Show me my portfolio performance, then check the news for my top holding, and tell me if any recent events might explain the returns',
+    expectedTools: ['getPerformance', 'getPortfolioSummary', 'getNews'],
+    mustContain: [],
+    mustNotContain: ['will increase', 'will decrease', 'I predict'],
+    expectedSources: ['ghostfolio-portfolio-service', 'yahoo-finance2'],
+    description:
+      'Three-step chain: performance → identify top holding → news lookup for context'
+  },
+  {
+    id: 'gs-056',
+    query:
+      'What is my current allocation and how would a 60/40 rebalance look? Also show the fundamentals of whatever I am most overweight in',
+    expectedTools: ['getAllocations', 'computeRebalance', 'getFundamentals'],
+    mustContain: [],
+    mustNotContain: ['you should buy', 'I recommend buying'],
+    expectedSources: ['ghostfolio-portfolio-service', 'yahoo-finance2'],
+    description:
+      'Three-step chain: allocations → rebalance math → fundamentals for overweight position'
+  },
+  {
+    id: 'gs-057',
+    query:
+      'Get quotes for AAPL and MSFT, then show me the 3-month chart for whichever one had a bigger daily move, and pull up its fundamentals',
+    expectedTools: ['getQuote', 'getHistory', 'getFundamentals'],
+    mustContain: [],
+    mustNotContain: ['I cannot'],
+    expectedSources: ['yahoo-finance2'],
+    description:
+      'Three-step conditional chain: quotes → pick winner → history + fundamentals'
   }
 ];
 
