@@ -408,6 +408,23 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
           lastMessage.isLoading = false;
           lastMessage.timestamp = response.message.timestamp;
 
+          // Fallback: if SSE didn't deliver steps, load persisted trace
+          if (response.traceId) {
+            this.currentTraceId = response.traceId;
+
+            this.reasoningTraceService
+              .getTrace(response.traceId)
+              .pipe(takeUntil(this.unsubscribeSubject))
+              .subscribe({
+                error: () => {
+                  // Trace may not be persisted yet
+                },
+                next: () => {
+                  this.changeDetectorRef.markForCheck();
+                }
+              });
+          }
+
           this.isGenerating = false;
           this.saveConversations();
           this.changeDetectorRef.markForCheck();

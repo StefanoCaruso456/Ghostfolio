@@ -24,6 +24,7 @@ import { AuthGuard } from '@nestjs/passport';
 
 import { AiService } from './ai.service';
 import { McpClientService } from './mcp/mcp-client.service';
+import { ReasoningTraceService } from './reasoning/reasoning-trace.service';
 
 @Controller('ai')
 export class AiController {
@@ -31,6 +32,7 @@ export class AiController {
     private readonly aiService: AiService,
     private readonly apiService: ApiService,
     private readonly mcpClientService: McpClientService,
+    private readonly reasoningTraceService: ReasoningTraceService,
     @Inject(REQUEST) private readonly request: RequestWithUser
   ) {}
 
@@ -38,6 +40,12 @@ export class AiController {
   @HasPermission(permissions.readAiPrompt)
   @UseGuards(AuthGuard('jwt'), HasPermissionGuard)
   public async chat(@Body() body: AiChatDto): Promise<AiChatResponse> {
+    // Pre-create the SSE stream so events are buffered before
+    // the EventSource client subscribes
+    if (body.traceId) {
+      this.reasoningTraceService.ensureStream(body.traceId);
+    }
+
     return this.aiService.chat({
       attachments: body.attachments ?? [],
       history: body.history ?? [],
