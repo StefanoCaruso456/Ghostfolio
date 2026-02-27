@@ -25,6 +25,25 @@ import type {
 
 const logger = new Logger('MarketDataProvider');
 
+/** Per-request timeout for Yahoo Finance API calls (15s) */
+const YAHOO_REQUEST_TIMEOUT_MS = 15_000;
+
+/**
+ * Wraps a promise with a timeout. Rejects with a clear message if the
+ * underlying call (e.g. yahoo-finance2 fetch) hangs beyond the limit.
+ */
+function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<never>((_, reject) =>
+      setTimeout(
+        () => reject(new Error(`${label}: timed out after ${ms / 1000}s`)),
+        ms
+      )
+    )
+  ]);
+}
+
 // ─── Range → yahoo-finance2 period mapping ──────────────────────────
 
 const RANGE_TO_PERIOD1: Record<string, () => Date> = {
@@ -104,7 +123,11 @@ export class YahooMarketDataProvider implements MarketDataProvider {
 
     for (const symbol of symbols) {
       try {
-        const result = await yahooFinance.quote(symbol);
+        const result = await withTimeout(
+          yahooFinance.quote(symbol),
+          YAHOO_REQUEST_TIMEOUT_MS,
+          symbol
+        );
 
         if (!result?.regularMarketPrice) {
           errors.push({ symbol, error: `No quote data for ${symbol}` });
@@ -133,6 +156,20 @@ export class YahooMarketDataProvider implements MarketDataProvider {
         if (msg.includes('429') || msg.toLowerCase().includes('rate limit')) {
           rateLimited = true;
           errors.push({ symbol, error: 'rate_limited' });
+        } else if (
+          msg.includes('fetch failed') ||
+          msg.includes('getaddrinfo') ||
+          msg.includes('ENOTFOUND') ||
+          msg.includes('EAI_AGAIN')
+        ) {
+          logger.warn(`Network error fetching ${symbol}: ${msg}`);
+          errors.push({
+            symbol,
+            error: `Network error: Unable to reach Yahoo Finance API. The server may not have internet access or DNS resolution failed.`
+          });
+        } else if (msg.includes('timed out')) {
+          logger.warn(`Timeout fetching ${symbol}: ${msg}`);
+          errors.push({ symbol, error: msg });
         } else {
           errors.push({ symbol, error: msg });
         }
@@ -171,10 +208,14 @@ export class YahooMarketDataProvider implements MarketDataProvider {
       }
 
       const yahooInterval = INTERVAL_MAP[interval] || '1d';
-      const result = await yahooFinance.chart(symbol, {
-        period1: period1Fn(),
-        interval: yahooInterval as any
-      });
+      const result = await withTimeout(
+        yahooFinance.chart(symbol, {
+          period1: period1Fn(),
+          interval: yahooInterval as any
+        }),
+        YAHOO_REQUEST_TIMEOUT_MS,
+        `${symbol} history`
+      );
 
       const rawQuotes = result?.quotes ?? [];
       const maxPoints = 260;
@@ -215,9 +256,13 @@ export class YahooMarketDataProvider implements MarketDataProvider {
 
     try {
       const yahooFinance = await this.getYahoo();
-      const result = await yahooFinance.quoteSummary(symbol, {
-        modules: ['summaryDetail', 'defaultKeyStatistics', 'assetProfile']
-      });
+      const result = await withTimeout(
+        yahooFinance.quoteSummary(symbol, {
+          modules: ['summaryDetail', 'defaultKeyStatistics', 'assetProfile']
+        }),
+        YAHOO_REQUEST_TIMEOUT_MS,
+        `${symbol} fundamentals`
+      );
 
       if (!result) {
         return {
@@ -302,9 +347,13 @@ export class YahooMarketDataProvider implements MarketDataProvider {
       const yahooFinance = await this.getYahoo();
 
       // yahoo-finance2 search returns news items
-      const result = await yahooFinance.search(symbol, {
-        newsCount: Math.min(limit, 10)
-      });
+      const result = await withTimeout(
+        yahooFinance.search(symbol, {
+          newsCount: Math.min(limit, 10)
+        }),
+        YAHOO_REQUEST_TIMEOUT_MS,
+        `${symbol} news`
+      );
 
       const items: NormalizedNewsItem[] = (result?.news ?? [])
         .slice(0, limit)
