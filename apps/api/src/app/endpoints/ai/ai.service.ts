@@ -991,9 +991,11 @@ export class AiService {
         });
 
       // ── Persist conversation (non-blocking) ────────────────────────
+      // Detect new conversation: if no history was sent, this is the first message
+      // (the frontend always sends conversationId, so we can't rely on !conversationId)
       this.persistConversation({
         conversationId: activeConversationId,
-        isNew: !conversationId,
+        isNew: history.length === 0,
         messages: [
           { content: message, role: 'user' },
           { content: result.text, role: 'assistant' }
