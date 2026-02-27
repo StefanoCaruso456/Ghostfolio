@@ -9,14 +9,14 @@ import type {
 } from '@ghostfolio/common/interfaces';
 
 import { Injectable, Logger } from '@nestjs/common';
-import { Subject, Observable } from 'rxjs';
+import { ReplaySubject, Observable } from 'rxjs';
 
 @Injectable()
 export class ReasoningTraceService {
   private readonly logger = new Logger(ReasoningTraceService.name);
 
   /** Active SSE streams keyed by traceId */
-  private readonly streams = new Map<string, Subject<ReasoningEvent>>();
+  private readonly streams = new Map<string, ReplaySubject<ReasoningEvent>>();
 
   public constructor(private readonly prismaService: PrismaService) {}
 
@@ -25,10 +25,29 @@ export class ReasoningTraceService {
    * can pipe to the SSE response.
    */
   public createStream(traceId: string): Observable<ReasoningEvent> {
-    const subject = new Subject<ReasoningEvent>();
+    // Use ReplaySubject to buffer events until the SSE client subscribes.
+    // This prevents the race condition where events are emitted before the
+    // EventSource connection completes.
+    const existing = this.streams.get(traceId);
+
+    if (existing) {
+      return existing.asObservable();
+    }
+
+    const subject = new ReplaySubject<ReasoningEvent>(50);
     this.streams.set(traceId, subject);
 
     return subject.asObservable();
+  }
+
+  /**
+   * Ensure a stream exists for a traceId (called before chat processing
+   * so events emitted during processing are buffered).
+   */
+  public ensureStream(traceId: string): void {
+    if (!this.streams.has(traceId)) {
+      this.streams.set(traceId, new ReplaySubject<ReasoningEvent>(50));
+    }
   }
 
   /**

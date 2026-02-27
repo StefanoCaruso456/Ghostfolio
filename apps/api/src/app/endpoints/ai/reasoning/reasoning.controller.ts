@@ -38,12 +38,11 @@ export class ReasoningController {
   /**
    * SSE endpoint: GET /api/v1/ai/reasoning/:traceId/stream
    *
-   * The client opens this connection immediately after sending a chat request.
-   * The server pushes reasoning events as they occur.
+   * No auth guard — EventSource cannot send Authorization headers.
+   * Security relies on the traceId being an unguessable UUID generated
+   * by the authenticated client. The REST endpoint below still requires auth.
    */
   @Get(':traceId/stream')
-  @HasPermission(permissions.readAiPrompt)
-  @UseGuards(AuthGuard('jwt'), HasPermissionGuard)
   @Sse()
   public stream(
     @Param('traceId') traceId: string
