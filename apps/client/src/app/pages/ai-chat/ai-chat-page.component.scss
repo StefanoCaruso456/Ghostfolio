@@ -1,7 +1,12 @@
 :host {
   color: rgb(var(--dark-primary-text));
+  display: flex;
+  flex-direction: column;
   height: calc(100svh - var(--mat-toolbar-standard-height));
   overflow: hidden;
+
+  // Override global .page:not(.has-tabs) padding — fullscreen chat needs zero padding
+  padding: 0 !important;
 }
 
 // ── Dark Theme ──────────────────────────────────────────────────────

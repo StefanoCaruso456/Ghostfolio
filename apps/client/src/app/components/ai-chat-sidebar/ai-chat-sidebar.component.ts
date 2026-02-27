@@ -689,32 +689,58 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
   }
 
   private loadConversations() {
+    // Always load from localStorage first so we have data immediately
+    let localConversations: Conversation[] = [];
+
+    try {
+      const stored = localStorage.getItem('gf-ai-conversations');
+
+      if (stored) {
+        localConversations = JSON.parse(stored);
+      }
+    } catch {
+      localConversations = [];
+    }
+
+    this.conversations = localConversations;
+    this.autoSelectRecentConversation();
+    this.changeDetectorRef.markForCheck();
+
+    // Then try API to merge in any server-side conversations
     this.dataService
       .getAiConversations()
       .pipe(takeUntil(this.unsubscribeSubject))
       .subscribe({
         error: () => {
-          // Fall back to localStorage
-          try {
-            const stored = localStorage.getItem('gf-ai-conversations');
-
-            if (stored) {
-              this.conversations = JSON.parse(stored);
-            }
-          } catch {
-            this.conversations = [];
-          }
-
-          this.autoSelectRecentConversation();
-          this.changeDetectorRef.markForCheck();
+          // Already loaded from localStorage above — nothing to do
         },
         next: (apiConversations) => {
-          this.conversations = apiConversations.map((c) => ({
-            id: c.id,
-            messages: [],
-            title: c.title
-          }));
+          if (apiConversations.length === 0) {
+            // API returned empty — keep localStorage data as-is
+            return;
+          }
 
+          // Merge: API conversations take priority, local-only ones are preserved
+          const apiIds = new Set(apiConversations.map((c) => c.id));
+          const localOnly = this.conversations.filter(
+            (c) => !apiIds.has(c.id)
+          );
+          const merged = [
+            ...apiConversations.map((c) => {
+              // Preserve locally-cached messages if available
+              const local = this.conversations.find((lc) => lc.id === c.id);
+
+              return {
+                id: c.id,
+                messages: local?.messages ?? [],
+                title: c.title
+              };
+            }),
+            ...localOnly
+          ];
+
+          this.conversations = merged;
+          this.saveConversations();
           this.autoSelectRecentConversation();
           this.changeDetectorRef.markForCheck();
         }
