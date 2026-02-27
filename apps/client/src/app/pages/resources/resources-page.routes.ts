@@ -13,7 +13,7 @@ export const routes: Routes = [
       {
         path: '',
         loadChildren: () =>
-          import('./overview/resources-overview.routes').then((m) => m.routes)
+          import('./guides/resources-guides.routes').then((m) => m.routes)
       },
       {
         path: publicRoutes.resources.subRoutes.glossary.path,
@@ -22,8 +22,8 @@ export const routes: Routes = [
       },
       {
         path: publicRoutes.resources.subRoutes.guides.path,
-        loadChildren: () =>
-          import('./guides/resources-guides.routes').then((m) => m.routes)
+        redirectTo: '',
+        pathMatch: 'full'
       },
       {
         path: publicRoutes.resources.subRoutes.markets.path,

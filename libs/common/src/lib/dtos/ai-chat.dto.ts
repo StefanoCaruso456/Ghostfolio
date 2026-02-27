@@ -9,6 +9,10 @@ export class AiChatDto {
   conversationId?: string;
 
   @IsOptional()
+  @IsString()
+  traceId?: string;
+
+  @IsOptional()
   @IsArray()
   history?: { content: string; role: 'assistant' | 'user' }[];
 
@@ -20,4 +24,8 @@ export class AiChatDto {
     mimeType: string;
     size: number;
   }[];
+
+  @IsOptional()
+  @IsString()
+  triggerSource?: string;
 }

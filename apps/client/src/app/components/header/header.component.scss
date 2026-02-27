@@ -12,10 +12,11 @@
           transparent,
           rgba(var(--palette-foreground-base), 0.02)
         );
-      }
 
-      @media (min-width: 576px) {
-        width: 14rem;
+        // Only set fixed width when on tabbed pages (logo aligns with 14rem tab sidebar)
+        @media (min-width: 576px) {
+          width: 14rem;
+        }
       }
     }
 

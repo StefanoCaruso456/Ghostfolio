@@ -32,7 +32,11 @@ const YAHOO_REQUEST_TIMEOUT_MS = 15_000;
  * Wraps a promise with a timeout. Rejects with a clear message if the
  * underlying call (e.g. yahoo-finance2 fetch) hangs beyond the limit.
  */
-function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
+function withTimeout<T>(
+  promise: Promise<T>,
+  ms: number,
+  label: string
+): Promise<T> {
   return Promise.race([
     promise,
     new Promise<never>((_, reject) =>

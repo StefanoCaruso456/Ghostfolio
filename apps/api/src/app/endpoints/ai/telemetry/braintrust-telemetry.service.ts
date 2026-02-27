@@ -169,6 +169,10 @@ export class BraintrustTelemetryService implements OnModuleInit {
         tags.push('guardrail_triggered');
       }
 
+      if (payload.trace.triggerSource) {
+        tags.push(`trigger:${payload.trace.triggerSource}`);
+      }
+
       // ── 1. Root span with accurate timing + metrics ─────────────────
       const rootSpan = this.logger.startSpan({
         name: 'ai-chat',
@@ -219,6 +223,9 @@ export class BraintrustTelemetryService implements OnModuleInit {
           queryCategory: payload.trace.queryCategory,
           model: payload.trace.model,
           timestamp: payload.trace.timestamp,
+
+          // Input source
+          triggerSource: payload.trace.triggerSource ?? 'manual',
 
           // Decision fields
           toolPolicyDecision: payload.toolPolicyDecision,
@@ -337,9 +344,7 @@ export class BraintrustTelemetryService implements OnModuleInit {
           if (iterTools.length > 0) {
             iterStartS =
               Math.min(
-                ...iterTools.map(
-                  (t) => new Date(t.startedAt).getTime() / 1000
-                )
+                ...iterTools.map((t) => new Date(t.startedAt).getTime() / 1000)
               ) - 0.001; // Nudge before first tool
             iterEndS =
               Math.max(
@@ -405,8 +410,8 @@ export class BraintrustTelemetryService implements OnModuleInit {
             : payload.timing.endEpochS - 0.01);
         const vEnd =
           payload.timing.verificationEndEpochS ??
-          (payload.timing.responseStartEpochS ??
-            payload.timing.endEpochS - 0.005);
+          payload.timing.responseStartEpochS ??
+          payload.timing.endEpochS - 0.005;
         const verificationLatencyMs = Math.max(0, (vEnd - vStart) * 1000);
 
         const verifySpan = rootSpan.startSpan({
@@ -432,10 +437,8 @@ export class BraintrustTelemetryService implements OnModuleInit {
             end: vEnd,
             verification_latency_ms: verificationLatencyMs,
             passed: payload.verification.passed ? 1 : 0,
-            hallucination_count:
-              payload.verification.hallucinationFlags.length,
-            domain_violation_count:
-              payload.verification.domainViolations.length
+            hallucination_count: payload.verification.hallucinationFlags.length,
+            domain_violation_count: payload.verification.domainViolations.length
           },
           scores: {
             confidence: payload.verification.confidenceScore,
@@ -670,6 +673,7 @@ export class TraceContext {
   private aborted = false;
   private iterationCount = 0;
   private historyMessageCount = 0;
+  private triggerSource: string | undefined = undefined;
   private guardrailsTriggered: GuardrailType[] = [];
 
   private toolSpans: ToolSpan[] = [];
@@ -765,6 +769,10 @@ export class TraceContext {
 
   public setHistoryMessageCount(count: number): void {
     this.historyMessageCount = count;
+  }
+
+  public setTriggerSource(source: string): void {
+    this.triggerSource = source;
   }
 
   public addGuardrail(guardrail: GuardrailType): void {
@@ -973,6 +981,7 @@ export class TraceContext {
       aborted: this.aborted,
       model: this.model,
       timestamp: new Date(endTime).toISOString(),
+      triggerSource: this.triggerSource,
       requestShape,
       toolDataVolume: {
         toolOutputBytesTotal,
@@ -1032,9 +1041,7 @@ export class TraceContext {
       }
     } else {
       const allFailed = this.toolSpans.every((s) => s.status === 'error');
-      const allSucceeded = this.toolSpans.every(
-        (s) => s.status === 'success'
-      );
+      const allSucceeded = this.toolSpans.every((s) => s.status === 'success');
 
       if (allFailed) {
         toolPolicyDecision = 'tool_failed';
@@ -1075,9 +1082,7 @@ export class TraceContext {
           ? this.verificationEndTime / 1000
           : undefined,
       responseStartEpochS:
-        this.responseStartTime > 0
-          ? this.responseStartTime / 1000
-          : undefined,
+        this.responseStartTime > 0 ? this.responseStartTime / 1000 : undefined,
       responseEndEpochS:
         this.responseEndTime > 0 ? this.responseEndTime / 1000 : undefined
     };

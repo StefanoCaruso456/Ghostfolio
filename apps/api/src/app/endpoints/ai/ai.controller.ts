@@ -2,7 +2,10 @@ import { HasPermission } from '@ghostfolio/api/decorators/has-permission.decorat
 import { HasPermissionGuard } from '@ghostfolio/api/guards/has-permission.guard';
 import { ApiService } from '@ghostfolio/api/services/api/api.service';
 import { AiChatDto } from '@ghostfolio/common/dtos';
-import { AiChatResponse, AiPromptResponse } from '@ghostfolio/common/interfaces';
+import {
+  AiChatResponse,
+  AiPromptResponse
+} from '@ghostfolio/common/interfaces';
 import { permissions } from '@ghostfolio/common/permissions';
 import type { AiPromptMode, RequestWithUser } from '@ghostfolio/common/types';
 
@@ -20,12 +23,16 @@ import { REQUEST } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
 
 import { AiService } from './ai.service';
+import { McpClientService } from './mcp/mcp-client.service';
+import { ReasoningTraceService } from './reasoning/reasoning-trace.service';
 
 @Controller('ai')
 export class AiController {
   public constructor(
     private readonly aiService: AiService,
     private readonly apiService: ApiService,
+    private readonly mcpClientService: McpClientService,
+    private readonly reasoningTraceService: ReasoningTraceService,
     @Inject(REQUEST) private readonly request: RequestWithUser
   ) {}
 
@@ -33,14 +40,41 @@ export class AiController {
   @HasPermission(permissions.readAiPrompt)
   @UseGuards(AuthGuard('jwt'), HasPermissionGuard)
   public async chat(@Body() body: AiChatDto): Promise<AiChatResponse> {
+    // Pre-create the SSE stream so events are buffered before
+    // the EventSource client subscribes
+    if (body.traceId) {
+      this.reasoningTraceService.ensureStream(body.traceId);
+    }
+
     return this.aiService.chat({
       attachments: body.attachments ?? [],
       history: body.history ?? [],
       message: body.message,
       conversationId: body.conversationId,
       languageCode: this.request.user.settings.settings.language,
+      traceId: body.traceId,
+      triggerSource: body.triggerSource,
       userCurrency: this.request.user.settings.settings.baseCurrency,
       userId: this.request.user.id
+    });
+  }
+
+  @Post('dashboard')
+  @HasPermission(permissions.readAiPrompt)
+  @UseGuards(AuthGuard('jwt'), HasPermissionGuard)
+  public async getDashboardConfig() {
+    return this.aiService.getDashboardConfig({
+      mcpClientService: this.mcpClientService,
+      userId: this.request.user.id
+    });
+  }
+
+  @Get('diagnostics')
+  @HasPermission(permissions.readAiPrompt)
+  @UseGuards(AuthGuard('jwt'), HasPermissionGuard)
+  public async getDiagnostics() {
+    return this.aiService.getDiagnostics({
+      mcpClientService: this.mcpClientService
     });
   }
 

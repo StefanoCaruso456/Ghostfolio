@@ -40,6 +40,7 @@ import {
   ImportResponse,
   InfoItem,
   LookupResponse,
+  MarketChartResponse,
   MarketDataDetailsResponse,
   MarketDataOfMarketsResponse,
   OAuthResponse,
@@ -91,7 +92,9 @@ export class DataService {
     attachments,
     conversationId,
     history,
-    message
+    message,
+    traceId,
+    triggerSource
   }: {
     attachments?: {
       content: string;
@@ -102,12 +105,16 @@ export class DataService {
     conversationId?: string;
     history?: { content: string; role: 'assistant' | 'user' }[];
     message: string;
+    traceId?: string;
+    triggerSource?: string;
   }) {
     return this.http.post<AiChatResponse>('/api/v1/ai/chat', {
       attachments,
       conversationId,
       history,
-      message
+      message,
+      traceId,
+      triggerSource
     });
   }
 
@@ -369,6 +376,36 @@ export class DataService {
 
   public deleteAccountBalance(aId: string) {
     return this.http.delete<any>(`/api/v1/account-balance/${aId}`);
+  }
+
+  public createPlaidLinkToken() {
+    return this.http.post<{ linkToken: string }>(
+      '/api/v1/plaid/link-token',
+      {}
+    );
+  }
+
+  public exchangePlaidPublicToken(data: {
+    publicToken: string;
+    institutionId: string;
+    institutionName: string;
+    accountId?: string;
+  }) {
+    return this.http.post<any>('/api/v1/plaid/exchange-token', data);
+  }
+
+  public syncPlaidItem(id: string) {
+    return this.http.post<{ synced: number }>(`/api/v1/plaid/${id}/sync`, {});
+  }
+
+  public disconnectPlaidItem(id: string) {
+    return this.http.delete<void>(`/api/v1/plaid/${id}`);
+  }
+
+  public fetchMarketChart(symbol: string, range: string) {
+    return this.http.get<MarketChartResponse>('/api/v1/market-chart', {
+      params: { symbol, range }
+    });
   }
 
   public deleteActivities({ filters }) {
@@ -854,27 +891,6 @@ export class DataService {
 
   public postWatchlistItem(watchlistItem: CreateWatchlistItemDto) {
     return this.http.post('/api/v1/watchlist', watchlistItem);
-  }
-
-  public postPlaidCreateLinkToken() {
-    return this.http.post<{ linkToken: string }>(
-      '/api/v1/plaid/create-link-token',
-      {}
-    );
-  }
-
-  public postPlaidExchangePublicToken(publicToken: string) {
-    return this.http.post<{ itemId: string; accounts: any[] }>(
-      '/api/v1/plaid/exchange-public-token',
-      { publicToken }
-    );
-  }
-
-  public postPlaidSyncBalances() {
-    return this.http.post<{ synced: number }>(
-      '/api/v1/plaid/sync-balances',
-      {}
-    );
   }
 
   public putAccess(aAccess: UpdateAccessDto) {

@@ -1,7 +1,7 @@
-<mat-tab-nav-panel #tabPanel class="flex-grow-1 overflow-auto">
-  <router-outlet />
-</mat-tab-nav-panel>
+<!-- Market charts always visible at top -->
+<gf-resources-markets />
 
+<!-- Resource tabs below charts -->
 <nav
   mat-align-tabs="center"
   mat-tab-nav-bar
@@ -28,3 +28,8 @@
     }
   }
 </nav>
+
+<!-- Tab content below -->
+<mat-tab-nav-panel #tabPanel class="flex-grow-1 overflow-auto">
+  <router-outlet />
+</mat-tab-nav-panel>

@@ -1,3 +1,5 @@
+import { GfReasoningPanelComponent } from '@ghostfolio/client/components/reasoning-panel/reasoning-panel.component';
+import { ReasoningTraceService } from '@ghostfolio/client/services/reasoning-trace.service';
 import { UserService } from '@ghostfolio/client/services/user/user.service';
 import { User } from '@ghostfolio/common/interfaces';
 import { DataService } from '@ghostfolio/ui/services';
@@ -26,6 +28,7 @@ import {
   attachOutline,
   chatbubbleEllipsesOutline,
   checkmarkOutline,
+  chevronBackOutline,
   chevronDownOutline,
   closeOutline,
   cloudUploadOutline,
@@ -33,6 +36,7 @@ import {
   createOutline,
   documentTextOutline,
   expandOutline,
+  menuOutline,
   micOffOutline,
   micOutline,
   pencilOutline,
@@ -74,6 +78,7 @@ interface Conversation {
   imports: [
     CommonModule,
     FormsModule,
+    GfReasoningPanelComponent,
     IonIcon,
     MarkdownModule,
     MatButtonModule,
@@ -98,6 +103,7 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
   public attachments: Attachment[] = [];
   public conversations: Conversation[] = [];
   public currentConversation: Conversation | null = null;
+  public currentTraceId: string | null = null;
   public editingConversationId: string | null = null;
   public editingTitle = '';
   public inputValue = '';
@@ -149,6 +155,7 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
   public constructor(
     private changeDetectorRef: ChangeDetectorRef,
     private dataService: DataService,
+    private reasoningTraceService: ReasoningTraceService,
     private userService: UserService
   ) {
     addIcons({
@@ -156,6 +163,7 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
       attachOutline,
       chatbubbleEllipsesOutline,
       checkmarkOutline,
+      chevronBackOutline,
       chevronDownOutline,
       closeOutline,
       cloudUploadOutline,
@@ -163,6 +171,7 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
       createOutline,
       documentTextOutline,
       expandOutline,
+      menuOutline,
       micOffOutline,
       micOutline,
       pencilOutline,
@@ -174,6 +183,11 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
   }
 
   public ngOnInit() {
+    // In fullscreen mode, always show history sidebar
+    if (this.mode === 'fullscreen') {
+      this.showHistory = true;
+    }
+
     this.loadConversations();
     this.initSpeechRecognition();
 
@@ -195,16 +209,28 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
 
   public onNewConversation() {
     this.currentConversation = null;
+    this.currentTraceId = null;
     this.inputValue = '';
     this.attachments = [];
-    this.showHistory = false;
+
+    // Only hide history in sidebar mode; keep it open in fullscreen
+    if (this.mode === 'sidebar') {
+      this.showHistory = false;
+    }
+
+    this.reasoningTraceService.reset();
     this.changeDetectorRef.markForCheck();
     this.focusInput();
   }
 
   public onSelectConversation(conversation: Conversation) {
     this.currentConversation = conversation;
-    this.showHistory = false;
+
+    // Only hide history in sidebar mode; keep it open in fullscreen
+    if (this.mode === 'sidebar') {
+      this.showHistory = false;
+    }
+
     this.changeDetectorRef.markForCheck();
 
     // Load messages from API if not already loaded
@@ -301,10 +327,10 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
 
   public onUseSuggestedPrompt(prompt: string) {
     this.inputValue = prompt;
-    this.onSendMessage();
+    this.onSendMessage('suggested_prompt');
   }
 
-  public onSendMessage() {
+  public onSendMessage(triggerSource: string = 'manual') {
     const message = this.inputValue.trim();
     const hasAttachments = this.attachments.length > 0;
 
@@ -318,8 +344,7 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
     this.attachments = [];
 
     if (!this.currentConversation) {
-      const title =
-        message || `${currentAttachments.length} file(s) attached`;
+      const title = message || `${currentAttachments.length} file(s) attached`;
       this.currentConversation = {
         id: crypto.randomUUID(),
         messages: [],
@@ -346,6 +371,12 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
     this.currentConversation.messages.push(loadingMessage);
 
     this.isGenerating = true;
+
+    // Generate traceId upfront so we can connect SSE immediately
+    const traceId = crypto.randomUUID();
+    this.currentTraceId = traceId;
+    this.reasoningTraceService.connect(traceId);
+
     this.changeDetectorRef.markForCheck();
     this.scrollToBottom();
     this.focusInput();
@@ -367,7 +398,9 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
           : undefined,
         history,
         message,
-        conversationId: this.currentConversation.id
+        conversationId: this.currentConversation.id,
+        traceId,
+        triggerSource
       })
       .pipe(takeUntil(this.unsubscribeSubject))
       .subscribe({
@@ -393,6 +426,23 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
           lastMessage.content = response.message.content;
           lastMessage.isLoading = false;
           lastMessage.timestamp = response.message.timestamp;
+
+          // Fallback: if SSE didn't deliver steps, load persisted trace
+          if (response.traceId) {
+            this.currentTraceId = response.traceId;
+
+            this.reasoningTraceService
+              .getTrace(response.traceId)
+              .pipe(takeUntil(this.unsubscribeSubject))
+              .subscribe({
+                error: () => {
+                  // Trace may not be persisted yet
+                },
+                next: () => {
+                  this.changeDetectorRef.markForCheck();
+                }
+              });
+          }
 
           this.isGenerating = false;
           this.saveConversations();
@@ -516,8 +566,7 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
   public adjustTextareaHeight(event: Event) {
     const textarea = event.target as HTMLTextAreaElement;
     textarea.style.height = 'auto';
-    textarea.style.height =
-      Math.min(textarea.scrollHeight, 150) + 'px';
+    textarea.style.height = Math.min(textarea.scrollHeight, 150) + 'px';
   }
 
   public trackByIndex(index: number) {
@@ -529,6 +578,7 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
       this.speechRecognition.stop();
     }
 
+    this.reasoningTraceService.reset();
     this.unsubscribeSubject.next();
     this.unsubscribeSubject.complete();
   }
@@ -548,8 +598,7 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
     this.speechRecognition = new SpeechRecognitionCtor();
     this.speechRecognition.continuous = true;
     this.speechRecognition.interimResults = true;
-    this.speechRecognition.lang =
-      this.user?.settings?.language ?? 'en-US';
+    this.speechRecognition.lang = this.user?.settings?.language ?? 'en-US';
 
     this.speechRecognition.onresult = (event: any) => {
       let finalTranscript = '';
@@ -585,11 +634,11 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
         continue;
       }
 
-      const isImage =
-        GfAiChatSidebarComponent.ALLOWED_IMAGE_TYPES.includes(file.type);
+      const isImage = GfAiChatSidebarComponent.ALLOWED_IMAGE_TYPES.includes(
+        file.type
+      );
       const isCsv =
-        file.type === 'text/csv' ||
-        file.name.toLowerCase().endsWith('.csv');
+        file.type === 'text/csv' || file.name.toLowerCase().endsWith('.csv');
 
       if (!isImage && !isCsv) {
         continue;
@@ -640,33 +689,71 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
   }
 
   private loadConversations() {
+    // Always load from localStorage first so we have data immediately
+    let localConversations: Conversation[] = [];
+
+    try {
+      const stored = localStorage.getItem('gf-ai-conversations');
+
+      if (stored) {
+        localConversations = JSON.parse(stored);
+      }
+    } catch {
+      localConversations = [];
+    }
+
+    this.conversations = localConversations;
+    this.autoSelectRecentConversation();
+    this.changeDetectorRef.markForCheck();
+
+    // Then try API to merge in any server-side conversations
     this.dataService
       .getAiConversations()
       .pipe(takeUntil(this.unsubscribeSubject))
       .subscribe({
         error: () => {
-          // Fall back to localStorage
-          try {
-            const stored = localStorage.getItem('gf-ai-conversations');
-
-            if (stored) {
-              this.conversations = JSON.parse(stored);
-            }
-          } catch {
-            this.conversations = [];
-          }
-
-          this.changeDetectorRef.markForCheck();
+          // Already loaded from localStorage above — nothing to do
         },
         next: (apiConversations) => {
-          this.conversations = apiConversations.map((c) => ({
-            id: c.id,
-            messages: [],
-            title: c.title
-          }));
+          if (apiConversations.length === 0) {
+            // API returned empty — keep localStorage data as-is
+            return;
+          }
+
+          // Merge: API conversations take priority, local-only ones are preserved
+          const apiIds = new Set(apiConversations.map((c) => c.id));
+          const localOnly = this.conversations.filter((c) => !apiIds.has(c.id));
+          const merged = [
+            ...apiConversations.map((c) => {
+              // Preserve locally-cached messages if available
+              const local = this.conversations.find((lc) => lc.id === c.id);
+
+              return {
+                id: c.id,
+                messages: local?.messages ?? [],
+                title: c.title
+              };
+            }),
+            ...localOnly
+          ];
+
+          this.conversations = merged;
+          this.saveConversations();
+          this.autoSelectRecentConversation();
           this.changeDetectorRef.markForCheck();
         }
       });
+  }
+
+  private autoSelectRecentConversation() {
+    // In fullscreen mode, auto-select the most recent conversation
+    if (
+      this.mode === 'fullscreen' &&
+      this.conversations.length > 0 &&
+      !this.currentConversation
+    ) {
+      this.onSelectConversation(this.conversations[0]);
+    }
   }
 
   private saveConversations() {

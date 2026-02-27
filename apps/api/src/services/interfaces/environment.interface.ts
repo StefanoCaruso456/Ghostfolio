@@ -39,8 +39,15 @@ export interface Environment extends CleanedEnvAccessors {
   LANGFUSE_SECRET_KEY: string;
   MARKET_DATA_CACHE_ENABLED: boolean;
   MARKET_DATA_PROVIDER: string;
+  MCP_API_KEY: string;
+  MCP_SERVER_URL: string;
   MAX_ACTIVITIES_TO_IMPORT: number;
   MAX_CHART_ITEMS: number;
+  PLAID_API_KEY: string;
+  PLAID_CLIENT_ID: string;
+  PLAID_SECRET: string;
+  PLAID_ENV: string;
+  PLAID_ENCRYPTION_KEY: string;
   OIDC_AUTHORIZATION_URL: string;
   OIDC_CALLBACK_URL: string;
   OIDC_CLIENT_ID: string;

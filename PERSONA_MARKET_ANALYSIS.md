@@ -9,20 +9,20 @@
 
 Ghostfolio's codebase reveals exactly who it was built for through its features:
 
-| Feature | Codebase Location | Persona Signal |
-|---------|------------------|----------------|
-| **FIRE Calculator** | `apps/client/src/app/pages/portfolio/fire/` | FIRE community (safe withdrawal rates: 2.5%-4.5%) |
-| **Dividend Timeline Charts** | `libs/ui/src/lib/dividend/` | Dividend investors (monthly/yearly dividend tracking) |
-| **Self-hosted Docker** | `docker/docker-compose.yml` | Privacy-conscious self-hosters |
-| **X-Ray Risk Analysis** | `apps/client/src/app/pages/portfolio/x-ray/` | Sophisticated portfolio analyzers |
-| **Multi-account Consolidation** | `Account[]` → `Order[]` schema | Multi-broker investors |
-| **13 Locales** (en, de, fr, es, it, nl, pl, pt, tr, zh, uk, ca, ko) | `apps/client/src/locales/` | Global audience |
-| **Scenario Impact Tool** | `apps/api/src/app/endpoints/ai/tools/scenario-impact.tool.ts` | Risk-aware planners |
-| **Rebalance Tool** | `apps/api/src/app/endpoints/ai/tools/compute-rebalance.tool.ts` | Active allocators |
-| **Privacy-first Landing Page** | "Own your financial data" messaging | Data sovereignty advocates |
-| **WebAuthn / Anonymous Auth** | `AuthDevice` model + anonymous tokens | Privacy maximalists |
-| **Fear & Greed Index** | Market data dashboard | Sentiment-aware investors |
-| **6 Asset Classes** | EQUITY, FIXED_INCOME, COMMODITY, REAL_ESTATE, LIQUIDITY, ALTERNATIVE | Complete wealth spectrum |
+| Feature                                                             | Codebase Location                                                    | Persona Signal                                        |
+| ------------------------------------------------------------------- | -------------------------------------------------------------------- | ----------------------------------------------------- |
+| **FIRE Calculator**                                                 | `apps/client/src/app/pages/portfolio/fire/`                          | FIRE community (safe withdrawal rates: 2.5%-4.5%)     |
+| **Dividend Timeline Charts**                                        | `libs/ui/src/lib/dividend/`                                          | Dividend investors (monthly/yearly dividend tracking) |
+| **Self-hosted Docker**                                              | `docker/docker-compose.yml`                                          | Privacy-conscious self-hosters                        |
+| **X-Ray Risk Analysis**                                             | `apps/client/src/app/pages/portfolio/x-ray/`                         | Sophisticated portfolio analyzers                     |
+| **Multi-account Consolidation**                                     | `Account[]` → `Order[]` schema                                       | Multi-broker investors                                |
+| **13 Locales** (en, de, fr, es, it, nl, pl, pt, tr, zh, uk, ca, ko) | `apps/client/src/locales/`                                           | Global audience                                       |
+| **Scenario Impact Tool**                                            | `apps/api/src/app/endpoints/ai/tools/scenario-impact.tool.ts`        | Risk-aware planners                                   |
+| **Rebalance Tool**                                                  | `apps/api/src/app/endpoints/ai/tools/compute-rebalance.tool.ts`      | Active allocators                                     |
+| **Privacy-first Landing Page**                                      | "Own your financial data" messaging                                  | Data sovereignty advocates                            |
+| **WebAuthn / Anonymous Auth**                                       | `AuthDevice` model + anonymous tokens                                | Privacy maximalists                                   |
+| **Fear & Greed Index**                                              | Market data dashboard                                                | Sentiment-aware investors                             |
+| **6 Asset Classes**                                                 | EQUITY, FIXED_INCOME, COMMODITY, REAL_ESTATE, LIQUIDITY, ALTERNATIVE | Complete wealth spectrum                              |
 
 ---
 
@@ -50,57 +50,57 @@ Ghostfolio's codebase reveals exactly who it was built for through its features:
 
 ### Profile
 
-| Attribute | Value |
-|-----------|-------|
-| **Who** | Millennials/Gen-Z (avg age 32) actively pursuing financial independence through aggressive saving and index investing |
-| **Core need** | Track net worth growth toward a target number, model withdrawal rates, consolidate multi-account holdings |
-| **Average household income** | $162,000 |
-| **Average savings rate** | 55% of income |
-| **Average current portfolio size** | $350,000 |
-| **Target FI number** | $1,400,000 |
-| **Average number of holdings** | 5 (dominated by index funds: VTSAX, VTIAX, BND) |
-| **Average years investing** | 7 years (started at ~25) |
-| **Years to reach FI** | 15 years from start |
-| **Portfolio check frequency** | Weekly |
-| **Rebalance frequency** | Annually |
-| **Primary investment vehicle** | Index funds/ETFs (90% use these) |
-| **Current tools** | Empower (45%), Spreadsheets (40%), Brokerage tools (30%) |
+| Attribute                          | Value                                                                                                                 |
+| ---------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| **Who**                            | Millennials/Gen-Z (avg age 32) actively pursuing financial independence through aggressive saving and index investing |
+| **Core need**                      | Track net worth growth toward a target number, model withdrawal rates, consolidate multi-account holdings             |
+| **Average household income**       | $162,000                                                                                                              |
+| **Average savings rate**           | 55% of income                                                                                                         |
+| **Average current portfolio size** | $350,000                                                                                                              |
+| **Target FI number**               | $1,400,000                                                                                                            |
+| **Average number of holdings**     | 5 (dominated by index funds: VTSAX, VTIAX, BND)                                                                       |
+| **Average years investing**        | 7 years (started at ~25)                                                                                              |
+| **Years to reach FI**              | 15 years from start                                                                                                   |
+| **Portfolio check frequency**      | Weekly                                                                                                                |
+| **Rebalance frequency**            | Annually                                                                                                              |
+| **Primary investment vehicle**     | Index funds/ETFs (90% use these)                                                                                      |
+| **Current tools**                  | Empower (45%), Spreadsheets (40%), Brokerage tools (30%)                                                              |
 
 ### Sector Allocation (via VTI/VTSAX Total Market)
 
-| Sector | % |
-|--------|---|
+| Sector                 | %     |
+| ---------------------- | ----- |
 | Information Technology | 38.0% |
 | Consumer Discretionary | 14.3% |
-| Industrials | 12.2% |
-| Financials | 11.3% |
-| Healthcare | 8.9% |
-| Communication Services | 7.5% |
-| Consumer Staples | 3.5% |
-| Energy | 3.1% |
-| Utilities | 2.7% |
-| Real Estate | 2.5% |
-| Materials | 2.0% |
+| Industrials            | 12.2% |
+| Financials             | 11.3% |
+| Healthcare             | 8.9%  |
+| Communication Services | 7.5%  |
+| Consumer Staples       | 3.5%  |
+| Energy                 | 3.1%  |
+| Utilities              | 2.7%  |
+| Real Estate            | 2.5%  |
+| Materials              | 2.0%  |
 
 ### Market Size (USA)
 
-| Metric | Number |
-|--------|--------|
-| **TAM** (Americans aware of FIRE) | 22,000,000 |
-| **SAM** (Actively pursuing FIRE) | 17,500,000 |
-| **SOM** (FIRE pursuers using third-party trackers who would use a privacy-first tool) | 875,000 |
+| Metric                                                                                | Number     |
+| ------------------------------------------------------------------------------------- | ---------- |
+| **TAM** (Americans aware of FIRE)                                                     | 22,000,000 |
+| **SAM** (Actively pursuing FIRE)                                                      | 17,500,000 |
+| **SOM** (FIRE pursuers using third-party trackers who would use a privacy-first tool) | 875,000    |
 
 **SOM Derivation**: 17.5M actively pursuing × 20% use third-party trackers (not just brokerage) × 25% care about privacy/data-ownership = 875,000
 
 ### Online Community Size
 
-| Community | Members |
-|-----------|---------|
-| r/financialindependence | 2,400,000 |
-| r/Bogleheads | 808,000 |
-| r/Fire | 871,000 |
-| r/leanfire | ~250,000 |
-| r/fatFIRE | ~350,000 |
+| Community                         | Members       |
+| --------------------------------- | ------------- |
+| r/financialindependence           | 2,400,000     |
+| r/Bogleheads                      | 808,000       |
+| r/Fire                            | 871,000       |
+| r/leanfire                        | ~250,000      |
+| r/fatFIRE                         | ~350,000      |
 | **Total (deduplicated estimate)** | **3,200,000** |
 
 ---
@@ -109,54 +109,54 @@ Ghostfolio's codebase reveals exactly who it was built for through its features:
 
 ### Profile
 
-| Attribute | Value |
-|-----------|-------|
-| **Who** | Older investors (avg age 52) building passive income streams through dividend-paying stocks, REITs, and ETFs |
-| **Core need** | Track dividend income, monitor ex-dates, analyze yield, project future cash flow |
-| **Average portfolio size** | $310,000 |
-| **Average number of holdings** | 32 (mix of individual stocks + ETFs) |
-| **Average dividend yield target** | 3.4% |
-| **Average annual dividend income** | $11,200/year |
-| **Average years investing** | 18 years |
-| **Portfolio check frequency** | 3x per week |
-| **Portfolio turnover** | 12% per year (very low — buy and hold) |
-| **DRIP usage** | 65% reinvest dividends automatically |
-| **Current tools** | Brokerage built-in (80%), Seeking Alpha (35%), Spreadsheets (25%), Stock Events app (12%) |
+| Attribute                          | Value                                                                                                        |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| **Who**                            | Older investors (avg age 52) building passive income streams through dividend-paying stocks, REITs, and ETFs |
+| **Core need**                      | Track dividend income, monitor ex-dates, analyze yield, project future cash flow                             |
+| **Average portfolio size**         | $310,000                                                                                                     |
+| **Average number of holdings**     | 32 (mix of individual stocks + ETFs)                                                                         |
+| **Average dividend yield target**  | 3.4%                                                                                                         |
+| **Average annual dividend income** | $11,200/year                                                                                                 |
+| **Average years investing**        | 18 years                                                                                                     |
+| **Portfolio check frequency**      | 3x per week                                                                                                  |
+| **Portfolio turnover**             | 12% per year (very low — buy and hold)                                                                       |
+| **DRIP usage**                     | 65% reinvest dividends automatically                                                                         |
+| **Current tools**                  | Brokerage built-in (80%), Seeking Alpha (35%), Spreadsheets (25%), Stock Events app (12%)                    |
 
 ### Sector Allocation (Dividend-Weighted)
 
-| Sector | % |
-|--------|---|
-| Financials | 19% |
-| Consumer Staples | 16% |
-| Healthcare | 13% |
-| Industrials | 12% |
-| Utilities | 9% |
-| Energy | 9% |
-| Technology | 8% |
-| Real Estate (REITs) | 7% |
-| Consumer Discretionary | 4% |
-| Communication Services | 2% |
-| Materials | 1% |
+| Sector                 | %   |
+| ---------------------- | --- |
+| Financials             | 19% |
+| Consumer Staples       | 16% |
+| Healthcare             | 13% |
+| Industrials            | 12% |
+| Utilities              | 9%  |
+| Energy                 | 9%  |
+| Technology             | 8%  |
+| Real Estate (REITs)    | 7%  |
+| Consumer Discretionary | 4%  |
+| Communication Services | 2%  |
+| Materials              | 1%  |
 
 **Key contrast vs FIRE**: Dividend investors are heavily underweight Technology (8% vs 38%) and overweight Financials (19% vs 11.3%), Consumer Staples (16% vs 3.5%), and Utilities (9% vs 2.7%).
 
 ### Holdings Breakdown
 
-| Category | % of Dividend Investors Who Hold |
-|----------|----------------------------------|
-| Individual dividend stocks | 78% |
-| Dividend ETFs (SCHD, VYM, VIG) | 62% |
-| REITs (O, VNQ, STAG) | 45% |
-| Dividend Aristocrats | 38% |
+| Category                       | % of Dividend Investors Who Hold |
+| ------------------------------ | -------------------------------- |
+| Individual dividend stocks     | 78%                              |
+| Dividend ETFs (SCHD, VYM, VIG) | 62%                              |
+| REITs (O, VNQ, STAG)           | 45%                              |
+| Dividend Aristocrats           | 38%                              |
 
 ### Market Size (USA)
 
-| Metric | Number |
-|--------|--------|
-| **TAM** (US investors who consider dividends important) | 61,000,000 |
-| **SAM** (Follow a deliberate dividend strategy) | 29,000,000 |
-| **SOM** (Dividend investors using third-party trackers who want better dividend analytics) | 1,450,000 |
+| Metric                                                                                     | Number     |
+| ------------------------------------------------------------------------------------------ | ---------- |
+| **TAM** (US investors who consider dividends important)                                    | 61,000,000 |
+| **SAM** (Follow a deliberate dividend strategy)                                            | 29,000,000 |
+| **SOM** (Dividend investors using third-party trackers who want better dividend analytics) | 1,450,000  |
 
 **SOM Derivation**: 29M dividend-focused × 20% use third-party trackers × 25% dissatisfied with current dividend tracking tools = 1,450,000
 
@@ -164,13 +164,13 @@ Ghostfolio's codebase reveals exactly who it was built for through its features:
 
 ### Online Community Size
 
-| Community | Members |
-|-----------|---------|
-| r/dividends | 802,000 |
-| Seeking Alpha dividend section | 20,000,000 monthly visitors (platform-wide) |
-| Simply Safe Dividends | 25,000 subscribers |
-| Dividend.com | 3,000,000 monthly visitors |
-| **Total engaged (deduplicated)** | **3,500,000** |
+| Community                        | Members                                     |
+| -------------------------------- | ------------------------------------------- |
+| r/dividends                      | 802,000                                     |
+| Seeking Alpha dividend section   | 20,000,000 monthly visitors (platform-wide) |
+| Simply Safe Dividends            | 25,000 subscribers                          |
+| Dividend.com                     | 3,000,000 monthly visitors                  |
+| **Total engaged (deduplicated)** | **3,500,000**                               |
 
 ---
 
@@ -178,87 +178,87 @@ Ghostfolio's codebase reveals exactly who it was built for through its features:
 
 ### Profile
 
-| Attribute | Value |
-|-----------|-------|
-| **Who** | Tech-savvy investors (avg age 38) who self-host software, value data ownership, and distrust giving financial data to third parties |
-| **Core need** | Portfolio tracking without sharing data with corporations. Self-hosted, open-source, no vendor lock-in |
-| **Average portfolio size** | $285,000 |
-| **Average number of holdings** | 15 (mix of index funds + individual picks + crypto) |
-| **Average years investing** | 10 years |
-| **Portfolio check frequency** | Daily (tech-savvy power users) |
-| **Average income** | $135,000 (skews toward software engineering) |
-| **Current tools** | Ghostfolio (5K users), Portfolio Performance (50K users), Rotki (4K users), Wealthfolio (3K users), Spreadsheets |
+| Attribute                      | Value                                                                                                                               |
+| ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- |
+| **Who**                        | Tech-savvy investors (avg age 38) who self-host software, value data ownership, and distrust giving financial data to third parties |
+| **Core need**                  | Portfolio tracking without sharing data with corporations. Self-hosted, open-source, no vendor lock-in                              |
+| **Average portfolio size**     | $285,000                                                                                                                            |
+| **Average number of holdings** | 15 (mix of index funds + individual picks + crypto)                                                                                 |
+| **Average years investing**    | 10 years                                                                                                                            |
+| **Portfolio check frequency**  | Daily (tech-savvy power users)                                                                                                      |
+| **Average income**             | $135,000 (skews toward software engineering)                                                                                        |
+| **Current tools**              | Ghostfolio (5K users), Portfolio Performance (50K users), Rotki (4K users), Wealthfolio (3K users), Spreadsheets                    |
 
 ### Sector Allocation (Tech-Weighted Self-Directed)
 
-| Sector | % |
-|--------|---|
+| Sector                 | %   |
+| ---------------------- | --- |
 | Information Technology | 35% |
-| Financials | 13% |
-| Healthcare | 12% |
+| Financials             | 13% |
+| Healthcare             | 12% |
 | Consumer Discretionary | 11% |
-| Communication Services | 9% |
-| Industrials | 7% |
-| Energy | 4% |
-| Consumer Staples | 4% |
-| Utilities | 2% |
-| Real Estate | 2% |
-| Materials | 1% |
+| Communication Services | 9%  |
+| Industrials            | 7%  |
+| Energy                 | 4%  |
+| Consumer Staples       | 4%  |
+| Utilities              | 2%  |
+| Real Estate            | 2%  |
+| Materials              | 1%  |
 
 ### Market Size (USA)
 
-| Metric | Number |
-|--------|--------|
-| **TAM** (Americans who have tried self-hosting) | 27,700,000 |
-| **SAM** (Self-hosters who also invest) | 17,000,000 |
-| **SOM** (Self-hosting investors who actively use open-source finance tools) | 1,400,000 |
+| Metric                                                                      | Number     |
+| --------------------------------------------------------------------------- | ---------- |
+| **TAM** (Americans who have tried self-hosting)                             | 27,700,000 |
+| **SAM** (Self-hosters who also invest)                                      | 17,000,000 |
+| **SOM** (Self-hosting investors who actively use open-source finance tools) | 1,400,000  |
 
 **SOM Derivation**: 17M self-hosting investors × ~8% actively run self-hosted financial tools = 1,400,000
 
 ### Online Community Size
 
-| Community | Members |
-|-----------|---------|
-| r/selfhosted | 553,000 |
-| r/homelab | 946,000 |
-| r/degoogle | ~400,000 |
-| r/privacy | ~1,600,000 |
+| Community                                  | Members     |
+| ------------------------------------------ | ----------- |
+| r/selfhosted                               | 553,000     |
+| r/homelab                                  | 946,000     |
+| r/degoogle                                 | ~400,000    |
+| r/privacy                                  | ~1,600,000  |
 | **Total (deduplicated, investor overlap)** | **850,000** |
 
 ---
 
 ## Comparative Summary — All 3 Personas
 
-| Dimension | FIRE Pursuers | Dividend Investors | Privacy Self-Hosters |
-|-----------|--------------|-------------------|---------------------|
-| **Avg Age** | 32 | 52 | 38 |
-| **Avg Portfolio** | $350,000 | $310,000 | $285,000 |
-| **Avg Holdings** | 5 | 32 | 15 |
-| **Avg Years Investing** | 7 | 18 | 10 |
-| **Check Frequency** | Weekly | 3x/week | Daily |
-| **Primary Strategy** | Index funds + aggressive saving | Dividend growth + income | Diversified + tech-heavy |
-| **TAM** | 22,000,000 | 61,000,000 | 27,700,000 |
-| **SAM** | 17,500,000 | 29,000,000 | 17,000,000 |
-| **SOM** | 875,000 | 1,450,000 | 1,400,000 |
-| **Top Sector** | Technology (38%) | Financials (19%) | Technology (35%) |
-| **Savings Rate** | 55% | 15% (industry avg) | 25% |
-| **Turnover** | 5% (buy & hold index) | 12% (low) | 30% (moderate) |
+| Dimension               | FIRE Pursuers                   | Dividend Investors       | Privacy Self-Hosters     |
+| ----------------------- | ------------------------------- | ------------------------ | ------------------------ |
+| **Avg Age**             | 32                              | 52                       | 38                       |
+| **Avg Portfolio**       | $350,000                        | $310,000                 | $285,000                 |
+| **Avg Holdings**        | 5                               | 32                       | 15                       |
+| **Avg Years Investing** | 7                               | 18                       | 10                       |
+| **Check Frequency**     | Weekly                          | 3x/week                  | Daily                    |
+| **Primary Strategy**    | Index funds + aggressive saving | Dividend growth + income | Diversified + tech-heavy |
+| **TAM**                 | 22,000,000                      | 61,000,000               | 27,700,000               |
+| **SAM**                 | 17,500,000                      | 29,000,000               | 17,000,000               |
+| **SOM**                 | 875,000                         | 1,450,000                | 1,400,000                |
+| **Top Sector**          | Technology (38%)                | Financials (19%)         | Technology (35%)         |
+| **Savings Rate**        | 55%                             | 15% (industry avg)       | 25%                      |
+| **Turnover**            | 5% (buy & hold index)           | 12% (low)                | 30% (moderate)           |
 
 ---
 
 ## Combined Addressable Market
 
-| Funnel | Number |
-|--------|--------|
-| **Total US retail investors** | 167,000,000 |
-| **Self-directed investors** | 42,000,000 |
-| **Using third-party portfolio trackers** | 8,400,000 |
-| **Combined TAM (all 3 personas, deduplicated)** | 78,000,000 |
-| **Combined SAM (all 3, deduplicated)** | 42,000,000 |
-| **Combined SOM (realistic serviceable market)** | 2,500,000 |
-| **Current OSS portfolio tracker market** | 70,000 active users |
-| **Market penetration** | 0.07% of SOM |
-| **Greenfield opportunity** | 99.93% of SOM untapped |
+| Funnel                                          | Number                 |
+| ----------------------------------------------- | ---------------------- |
+| **Total US retail investors**                   | 167,000,000            |
+| **Self-directed investors**                     | 42,000,000             |
+| **Using third-party portfolio trackers**        | 8,400,000              |
+| **Combined TAM (all 3 personas, deduplicated)** | 78,000,000             |
+| **Combined SAM (all 3, deduplicated)**          | 42,000,000             |
+| **Combined SOM (realistic serviceable market)** | 2,500,000              |
+| **Current OSS portfolio tracker market**        | 70,000 active users    |
+| **Market penetration**                          | 0.07% of SOM           |
+| **Greenfield opportunity**                      | 99.93% of SOM untapped |
 
 ---
 
@@ -268,7 +268,7 @@ Ghostfolio's codebase reveals exactly who it was built for through its features:
 
 **Why:**
 
-1. **Largest SOM**: 1,450,000 (vs 875K FIRE, 1.4M privacy) — and these are *paying* customers (they track $11,200/year in income)
+1. **Largest SOM**: 1,450,000 (vs 875K FIRE, 1.4M privacy) — and these are _paying_ customers (they track $11,200/year in income)
 
 2. **Biggest unmet need**: Current dividend tracking tools are terrible. Brokerage dashboards show dividends as line items, not as income streams. There is no good open-source dividend calendar, ex-date tracker, or forward income projector
 

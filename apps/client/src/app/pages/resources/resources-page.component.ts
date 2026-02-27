@@ -6,18 +6,15 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { RouterModule } from '@angular/router';
 import { IonIcon } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import {
-  bookOutline,
-  libraryOutline,
-  newspaperOutline,
-  readerOutline
-} from 'ionicons/icons';
+import { bookOutline, libraryOutline } from 'ionicons/icons';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { Subject } from 'rxjs';
 
+import { ResourcesMarketsComponent } from './markets/resources-markets.component';
+
 @Component({
   host: { class: 'page has-tabs' },
-  imports: [IonIcon, MatTabsModule, RouterModule],
+  imports: [IonIcon, MatTabsModule, ResourcesMarketsComponent, RouterModule],
   selector: 'gf-resources-page',
   styleUrls: ['./resources-page.scss'],
   templateUrl: './resources-page.html'
@@ -26,19 +23,9 @@ export class ResourcesPageComponent implements OnInit {
   public deviceType: string;
   public tabs: TabConfiguration[] = [
     {
-      iconName: 'reader-outline',
-      label: $localize`Overview`,
-      routerLink: publicRoutes.resources.routerLink
-    },
-    {
       label: $localize`Guides`,
       iconName: 'book-outline',
-      routerLink: publicRoutes.resources.subRoutes.guides.routerLink
-    },
-    {
-      iconName: 'newspaper-outline',
-      label: $localize`Markets`,
-      routerLink: publicRoutes.resources.subRoutes.markets.routerLink
+      routerLink: publicRoutes.resources.routerLink
     },
     {
       iconName: 'library-outline',
@@ -50,7 +37,7 @@ export class ResourcesPageComponent implements OnInit {
   private unsubscribeSubject = new Subject<void>();
 
   public constructor(private deviceService: DeviceDetectorService) {
-    addIcons({ bookOutline, libraryOutline, newspaperOutline, readerOutline });
+    addIcons({ bookOutline, libraryOutline });
   }
 
   public ngOnInit() {

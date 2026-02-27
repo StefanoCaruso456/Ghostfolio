@@ -1,6 +1,7 @@
 import { GfAccountDetailDialogComponent } from '@ghostfolio/client/components/account-detail-dialog/account-detail-dialog.component';
 import { AccountDetailDialogParams } from '@ghostfolio/client/components/account-detail-dialog/interfaces/interfaces';
 import { ImpersonationStorageService } from '@ghostfolio/client/services/impersonation-storage.service';
+import { PlaidLinkService } from '@ghostfolio/client/services/plaid-link.service';
 import { UserService } from '@ghostfolio/client/services/user/user.service';
 import {
   CreateAccountDto,
@@ -57,6 +58,7 @@ export class GfAccountsPageComponent implements OnDestroy, OnInit {
     private dialog: MatDialog,
     private impersonationStorageService: ImpersonationStorageService,
     private notificationService: NotificationService,
+    private plaidLinkService: PlaidLinkService,
     private route: ActivatedRoute,
     private router: Router,
     private userService: UserService
@@ -146,21 +148,44 @@ export class GfAccountsPageComponent implements OnDestroy, OnInit {
       );
   }
 
-  public onConnectBroker() {
-    this.dataService
-      .postPlaidCreateLinkToken()
-      .pipe(
-        catchError((error) => {
-          this.notificationService.alert({
-            title: $localize`Oops, broker connection failed. ${error?.error?.message || 'Please check your Plaid API credentials in Admin Settings.'}`
-          });
-          return EMPTY;
-        }),
-        takeUntil(this.unsubscribeSubject)
-      )
-      .subscribe(({ linkToken }) => {
-        this.openPlaidLink(linkToken);
+  public async onConnectBroker() {
+    try {
+      // 1. Get a link token from the backend
+      const { linkToken } = await this.dataService
+        .createPlaidLinkToken()
+        .toPromise();
+
+      // 2. Open Plaid Link and wait for user to connect
+      const { publicToken, metadata } =
+        await this.plaidLinkService.open(linkToken);
+
+      const institution = metadata?.institution ?? {};
+
+      // 3. Exchange the public token server-side
+      const plaidItem: any = await this.dataService
+        .exchangePlaidPublicToken({
+          institutionId: institution.institution_id ?? 'unknown',
+          institutionName: institution.name ?? 'Unknown Institution',
+          publicToken
+        })
+        .toPromise();
+
+      // 4. Sync holdings
+      await this.dataService.syncPlaidItem(plaidItem.id).toPromise();
+
+      // 5. Refresh account list
+      this.fetchAccounts();
+
+      this.notificationService.alert({
+        title: $localize`Broker connected successfully!`
       });
+    } catch (error) {
+      if (error?.message !== 'User exited Plaid Link') {
+        this.notificationService.alert({
+          title: $localize`Oops, broker connection failed.`
+        });
+      }
+    }
   }
 
   public onDeleteAccount(aId: string) {
@@ -371,72 +396,6 @@ export class GfAccountsPageComponent implements OnDestroy, OnInit {
 
         this.router.navigate(['.'], { relativeTo: this.route });
       });
-  }
-
-  private openPlaidLink(linkToken: string) {
-    this.loadPlaidScript().then(() => {
-      const Plaid = (window as any).Plaid;
-
-      if (!Plaid) {
-        this.notificationService.alert({
-          title: $localize`Oops, broker connection failed. Could not load Plaid Link.`
-        });
-        return;
-      }
-
-      const handler = Plaid.create({
-        token: linkToken,
-        onSuccess: (publicToken: string, metadata: any) => {
-          this.dataService
-            .postPlaidExchangePublicToken(publicToken)
-            .pipe(
-              catchError(() => {
-                this.notificationService.alert({
-                  title: $localize`Oops, broker connection failed.`
-                });
-                return EMPTY;
-              }),
-              takeUntil(this.unsubscribeSubject)
-            )
-            .subscribe((result) => {
-              this.notificationService.alert({
-                title: $localize`Successfully connected ${result.accounts.length} account(s) from your broker!`
-              });
-
-              this.userService
-                .get(true)
-                .pipe(takeUntil(this.unsubscribeSubject))
-                .subscribe();
-
-              this.fetchAccounts();
-            });
-        },
-        onExit: (err: any) => {
-          if (err) {
-            this.notificationService.alert({
-              title: $localize`Oops, broker connection failed.`
-            });
-          }
-        }
-      });
-
-      handler.open();
-    });
-  }
-
-  private loadPlaidScript(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      if ((window as any).Plaid) {
-        resolve();
-        return;
-      }
-
-      const script = document.createElement('script');
-      script.src = 'https://cdn.plaid.com/link/v2/stable/link-initialize.js';
-      script.onload = () => resolve();
-      script.onerror = () => reject(new Error('Failed to load Plaid Link'));
-      document.head.appendChild(script);
-    });
   }
 
   private reset() {

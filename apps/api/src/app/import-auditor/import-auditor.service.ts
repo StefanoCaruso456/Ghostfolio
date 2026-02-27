@@ -17,13 +17,10 @@ import {
   BraintrustTelemetryService,
   TraceContext
 } from '../endpoints/ai/telemetry/braintrust-telemetry.service';
-
 import type { ExistingActivity } from './schemas/detect-duplicates.schema';
 import { MappedActivitySchema } from './schemas/validate-transactions.schema';
 import type { VerificationResult } from './schemas/verification.schema';
-import {
-  transformToCreateOrderDtos
-} from './tools/commit-import.tool';
+import { transformToCreateOrderDtos } from './tools/commit-import.tool';
 import { detectDuplicates } from './tools/detect-duplicates.tool';
 import {
   mapBrokerFieldsWithFallback,
@@ -124,15 +121,13 @@ export class ImportAuditorService {
     let toolCallIndex = 0;
 
     // Resolve model first — needed for telemetry trace
-    const openRouterApiKey =
-      await this.propertyService.getByKey<string>(
-        PROPERTY_API_KEY_OPENROUTER
-      );
+    const openRouterApiKey = await this.propertyService.getByKey<string>(
+      PROPERTY_API_KEY_OPENROUTER
+    );
 
-    const openRouterModel =
-      await this.propertyService.getByKey<string>(
-        PROPERTY_OPENROUTER_MODEL
-      );
+    const openRouterModel = await this.propertyService.getByKey<string>(
+      PROPERTY_OPENROUTER_MODEL
+    );
 
     if (!openRouterApiKey || !openRouterModel) {
       const response =
@@ -171,8 +166,7 @@ export class ImportAuditorService {
 
       const timeoutPromise = new Promise<never>((_, reject) => {
         timeoutId = setTimeout(
-          () =>
-            reject(new Error('Request timed out after 45 seconds')),
+          () => reject(new Error('Request timed out after 45 seconds')),
           TIMEOUT_MS
         );
       });
@@ -189,9 +183,7 @@ export class ImportAuditorService {
             description:
               'Parse raw CSV content into structured rows with headers. Use this when the user provides a CSV file or asks to import/parse a CSV.',
             parameters: z.object({
-              csvContent: z
-                .string()
-                .describe('The raw CSV content to parse'),
+              csvContent: z.string().describe('The raw CSV content to parse'),
               delimiter: z
                 .enum([',', ';', '\t', '|'])
                 .default(',')
@@ -200,7 +192,10 @@ export class ImportAuditorService {
             execute: async (args) => {
               const spanBuilder = traceCtx.startToolSpan(
                 'parseCSV',
-                { delimiter: args.delimiter, contentLength: args.csvContent.length },
+                {
+                  delimiter: args.delimiter,
+                  contentLength: args.csvContent.length
+                },
                 toolCallIndex++
               );
               const start = Date.now();
@@ -212,7 +207,10 @@ export class ImportAuditorService {
 
               const toolSpan = spanBuilder.end({
                 status: result.status === 'error' ? 'error' : 'success',
-                toolOutput: { status: result.status, rowCount: result.data?.rowCount }
+                toolOutput: {
+                  status: result.status,
+                  rowCount: result.data?.rowCount
+                }
               });
               traceCtx.addToolSpan(toolSpan);
 
@@ -256,7 +254,10 @@ export class ImportAuditorService {
             execute: async (args) => {
               const spanBuilder = traceCtx.startToolSpan(
                 'mapBrokerFields',
-                { headerCount: args.headers.length, useLlmFallback: args.useLlmFallback },
+                {
+                  headerCount: args.headers.length,
+                  useLlmFallback: args.useLlmFallback
+                },
                 toolCallIndex++
               );
               const start = Date.now();
@@ -306,7 +307,10 @@ export class ImportAuditorService {
 
               const mapSpan = spanBuilder.end({
                 status: result.status === 'error' ? 'error' : 'success',
-                toolOutput: { status: result.status, mappingCount: result.data?.mappings?.length }
+                toolOutput: {
+                  status: result.status,
+                  mappingCount: result.data?.mappings?.length
+                }
               });
               traceCtx.addToolSpan(mapSpan);
 
@@ -358,10 +362,7 @@ export class ImportAuditorService {
 
               session.toolResults['validateTransactions'] = result;
 
-              if (
-                result.status === 'pass' ||
-                result.status === 'warnings'
-              ) {
+              if (result.status === 'pass' || result.status === 'warnings') {
                 canCommit = true;
               }
 
@@ -370,7 +371,7 @@ export class ImportAuditorService {
           }),
           detectDuplicates: tool({
             description:
-              'Detect duplicate activities within the CSV batch and optionally against the user\'s existing portfolio. Use this after validation to check for duplicates before importing.',
+              "Detect duplicate activities within the CSV batch and optionally against the user's existing portfolio. Use this after validation to check for duplicates before importing.",
             parameters: z.object({
               activities: z
                 .array(MappedActivitySchema)
@@ -386,7 +387,10 @@ export class ImportAuditorService {
             execute: async (args) => {
               const spanBuilder = traceCtx.startToolSpan(
                 'detectDuplicates',
-                { activityCount: args.activities.length, checkDatabase: args.checkDatabase },
+                {
+                  activityCount: args.activities.length,
+                  checkDatabase: args.checkDatabase
+                },
                 toolCallIndex++
               );
               const start = Date.now();
@@ -409,10 +413,8 @@ export class ImportAuditorService {
                   existingActivities = dbActivities.map((a) => ({
                     accountId: a.accountId,
                     comment: a.comment,
-                    currency:
-                      a.currency ?? a.SymbolProfile?.currency ?? null,
-                    dataSource:
-                      a.SymbolProfile?.dataSource ?? null,
+                    currency: a.currency ?? a.SymbolProfile?.currency ?? null,
+                    dataSource: a.SymbolProfile?.dataSource ?? null,
                     date: a.date.toISOString(),
                     fee: a.fee,
                     quantity: a.quantity,
@@ -435,7 +437,12 @@ export class ImportAuditorService {
 
               const dupSpan = spanBuilder.end({
                 status: result.status === 'error' ? 'error' : 'success',
-                toolOutput: { status: result.status, duplicatesFound: result.data?.batchDuplicatesFound + result.data?.databaseDuplicatesFound }
+                toolOutput: {
+                  status: result.status,
+                  duplicatesFound:
+                    result.data?.batchDuplicatesFound +
+                    result.data?.databaseDuplicatesFound
+                }
               });
               traceCtx.addToolSpan(dupSpan);
 
@@ -484,7 +491,10 @@ export class ImportAuditorService {
 
               const previewSpan = spanBuilder.end({
                 status: result.status === 'error' ? 'error' : 'success',
-                toolOutput: { status: result.status, totalCount: result.data?.totalCount }
+                toolOutput: {
+                  status: result.status,
+                  totalCount: result.data?.totalCount
+                }
               });
               traceCtx.addToolSpan(previewSpan);
 
@@ -507,9 +517,7 @@ export class ImportAuditorService {
               activities: z
                 .array(MappedActivitySchema)
                 .min(1)
-                .describe(
-                  'Array of validated activities to import'
-                ),
+                .describe('Array of validated activities to import'),
               isDryRun: z
                 .boolean()
                 .default(false)
@@ -520,7 +528,10 @@ export class ImportAuditorService {
             execute: async (args) => {
               const commitSpanBuilder = traceCtx.startToolSpan(
                 'commitImport',
-                { activityCount: args.activities.length, isDryRun: args.isDryRun },
+                {
+                  activityCount: args.activities.length,
+                  isDryRun: args.isDryRun
+                },
                 toolCallIndex++
               );
               const start = Date.now();
@@ -534,9 +545,7 @@ export class ImportAuditorService {
                     data: {
                       importedCount: 0,
                       skippedCount: args.activities.length,
-                      errors: [
-                        { row: 0, message: 'User session not found' }
-                      ],
+                      errors: [{ row: 0, message: 'User session not found' }],
                       isDryRun: args.isDryRun
                     },
                     verification: {
@@ -548,11 +557,13 @@ export class ImportAuditorService {
                     }
                   };
 
-                  traceCtx.addToolSpan(commitSpanBuilder.end({
-                    status: 'error',
-                    toolOutput: { status: 'error' },
-                    error: 'User session not found'
-                  }));
+                  traceCtx.addToolSpan(
+                    commitSpanBuilder.end({
+                      status: 'error',
+                      toolOutput: { status: 'error' },
+                      error: 'User session not found'
+                    })
+                  );
 
                   toolCallRecords.push({
                     tool: 'commitImport',
@@ -587,11 +598,13 @@ export class ImportAuditorService {
                     }
                   };
 
-                  traceCtx.addToolSpan(commitSpanBuilder.end({
-                    status: 'error',
-                    toolOutput: { status: 'error' },
-                    error: 'No valid orders after transformation'
-                  }));
+                  traceCtx.addToolSpan(
+                    commitSpanBuilder.end({
+                      status: 'error',
+                      toolOutput: { status: 'error' },
+                      error: 'No valid orders after transformation'
+                    })
+                  );
 
                   toolCallRecords.push({
                     tool: 'commitImport',
@@ -603,26 +616,23 @@ export class ImportAuditorService {
                   return errorResult;
                 }
 
-                const maxActivitiesToImport =
-                  this.configurationService.get(
-                    'MAX_ACTIVITIES_TO_IMPORT'
-                  );
+                const maxActivitiesToImport = this.configurationService.get(
+                  'MAX_ACTIVITIES_TO_IMPORT'
+                );
 
-                const importedActivities =
-                  await this.importService.import({
-                    activitiesDto: orders,
-                    isDryRun: args.isDryRun,
-                    maxActivitiesToImport,
-                    user: session.user,
-                    accountsWithBalancesDto: [],
-                    assetProfilesWithMarketDataDto: [],
-                    tagsDto: []
-                  });
+                const importedActivities = await this.importService.import({
+                  activitiesDto: orders,
+                  isDryRun: args.isDryRun,
+                  maxActivitiesToImport,
+                  user: session.user,
+                  accountsWithBalancesDto: [],
+                  assetProfilesWithMarketDataDto: [],
+                  tagsDto: []
+                });
 
                 const durationMs = Date.now() - start;
                 const importedCount = importedActivities.length;
-                const skippedCount =
-                  args.activities.length - importedCount;
+                const skippedCount = args.activities.length - importedCount;
 
                 const status =
                   transformErrors.length > 0
@@ -641,8 +651,7 @@ export class ImportAuditorService {
                   },
                   verification: {
                     passed: importedCount > 0,
-                    confidence:
-                      importedCount / args.activities.length,
+                    confidence: importedCount / args.activities.length,
                     warnings: args.isDryRun
                       ? ['Dry run mode - no changes were saved']
                       : ([] as string[]),
@@ -651,10 +660,12 @@ export class ImportAuditorService {
                   }
                 };
 
-                traceCtx.addToolSpan(commitSpanBuilder.end({
-                  status: result.status === 'error' ? 'error' : 'success',
-                  toolOutput: { status: result.status, importedCount }
-                }));
+                traceCtx.addToolSpan(
+                  commitSpanBuilder.end({
+                    status: result.status === 'error' ? 'error' : 'success',
+                    toolOutput: { status: result.status, importedCount }
+                  })
+                );
 
                 toolCallRecords.push({
                   tool: 'commitImport',
@@ -669,9 +680,7 @@ export class ImportAuditorService {
               } catch (error) {
                 const durationMs = Date.now() - start;
                 const errorMessage =
-                  error instanceof Error
-                    ? error.message
-                    : String(error);
+                  error instanceof Error ? error.message : String(error);
 
                 const errorResult = {
                   status: 'error' as const,
@@ -690,11 +699,13 @@ export class ImportAuditorService {
                   }
                 };
 
-                traceCtx.addToolSpan(commitSpanBuilder.end({
-                  status: 'error',
-                  toolOutput: { status: 'error' },
-                  error: errorMessage
-                }));
+                traceCtx.addToolSpan(
+                  commitSpanBuilder.end({
+                    status: 'error',
+                    toolOutput: { status: 'error' },
+                    error: errorMessage
+                  })
+                );
 
                 toolCallRecords.push({
                   tool: 'commitImport',
@@ -713,10 +724,7 @@ export class ImportAuditorService {
       traceCtx.markLlmStart();
 
       try {
-        const result = await Promise.race([
-          generatePromise,
-          timeoutPromise
-        ]);
+        const result = await Promise.race([generatePromise, timeoutPromise]);
 
         traceCtx.markLlmEnd();
 
@@ -764,16 +772,14 @@ export class ImportAuditorService {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
 
-      this.logger.error(
-        `Chat error for session ${sessionId}: ${errorMessage}`
-      );
+      this.logger.error(`Chat error for session ${sessionId}: ${errorMessage}`);
 
       traceCtx.markError(errorMessage);
 
       // Log error trace to Braintrust (non-blocking)
-      await this.telemetryService
-        .logTrace(traceCtx.finalize())
-        .catch(() => {});
+      await this.telemetryService.logTrace(traceCtx.finalize()).catch(() => {
+        /* swallow telemetry errors on failure path */
+      });
 
       const errorResponse = `I encountered an error: ${errorMessage}. Please try again.`;
 
@@ -800,7 +806,7 @@ export class ImportAuditorService {
       '1. parseCSV - Parse raw CSV content into structured rows',
       '2. mapBrokerFields - Map CSV headers to Ghostfolio fields (date, symbol, quantity, price, fee, currency, type)',
       '3. validateTransactions - Validate activities against financial rules',
-      '4. detectDuplicates - Check for duplicate activities within the CSV and against the user\'s existing portfolio',
+      "4. detectDuplicates - Check for duplicate activities within the CSV and against the user's existing portfolio",
       '5. previewImportReport - Generate a summary of what will be imported',
       '6. commitImport - Actually import the validated activities into Ghostfolio',
       '',
@@ -815,11 +821,17 @@ export class ImportAuditorService {
       'Important rules:',
       '- Always run tools in sequence when processing a CSV (parse → map → validate → duplicates → preview)',
       '- After mapping fields, transform the raw rows into MappedActivity objects before validating',
-      '- Be concise but thorough in your responses',
       '- Report validation errors and warnings clearly with row numbers',
       '- Never display raw CSV data in full, only summaries and specific issues',
       '- NEVER call commitImport without explicitly asking the user for confirmation first',
-      '- Always offer a dry-run before the real import'
+      '- Always offer a dry-run before the real import',
+      '',
+      'Response style (MANDATORY):',
+      '- Keep responses SHORT. 2–4 sentences for status updates, 5–8 max for summaries.',
+      '- Lead with the result. No preamble ("Sure!", "Great question!", "I\'d be happy to...").',
+      '- Use bullet points for lists — never write paragraphs when bullets will do.',
+      '- One line per issue. Do NOT repeat or rephrase tool results in multiple ways.',
+      '- Do NOT recap what the user asked or explain what you are about to do.'
     ];
 
     if (session.csvContent) {
@@ -848,10 +860,7 @@ export class ImportAuditorService {
         (a, b) => a[1].lastAccessedAt - b[1].lastAccessedAt
       );
 
-      const toEvict = sortedEntries.slice(
-        0,
-        this.sessions.size - MAX_SESSIONS
-      );
+      const toEvict = sortedEntries.slice(0, this.sessions.size - MAX_SESSIONS);
 
       for (const [sessionId] of toEvict) {
         this.sessions.delete(sessionId);

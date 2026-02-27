@@ -65,6 +65,30 @@ model AccountBalance {
   @@index([date])
 }
 
+enum PlaidItemStatus {
+  ACTIVE
+  LOGIN_REQUIRED
+  ERROR
+}
+
+model PlaidItem {
+  id                   String          @id @default(uuid())
+  institutionId        String
+  institutionName      String
+  encryptedAccessToken String
+  itemId               String          @unique
+  cursor               String?
+  status               PlaidItemStatus @default(ACTIVE)
+  lastSyncedAt         DateTime?
+  createdAt            DateTime        @default(now())
+  updatedAt            DateTime        @updatedAt
+  user                 User            @relation(fields: [userId], onDelete: Cascade, references: [id])
+  userId               String
+
+  @@index([userId])
+  @@index([itemId])
+}
+
 model Analytics {
   activityCount                       Int      @default(0)
   country                             String?
@@ -321,6 +345,22 @@ model AiVerificationLabel {
   @@index([traceId])
 }
 
+model AiReasoningTrace {
+  id              String    @id
+  userId          String
+  conversationId  String
+  stepsJson       String
+  startedAt       DateTime
+  completedAt     DateTime?
+  totalDurationMs Int       @default(0)
+  stepCount       Int       @default(0)
+  createdAt       DateTime  @default(now())
+
+  @@index([userId])
+  @@index([conversationId])
+  @@index([createdAt])
+}
+
 model AiConversationMessage {
   content        String
   conversation   AiConversation @relation(fields: [conversationId], onDelete: Cascade, references: [id])
@@ -344,6 +384,7 @@ model User {
   aiVerificationLabels AiVerificationLabel[]
   analytics            Analytics?
   apiKeys              ApiKey[]
+  plaidItems           PlaidItem[]
   authChallenge        String?
   authDevices          AuthDevice[]
   createdAt            DateTime              @default(now())

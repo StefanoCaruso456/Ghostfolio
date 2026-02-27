@@ -27,12 +27,20 @@ import { AiController } from './ai.controller';
 import { AiService } from './ai.service';
 import { AiConversationController } from './conversation/conversation.controller';
 import { AiConversationService } from './conversation/conversation.service';
+import { McpClientService } from './mcp/mcp-client.service';
 import { AiMetricsController } from './metrics/ai-metrics.controller';
 import { AiMetricsService } from './metrics/ai-metrics.service';
+import { ReasoningTraceService } from './reasoning/reasoning-trace.service';
+import { ReasoningController } from './reasoning/reasoning.controller';
 import { BraintrustTelemetryService } from './telemetry/braintrust-telemetry.service';
 
 @Module({
-  controllers: [AiController, AiConversationController, AiMetricsController],
+  controllers: [
+    AiController,
+    AiConversationController,
+    AiMetricsController,
+    ReasoningController
+  ],
   imports: [
     ApiModule,
     BenchmarkModule,
@@ -58,7 +66,9 @@ import { BraintrustTelemetryService } from './telemetry/braintrust-telemetry.ser
     AiService,
     BraintrustTelemetryService,
     CurrentRateService,
+    ReasoningTraceService,
     MarketDataService,
+    McpClientService,
     PortfolioCalculatorFactory,
     PortfolioService,
     RulesService

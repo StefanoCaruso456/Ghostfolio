@@ -7,6 +7,10 @@
  */
 import { ConfigurationService } from '@ghostfolio/api/services/configuration/configuration.service';
 
+// ── Now import AiService (after mocks are in place) ──────────────────────
+
+import { AiService } from '../ai.service';
+import { AiConversationService } from '../conversation/conversation.service';
 import { BraintrustTelemetryService } from '../telemetry/braintrust-telemetry.service';
 import type { TelemetryPayload } from '../telemetry/telemetry.interfaces';
 
@@ -33,11 +37,6 @@ jest.mock('@openrouter/ai-sdk-provider', () => ({
     chat: jest.fn(() => 'mock-model-ref')
   }))
 }));
-
-// ── Now import AiService (after mocks are in place) ──────────────────────
-
-import { AiService } from '../ai.service';
-import { AiConversationService } from '../conversation/conversation.service';
 
 // ── Snapshot helper — replaces non-deterministic fields with stable placeholders ──
 
@@ -119,6 +118,13 @@ describe('AI Chat Telemetry Integration', () => {
     addMessages: jest.fn().mockResolvedValue({ count: 2 })
   };
 
+  const mockReasoningTraceService = {
+    emit: jest.fn(),
+    createStream: jest.fn(),
+    closeStream: jest.fn(),
+    persistTrace: jest.fn().mockResolvedValue(undefined)
+  };
+
   const mockConfigService = {
     get: jest.fn().mockReturnValue(undefined) // No Braintrust key → disabled
   };
@@ -150,6 +156,7 @@ describe('AI Chat Telemetry Integration', () => {
       mockOrderService as any,
       mockPortfolioService as any,
       mockPropertyService as any,
+      mockReasoningTraceService as any,
       telemetryService
     );
   });
@@ -174,9 +181,7 @@ describe('AI Chat Telemetry Integration', () => {
           usage: { promptTokens: 200, completionTokens: 80, totalTokens: 280 },
           steps: [
             {
-              toolCalls: [
-                { toolName: 'getQuote', args: { symbols: ['AAPL'] } }
-              ]
+              toolCalls: [{ toolName: 'getQuote', args: { symbols: ['AAPL'] } }]
             }
           ]
         };
@@ -326,9 +331,9 @@ describe('AI Chat Telemetry Integration', () => {
       expect(
         capturedPayload!.verification.confidenceScore
       ).toBeGreaterThanOrEqual(0);
-      expect(
-        capturedPayload!.verification.confidenceScore
-      ).toBeLessThanOrEqual(1);
+      expect(capturedPayload!.verification.confidenceScore).toBeLessThanOrEqual(
+        1
+      );
     });
 
     it('should match telemetry payload snapshot (tool call)', async () => {

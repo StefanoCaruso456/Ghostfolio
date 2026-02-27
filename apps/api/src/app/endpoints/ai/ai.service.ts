@@ -8,7 +8,7 @@ import {
 import type { AiChatResponse, Filter } from '@ghostfolio/common/interfaces';
 import type { AiPromptMode, DateRange } from '@ghostfolio/common/types';
 
-import { Injectable, Logger } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { createOpenRouter } from '@openrouter/ai-sdk-provider';
 import { generateText, tool } from 'ai';
 import { randomUUID } from 'node:crypto';
@@ -26,6 +26,9 @@ import {
 } from '../../import-auditor/schemas/verification.schema';
 import { enforceVerificationGate } from '../../import-auditor/verification/enforce';
 import { AiConversationService } from './conversation/conversation.service';
+import { McpClientService } from './mcp/mcp-client.service';
+import { ReasoningTraceService } from './reasoning/reasoning-trace.service';
+import { TraceContext } from './reasoning/trace-context';
 import { BraintrustTelemetryService } from './telemetry/braintrust-telemetry.service';
 import { buildRebalanceResult } from './tools/compute-rebalance.tool';
 import { buildAllocationsResult } from './tools/get-allocations.tool';
@@ -179,10 +182,13 @@ function buildReActSystemPrompt(
     '- If data is unavailable, say so explicitly — do NOT guess or fabricate.',
     '- When showing calculations, reference the exact tool-provided values.',
     '',
-    '# Response Guidelines',
-    '- Be concise but thorough. Use markdown formatting.',
+    '# Response Guidelines (BREVITY IS MANDATORY)',
+    '- **Keep responses SHORT.** 2–4 sentences for simple questions, 5–8 sentences max for complex ones.',
+    '- Lead with the direct answer. No preamble ("Sure!", "Great question!", "I\'d be happy to...").',
+    '- Use bullet points for lists — never write multi-sentence paragraphs when bullets will do.',
+    '- One line per data point. Do NOT repeat or rephrase tool results in multiple ways.',
+    '- Do NOT recap what the user asked. They already know.',
     '- Reference specific holdings by name and symbol when discussing them.',
-    '- Structure longer responses with sections and bullet points.',
     '- Always end responses with a sources line:',
     '  "Sources: Ghostfolio (portfolio), Yahoo Finance (market quotes)" — listing which data sources were used.',
     `- Respond in: ${languageCode}.`,
@@ -255,8 +261,72 @@ export class AiService {
     private readonly orderService: OrderService,
     private readonly portfolioService: PortfolioService,
     private readonly propertyService: PropertyService,
+    private readonly reasoningTraceService: ReasoningTraceService,
     private readonly telemetryService: BraintrustTelemetryService
   ) {}
+
+  /**
+   * Fetches dashboard configuration from the MCP server.
+   * Sends the userId so the MCP server can tailor the response
+   * to the authenticated user's portfolio context.
+   */
+  public async getDashboardConfig({
+    mcpClientService,
+    userId
+  }: {
+    mcpClientService: McpClientService;
+    userId: string;
+  }) {
+    try {
+      return await mcpClientService.rpc('getDashboardConfig', { userId });
+    } catch (error) {
+      throw new HttpException(
+        {
+          message: 'MCP request failed',
+          upstreamStatus: (error as any)?.mcpStatus ?? null
+        },
+        HttpStatus.BAD_GATEWAY
+      );
+    }
+  }
+
+  public async getDiagnostics({
+    mcpClientService
+  }: {
+    mcpClientService: McpClientService;
+  }) {
+    const resolvedRpcUrl = mcpClientService.getResolvedRpcUrl();
+
+    let mcpProbe: {
+      body?: unknown;
+      status: string;
+      upstreamStatus?: number;
+    } = { status: 'skipped' };
+
+    if (mcpClientService.isConfigured()) {
+      try {
+        const result = await mcpClientService.rpc('getDashboardConfig', {
+          userId: 'diagnostic'
+        });
+        mcpProbe = { status: 'ok', body: result };
+      } catch (error) {
+        mcpProbe = {
+          body: (error as any)?.mcpBody ?? error?.message ?? 'unknown',
+          status: 'error',
+          upstreamStatus: (error as any)?.mcpStatus ?? null
+        };
+      }
+    }
+
+    return {
+      buildSha: process.env.BUILD_SHA ?? null,
+      hasMcpApiKey: mcpClientService.hasApiKey(),
+      hasMcpServerUrl: mcpClientService.isConfigured(),
+      mcpProbe,
+      nodeEnv: process.env.NODE_ENV ?? 'unknown',
+      resolvedRpcUrl
+    };
+  }
 
   public async chat({
     attachments,
@@ -264,6 +334,8 @@ export class AiService {
     history,
     languageCode,
     message,
+    traceId,
+    triggerSource,
     userCurrency,
     userId
   }: {
@@ -277,6 +349,8 @@ export class AiService {
     history: { content: string; role: 'assistant' | 'user' }[];
     languageCode: string;
     message: string;
+    traceId?: string;
+    triggerSource?: string;
     userCurrency: string;
     userId: string;
   }): Promise<AiChatResponse> {
@@ -321,7 +395,11 @@ export class AiService {
       model: modelId
     });
 
-    // ── Wire history message count into telemetry ─────────────────
+    // ── Wire trigger source + history message count into telemetry ──
+    if (triggerSource) {
+      trace.setTriggerSource(triggerSource);
+    }
+
     trace.setHistoryMessageCount(history.length);
 
     // ── Initialize guardrails ───────────────────────────────────────
@@ -332,6 +410,13 @@ export class AiService {
     const failureTracker = new ToolFailureTracker();
     const toolCallRecords: ToolCallRecord[] = [];
     let iterationCount = 0;
+
+    // ── Initialize reasoning trace context (SSE) ─────────────────
+    const reasoningTraceId = traceId || randomUUID();
+    const reasoningCtx = new TraceContext(reasoningTraceId, (event) => {
+      this.reasoningTraceService.emit(event);
+    });
+    reasoningCtx.addPlanStep('Analyzing your question');
 
     // ── Build ReAct system prompt ───────────────────────────────────
     const systemMessage = buildReActSystemPrompt(languageCode, userCurrency);
@@ -389,8 +474,7 @@ export class AiService {
         return `[Attached file: ${att.fileName}]`;
       });
 
-      textContent +=
-        '\n\n--- Attachments ---\n' + descriptions.join('\n\n');
+      textContent += '\n\n--- Attachments ---\n' + descriptions.join('\n\n');
     }
 
     // Build the user message — multimodal (content parts) if images, plain string otherwise
@@ -403,9 +487,7 @@ export class AiService {
       | { content: ContentPart[]; role: 'user' };
 
     if (imageAttachments.length > 0) {
-      const contentParts: ContentPart[] = [
-        { type: 'text', text: textContent }
-      ];
+      const contentParts: ContentPart[] = [{ type: 'text', text: textContent }];
 
       for (const img of imageAttachments) {
         // Strip data URL prefix "data:image/xxx;base64," to get pure base64
@@ -465,6 +547,14 @@ export class AiService {
         }
 
         iterationCount++;
+
+        // Emit reasoning analysis summary for user-facing transparency
+        reasoningCtx.addAnalysisSummary(
+          `Retrieving data using ${toolName} tool`
+        );
+
+        // Emit reasoning tool call step (starts as "running")
+        const reasoningStep = reasoningCtx.startToolCall(toolName, args);
 
         const spanBuilder = trace.startToolSpan(toolName, args, iterationCount);
 
@@ -531,9 +621,9 @@ export class AiService {
         // Record tool span — extract error details when tool fails
         const spanError =
           result.status === 'error'
-            ? ((result as Record<string, unknown>).message as string) ??
+            ? (((result as Record<string, unknown>).message as string) ??
               result.verification?.errors?.[0] ??
-              'Tool returned error without details'
+              'Tool returned error without details')
             : undefined;
 
         trace.addToolSpan(
@@ -556,6 +646,18 @@ export class AiService {
           verification: result.verification,
           durationMs
         });
+
+        // Complete reasoning tool call step with redacted result
+        reasoningCtx.completeToolCall(
+          reasoningStep.id,
+          {
+            status: result.status,
+            message: (result as Record<string, unknown>).message,
+            confidence: result.verification?.confidence
+          },
+          result.status === 'error' ? 'error' : 'success',
+          durationMs
+        );
 
         return { ...result, schemaVersion: TOOL_RESULT_SCHEMA_VERSION };
       })();
@@ -870,10 +972,30 @@ export class AiService {
         );
       });
 
+      // ── Complete reasoning trace and persist (non-blocking) ────────
+      reasoningCtx.addAnswerStep();
+      const reasoningPreview = reasoningCtx.complete();
+
+      this.reasoningTraceService
+        .persistTrace({
+          traceId: reasoningTraceId,
+          userId,
+          conversationId: activeConversationId,
+          preview: reasoningPreview
+        })
+        .catch((traceError) => {
+          Logger.warn(
+            `Reasoning trace persistence failed: ${traceError instanceof Error ? traceError.message : String(traceError)}`,
+            'AiService'
+          );
+        });
+
       // ── Persist conversation (non-blocking) ────────────────────────
+      // Detect new conversation: if no history was sent, this is the first message
+      // (the frontend always sends conversationId, so we can't rely on !conversationId)
       this.persistConversation({
         conversationId: activeConversationId,
-        isNew: !conversationId,
+        isNew: history.length === 0,
         messages: [
           { content: message, role: 'user' },
           { content: result.text, role: 'assistant' }
@@ -893,11 +1015,15 @@ export class AiService {
           content: result.text,
           role: 'assistant',
           timestamp: new Date().toISOString()
-        }
+        },
+        traceId: reasoningTraceId
       };
     } catch (error) {
       clearTimeout(timeoutId!);
       trace.markLlmEnd();
+
+      // Complete reasoning trace on error path
+      reasoningCtx.complete();
 
       const errorMessage =
         error instanceof Error ? error.message : String(error);
@@ -934,11 +1060,21 @@ export class AiService {
             content: friendlyMessage,
             role: 'assistant',
             timestamp: new Date().toISOString()
-          }
+          },
+          traceId: reasoningTraceId
         };
       }
 
-      throw error;
+      // Return the actual error message so the frontend can display it
+      return {
+        conversationId: activeConversationId,
+        message: {
+          content: `Something went wrong: ${errorMessage}`,
+          role: 'assistant',
+          timestamp: new Date().toISOString()
+        },
+        traceId: reasoningTraceId
+      };
     }
   }
 
