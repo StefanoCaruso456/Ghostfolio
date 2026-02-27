@@ -11,6 +11,7 @@ import { Logger } from '@nestjs/common';
 
 import { CachedMarketDataProvider } from './cached-market-data.provider';
 import { CoinGeckoMarketDataProvider } from './coingecko-market-data.provider';
+import { FallbackMarketDataProvider } from './fallback-market-data.provider';
 import type {
   FundamentalsResult,
   HistoryResult,
@@ -22,6 +23,7 @@ import type {
   QuoteError,
   QuoteResult
 } from './market-data.types';
+import { getQuoteCacheService } from './quote-cache.service';
 
 const logger = new Logger('MarketDataProvider');
 
@@ -396,34 +398,82 @@ export class YahooMarketDataProvider implements MarketDataProvider {
   }
 }
 
+// ─── Provider name → constructor mapping ─────────────────────────────
+
+function createProviderByName(name: string): MarketDataProvider {
+  switch (name.toLowerCase()) {
+    case 'coingecko':
+      return new CoinGeckoMarketDataProvider();
+    case 'yahoo':
+      return new YahooMarketDataProvider();
+    default:
+      logger.warn(`Unknown provider "${name}", falling back to Yahoo`);
+      return new YahooMarketDataProvider();
+  }
+}
+
 // ─── Factory ────────────────────────────────────────────────────────
 
 let providerInstance: MarketDataProvider | null = null;
 
+/**
+ * Build the provider chain from env vars:
+ *   MARKET_DATA_PRIMARY_PROVIDER   — first choice (default: 'yahoo')
+ *   MARKET_DATA_FALLBACK_PROVIDERS — comma-separated fallback list (default: 'coingecko')
+ *   MARKET_DATA_CACHE_ENABLED      — wrap with TTL cache (default: true)
+ *
+ * Architecture:
+ *   FallbackProvider([CachedProvider(Primary), CachedProvider(Fallback1), ...])
+ *
+ * The FallbackProvider also integrates with QuoteCacheService for
+ * persistent last-known-good quotes when all live providers fail.
+ */
 export function getMarketDataProvider(): MarketDataProvider {
   if (!providerInstance) {
-    const providerName = process.env.MARKET_DATA_PROVIDER || 'yahoo';
+    const primaryName =
+      process.env.MARKET_DATA_PRIMARY_PROVIDER ||
+      process.env.MARKET_DATA_PROVIDER ||
+      'yahoo';
+    const fallbackNames = (
+      process.env.MARKET_DATA_FALLBACK_PROVIDERS || 'coingecko'
+    )
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean);
     const cacheEnabled = process.env.MARKET_DATA_CACHE_ENABLED !== 'false';
 
-    logger.log(`Initializing market data provider: ${providerName}`);
+    // Build provider chain: primary first, then fallbacks
+    const providerNames = [primaryName, ...fallbackNames];
+    // Deduplicate while preserving order
+    const seen = new Set<string>();
+    const uniqueNames: string[] = [];
 
-    let baseProvider: MarketDataProvider;
+    for (const name of providerNames) {
+      const lower = name.toLowerCase();
 
-    switch (providerName) {
-      case 'coingecko':
-        baseProvider = new CoinGeckoMarketDataProvider();
-        break;
-      case 'yahoo':
-      default:
-        baseProvider = new YahooMarketDataProvider();
-        break;
+      if (!seen.has(lower)) {
+        seen.add(lower);
+        uniqueNames.push(lower);
+      }
     }
 
-    if (cacheEnabled) {
-      providerInstance = new CachedMarketDataProvider(baseProvider);
-      logger.log('Market data caching enabled');
+    const providers: MarketDataProvider[] = uniqueNames.map((name) => {
+      const base = createProviderByName(name);
+
+      return cacheEnabled ? new CachedMarketDataProvider(base) : base;
+    });
+
+    logger.log(
+      `Initializing market data provider chain: [${uniqueNames.join(' → ')}], cache=${cacheEnabled}`
+    );
+
+    if (providers.length === 1) {
+      providerInstance = providers[0];
     } else {
-      providerInstance = baseProvider;
+      providerInstance = new FallbackMarketDataProvider(
+        providers,
+        getQuoteCacheService()
+      );
     }
   }
 
@@ -432,6 +482,8 @@ export function getMarketDataProvider(): MarketDataProvider {
 
 /**
  * Get cache stats for telemetry. Returns null if caching is disabled.
+ * Works with both direct CachedMarketDataProvider and FallbackMarketDataProvider
+ * (which wraps CachedMarketDataProviders internally).
  */
 export function getMarketDataCacheStats(): {
   cacheEnabled: boolean;
@@ -441,6 +493,14 @@ export function getMarketDataCacheStats(): {
     return {
       cacheEnabled: true,
       cacheHits: providerInstance.cacheHits
+    };
+  }
+
+  // FallbackMarketDataProvider wraps CachedMarketDataProviders — report cache as enabled
+  if (providerInstance instanceof FallbackMarketDataProvider) {
+    return {
+      cacheEnabled: process.env.MARKET_DATA_CACHE_ENABLED !== 'false',
+      cacheHits: 0
     };
   }
 
