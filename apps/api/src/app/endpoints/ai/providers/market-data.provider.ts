@@ -127,7 +127,7 @@ export class YahooMarketDataProvider implements MarketDataProvider {
 
     for (const symbol of symbols) {
       try {
-        const result = await withTimeout(
+        const result: any = await withTimeout(
           yahooFinance.quote(symbol),
           YAHOO_REQUEST_TIMEOUT_MS,
           symbol
@@ -212,7 +212,7 @@ export class YahooMarketDataProvider implements MarketDataProvider {
       }
 
       const yahooInterval = INTERVAL_MAP[interval] || '1d';
-      const result = await withTimeout(
+      const result: any = await withTimeout(
         yahooFinance.chart(symbol, {
           period1: period1Fn(),
           interval: yahooInterval as any
@@ -260,7 +260,7 @@ export class YahooMarketDataProvider implements MarketDataProvider {
 
     try {
       const yahooFinance = await this.getYahoo();
-      const result = await withTimeout(
+      const result: any = await withTimeout(
         yahooFinance.quoteSummary(symbol, {
           modules: ['summaryDetail', 'defaultKeyStatistics', 'assetProfile']
         }),
@@ -351,7 +351,7 @@ export class YahooMarketDataProvider implements MarketDataProvider {
       const yahooFinance = await this.getYahoo();
 
       // yahoo-finance2 search returns news items
-      const result = await withTimeout(
+      const result: any = await withTimeout(
         yahooFinance.search(symbol, {
           newsCount: Math.min(limit, 10)
         }),
