@@ -1,72 +1,72 @@
 Date,Code,DataSource,Currency,Price,Quantity,Action,Fee,Note
-05-01-2024,XLE,YAHOO,USD,84.50,20,buy,0,Energy Select Sector ETF
-08-01-2024,XOM,YAHOO,USD,98.70,12,buy,4.95,Exxon Mobil Corporation
-11-01-2024,CVX,YAHOO,USD,148.30,8,buy,4.95,Chevron Corporation
-16-01-2024,JPM,YAHOO,USD,175.00,10,buy,0,JPMorgan Chase & Co
-19-01-2024,GS,YAHOO,USD,382.00,4,buy,1.00,Goldman Sachs Group
-24-01-2024,BAC,YAHOO,USD,33.80,40,buy,0,Bank of America Corp
-30-01-2024,XLE,YAHOO,USD,88.00,15,sell,4.95,Energy ETF - gain
-02-02-2024,XOM,YAHOO,USD,103.50,8,sell,0,Exxon - gain
-07-02-2024,JPM,YAHOO,USD,185.00,6,sell,4.95,JPMorgan - gain
-12-02-2024,CVX,YAHOO,USD,152.00,5,sell,1.00,Chevron - modest gain
-15-02-2024,GS,YAHOO,USD,395.00,4,sell,0,Goldman - gain
-20-02-2024,XLV,YAHOO,USD,138.50,15,buy,4.95,Health Care Select ETF
-23-02-2024,UNH,YAHOO,USD,512.00,4,buy,0,UnitedHealth Group
-28-02-2024,LLY,YAHOO,USD,752.00,3,buy,4.95,Eli Lilly
-04-03-2024,ABBV,YAHOO,USD,178.00,10,buy,1.00,AbbVie Inc
-07-03-2024,PFE,YAHOO,USD,27.50,50,buy,0,Pfizer Inc
-12-03-2024,MRK,YAHOO,USD,125.00,14,buy,4.95,Merck & Co
-18-03-2024,XLV,YAHOO,USD,132.00,15,sell,0,Health Care ETF - loss
-21-03-2024,UNH,YAHOO,USD,490.00,4,sell,4.95,UNH - sold at loss
-26-03-2024,PFE,YAHOO,USD,26.00,50,sell,1.00,Pfizer - sold at loss
-28-03-2024,ABBV,YAHOO,USD,1.55,10,dividend,0,AbbVie dividend
-02-04-2024,LLY,YAHOO,USD,730.00,3,sell,0,Lilly - sold at loss
-05-04-2024,MRK,YAHOO,USD,118.00,14,sell,4.95,Merck - sold at loss
-10-04-2024,XLP,YAHOO,USD,72.50,25,buy,0,Consumer Staples ETF
-15-04-2024,PG,YAHOO,USD,161.00,12,buy,4.95,Procter & Gamble
-18-04-2024,KO,YAHOO,USD,58.50,30,buy,1.00,Coca-Cola Company
-23-04-2024,COST,YAHOO,USD,710.00,3,buy,0,Costco Wholesale
-26-04-2024,WMT,YAHOO,USD,59.50,25,buy,4.95,Walmart Inc
-02-05-2024,PEP,YAHOO,USD,172.00,10,buy,0,PepsiCo Inc
-07-05-2024,XLP,YAHOO,USD,75.80,25,sell,4.95,Consumer Staples - gain
-10-05-2024,PG,YAHOO,USD,168.00,12,sell,1.00,P&G - gain
-15-05-2024,KO,YAHOO,USD,63.00,20,sell,0,Coca-Cola - gain
-20-05-2024,COST,YAHOO,USD,765.00,3,sell,4.95,Costco - gain
-23-05-2024,WMT,YAHOO,USD,65.00,25,sell,0,Walmart - gain
-28-05-2024,KO,YAHOO,USD,0.485,10,dividend,0,Coca-Cola dividend
-03-06-2024,XLRE,YAHOO,USD,37.50,40,buy,4.95,Real Estate Select ETF
-06-06-2024,O,YAHOO,USD,54.20,25,buy,0,Realty Income Corp
-11-06-2024,AMT,YAHOO,USD,192.00,8,buy,4.95,American Tower Corp
-14-06-2024,SPG,YAHOO,USD,148.00,10,buy,1.00,Simon Property Group
-19-06-2024,VNQ,YAHOO,USD,80.50,20,buy,0,Vanguard Real Estate ETF
-24-06-2024,PSA,YAHOO,USD,285.00,5,buy,4.95,Public Storage
-28-06-2024,XLRE,YAHOO,USD,35.20,40,sell,0,Real Estate ETF - loss
-03-07-2024,O,YAHOO,USD,51.00,25,sell,4.95,Realty Income - loss
-08-07-2024,AMT,YAHOO,USD,183.00,8,sell,1.00,American Tower - loss
-11-07-2024,SPG,YAHOO,USD,140.00,10,sell,0,Simon Property - loss
-16-07-2024,VNQ,YAHOO,USD,76.00,20,sell,4.95,Vanguard RE - loss
-19-07-2024,PSA,YAHOO,USD,271.00,5,sell,0,Public Storage - loss
-24-07-2024,XLK,YAHOO,USD,218.00,12,buy,4.95,Technology Select ETF
-29-07-2024,AAPL,YAHOO,USD,218.00,10,buy,1.00,Apple Inc
-01-08-2024,MSFT,YAHOO,USD,412.00,6,buy,0,Microsoft Corporation
-06-08-2024,GOOGL,YAHOO,USD,164.00,12,buy,4.95,Alphabet Inc
-09-08-2024,META,YAHOO,USD,490.00,5,buy,0,Meta Platforms
-14-08-2024,NVDA,YAHOO,USD,112.00,15,buy,4.95,NVIDIA Corporation
-19-08-2024,XLK,YAHOO,USD,225.00,12,sell,1.00,Tech ETF - gain
-22-08-2024,AAPL,YAHOO,USD,226.00,6,sell,0,Apple - gain
-27-08-2024,GOOGL,YAHOO,USD,170.00,8,sell,4.95,Alphabet - gain
-02-09-2024,META,YAHOO,USD,510.00,5,sell,0,Meta - gain
-05-09-2024,NVDA,YAHOO,USD,108.00,15,sell,4.95,NVIDIA - sold at loss
-10-09-2024,MSFT,YAHOO,USD,403.00,6,sell,1.00,Microsoft - sold at loss
-16-09-2024,XLI,YAHOO,USD,118.00,15,buy,0,Industrial Select ETF
-19-09-2024,CAT,YAHOO,USD,340.00,5,buy,4.95,Caterpillar Inc
-24-09-2024,HON,YAHOO,USD,201.00,8,buy,0,Honeywell International
-27-09-2024,UNP,YAHOO,USD,238.00,6,buy,4.95,Union Pacific Corp
-02-10-2024,GE,YAHOO,USD,180.00,10,buy,1.00,General Electric
-07-10-2024,DE,YAHOO,USD,392.00,4,buy,0,Deere & Company
-14-10-2024,XLI,YAHOO,USD,126.00,15,sell,4.95,Industrial ETF - gain
-21-10-2024,CAT,YAHOO,USD,388.00,5,sell,0,Caterpillar - gain
-28-10-2024,HON,YAHOO,USD,212.00,8,sell,4.95,Honeywell - gain
-04-11-2024,UNP,YAHOO,USD,232.00,6,sell,1.00,Union Pacific - loss
-11-11-2024,GE,YAHOO,USD,172.00,10,sell,0,GE - loss
-18-11-2024,DE,YAHOO,USD,405.00,4,sell,4.95,Deere - gain
+05-01-2024,XLE,MANUAL,USD,84.50,20,buy,0,Energy Select Sector ETF
+08-01-2024,XOM,MANUAL,USD,98.70,12,buy,4.95,Exxon Mobil Corporation
+11-01-2024,CVX,MANUAL,USD,148.30,8,buy,4.95,Chevron Corporation
+16-01-2024,JPM,MANUAL,USD,175.00,10,buy,0,JPMorgan Chase & Co
+19-01-2024,GS,MANUAL,USD,382.00,4,buy,1.00,Goldman Sachs Group
+24-01-2024,BAC,MANUAL,USD,33.80,40,buy,0,Bank of America Corp
+30-01-2024,XLE,MANUAL,USD,88.00,15,sell,4.95,Energy ETF - gain
+02-02-2024,XOM,MANUAL,USD,103.50,8,sell,0,Exxon - gain
+07-02-2024,JPM,MANUAL,USD,185.00,6,sell,4.95,JPMorgan - gain
+12-02-2024,CVX,MANUAL,USD,152.00,5,sell,1.00,Chevron - modest gain
+15-02-2024,GS,MANUAL,USD,395.00,4,sell,0,Goldman - gain
+20-02-2024,XLV,MANUAL,USD,138.50,15,buy,4.95,Health Care Select ETF
+23-02-2024,UNH,MANUAL,USD,512.00,4,buy,0,UnitedHealth Group
+28-02-2024,LLY,MANUAL,USD,752.00,3,buy,4.95,Eli Lilly
+04-03-2024,ABBV,MANUAL,USD,178.00,10,buy,1.00,AbbVie Inc
+07-03-2024,PFE,MANUAL,USD,27.50,50,buy,0,Pfizer Inc
+12-03-2024,MRK,MANUAL,USD,125.00,14,buy,4.95,Merck & Co
+18-03-2024,XLV,MANUAL,USD,132.00,15,sell,0,Health Care ETF - loss
+21-03-2024,UNH,MANUAL,USD,490.00,4,sell,4.95,UNH - sold at loss
+26-03-2024,PFE,MANUAL,USD,26.00,50,sell,1.00,Pfizer - sold at loss
+28-03-2024,ABBV,MANUAL,USD,1.55,10,dividend,0,AbbVie dividend
+02-04-2024,LLY,MANUAL,USD,730.00,3,sell,0,Lilly - sold at loss
+05-04-2024,MRK,MANUAL,USD,118.00,14,sell,4.95,Merck - sold at loss
+10-04-2024,XLP,MANUAL,USD,72.50,25,buy,0,Consumer Staples ETF
+15-04-2024,PG,MANUAL,USD,161.00,12,buy,4.95,Procter & Gamble
+18-04-2024,KO,MANUAL,USD,58.50,30,buy,1.00,Coca-Cola Company
+23-04-2024,COST,MANUAL,USD,710.00,3,buy,0,Costco Wholesale
+26-04-2024,WMT,MANUAL,USD,59.50,25,buy,4.95,Walmart Inc
+02-05-2024,PEP,MANUAL,USD,172.00,10,buy,0,PepsiCo Inc
+07-05-2024,XLP,MANUAL,USD,75.80,25,sell,4.95,Consumer Staples - gain
+10-05-2024,PG,MANUAL,USD,168.00,12,sell,1.00,P&G - gain
+15-05-2024,KO,MANUAL,USD,63.00,20,sell,0,Coca-Cola - gain
+20-05-2024,COST,MANUAL,USD,765.00,3,sell,4.95,Costco - gain
+23-05-2024,WMT,MANUAL,USD,65.00,25,sell,0,Walmart - gain
+28-05-2024,KO,MANUAL,USD,0.485,10,dividend,0,Coca-Cola dividend
+03-06-2024,XLRE,MANUAL,USD,37.50,40,buy,4.95,Real Estate Select ETF
+06-06-2024,O,MANUAL,USD,54.20,25,buy,0,Realty Income Corp
+11-06-2024,AMT,MANUAL,USD,192.00,8,buy,4.95,American Tower Corp
+14-06-2024,SPG,MANUAL,USD,148.00,10,buy,1.00,Simon Property Group
+19-06-2024,VNQ,MANUAL,USD,80.50,20,buy,0,Vanguard Real Estate ETF
+24-06-2024,PSA,MANUAL,USD,285.00,5,buy,4.95,Public Storage
+28-06-2024,XLRE,MANUAL,USD,35.20,40,sell,0,Real Estate ETF - loss
+03-07-2024,O,MANUAL,USD,51.00,25,sell,4.95,Realty Income - loss
+08-07-2024,AMT,MANUAL,USD,183.00,8,sell,1.00,American Tower - loss
+11-07-2024,SPG,MANUAL,USD,140.00,10,sell,0,Simon Property - loss
+16-07-2024,VNQ,MANUAL,USD,76.00,20,sell,4.95,Vanguard RE - loss
+19-07-2024,PSA,MANUAL,USD,271.00,5,sell,0,Public Storage - loss
+24-07-2024,XLK,MANUAL,USD,218.00,12,buy,4.95,Technology Select ETF
+29-07-2024,AAPL,MANUAL,USD,218.00,10,buy,1.00,Apple Inc
+01-08-2024,MSFT,MANUAL,USD,412.00,6,buy,0,Microsoft Corporation
+06-08-2024,GOOGL,MANUAL,USD,164.00,12,buy,4.95,Alphabet Inc
+09-08-2024,META,MANUAL,USD,490.00,5,buy,0,Meta Platforms
+14-08-2024,NVDA,MANUAL,USD,112.00,15,buy,4.95,NVIDIA Corporation
+19-08-2024,XLK,MANUAL,USD,225.00,12,sell,1.00,Tech ETF - gain
+22-08-2024,AAPL,MANUAL,USD,226.00,6,sell,0,Apple - gain
+27-08-2024,GOOGL,MANUAL,USD,170.00,8,sell,4.95,Alphabet - gain
+02-09-2024,META,MANUAL,USD,510.00,5,sell,0,Meta - gain
+05-09-2024,NVDA,MANUAL,USD,108.00,15,sell,4.95,NVIDIA - sold at loss
+10-09-2024,MSFT,MANUAL,USD,403.00,6,sell,1.00,Microsoft - sold at loss
+16-09-2024,XLI,MANUAL,USD,118.00,15,buy,0,Industrial Select ETF
+19-09-2024,CAT,MANUAL,USD,340.00,5,buy,4.95,Caterpillar Inc
+24-09-2024,HON,MANUAL,USD,201.00,8,buy,0,Honeywell International
+27-09-2024,UNP,MANUAL,USD,238.00,6,buy,4.95,Union Pacific Corp
+02-10-2024,GE,MANUAL,USD,180.00,10,buy,1.00,General Electric
+07-10-2024,DE,MANUAL,USD,392.00,4,buy,0,Deere & Company
+14-10-2024,XLI,MANUAL,USD,126.00,15,sell,4.95,Industrial ETF - gain
+21-10-2024,CAT,MANUAL,USD,388.00,5,sell,0,Caterpillar - gain
+28-10-2024,HON,MANUAL,USD,212.00,8,sell,4.95,Honeywell - gain
+04-11-2024,UNP,MANUAL,USD,232.00,6,sell,1.00,Union Pacific - loss
+11-11-2024,GE,MANUAL,USD,172.00,10,sell,0,GE - loss
+18-11-2024,DE,MANUAL,USD,405.00,4,sell,4.95,Deere - gain

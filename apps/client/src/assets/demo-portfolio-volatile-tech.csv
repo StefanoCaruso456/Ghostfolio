@@ -1,73 +1,73 @@
 Date,Code,DataSource,Currency,Price,Quantity,Action,Fee,Note
-08-01-2024,NVDA,YAHOO,USD,480.50,10,buy,4.95,NVIDIA Corporation
-10-01-2024,AMD,YAHOO,USD,139.20,15,buy,4.95,Advanced Micro Devices
-12-01-2024,TSLA,YAHOO,USD,218.50,8,buy,0,Tesla Inc
-17-01-2024,PLTR,YAHOO,USD,17.40,50,buy,1.00,Palantir Technologies
-22-01-2024,SMCI,YAHOO,USD,290.00,5,buy,4.95,Super Micro Computer
-29-01-2024,SOFI,YAHOO,USD,8.20,100,buy,0,SoFi Technologies
-02-02-2024,NVDA,YAHOO,USD,630.00,5,buy,4.95,NVIDIA Corporation
-07-02-2024,CRWD,YAHOO,USD,310.00,4,buy,4.95,CrowdStrike Holdings
-12-02-2024,SMCI,YAHOO,USD,750.00,3,sell,0,Super Micro Computer - big gain
-14-02-2024,NVDA,YAHOO,USD,720.00,5,sell,4.95,NVIDIA - partial profit
-19-02-2024,PLTR,YAHOO,USD,24.50,30,sell,1.00,Palantir - solid gain
-22-02-2024,COIN,YAHOO,USD,157.00,8,buy,4.95,Coinbase Global
-27-02-2024,MSTR,YAHOO,USD,680.00,3,buy,0,MicroStrategy
-04-03-2024,TSLA,YAHOO,USD,178.00,8,sell,4.95,Tesla - sold at loss
-07-03-2024,AMD,YAHOO,USD,195.00,10,sell,0,AMD - nice gain
-11-03-2024,SOFI,YAHOO,USD,7.40,100,sell,1.00,SoFi - sold at loss
-14-03-2024,MSTR,YAHOO,USD,1540.00,3,sell,4.95,MicroStrategy - huge gain
-18-03-2024,COIN,YAHOO,USD,260.00,5,sell,0,Coinbase - gain
-22-03-2024,SMCI,YAHOO,USD,1020.00,2,sell,4.95,SMCI remaining - big gain
-25-03-2024,CRWD,YAHOO,USD,340.00,4,sell,0,CrowdStrike - modest gain
-28-03-2024,ARM,YAHOO,USD,142.00,12,buy,4.95,ARM Holdings
-02-04-2024,SNOW,YAHOO,USD,165.00,10,buy,0,Snowflake Inc
-05-04-2024,DDOG,YAHOO,USD,128.00,14,buy,4.95,Datadog Inc
-10-04-2024,NET,YAHOO,USD,88.00,18,buy,1.00,Cloudflare Inc
-15-04-2024,SHOP,YAHOO,USD,73.00,20,buy,0,Shopify Inc
-18-04-2024,ARM,YAHOO,USD,112.00,12,sell,4.95,ARM - sold at loss
-23-04-2024,SNOW,YAHOO,USD,142.00,10,sell,0,Snowflake - sold at loss
-26-04-2024,DDOG,YAHOO,USD,107.00,14,sell,4.95,Datadog - sold at loss
-01-05-2024,NET,YAHOO,USD,76.00,18,sell,1.00,Cloudflare - sold at loss
-06-05-2024,SHOP,YAHOO,USD,62.00,20,sell,0,Shopify - sold at loss
-08-05-2024,NVDA,YAHOO,USD,0.04,10,dividend,0,NVIDIA dividend
-10-05-2024,META,YAHOO,USD,465.00,6,buy,4.95,Meta Platforms
-15-05-2024,AAPL,YAHOO,USD,189.00,12,buy,0,Apple Inc
-20-05-2024,MSFT,YAHOO,USD,420.00,5,buy,4.95,Microsoft Corporation
-24-05-2024,GOOGL,YAHOO,USD,176.00,10,buy,1.00,Alphabet Inc
-28-05-2024,AMZN,YAHOO,USD,185.00,8,buy,0,Amazon.com Inc
-03-06-2024,NVDA,YAHOO,USD,1100.00,3,buy,4.95,NVIDIA - buying back
-07-06-2024,META,YAHOO,USD,510.00,4,sell,0,Meta - gain
-12-06-2024,AAPL,YAHOO,USD,211.00,8,sell,4.95,Apple - gain
-17-06-2024,GOOGL,YAHOO,USD,182.00,10,sell,0,Alphabet - gain
-20-06-2024,AMZN,YAHOO,USD,192.00,8,sell,1.00,Amazon - gain
-25-06-2024,MSFT,YAHOO,USD,449.00,5,sell,4.95,Microsoft - gain
-01-07-2024,NVDA,YAHOO,USD,1240.00,3,sell,0,NVIDIA - big gain
-08-07-2024,RIVN,YAHOO,USD,17.50,80,buy,4.95,Rivian Automotive
-12-07-2024,LCID,YAHOO,USD,3.20,200,buy,0,Lucid Group
-17-07-2024,SNAP,YAHOO,USD,16.50,60,buy,1.00,Snap Inc
-22-07-2024,ROKU,YAHOO,USD,64.00,15,buy,4.95,Roku Inc
-25-07-2024,PARA,YAHOO,USD,11.40,80,buy,0,Paramount Global
-30-07-2024,RIVN,YAHOO,USD,13.00,80,sell,4.95,Rivian - sold at loss
-02-08-2024,LCID,YAHOO,USD,2.80,200,sell,0,Lucid - sold at loss
-07-08-2024,SNAP,YAHOO,USD,9.50,60,sell,1.00,Snap - sold at big loss
-12-08-2024,ROKU,YAHOO,USD,52.00,15,sell,4.95,Roku - sold at loss
-15-08-2024,PARA,YAHOO,USD,10.50,80,sell,0,Paramount - sold at loss
-20-08-2024,AVGO,YAHOO,USD,165.00,8,buy,4.95,Broadcom Inc
-26-08-2024,PANW,YAHOO,USD,370.00,5,buy,0,Palo Alto Networks
-02-09-2024,NFLX,YAHOO,USD,690.00,3,buy,4.95,Netflix Inc
-09-09-2024,CRM,YAHOO,USD,252.00,8,buy,1.00,Salesforce Inc
-16-09-2024,NOW,YAHOO,USD,870.00,2,buy,0,ServiceNow Inc
-20-09-2024,AVGO,YAHOO,USD,175.00,5,sell,4.95,Broadcom - gain
-26-09-2024,PANW,YAHOO,USD,352.00,5,sell,0,Palo Alto - loss
-01-10-2024,NFLX,YAHOO,USD,715.00,3,sell,4.95,Netflix - gain
-07-10-2024,CRM,YAHOO,USD,278.00,8,sell,1.00,Salesforce - gain
-14-10-2024,NOW,YAHOO,USD,920.00,2,sell,0,ServiceNow - gain
-21-10-2024,TSLA,YAHOO,USD,215.00,15,buy,4.95,Tesla - buying back
-28-10-2024,PLTR,YAHOO,USD,42.00,40,buy,0,Palantir - buying back
-04-11-2024,SMCI,YAHOO,USD,24.00,30,buy,1.00,Super Micro Computer - collapse buy
-11-11-2024,TSLA,YAHOO,USD,328.00,10,sell,4.95,Tesla - huge post-election gain
-18-11-2024,PLTR,YAHOO,USD,62.00,25,sell,0,Palantir - big gain
-22-11-2024,SMCI,YAHOO,USD,33.00,20,sell,1.00,SMCI - gain from bottom
-02-12-2024,AVGO,YAHOO,USD,192.00,6,buy,4.95,Broadcom - buying back
-09-12-2024,TSLA,YAHOO,USD,370.00,5,sell,0,Tesla remaining - more gain
-16-12-2024,PLTR,YAHOO,USD,71.00,15,sell,4.95,Palantir remaining - even bigger gain
+08-01-2024,NVDA,MANUAL,USD,480.50,10,buy,4.95,NVIDIA Corporation
+10-01-2024,AMD,MANUAL,USD,139.20,15,buy,4.95,Advanced Micro Devices
+12-01-2024,TSLA,MANUAL,USD,218.50,8,buy,0,Tesla Inc
+17-01-2024,PLTR,MANUAL,USD,17.40,50,buy,1.00,Palantir Technologies
+22-01-2024,SMCI,MANUAL,USD,290.00,5,buy,4.95,Super Micro Computer
+29-01-2024,SOFI,MANUAL,USD,8.20,100,buy,0,SoFi Technologies
+02-02-2024,NVDA,MANUAL,USD,630.00,5,buy,4.95,NVIDIA Corporation
+07-02-2024,CRWD,MANUAL,USD,310.00,4,buy,4.95,CrowdStrike Holdings
+12-02-2024,SMCI,MANUAL,USD,750.00,3,sell,0,Super Micro Computer - big gain
+14-02-2024,NVDA,MANUAL,USD,720.00,5,sell,4.95,NVIDIA - partial profit
+19-02-2024,PLTR,MANUAL,USD,24.50,30,sell,1.00,Palantir - solid gain
+22-02-2024,COIN,MANUAL,USD,157.00,8,buy,4.95,Coinbase Global
+27-02-2024,MSTR,MANUAL,USD,680.00,3,buy,0,MicroStrategy
+04-03-2024,TSLA,MANUAL,USD,178.00,8,sell,4.95,Tesla - sold at loss
+07-03-2024,AMD,MANUAL,USD,195.00,10,sell,0,AMD - nice gain
+11-03-2024,SOFI,MANUAL,USD,7.40,100,sell,1.00,SoFi - sold at loss
+14-03-2024,MSTR,MANUAL,USD,1540.00,3,sell,4.95,MicroStrategy - huge gain
+18-03-2024,COIN,MANUAL,USD,260.00,5,sell,0,Coinbase - gain
+22-03-2024,SMCI,MANUAL,USD,1020.00,2,sell,4.95,SMCI remaining - big gain
+25-03-2024,CRWD,MANUAL,USD,340.00,4,sell,0,CrowdStrike - modest gain
+28-03-2024,ARM,MANUAL,USD,142.00,12,buy,4.95,ARM Holdings
+02-04-2024,SNOW,MANUAL,USD,165.00,10,buy,0,Snowflake Inc
+05-04-2024,DDOG,MANUAL,USD,128.00,14,buy,4.95,Datadog Inc
+10-04-2024,NET,MANUAL,USD,88.00,18,buy,1.00,Cloudflare Inc
+15-04-2024,SHOP,MANUAL,USD,73.00,20,buy,0,Shopify Inc
+18-04-2024,ARM,MANUAL,USD,112.00,12,sell,4.95,ARM - sold at loss
+23-04-2024,SNOW,MANUAL,USD,142.00,10,sell,0,Snowflake - sold at loss
+26-04-2024,DDOG,MANUAL,USD,107.00,14,sell,4.95,Datadog - sold at loss
+01-05-2024,NET,MANUAL,USD,76.00,18,sell,1.00,Cloudflare - sold at loss
+06-05-2024,SHOP,MANUAL,USD,62.00,20,sell,0,Shopify - sold at loss
+08-05-2024,NVDA,MANUAL,USD,0.04,10,dividend,0,NVIDIA dividend
+10-05-2024,META,MANUAL,USD,465.00,6,buy,4.95,Meta Platforms
+15-05-2024,AAPL,MANUAL,USD,189.00,12,buy,0,Apple Inc
+20-05-2024,MSFT,MANUAL,USD,420.00,5,buy,4.95,Microsoft Corporation
+24-05-2024,GOOGL,MANUAL,USD,176.00,10,buy,1.00,Alphabet Inc
+28-05-2024,AMZN,MANUAL,USD,185.00,8,buy,0,Amazon.com Inc
+03-06-2024,NVDA,MANUAL,USD,1100.00,3,buy,4.95,NVIDIA - buying back
+07-06-2024,META,MANUAL,USD,510.00,4,sell,0,Meta - gain
+12-06-2024,AAPL,MANUAL,USD,211.00,8,sell,4.95,Apple - gain
+17-06-2024,GOOGL,MANUAL,USD,182.00,10,sell,0,Alphabet - gain
+20-06-2024,AMZN,MANUAL,USD,192.00,8,sell,1.00,Amazon - gain
+25-06-2024,MSFT,MANUAL,USD,449.00,5,sell,4.95,Microsoft - gain
+01-07-2024,NVDA,MANUAL,USD,1240.00,3,sell,0,NVIDIA - big gain
+08-07-2024,RIVN,MANUAL,USD,17.50,80,buy,4.95,Rivian Automotive
+12-07-2024,LCID,MANUAL,USD,3.20,200,buy,0,Lucid Group
+17-07-2024,SNAP,MANUAL,USD,16.50,60,buy,1.00,Snap Inc
+22-07-2024,ROKU,MANUAL,USD,64.00,15,buy,4.95,Roku Inc
+25-07-2024,PARA,MANUAL,USD,11.40,80,buy,0,Paramount Global
+30-07-2024,RIVN,MANUAL,USD,13.00,80,sell,4.95,Rivian - sold at loss
+02-08-2024,LCID,MANUAL,USD,2.80,200,sell,0,Lucid - sold at loss
+07-08-2024,SNAP,MANUAL,USD,9.50,60,sell,1.00,Snap - sold at big loss
+12-08-2024,ROKU,MANUAL,USD,52.00,15,sell,4.95,Roku - sold at loss
+15-08-2024,PARA,MANUAL,USD,10.50,80,sell,0,Paramount - sold at loss
+20-08-2024,AVGO,MANUAL,USD,165.00,8,buy,4.95,Broadcom Inc
+26-08-2024,PANW,MANUAL,USD,370.00,5,buy,0,Palo Alto Networks
+02-09-2024,NFLX,MANUAL,USD,690.00,3,buy,4.95,Netflix Inc
+09-09-2024,CRM,MANUAL,USD,252.00,8,buy,1.00,Salesforce Inc
+16-09-2024,NOW,MANUAL,USD,870.00,2,buy,0,ServiceNow Inc
+20-09-2024,AVGO,MANUAL,USD,175.00,5,sell,4.95,Broadcom - gain
+26-09-2024,PANW,MANUAL,USD,352.00,5,sell,0,Palo Alto - loss
+01-10-2024,NFLX,MANUAL,USD,715.00,3,sell,4.95,Netflix - gain
+07-10-2024,CRM,MANUAL,USD,278.00,8,sell,1.00,Salesforce - gain
+14-10-2024,NOW,MANUAL,USD,920.00,2,sell,0,ServiceNow - gain
+21-10-2024,TSLA,MANUAL,USD,215.00,15,buy,4.95,Tesla - buying back
+28-10-2024,PLTR,MANUAL,USD,42.00,40,buy,0,Palantir - buying back
+04-11-2024,SMCI,MANUAL,USD,24.00,30,buy,1.00,Super Micro Computer - collapse buy
+11-11-2024,TSLA,MANUAL,USD,328.00,10,sell,4.95,Tesla - huge post-election gain
+18-11-2024,PLTR,MANUAL,USD,62.00,25,sell,0,Palantir - big gain
+22-11-2024,SMCI,MANUAL,USD,33.00,20,sell,1.00,SMCI - gain from bottom
+02-12-2024,AVGO,MANUAL,USD,192.00,6,buy,4.95,Broadcom - buying back
+09-12-2024,TSLA,MANUAL,USD,370.00,5,sell,0,Tesla remaining - more gain
+16-12-2024,PLTR,MANUAL,USD,71.00,15,sell,4.95,Palantir remaining - even bigger gain
