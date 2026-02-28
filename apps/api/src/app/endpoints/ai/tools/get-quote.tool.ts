@@ -37,6 +37,10 @@ export async function buildQuoteResult(
 
     const allFailed = result.quotes.length === 0 && result.errors.length > 0;
 
+    const verificationErrors = allFailed
+      ? result.errors.map((e) => `${e.symbol}: ${e.error}`)
+      : [];
+
     return {
       status: allFailed ? 'error' : 'success',
       data: {
@@ -52,6 +56,7 @@ export async function buildQuoteResult(
         passed: !allFailed,
         confidence: allFailed ? 0.1 : result.errors.length > 0 ? 0.7 : 0.95,
         warnings,
+        errors: verificationErrors,
         sources: ['yahoo-finance2'],
         domainRulesChecked: DOMAIN_RULES_CHECKED,
         domainRulesFailed:
@@ -65,16 +70,18 @@ export async function buildQuoteResult(
       }
     };
   } catch (error) {
+    const errorMsg =
+      error instanceof Error && error.message
+        ? error.message
+        : 'Unknown error in getQuote';
+
     return {
       status: 'error',
-      message:
-        error instanceof Error ? error.message : 'Failed to fetch quotes',
+      message: errorMsg,
       verification: createVerificationResult({
         passed: false,
         confidence: 0,
-        errors: [
-          error instanceof Error ? error.message : 'Unknown error in getQuote'
-        ],
+        errors: [errorMsg],
         sources: ['yahoo-finance2']
       })
     };

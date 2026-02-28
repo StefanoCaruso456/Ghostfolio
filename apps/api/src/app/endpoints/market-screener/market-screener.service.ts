@@ -1,4 +1,5 @@
 import { RedisCacheService } from '@ghostfolio/api/app/redis-cache/redis-cache.service';
+import { YahooFinanceDataEnhancerService } from '@ghostfolio/api/services/data-provider/data-enhancer/yahoo-finance/yahoo-finance.service';
 import {
   MarketScreenerItem,
   MarketScreenerResponse
@@ -11,7 +12,6 @@ import {
   Logger
 } from '@nestjs/common';
 import ms from 'ms';
-import YahooFinance from 'yahoo-finance2';
 
 type ScreenerCategory =
   | 'most_actives'
@@ -22,13 +22,15 @@ type ScreenerCategory =
 @Injectable()
 export class MarketScreenerService {
   private readonly logger = new Logger(MarketScreenerService.name);
-  private readonly yahooFinance = new YahooFinance({
-    suppressNotices: ['yahooSurvey']
-  });
 
   public constructor(
-    private readonly redisCacheService: RedisCacheService
+    private readonly redisCacheService: RedisCacheService,
+    private readonly yahooFinanceDataEnhancerService: YahooFinanceDataEnhancerService
   ) {}
+
+  private get yahooFinance() {
+    return this.yahooFinanceDataEnhancerService.getYahooFinanceInstance();
+  }
 
   public async getScreener(
     category: ScreenerCategory,
