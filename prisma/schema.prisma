@@ -91,6 +91,27 @@ model PlaidItem {
   @@index([itemId])
 }
 
+model SnapTradeConnection {
+  id             String                    @id @default(uuid())
+  brokerageName  String?
+  userSecret     String
+  authorizationId String?
+  status         SnapTradeConnectionStatus @default(ACTIVE)
+  lastSyncedAt   DateTime?
+  createdAt      DateTime                  @default(now())
+  updatedAt      DateTime                  @updatedAt
+  user           User                      @relation(fields: [userId], onDelete: Cascade, references: [id])
+  userId         String
+
+  @@index([userId])
+}
+
+enum SnapTradeConnectionStatus {
+  ACTIVE
+  ERROR
+  DISCONNECTED
+}
+
 model Analytics {
   activityCount                       Int      @default(0)
   country                             String?
@@ -387,6 +408,7 @@ model User {
   analytics            Analytics?
   apiKeys              ApiKey[]
   plaidItems           PlaidItem[]
+  snapTradeConnections SnapTradeConnection[]
   authChallenge        String?
   authDevices          AuthDevice[]
   createdAt            DateTime              @default(now())

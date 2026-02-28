@@ -11,6 +11,14 @@
     <button
       class="align-items-center d-flex"
       mat-stroked-button
+      (click)="onConnectSnaptrade()"
+    >
+      <ion-icon class="mr-2" name="swap-horizontal-outline" />
+      <span i18n>Connect Broker (Snaptrade)</span>
+    </button>
+    <button
+      class="align-items-center d-flex"
+      mat-stroked-button
       [disabled]="dataSource?.data.length < 2"
       (click)="onTransferBalance()"
     >
