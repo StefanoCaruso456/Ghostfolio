@@ -11,8 +11,9 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Account, DataSource, Type as ActivityType } from '@prisma/client';
 import { isFinite } from 'lodash';
+import ms from 'ms';
 import { parse as csvToJson } from 'papaparse';
-import { EMPTY } from 'rxjs';
+import { EMPTY, timeout } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 @Injectable({
@@ -145,14 +146,14 @@ export class ImportActivitiesService {
           })
         )
         .subscribe({
-          next: (data) => {
+          next: (data: { activities: Activity[] }) => {
             resolve(data);
           }
         });
     });
   }
 
-  public importSelectedActivities({
+  public async importSelectedActivities({
     accounts,
     activities,
     assetProfiles,
@@ -165,18 +166,39 @@ export class ImportActivitiesService {
   }): Promise<{
     activities: Activity[];
   }> {
-    const importData: CreateOrderDto[] = [];
+    const importData: CreateOrderDto[] = activities.map((activity) =>
+      this.convertToCreateOrderDto(activity)
+    );
 
-    for (const activity of activities) {
-      importData.push(this.convertToCreateOrderDto(activity));
+    // Chunk large imports to avoid request timeouts
+    const CHUNK_SIZE = 200;
+
+    if (importData.length <= CHUNK_SIZE) {
+      return this.importJson({
+        accounts,
+        assetProfiles,
+        tags,
+        activities: importData
+      });
     }
 
-    return this.importJson({
-      accounts,
-      assetProfiles,
-      tags,
-      activities: importData
-    });
+    const allActivities: Activity[] = [];
+
+    for (let i = 0; i < importData.length; i += CHUNK_SIZE) {
+      const chunk = importData.slice(i, i + CHUNK_SIZE);
+
+      // Send accounts, assetProfiles, and tags only with the first chunk
+      const result = await this.importJson({
+        activities: chunk,
+        accounts: i === 0 ? accounts : undefined,
+        assetProfiles: i === 0 ? assetProfiles : undefined,
+        tags: i === 0 ? tags : undefined
+      });
+
+      allActivities.push(...result.activities);
+    }
+
+    return { activities: allActivities };
   }
 
   private convertToCreateOrderDto({
@@ -451,9 +473,10 @@ export class ImportActivitiesService {
     },
     aIsDryRun = false
   ) {
-    return this.http.post<{ activities: Activity[] }>(
-      `/api/v1/import?dryRun=${aIsDryRun}`,
-      aImportData
-    );
+    return this.http
+      .post<{
+        activities: Activity[];
+      }>(`/api/v1/import?dryRun=${aIsDryRun}`, aImportData)
+      .pipe(timeout(ms('5 minutes')));
   }
 }
