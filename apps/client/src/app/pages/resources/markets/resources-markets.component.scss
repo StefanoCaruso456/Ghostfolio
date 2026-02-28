@@ -101,11 +101,48 @@
   &:not(.active):hover {
     color: rgba(0, 0, 0, 0.7);
   }
+}
 
-  .table-icon {
-    font-size: 18px;
-    height: 18px;
-    width: 18px;
+// Display mode toggle (Charts / Table)
+.display-toggle {
+  background: #e0e5ec;
+  border-radius: 12px;
+  box-shadow:
+    inset 2px 2px 5px rgba(0, 0, 0, 0.08),
+    inset -2px -2px 5px rgba(255, 255, 255, 0.9);
+  display: inline-flex;
+  gap: 0;
+  padding: 3px;
+}
+
+.display-toggle-btn {
+  align-items: center;
+  background: transparent;
+  border: none;
+  border-radius: 9px;
+  color: rgba(0, 0, 0, 0.45);
+  cursor: pointer;
+  display: inline-flex;
+  font-size: 0.8rem;
+  font-weight: 600;
+  gap: 4px;
+  padding: 6px 16px;
+  transition: all 0.25s ease;
+
+  ion-icon {
+    font-size: 15px;
+  }
+
+  &.active {
+    background: #f0f4f8;
+    box-shadow:
+      2px 2px 5px rgba(0, 0, 0, 0.1),
+      -2px -2px 5px rgba(255, 255, 255, 1);
+    color: rgba(var(--palette-primary-500), 1);
+  }
+
+  &:not(.active):hover {
+    color: rgba(0, 0, 0, 0.65);
   }
 }
 
@@ -357,6 +394,29 @@
 
     &:not(.active):hover {
       color: rgba(255, 255, 255, 0.7);
+    }
+  }
+
+  .display-toggle {
+    background: #1a1d24;
+    box-shadow:
+      inset 2px 2px 5px rgba(0, 0, 0, 0.4),
+      inset -2px -2px 5px rgba(255, 255, 255, 0.04);
+  }
+
+  .display-toggle-btn {
+    color: rgba(255, 255, 255, 0.4);
+
+    &.active {
+      background: #282c34;
+      box-shadow:
+        2px 2px 5px rgba(0, 0, 0, 0.4),
+        -2px -2px 5px rgba(255, 255, 255, 0.05);
+      color: rgba(var(--palette-primary-500), 1);
+    }
+
+    &:not(.active):hover {
+      color: rgba(255, 255, 255, 0.65);
     }
   }
 

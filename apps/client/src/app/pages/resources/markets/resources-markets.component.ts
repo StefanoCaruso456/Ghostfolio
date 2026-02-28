@@ -221,9 +221,15 @@ export class ResourcesMarketsComponent implements OnInit, OnDestroy {
   }
 
   public onMarketViewChange(view: MarketView) {
-    this.displayMode = 'charts';
     this.marketView = view;
-    this.loadAllVisibleCharts();
+
+    if (this.displayMode === 'charts') {
+      this.loadAllVisibleCharts();
+    } else {
+      this.loadTableData();
+    }
+
+    this.changeDetectorRef.markForCheck();
   }
 
   public onTableCategoryChange(category: string) {

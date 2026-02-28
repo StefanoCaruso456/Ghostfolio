@@ -31,29 +31,42 @@
     </mat-form-field>
   </div>
 
-  <!-- Stocks / Crypto / Table toggle -->
-  <div class="d-flex justify-content-center mb-3">
+  <!-- Market selector + Display mode toggle -->
+  <div class="d-flex justify-content-center align-items-center mb-3 gap-3 flex-wrap">
+    <!-- Stocks / Crypto selector -->
     <div class="market-toggle">
       <button
         class="market-toggle-btn"
-        [class.active]="displayMode === 'charts' && marketView === 'stocks'"
+        [class.active]="marketView === 'stocks'"
         (click)="onMarketViewChange('stocks')"
       >
         Stocks
       </button>
       <button
         class="market-toggle-btn"
-        [class.active]="displayMode === 'charts' && marketView === 'crypto'"
+        [class.active]="marketView === 'crypto'"
         (click)="onMarketViewChange('crypto')"
       >
         Crypto
       </button>
+    </div>
+
+    <!-- Charts / Table display mode toggle -->
+    <div class="display-toggle">
       <button
-        class="market-toggle-btn table-btn"
+        class="display-toggle-btn"
+        [class.active]="displayMode === 'charts'"
+        (click)="onDisplayModeChange('charts')"
+      >
+        <ion-icon name="bar-chart-outline"></ion-icon>
+        Charts
+      </button>
+      <button
+        class="display-toggle-btn"
         [class.active]="displayMode === 'table'"
         (click)="onDisplayModeChange('table')"
       >
-        <mat-icon class="table-icon">table_chart</mat-icon>
+        <ion-icon name="list-outline"></ion-icon>
         Table
       </button>
     </div>
