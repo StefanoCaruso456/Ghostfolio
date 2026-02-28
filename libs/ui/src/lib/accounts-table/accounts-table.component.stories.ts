@@ -26,6 +26,7 @@ const accounts = [
     id: '460d7401-ca43-4ed4-b08e-349f1822e9db',
     isExcluded: false,
     name: 'Coinbase Account',
+    plaidAccountId: null,
     platform: {
       id: '8dc24b88-bb92-4152-af25-fe6a31643e26',
       name: 'Coinbase',
@@ -48,6 +49,7 @@ const accounts = [
     id: '6d773e31-0583-4c85-a247-e69870b4f1ee',
     isExcluded: false,
     name: 'Private Banking Account',
+    plaidAccountId: null,
     platform: {
       id: '43e8fcd1-5b79-4100-b678-d2229bd1660d',
       name: 'J.P. Morgan',
@@ -70,6 +72,7 @@ const accounts = [
     id: '776bd1e9-b2f6-4f7e-933d-18756c2f0625',
     isExcluded: false,
     name: 'Trading Account',
+    plaidAccountId: null,
     platform: {
       id: '9da3a8a7-4795-43e3-a6db-ccb914189737',
       name: 'Interactive Brokers',
