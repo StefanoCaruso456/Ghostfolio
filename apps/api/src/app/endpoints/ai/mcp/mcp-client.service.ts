@@ -191,10 +191,14 @@ export class McpClientService {
         throw new Error(`MCP server returned ${response.status}: ${errorText}`);
       }
 
-      const result = (await response.json()) as T;
+      // Parse and unwrap JSON-RPC envelope (same as rpc() method)
+      const parsed = await response.json();
+      const result = (
+        parsed?.result !== undefined ? parsed.result : parsed
+      ) as T;
 
       this.logger.debug(
-        `MCP callTool ← ${toolName} OK (${mcpLatencyMs}ms, reqId=${mcpRequestId})`
+        `MCP callTool ← ${toolName} OK (${mcpLatencyMs}ms, reqId=${mcpRequestId}, hasResult=${parsed?.result !== undefined})`
       );
 
       return { result, mcpRequestId, mcpLatencyMs };
