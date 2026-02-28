@@ -16,6 +16,9 @@ export type ToolDispatchMode = 'local' | 'mcp' | 'hybrid';
  */
 export const MCP_TOOL_MAP: Record<string, string> = {
   getPortfolioSummary: 'getPortfolioSummary',
+  getHoldingDetail: 'getHoldingDetail',
+  getPortfolioChart: 'getPortfolioChart',
+  getDividendSummary: 'getDividendSummary',
   listActivities: 'listActivities',
   getAllocations: 'getAllocations',
   getPerformance: 'getPerformance',

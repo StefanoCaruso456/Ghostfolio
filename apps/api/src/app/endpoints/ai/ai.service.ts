@@ -8,6 +8,7 @@ import {
 import type { AiChatResponse, Filter } from '@ghostfolio/common/interfaces';
 import type { AiPromptMode, DateRange } from '@ghostfolio/common/types';
 
+import { DataSource } from '@prisma/client';
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { createOpenRouter } from '@openrouter/ai-sdk-provider';
 import { generateText, tool } from 'ai';
@@ -36,10 +37,13 @@ import { TraceContext } from './reasoning/trace-context';
 import { BraintrustTelemetryService } from './telemetry/braintrust-telemetry.service';
 import { buildRebalanceResult } from './tools/compute-rebalance.tool';
 import { buildAllocationsResult } from './tools/get-allocations.tool';
+import { buildDividendSummaryResult } from './tools/get-dividend-summary.tool';
 import { buildFundamentalsResult } from './tools/get-fundamentals.tool';
 import { buildHistoryResult } from './tools/get-history.tool';
+import { buildHoldingDetailResult } from './tools/get-holding-detail.tool';
 import { buildNewsResult } from './tools/get-news.tool';
 import { buildPerformanceResult } from './tools/get-performance.tool';
+import { buildPortfolioChartResult } from './tools/get-portfolio-chart.tool';
 import { buildPortfolioSummary } from './tools/get-portfolio-summary.tool';
 import { buildQuoteResult } from './tools/get-quote.tool';
 import { buildActivitiesResult } from './tools/list-activities.tool';
@@ -49,6 +53,18 @@ import {
   ComputeRebalanceInputSchema,
   ComputeRebalanceOutputSchema
 } from './tools/schemas/compute-rebalance.schema';
+import {
+  GetDividendSummaryInputSchema,
+  GetDividendSummaryOutputSchema
+} from './tools/schemas/get-dividend-summary.schema';
+import {
+  GetHoldingDetailInputSchema,
+  GetHoldingDetailOutputSchema
+} from './tools/schemas/get-holding-detail.schema';
+import {
+  GetPortfolioChartInputSchema,
+  GetPortfolioChartOutputSchema
+} from './tools/schemas/get-portfolio-chart.schema';
 import {
   GetFundamentalsInputSchema,
   GetFundamentalsOutputSchema
@@ -103,6 +119,9 @@ const CIRCUIT_BREAKER_MAX_REPETITIONS = 3;
 
 const OUTPUT_SCHEMA_REGISTRY: Record<string, ZodType> = {
   getPortfolioSummary: GetPortfolioSummaryOutputSchema,
+  getHoldingDetail: GetHoldingDetailOutputSchema,
+  getPortfolioChart: GetPortfolioChartOutputSchema,
+  getDividendSummary: GetDividendSummaryOutputSchema,
   listActivities: ListActivitiesOutputSchema,
   getAllocations: GetAllocationsOutputSchema,
   getPerformance: GetPerformanceOutputSchema,
@@ -165,6 +184,9 @@ function buildReActSystemPrompt(
     '',
     '## Portfolio Tools',
     '- **getPortfolioSummary**: Holdings count, top holdings, accounts. Use for overview questions.',
+    '- **getHoldingDetail**: Deep detail for a specific holding — position, performance, dividends, fees, historical data. Use when user asks about a specific holding (e.g. "how is my AAPL doing?").',
+    '- **getPortfolioChart**: Portfolio value over time as chart data with peak/trough/change summary. Use for "show my chart", trend analysis, or period comparisons.',
+    '- **getDividendSummary**: Dividend income summary — total, by symbol, by period, recent events. Use for dividend-focused questions.',
     '- **listActivities**: Trades, dividends, fees with date/type filtering. Use for transaction history.',
     '- **getAllocations**: Allocation by asset class, currency, sector. Use for diversification questions.',
     '- **getPerformance**: Returns, net performance, investment totals. Use for performance questions.',
@@ -792,6 +814,35 @@ export class AiService {
       }
     };
 
+    // ── Safe holding detail fetcher ────────────────────────────────
+    const safeGetHolding = async (
+      symbol: string,
+      dataSource: DataSource
+    ): Promise<{
+      holding:
+        | Awaited<ReturnType<typeof this.portfolioService.getHolding>>
+        | undefined;
+      hasErrors: boolean;
+    }> => {
+      try {
+        const holding = await this.portfolioService.getHolding({
+          dataSource,
+          symbol,
+          userId,
+          impersonationId: undefined
+        });
+
+        return { holding, hasErrors: false };
+      } catch (err) {
+        Logger.warn(
+          `portfolioService.getHolding() failed for ${symbol}: ${err instanceof Error ? err.message : String(err)}`,
+          'AiService'
+        );
+
+        return { holding: undefined, hasErrors: true };
+      }
+    };
+
     // ── ReAct loop via generateText with tools ──────────────────────
     trace.markLlmStart();
 
@@ -1016,6 +1067,123 @@ export class AiService {
 
                   return buildScenarioImpactResult(details, args) as ToolOutput<
                     ReturnType<typeof buildScenarioImpactResult>
+                  >;
+                }
+              );
+            }
+          }),
+
+          // ── New Portfolio Detail Tools ──────────────────────────────────
+
+          getHoldingDetail: tool({
+            description:
+              'Get detailed info for a specific portfolio holding: position size, performance, dividends, fees, historical price data, all-time high. Use when user asks about a specific holding (e.g. "how is my AAPL doing?").',
+            parameters: GetHoldingDetailInputSchema,
+            execute: async (args) => {
+              return executeWithGuardrails(
+                'getHoldingDetail',
+                args as unknown as Record<string, unknown>,
+                async () => {
+                  // Resolve DataSource if not provided
+                  let resolvedDataSource = args.dataSource as
+                    | DataSource
+                    | undefined;
+
+                  if (!resolvedDataSource) {
+                    const details = await safeGetDetails();
+                    const holdingEntry = Object.values(
+                      details.holdings
+                    ).find(
+                      (h) =>
+                        h.symbol.toUpperCase() === args.symbol.toUpperCase()
+                    );
+
+                    if (!holdingEntry) {
+                      return buildHoldingDetailResult(
+                        undefined,
+                        args.symbol,
+                        'UNKNOWN',
+                        false
+                      ) as ToolOutput<
+                        ReturnType<typeof buildHoldingDetailResult>
+                      >;
+                    }
+
+                    resolvedDataSource = holdingEntry.dataSource;
+                  }
+
+                  const { holding, hasErrors } = await safeGetHolding(
+                    args.symbol,
+                    resolvedDataSource
+                  );
+
+                  return buildHoldingDetailResult(
+                    holding,
+                    args.symbol,
+                    resolvedDataSource,
+                    hasErrors
+                  ) as ToolOutput<
+                    ReturnType<typeof buildHoldingDetailResult>
+                  >;
+                }
+              );
+            }
+          }),
+
+          getPortfolioChart: tool({
+            description:
+              'Get portfolio value over time as chart data points (date, netWorth, totalInvestment, performance %). Includes summary with peak, trough, and total change. Use for "show me my portfolio chart", "how has my portfolio done this year", or trend analysis questions.',
+            parameters: GetPortfolioChartInputSchema,
+            execute: async (args) => {
+              return executeWithGuardrails(
+                'getPortfolioChart',
+                args as unknown as Record<string, unknown>,
+                async () => {
+                  const dateRange =
+                    (args.dateRange as DateRange) || '1y';
+                  const perf = await safeGetPerformance(dateRange);
+
+                  return buildPortfolioChartResult(
+                    perf.chart ?? [],
+                    perf.hasErrors ?? false,
+                    !!(perf as any)._degraded,
+                    {
+                      dateRange: args.dateRange,
+                      maxPoints: args.maxPoints
+                    },
+                    userCurrency
+                  ) as ToolOutput<
+                    ReturnType<typeof buildPortfolioChartResult>
+                  >;
+                }
+              );
+            }
+          }),
+
+          getDividendSummary: tool({
+            description:
+              'Get dividend income summary: total dividends received, breakdown by symbol, by period (month/year), and recent dividend events. Use for "how much dividend income", "which stocks pay me dividends", or "dividends this year" questions.',
+            parameters: GetDividendSummaryInputSchema,
+            execute: async (args) => {
+              return executeWithGuardrails(
+                'getDividendSummary',
+                args as unknown as Record<string, unknown>,
+                async () => {
+                  const { activities } =
+                    await this.orderService.getOrders({
+                      userId,
+                      userCurrency,
+                      types: ['DIVIDEND'] as any,
+                      take: Number.MAX_SAFE_INTEGER,
+                      sortDirection: 'desc'
+                    });
+
+                  return buildDividendSummaryResult(
+                    activities,
+                    args,
+                    userCurrency
+                  ) as ToolOutput<
+                    ReturnType<typeof buildDividendSummaryResult>
                   >;
                 }
               );
