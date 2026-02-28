@@ -298,7 +298,7 @@ export class DataProviderService implements OnModuleInit {
       for (const identifier of symbolsToLookup) {
         const { dataSource, symbol } = identifier;
         const assetProfileIdentifier = getAssetProfileIdentifier(identifier);
-        const { currency, index } = symbolLookupActivities.get(
+        const { currency } = symbolLookupActivities.get(
           assetProfileIdentifier
         );
 
@@ -321,9 +321,18 @@ export class DataProviderService implements OnModuleInit {
         }
 
         if (!assetProfile?.name) {
-          throw new Error(
-            `activities.${index}.symbol ("${symbol}") is not valid for the specified data source ("${dataSource}")`
+          // Data provider lookup failed (e.g. Yahoo Finance API unavailable).
+          // Fall back gracefully: use the symbol as the name so the import
+          // is not blocked by transient API outages.
+          Logger.warn(
+            `Data provider lookup failed for "${symbol}" (${dataSource}) — using symbol as fallback name`,
+            'DataProviderService'
           );
+
+          assetProfile.name = symbol;
+          assetProfile.dataSource = dataSource;
+          assetProfile.symbol = symbol;
+          assetProfile.currency = assetProfile.currency ?? currency;
         }
 
         assetProfiles[assetProfileIdentifier] = assetProfile;
