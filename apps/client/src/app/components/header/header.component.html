@@ -11,62 +11,81 @@
         <gf-logo class="px-2" [label]="pageTitle" />
       </a>
     </div>
-    <span class="gf-spacer"></span>
-    <ul class="align-items-center d-flex list-inline m-0 px-2">
-      <li class="list-inline-item">
+    <nav
+      class="align-items-center d-none d-sm-flex header-nav justify-content-center"
+    >
+      <a
+        i18n
+        mat-flat-button
+        [ngClass]="{
+          'font-weight-bold': currentRoute === internalRoutes.portfolio.path,
+          'text-decoration-underline':
+            currentRoute === internalRoutes.portfolio.path
+        }"
+        [routerLink]="routerLinkPortfolio"
+        >Portfolio</a
+      >
+      <a
+        i18n
+        mat-flat-button
+        [ngClass]="{
+          'font-weight-bold': currentRoute === internalRoutes.accounts.path,
+          'text-decoration-underline':
+            currentRoute === internalRoutes.accounts.path
+        }"
+        [routerLink]="routerLinkAccounts"
+        >Accounts</a
+      >
+      <a
+        i18n
+        mat-flat-button
+        [ngClass]="{
+          'font-weight-bold': currentRoute === routeResources,
+          'text-decoration-underline': currentRoute === routeResources
+        }"
+        [routerLink]="routerLinkResources"
+        >Market</a
+      >
+      @if (hasPermissionToAccessAssistant) {
         <a
-          class="d-none d-sm-block"
-          i18n
           mat-flat-button
           [ngClass]="{
-            'font-weight-bold': currentRoute === internalRoutes.portfolio.path,
-            'text-decoration-underline':
-              currentRoute === internalRoutes.portfolio.path
+            'font-weight-bold': currentRoute === routeAiChat,
+            'text-decoration-underline': currentRoute === routeAiChat
           }"
-          [routerLink]="routerLinkPortfolio"
-          >Portfolio</a
+          [routerLink]="routerLinkAiChat"
+          >Ghostfolio AI</a
         >
-      </li>
-      <li class="list-inline-item">
-        <a
-          class="d-none d-sm-block"
-          i18n
+      }
+    </nav>
+    <ul class="align-items-center d-flex header-actions list-inline m-0 px-2">
+      <li class="list-inline-item d-none d-sm-block">
+        <button
+          class="no-min-width px-2"
           mat-flat-button
-          [ngClass]="{
-            'font-weight-bold': currentRoute === internalRoutes.accounts.path,
-            'text-decoration-underline':
-              currentRoute === internalRoutes.accounts.path
-          }"
-          [routerLink]="routerLinkAccounts"
-          >Accounts</a
+          [matMenuTriggerFor]="moreMenu"
         >
-      </li>
-      <li class="list-inline-item">
-        <a
-          class="d-none d-sm-block"
-          i18n
-          mat-flat-button
-          [ngClass]="{
-            'font-weight-bold': currentRoute === routeResources,
-            'text-decoration-underline': currentRoute === routeResources
-          }"
-          [routerLink]="routerLinkResources"
-          >Market</a
-        >
+          <ion-icon name="ellipsis-horizontal-outline" size="small" />
+          <span class="ml-1">More</span>
+        </button>
+        <mat-menu #moreMenu="matMenu" xPosition="before">
+          <a i18n mat-menu-item [routerLink]="routerLinkHoldings">Holdings</a>
+          <a i18n mat-menu-item [routerLink]="routerLinkSummary">Summary</a>
+          <a i18n mat-menu-item [routerLink]="routerLinkWatchlist">Watchlist</a>
+          <hr class="m-0" />
+          <a i18n mat-menu-item [routerLink]="routerLinkGuides">Guides</a>
+          <a i18n mat-menu-item [routerLink]="routerLinkGlossary">Glossary</a>
+          @if (hasPermissionToAccessAdminControl) {
+            <hr class="m-0" />
+            <a i18n mat-menu-item [routerLink]="routerLinkAdminControl"
+              >Admin Control</a
+            >
+          }
+          <hr class="m-0" />
+          <a i18n mat-menu-item [routerLink]="routerLinkAbout">About</a>
+        </mat-menu>
       </li>
       @if (hasPermissionToAccessAssistant) {
-        <li class="list-inline-item">
-          <a
-            class="d-none d-sm-block"
-            mat-flat-button
-            [ngClass]="{
-              'font-weight-bold': currentRoute === routeAiChat,
-              'text-decoration-underline': currentRoute === routeAiChat
-            }"
-            [routerLink]="routerLinkAiChat"
-            >Ghostfolio AI</a
-          >
-        </li>
         <li class="list-inline-item">
           <button
             #assistantTrigger="matMenuTrigger"
@@ -104,32 +123,6 @@
           </mat-menu>
         </li>
       }
-      <li class="list-inline-item d-none d-sm-block">
-        <button
-          class="no-min-width px-2"
-          mat-flat-button
-          [matMenuTriggerFor]="moreMenu"
-        >
-          <ion-icon name="ellipsis-horizontal-outline" size="small" />
-          <span class="ml-1">More</span>
-        </button>
-        <mat-menu #moreMenu="matMenu" xPosition="before">
-          <a i18n mat-menu-item [routerLink]="routerLinkHoldings">Holdings</a>
-          <a i18n mat-menu-item [routerLink]="routerLinkSummary">Summary</a>
-          <a i18n mat-menu-item [routerLink]="routerLinkWatchlist">Watchlist</a>
-          <hr class="m-0" />
-          <a i18n mat-menu-item [routerLink]="routerLinkGuides">Guides</a>
-          <a i18n mat-menu-item [routerLink]="routerLinkGlossary">Glossary</a>
-          @if (hasPermissionToAccessAdminControl) {
-            <hr class="m-0" />
-            <a i18n mat-menu-item [routerLink]="routerLinkAdminControl"
-              >Admin Control</a
-            >
-          }
-          <hr class="m-0" />
-          <a i18n mat-menu-item [routerLink]="routerLinkAbout">About</a>
-        </mat-menu>
-      </li>
       <li class="list-inline-item">
         <button
           class="no-min-width px-1"

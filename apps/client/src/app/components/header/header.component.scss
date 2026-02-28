@@ -5,6 +5,15 @@
   .mat-toolbar {
     background-color: var(--light-background);
 
+    .header-nav {
+      flex: 1;
+      gap: 0.25rem;
+    }
+
+    .header-actions {
+      flex-shrink: 0;
+    }
+
     .logo-container {
       &.filled {
         background: linear-gradient(
