@@ -4,6 +4,7 @@ import { PrismaService } from '@ghostfolio/api/services/prisma/prisma.service';
 import {
   ForbiddenException,
   Injectable,
+  InternalServerErrorException,
   Logger,
   NotFoundException,
   ServiceUnavailableException
@@ -50,23 +51,39 @@ export class SnaptradeService {
   ): Promise<{ redirectUri: string }> {
     this.ensureConfigured();
 
+    let userSecret: string;
+
     // Check if user already has a SnapTrade connection with a userSecret
     let connection = await this.prismaService.snapTradeConnection.findFirst({
       where: { userId }
     });
 
-    let userSecret: string;
-
     if (connection) {
       userSecret = connection.userSecret;
+      this.logger.log(
+        `Found existing Snaptrade connection for userId=${userId}`
+      );
     } else {
       // Register a new Snaptrade user
-      const registerResponse =
-        await this.snaptradeClient.authentication.registerSnapTradeUser({
-          userId
-        });
+      try {
+        const registerResponse =
+          await this.snaptradeClient.authentication.registerSnapTradeUser({
+            userId
+          });
 
-      userSecret = registerResponse.data.userSecret;
+        userSecret = registerResponse.data.userSecret;
+      } catch (error) {
+        const msg = this.extractErrorMessage(error, 'registration');
+
+        this.logger.error(
+          `Snaptrade registerSnapTradeUser failed: ${msg}`,
+          error?.stack
+        );
+
+        throw new InternalServerErrorException(
+          `Snaptrade user registration failed: ${msg}`
+        );
+      }
 
       // Store the connection record
       connection = await this.prismaService.snapTradeConnection.create({
@@ -80,21 +97,53 @@ export class SnaptradeService {
     }
 
     // Get the redirect URI for the connection portal
-    const loginResponse =
-      await this.snaptradeClient.authentication.loginSnapTradeUser({
-        userId,
-        userSecret
-      });
+    try {
+      const loginResponse =
+        await this.snaptradeClient.authentication.loginSnapTradeUser({
+          userId,
+          userSecret
+        });
 
-    const responseData = loginResponse.data as { redirectURI?: string };
+      const responseData = loginResponse.data as {
+        redirectURI?: string;
+        sessionId?: string;
+      };
 
-    if (!responseData.redirectURI) {
-      throw new ServiceUnavailableException(
-        'Snaptrade did not return a redirect URI'
+      this.logger.log(
+        `Snaptrade loginSnapTradeUser response keys: ${Object.keys(responseData ?? {}).join(', ')}`
+      );
+
+      if (!responseData?.redirectURI) {
+        this.logger.error(
+          `Snaptrade loginSnapTradeUser returned no redirectURI. Full response data: ${JSON.stringify(responseData)}`
+        );
+
+        throw new ServiceUnavailableException(
+          'Snaptrade did not return a redirect URI — the response may be encrypted or the API returned an unexpected format'
+        );
+      }
+
+      return { redirectUri: responseData.redirectURI };
+    } catch (error) {
+      // Re-throw NestJS HTTP exceptions as-is
+      if (
+        error instanceof ServiceUnavailableException ||
+        error instanceof InternalServerErrorException
+      ) {
+        throw error;
+      }
+
+      const msg = this.extractErrorMessage(error, 'login');
+
+      this.logger.error(
+        `Snaptrade loginSnapTradeUser failed: ${msg}`,
+        error?.stack
+      );
+
+      throw new InternalServerErrorException(
+        `Snaptrade connection portal failed: ${msg}`
       );
     }
-
-    return { redirectUri: responseData.redirectURI };
   }
 
   /**
@@ -184,7 +233,7 @@ export class SnaptradeService {
       });
     } catch (error) {
       this.logger.warn(
-        `Failed to delete Snaptrade user for connection ${connectionId}: ${error.message}`
+        `Failed to delete Snaptrade user for connection ${connectionId}: ${error?.message}`
       );
     }
 
@@ -200,13 +249,26 @@ export class SnaptradeService {
     connection: { id: string; userSecret: string }
   ): Promise<number> {
     // Fetch all accounts from Snaptrade
-    const accountsResponse =
-      await this.snaptradeClient.accountInformation.listUserAccounts({
-        userId,
-        userSecret: connection.userSecret
-      });
+    let snaptradeAccounts: any[];
 
-    const snaptradeAccounts = accountsResponse.data ?? [];
+    try {
+      const accountsResponse =
+        await this.snaptradeClient.accountInformation.listUserAccounts({
+          userId,
+          userSecret: connection.userSecret
+        });
+
+      snaptradeAccounts = accountsResponse.data ?? [];
+    } catch (error) {
+      const msg = this.extractErrorMessage(error, 'listUserAccounts');
+
+      this.logger.error(`Snaptrade listUserAccounts failed: ${msg}`);
+
+      throw new InternalServerErrorException(
+        `Failed to fetch Snaptrade accounts: ${msg}`
+      );
+    }
+
     let synced = 0;
 
     for (const snapAccount of snaptradeAccounts) {
@@ -275,7 +337,8 @@ export class SnaptradeService {
           });
 
           const quantity = position.units ?? 0;
-          const unitPrice = position.averagePurchasePrice ?? position.price ?? 0;
+          const unitPrice =
+            position.averagePurchasePrice ?? position.price ?? 0;
 
           if (existingOrder) {
             await this.prismaService.order.update({
@@ -314,7 +377,7 @@ export class SnaptradeService {
         }
       } catch (error) {
         this.logger.error(
-          `Failed to sync positions for Snaptrade account ${snapAccountId}: ${error.message}`
+          `Failed to sync positions for Snaptrade account ${snapAccountId}: ${error?.message}`
         );
       }
     }
@@ -338,5 +401,24 @@ export class SnaptradeService {
         'Snaptrade is not configured — check SNAPTRADE_CLIENT_ID and SNAPTRADE_CONSUMER_KEY env vars'
       );
     }
+  }
+
+  private extractErrorMessage(error: any, context: string): string {
+    // Snaptrade SDK wraps errors in axios-style responses
+    const responseMsg =
+      error?.response?.data?.message ||
+      error?.response?.data?.detail ||
+      error?.response?.data?.error;
+    const status = error?.response?.status;
+
+    if (responseMsg) {
+      return `HTTP ${status}: ${responseMsg}`;
+    }
+
+    if (error?.message) {
+      return error.message;
+    }
+
+    return `Unknown ${context} error`;
   }
 }
