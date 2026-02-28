@@ -98,6 +98,93 @@ export class McpClientService {
   }
 
   /**
+   * Call a named tool via MCP RPC with a custom timeout.
+   *
+   * @param toolName   The MCP tool/method name (e.g. 'getQuote')
+   * @param args       Tool arguments to forward
+   * @param options    Optional overrides (timeoutMs)
+   * @returns          { result, mcpRequestId, mcpLatencyMs }
+   */
+  public async callTool<T = unknown>(
+    toolName: string,
+    args: Record<string, unknown>,
+    options?: { timeoutMs?: number }
+  ): Promise<{ result: T; mcpRequestId: string; mcpLatencyMs: number }> {
+    if (!this.mcpServerUrl) {
+      throw new Error(
+        'MCP_SERVER_URL is not configured. Set it in your environment variables.'
+      );
+    }
+
+    const url = `${this.mcpServerUrl.replace(/\/+$/, '')}/rpc`;
+    const mcpRequestId = `mcp-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+    const body = JSON.stringify({
+      method: toolName,
+      params: args,
+      requestId: mcpRequestId
+    });
+
+    const effectiveTimeout = options?.timeoutMs ?? McpClientService.TIMEOUT_MS;
+
+    this.logger.debug(
+      `MCP callTool → ${toolName} (timeout=${effectiveTimeout}ms, reqId=${mcpRequestId})`
+    );
+
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), effectiveTimeout);
+
+    const start = Date.now();
+
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(this.mcpApiKey ? { 'x-mcp-api-key': this.mcpApiKey } : {})
+        },
+        body,
+        signal: controller.signal
+      });
+
+      const mcpLatencyMs = Date.now() - start;
+
+      if (!response.ok) {
+        const errorText = await response.text().catch(() => 'unknown error');
+
+        throw new Error(`MCP server returned ${response.status}: ${errorText}`);
+      }
+
+      const result = (await response.json()) as T;
+
+      this.logger.debug(
+        `MCP callTool ← ${toolName} OK (${mcpLatencyMs}ms, reqId=${mcpRequestId})`
+      );
+
+      return { result, mcpRequestId, mcpLatencyMs };
+    } catch (error) {
+      const mcpLatencyMs = Date.now() - start;
+
+      if (error?.name === 'AbortError') {
+        this.logger.error(
+          `MCP callTool timeout after ${effectiveTimeout}ms for ${toolName} (reqId=${mcpRequestId})`
+        );
+
+        throw new Error(
+          `MCP tool ${toolName} timed out after ${effectiveTimeout}ms`
+        );
+      }
+
+      this.logger.error(
+        `MCP callTool error for ${toolName} (${mcpLatencyMs}ms, reqId=${mcpRequestId}): ${error?.message ?? error}`
+      );
+
+      throw error;
+    } finally {
+      clearTimeout(timeout);
+    }
+  }
+
+  /**
    * Check if the MCP server is configured and reachable.
    */
   public isConfigured(): boolean {

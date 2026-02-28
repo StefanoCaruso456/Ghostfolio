@@ -200,8 +200,11 @@ exports[`AI Chat Telemetry Integration Tool call scenario — getQuote should ma
     {
       "endedAt": "<timestamp>",
       "error": "Failed to fetch quotes for all 1 symbols.",
+      "executor": "local",
       "iterationIndex": 1,
       "latencyMs": "<ms>",
+      "mcpLatencyMs": null,
+      "mcpRequestId": null,
       "retryCount": 0,
       "spanId": "<uuid>",
       "startedAt": "<timestamp>",

@@ -201,6 +201,14 @@ export interface ToolSpan {
   normalizedSymbol?: string | null;
   /** Correlation ID for cross-referencing provider logs */
   requestId?: string | null;
+
+  // Dispatch routing fields (MCP integration)
+  /** Which executor ran this tool: local or mcp */
+  executor?: 'local' | 'mcp';
+  /** MCP request correlation ID (only when executor=mcp) */
+  mcpRequestId?: string | null;
+  /** MCP round-trip latency in ms (only when executor=mcp) */
+  mcpLatencyMs?: number | null;
 }
 
 // ---------------------------------------------------------------------------
