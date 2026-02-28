@@ -10,7 +10,12 @@ import { Country } from '@ghostfolio/common/interfaces/country.interface';
 import { Sector } from '@ghostfolio/common/interfaces/sector.interface';
 
 import { Injectable } from '@nestjs/common';
-import { Prisma, SymbolProfile, SymbolProfileOverrides } from '@prisma/client';
+import {
+  DataSource,
+  Prisma,
+  SymbolProfile,
+  SymbolProfileOverrides
+} from '@prisma/client';
 import { continents, countries } from 'countries-list';
 
 @Injectable()
@@ -21,6 +26,32 @@ export class SymbolProfileService {
     assetProfile: Prisma.SymbolProfileCreateInput
   ): Promise<SymbolProfile | never> {
     return this.prismaService.symbolProfile.create({ data: assetProfile });
+  }
+
+  public async addIfNotExists({
+    currency,
+    dataSource,
+    name,
+    symbol,
+    userId
+  }: {
+    currency?: string;
+    dataSource: DataSource;
+    name?: string;
+    symbol: string;
+    userId?: string;
+  }): Promise<SymbolProfile> {
+    return this.prismaService.symbolProfile.upsert({
+      create: {
+        currency,
+        dataSource,
+        name,
+        symbol,
+        user: userId ? { connect: { id: userId } } : undefined
+      },
+      update: {},
+      where: { dataSource_symbol: { dataSource, symbol } }
+    });
   }
 
   public async delete({ dataSource, symbol }: AssetProfileIdentifier) {
