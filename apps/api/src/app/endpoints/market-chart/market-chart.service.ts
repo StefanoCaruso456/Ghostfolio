@@ -6,15 +6,11 @@ import { MarketChartResponse } from '@ghostfolio/common/interfaces';
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { format, subDays, subMonths, subYears } from 'date-fns';
 import ms from 'ms';
-import YahooFinance from 'yahoo-finance2';
 import { ChartResultArray } from 'yahoo-finance2/esm/src/modules/chart';
 
 @Injectable()
 export class MarketChartService {
   private readonly logger = new Logger(MarketChartService.name);
-  private readonly yahooFinance = new YahooFinance({
-    suppressNotices: ['yahooSurvey']
-  });
 
   public constructor(
     private readonly redisCacheService: RedisCacheService,
@@ -45,23 +41,22 @@ export class MarketChartService {
     const yahooSymbol =
       this.yahooFinanceDataEnhancerService.convertToYahooFinanceSymbol(symbol);
 
-    // Fetch from Yahoo Finance
+    // Fetch from Yahoo Finance using the shared instance
+    // (avoids duplicate cookie jar initialization that can fail independently)
+    const yahooFinance =
+      this.yahooFinanceDataEnhancerService.getYahooFinanceInstance();
+
     try {
       const now = new Date();
       const period1 = this.getPeriodStart(range, now);
 
       const interval = this.getInterval(range);
 
-      const result: ChartResultArray = await this.yahooFinance.chart(
-        yahooSymbol,
-        {
-          events: '',
-          includePrePost: false,
-          interval,
-          period1: format(period1, DATE_FORMAT),
-          period2: format(now, DATE_FORMAT)
-        }
-      );
+      const result: ChartResultArray = await yahooFinance.chart(yahooSymbol, {
+        interval,
+        period1: format(period1, DATE_FORMAT),
+        period2: format(now, DATE_FORMAT)
+      });
 
       const points: { t: number; v: number }[] = [];
 

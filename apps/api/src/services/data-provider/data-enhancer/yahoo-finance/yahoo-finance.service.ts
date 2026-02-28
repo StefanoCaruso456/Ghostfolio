@@ -31,6 +31,10 @@ export class YahooFinanceDataEnhancerService implements DataEnhancerInterface {
     private readonly cryptocurrencyService: CryptocurrencyService
   ) {}
 
+  public getYahooFinanceInstance() {
+    return this.yahooFinance;
+  }
+
   public convertFromYahooFinanceSymbol(aYahooFinanceSymbol: string) {
     let symbol = aYahooFinanceSymbol.replace(
       new RegExp(`-${DEFAULT_CURRENCY}$`),
