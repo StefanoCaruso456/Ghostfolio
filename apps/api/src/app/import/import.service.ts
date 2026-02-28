@@ -564,6 +564,34 @@ export class ImportService {
         (activity) => !activity.error
       );
 
+      // Pre-create all unique symbol profiles to avoid race conditions
+      // in parallel batches (concurrent connectOrCreate can hit unique constraint)
+      const uniqueProfileKeys = new Set<string>();
+
+      for (const activity of activitiesToCreate) {
+        const { dataSource, symbol } = activity.SymbolProfile;
+        const assetProfile = assetProfiles[
+          getAssetProfileIdentifier({ dataSource, symbol })
+        ] ?? { dataSource, symbol };
+
+        const key = getAssetProfileIdentifier({
+          dataSource: assetProfile.dataSource,
+          symbol: assetProfile.symbol
+        });
+
+        if (!uniqueProfileKeys.has(key)) {
+          uniqueProfileKeys.add(key);
+
+          await this.symbolProfileService.addIfNotExists({
+            dataSource: assetProfile.dataSource,
+            symbol: assetProfile.symbol,
+            name: assetProfile.name,
+            currency: assetProfile.currency,
+            userId: assetProfile.dataSource === 'MANUAL' ? user.id : undefined
+          });
+        }
+      }
+
       for (let i = 0; i < activitiesToCreate.length; i += PARALLEL_BATCH_SIZE) {
         const batch = activitiesToCreate.slice(i, i + PARALLEL_BATCH_SIZE);
 
