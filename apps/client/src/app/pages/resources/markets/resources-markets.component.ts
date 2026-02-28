@@ -34,6 +34,8 @@ import {
   takeUntil
 } from 'rxjs';
 
+type MarketView = 'stocks' | 'crypto';
+
 interface ChartConfig {
   label: string;
   symbol: string;
@@ -61,16 +63,41 @@ interface ChartConfig {
   templateUrl: './resources-markets.component.html'
 })
 export class ResourcesMarketsComponent implements OnInit, OnDestroy {
-  public chartConfigs: ChartConfig[] = [
+  public marketView: MarketView = 'stocks';
+
+  private stockConfigs: ChartConfig[] = [
     { label: 'S&P 500', symbol: '^GSPC', visible: true },
     { label: 'Dow', symbol: '^DJI', visible: true },
-    { label: 'Bitcoin', symbol: 'BTC-USD', visible: true },
-    { label: 'Dogecoin', symbol: 'DOGE-USD', visible: true },
+    { label: 'Nasdaq', symbol: '^IXIC', visible: true },
     { label: 'Apple', symbol: 'AAPL', visible: true },
     { label: 'Nvidia', symbol: 'NVDA', visible: true },
+    { label: 'Tesla', symbol: 'TSLA', visible: true },
     { label: 'Microsoft', symbol: 'MSFT', visible: false, toggleable: true },
     { label: 'AMD', symbol: 'AMD', visible: false, toggleable: true }
   ];
+
+  private cryptoConfigs: ChartConfig[] = [
+    { label: 'Bitcoin', symbol: 'BTC-USD', visible: true },
+    { label: 'Ethereum', symbol: 'ETH-USD', visible: true },
+    { label: 'Solana', symbol: 'SOL-USD', visible: true },
+    { label: 'Dogecoin', symbol: 'DOGE-USD', visible: true },
+    { label: 'Cardano', symbol: 'ADA-USD', visible: true },
+    { label: 'XRP', symbol: 'XRP-USD', visible: true },
+    { label: 'Avalanche', symbol: 'AVAX-USD', visible: false, toggleable: true },
+    { label: 'Polygon', symbol: 'MATIC-USD', visible: false, toggleable: true }
+  ];
+
+  public get chartConfigs(): ChartConfig[] {
+    return this.marketView === 'stocks' ? this.stockConfigs : this.cryptoConfigs;
+  }
+
+  public set chartConfigs(configs: ChartConfig[]) {
+    if (this.marketView === 'stocks') {
+      this.stockConfigs = configs;
+    } else {
+      this.cryptoConfigs = configs;
+    }
+  }
 
   public chartDataMap = new Map<string, LineChartItem[]>();
   public changePercentMap = new Map<string, number>();
@@ -132,6 +159,11 @@ export class ResourcesMarketsComponent implements OnInit, OnDestroy {
 
   public get toggleableCharts(): ChartConfig[] {
     return this.chartConfigs.filter((c) => c.toggleable);
+  }
+
+  public onMarketViewChange(view: MarketView) {
+    this.marketView = view;
+    this.loadAllVisibleCharts();
   }
 
   public onRangeChange(range: string) {
