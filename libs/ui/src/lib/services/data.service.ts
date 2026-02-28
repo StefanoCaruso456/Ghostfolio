@@ -41,6 +41,7 @@ import {
   InfoItem,
   LookupResponse,
   MarketChartResponse,
+  MarketScreenerResponse,
   MarketDataDetailsResponse,
   MarketDataOfMarketsResponse,
   OAuthResponse,
@@ -405,6 +406,12 @@ export class DataService {
   public fetchMarketChart(symbol: string, range: string) {
     return this.http.get<MarketChartResponse>('/api/v1/market-chart', {
       params: { symbol, range }
+    });
+  }
+
+  public fetchMarketScreener(category: string, count: number = 20) {
+    return this.http.get<MarketScreenerResponse>('/api/v1/market-screener', {
+      params: { category, count: count.toString() }
     });
   }
 

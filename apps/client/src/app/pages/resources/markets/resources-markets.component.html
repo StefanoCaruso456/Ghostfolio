@@ -31,106 +31,220 @@
     </mat-form-field>
   </div>
 
-  <!-- Stocks / Crypto toggle -->
+  <!-- Stocks / Crypto / Table toggle -->
   <div class="d-flex justify-content-center mb-3">
     <div class="market-toggle">
       <button
         class="market-toggle-btn"
-        [class.active]="marketView === 'stocks'"
+        [class.active]="displayMode === 'charts' && marketView === 'stocks'"
         (click)="onMarketViewChange('stocks')"
       >
         Stocks
       </button>
       <button
         class="market-toggle-btn"
-        [class.active]="marketView === 'crypto'"
+        [class.active]="displayMode === 'charts' && marketView === 'crypto'"
         (click)="onMarketViewChange('crypto')"
       >
         Crypto
       </button>
+      <button
+        class="market-toggle-btn table-btn"
+        [class.active]="displayMode === 'table'"
+        (click)="onDisplayModeChange('table')"
+      >
+        <mat-icon class="table-icon">table_chart</mat-icon>
+        Table
+      </button>
     </div>
   </div>
 
-  <!-- Range selector -->
-  <div
-    class="d-flex align-items-center justify-content-center mb-3 gap-2 flex-wrap"
-  >
-    <mat-button-toggle-group
-      [value]="selectedRange"
-      (change)="onRangeChange($event.value)"
+  <!-- Charts mode -->
+  @if (displayMode === 'charts') {
+    <!-- Range selector -->
+    <div
+      class="d-flex align-items-center justify-content-center mb-3 gap-2 flex-wrap"
     >
-      @for (range of ranges; track range) {
-        <mat-button-toggle [value]="range">{{ range }}</mat-button-toggle>
-      }
-    </mat-button-toggle-group>
-
-    <!-- Toggle checkboxes for optional symbols -->
-    @if (toggleableCharts.length > 0) {
-      <div class="d-flex gap-2 ms-3">
-        @for (config of toggleableCharts; track config.symbol) {
-          <mat-checkbox
-            [checked]="config.visible"
-            (change)="onToggleSymbol(config)"
-          >
-            {{ config.label }}
-          </mat-checkbox>
+      <mat-button-toggle-group
+        [value]="selectedRange"
+        (change)="onRangeChange($event.value)"
+      >
+        @for (range of ranges; track range) {
+          <mat-button-toggle [value]="range">{{ range }}</mat-button-toggle>
         }
-      </div>
-    }
-  </div>
+      </mat-button-toggle-group>
 
-  <!-- 2x3 chart grid -->
-  <div class="chart-grid">
-    @for (config of visibleCharts; track config.symbol) {
-      <div class="chart-card">
-        <div class="chart-header">
-          <div class="chart-label-row">
-            <span class="chart-label">{{ config.label }}</span>
-            @if (config.userAdded) {
-              <button
-                class="remove-btn"
-                mat-icon-button
-                (click)="onRemoveChart(config)"
-              >
-                <ion-icon name="close-outline" />
-              </button>
-            }
-          </div>
-          <div class="chart-meta">
-            @if (latestValueMap.get(config.symbol) != null) {
-              <span class="chart-value">
-                {{
-                  formatValue(latestValueMap.get(config.symbol), config.symbol)
-                }}
-              </span>
-            }
-            @if (changePercentMap.get(config.symbol) != null) {
-              <span
-                class="chart-change"
-                [class.negative]="changePercentMap.get(config.symbol) < 0"
-                [class.positive]="changePercentMap.get(config.symbol) >= 0"
-              >
-                {{ formatChangePercent(changePercentMap.get(config.symbol)) }}
-              </span>
-            }
-          </div>
-        </div>
-
-        <div class="chart-body">
-          @if (errorMap.get(config.symbol)) {
-            <div class="chart-error">
-              {{ errorMap.get(config.symbol) }}
-            </div>
-          } @else {
-            <gf-line-chart
-              [colorScheme]="colorScheme"
-              [historicalDataItems]="chartDataMap.get(config.symbol) ?? null"
-              [showGradient]="true"
-              [showLoader]="true"
-            />
+      <!-- Toggle checkboxes for optional symbols -->
+      @if (toggleableCharts.length > 0) {
+        <div class="d-flex gap-2 ms-3">
+          @for (config of toggleableCharts; track config.symbol) {
+            <mat-checkbox
+              [checked]="config.visible"
+              (change)="onToggleSymbol(config)"
+            >
+              {{ config.label }}
+            </mat-checkbox>
           }
         </div>
-      </div>
-    }
-  </div>
+      }
+    </div>
+
+    <!-- 2x3 chart grid -->
+    <div class="chart-grid">
+      @for (config of visibleCharts; track config.symbol) {
+        <div class="chart-card">
+          <div class="chart-header">
+            <div class="chart-label-row">
+              <span class="chart-label">{{ config.label }}</span>
+              @if (config.userAdded) {
+                <button
+                  class="remove-btn"
+                  mat-icon-button
+                  (click)="onRemoveChart(config)"
+                >
+                  <ion-icon name="close-outline" />
+                </button>
+              }
+            </div>
+            <div class="chart-meta">
+              @if (latestValueMap.get(config.symbol) != null) {
+                <span class="chart-value">
+                  {{
+                    formatValue(
+                      latestValueMap.get(config.symbol),
+                      config.symbol
+                    )
+                  }}
+                </span>
+              }
+              @if (changePercentMap.get(config.symbol) != null) {
+                <span
+                  class="chart-change"
+                  [class.negative]="changePercentMap.get(config.symbol) < 0"
+                  [class.positive]="changePercentMap.get(config.symbol) >= 0"
+                >
+                  {{ formatChangePercent(changePercentMap.get(config.symbol)) }}
+                </span>
+              }
+            </div>
+          </div>
+
+          <div class="chart-body">
+            @if (errorMap.get(config.symbol)) {
+              <div class="chart-error">
+                {{ errorMap.get(config.symbol) }}
+              </div>
+            } @else {
+              <gf-line-chart
+                [colorScheme]="colorScheme"
+                [historicalDataItems]="
+                  chartDataMap.get(config.symbol) ?? null
+                "
+                [showGradient]="true"
+                [showLoader]="true"
+              />
+            }
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Table mode -->
+  @if (displayMode === 'table') {
+    <div class="table-controls mb-3">
+      <mat-form-field appearance="outline" class="category-select">
+        <mat-select
+          [value]="tableCategory"
+          (selectionChange)="onTableCategoryChange($event.value)"
+        >
+          @for (cat of tableCategories; track cat.value) {
+            <mat-option [value]="cat.value">{{ cat.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="table-card">
+      @if (tableLoading) {
+        <div class="table-loading">
+          <mat-spinner diameter="36"></mat-spinner>
+        </div>
+      } @else if (tableError) {
+        <div class="table-error">{{ tableError }}</div>
+      } @else {
+        <div class="table-wrapper">
+          <table
+            mat-table
+            matSort
+            [dataSource]="tableDataSource"
+            class="screener-table"
+          >
+            <!-- Symbol -->
+            <ng-container matColumnDef="symbol">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Symbol</th>
+              <td mat-cell *matCellDef="let row">
+                <span class="symbol-cell">{{ row.symbol }}</span>
+              </td>
+            </ng-container>
+
+            <!-- Name -->
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+              <td mat-cell *matCellDef="let row">
+                <span class="name-cell">{{ row.name }}</span>
+              </td>
+            </ng-container>
+
+            <!-- Price -->
+            <ng-container matColumnDef="price">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Price</th>
+              <td mat-cell *matCellDef="let row">
+                {{ formatPrice(row.price) }}
+              </td>
+            </ng-container>
+
+            <!-- Change -->
+            <ng-container matColumnDef="change">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Change</th>
+              <td
+                mat-cell
+                *matCellDef="let row"
+                [class.positive]="row.change >= 0"
+                [class.negative]="row.change < 0"
+              >
+                {{ formatChange(row.change) }}
+              </td>
+            </ng-container>
+
+            <!-- Change % -->
+            <ng-container matColumnDef="changePercent">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                Change %
+              </th>
+              <td
+                mat-cell
+                *matCellDef="let row"
+                [class.positive]="row.changePercent >= 0"
+                [class.negative]="row.changePercent < 0"
+              >
+                {{ formatChangePercent(row.changePercent) }}
+              </td>
+            </ng-container>
+
+            <!-- Volume -->
+            <ng-container matColumnDef="volume">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Volume</th>
+              <td mat-cell *matCellDef="let row">
+                {{ formatVolume(row.volume) }}
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="tableColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: tableColumns"></tr>
+          </table>
+        </div>
+      }
+    </div>
+  }
 </div>

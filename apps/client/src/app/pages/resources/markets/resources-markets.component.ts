@@ -3,6 +3,7 @@ import {
   LineChartItem,
   LookupItem,
   MarketChartResponse,
+  MarketScreenerItem,
   User
 } from '@ghostfolio/common/interfaces';
 import { ColorScheme } from '@ghostfolio/common/types';
@@ -16,7 +17,8 @@ import {
   Component,
   CUSTOM_ELEMENTS_SCHEMA,
   OnDestroy,
-  OnInit
+  OnInit,
+  ViewChild
 } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -25,6 +27,10 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSort, MatSortModule } from '@angular/material/sort';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import {
   Subject,
   debounceTime,
@@ -37,6 +43,7 @@ import {
 } from 'rxjs';
 
 type MarketView = 'stocks' | 'crypto';
+type DisplayMode = 'charts' | 'table';
 
 interface ChartConfig {
   label: string;
@@ -44,6 +51,11 @@ interface ChartConfig {
   visible: boolean;
   toggleable?: boolean;
   userAdded?: boolean;
+}
+
+interface TableCategoryOption {
+  label: string;
+  value: string;
 }
 
 @Component({
@@ -57,6 +69,10 @@ interface ChartConfig {
     MatCheckboxModule,
     MatFormFieldModule,
     MatInputModule,
+    MatProgressSpinnerModule,
+    MatSelectModule,
+    MatSortModule,
+    MatTableModule,
     ReactiveFormsModule
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -65,8 +81,32 @@ interface ChartConfig {
   templateUrl: './resources-markets.component.html'
 })
 export class ResourcesMarketsComponent implements OnInit, OnDestroy {
+  @ViewChild(MatSort) public sort: MatSort;
+
+  public displayMode: DisplayMode = 'charts';
   public marketView: MarketView = 'stocks';
 
+  // Table view
+  public tableCategories: TableCategoryOption[] = [
+    { label: 'Most Active', value: 'most_actives' },
+    { label: 'Trending Now', value: 'trending' },
+    { label: 'Top Gainers', value: 'day_gainers' },
+    { label: 'Top Losers', value: 'day_losers' }
+  ];
+  public tableCategory = 'most_actives';
+  public tableColumns = [
+    'symbol',
+    'name',
+    'price',
+    'change',
+    'changePercent',
+    'volume'
+  ];
+  public tableDataSource = new MatTableDataSource<MarketScreenerItem>([]);
+  public tableLoading = false;
+  public tableError = '';
+
+  // Chart view
   private stockConfigs: ChartConfig[] = [
     { label: 'S&P 500', symbol: '^GSPC', visible: true },
     { label: 'Dow', symbol: '^DJI', visible: true },
@@ -170,9 +210,25 @@ export class ResourcesMarketsComponent implements OnInit, OnDestroy {
     return this.chartConfigs.filter((c) => c.toggleable);
   }
 
+  public onDisplayModeChange(mode: DisplayMode) {
+    this.displayMode = mode;
+
+    if (mode === 'table' && this.tableDataSource.data.length === 0) {
+      this.loadTableData();
+    }
+
+    this.changeDetectorRef.markForCheck();
+  }
+
   public onMarketViewChange(view: MarketView) {
+    this.displayMode = 'charts';
     this.marketView = view;
     this.loadAllVisibleCharts();
+  }
+
+  public onTableCategoryChange(category: string) {
+    this.tableCategory = category;
+    this.loadTableData();
   }
 
   public onRangeChange(range: string) {
@@ -250,6 +306,29 @@ export class ResourcesMarketsComponent implements OnInit, OnDestroy {
     });
   }
 
+  public formatPrice(value: number): string {
+    if (value == null) {
+      return '–';
+    }
+
+    return value.toLocaleString('en-US', {
+      maximumFractionDigits: 2,
+      minimumFractionDigits: 2,
+      style: 'currency',
+      currency: 'USD'
+    });
+  }
+
+  public formatChange(value: number): string {
+    if (value == null) {
+      return '–';
+    }
+
+    const sign = value >= 0 ? '+' : '';
+
+    return `${sign}${value.toFixed(2)}`;
+  }
+
   public formatChangePercent(change: number): string {
     if (change == null) {
       return '';
@@ -258,6 +337,53 @@ export class ResourcesMarketsComponent implements OnInit, OnDestroy {
     const sign = change >= 0 ? '+' : '';
 
     return `${sign}${change.toFixed(2)}%`;
+  }
+
+  public formatVolume(volume: number): string {
+    if (volume == null) {
+      return '–';
+    }
+
+    if (volume >= 1_000_000_000) {
+      return `${(volume / 1_000_000_000).toFixed(2)}B`;
+    }
+
+    if (volume >= 1_000_000) {
+      return `${(volume / 1_000_000).toFixed(2)}M`;
+    }
+
+    if (volume >= 1_000) {
+      return `${(volume / 1_000).toFixed(1)}K`;
+    }
+
+    return volume.toLocaleString();
+  }
+
+  private loadTableData() {
+    this.tableLoading = true;
+    this.tableError = '';
+    this.changeDetectorRef.markForCheck();
+
+    this.dataService
+      .fetchMarketScreener(this.tableCategory)
+      .pipe(takeUntil(this.unsubscribeSubject))
+      .subscribe({
+        next: (response) => {
+          this.tableDataSource.data = response.items;
+
+          if (this.sort) {
+            this.tableDataSource.sort = this.sort;
+          }
+
+          this.tableLoading = false;
+          this.changeDetectorRef.markForCheck();
+        },
+        error: () => {
+          this.tableError = 'Failed to load market data';
+          this.tableLoading = false;
+          this.changeDetectorRef.markForCheck();
+        }
+      });
   }
 
   private loadAllVisibleCharts() {
