@@ -10,7 +10,7 @@ import {
 } from '@ghostfolio/common/interfaces';
 import type { RequestWithUser } from '@ghostfolio/common/types';
 
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { isBefore, isToday } from 'date-fns';
 import { isEmpty, uniqBy } from 'lodash';
@@ -22,6 +22,11 @@ import { GetValuesParams } from './interfaces/get-values-params.interface';
 @Injectable()
 export class CurrentRateService {
   private static readonly MARKET_DATA_PAGE_SIZE = 50000;
+  private static readonly QUOTE_FETCH_TIMEOUT_MS = 30_000; // 30 seconds max for all quote fetching
+  private static readonly QUOTE_REQUEST_TIMEOUT_MS = 10_000; // 10 seconds per Yahoo batch request
+  private static readonly FALLBACK_CONCURRENCY = 20; // Parallel fallback DB queries
+
+  private readonly logger = new Logger(CurrentRateService.name);
 
   public constructor(
     private readonly dataProviderService: DataProviderService,
@@ -48,10 +53,31 @@ export class CurrentRateService {
     const values: GetValueObject[] = [];
 
     if (includesToday) {
-      const quotesBySymbol = await this.dataProviderService.getQuotes({
-        items: dataGatheringItems,
-        user: this.request?.user
-      });
+      let quotesBySymbol: { [symbol: string]: any } = {};
+
+      try {
+        // Add a global timeout so slow data providers don't block the entire computation
+        quotesBySymbol = await Promise.race([
+          this.dataProviderService.getQuotes({
+            items: dataGatheringItems,
+            requestTimeout: CurrentRateService.QUOTE_REQUEST_TIMEOUT_MS,
+            user: this.request?.user
+          }),
+          new Promise<{ [symbol: string]: any }>((resolve) =>
+            setTimeout(() => {
+              this.logger.warn(
+                `getQuotes global timeout after ${CurrentRateService.QUOTE_FETCH_TIMEOUT_MS / 1000}s for ${dataGatheringItems.length} items — degrading gracefully`
+              );
+              resolve({});
+            }, CurrentRateService.QUOTE_FETCH_TIMEOUT_MS)
+          )
+        ]);
+      } catch (error) {
+        this.logger.error(
+          `getQuotes failed: ${error instanceof Error ? error.message : error}`
+        );
+        quotesBySymbol = {};
+      }
 
       for (const { dataSource, symbol } of dataGatheringItems) {
         const quote = quotesBySymbol[symbol];
@@ -120,48 +146,77 @@ export class CurrentRateService {
     };
 
     if (!isEmpty(quoteErrors)) {
-      for (const { dataSource, symbol } of quoteErrors) {
-        try {
-          // If missing quote, fallback to the latest available historical market price
-          let value: GetValueObject = response.values.find((currentValue) => {
-            return currentValue.symbol === symbol && isToday(currentValue.date);
-          });
+      this.logger.debug(
+        `Resolving ${quoteErrors.length} quote errors via fallback`
+      );
 
-          if (!value) {
-            // Fallback to unit price of latest activity
-            const latestActivity = await this.orderService.getLatestOrder({
-              dataSource,
-              symbol
-            });
+      // Process fallback in batches to avoid N sequential DB queries
+      for (
+        let i = 0;
+        i < quoteErrors.length;
+        i += CurrentRateService.FALLBACK_CONCURRENCY
+      ) {
+        const batch = quoteErrors.slice(
+          i,
+          i + CurrentRateService.FALLBACK_CONCURRENCY
+        );
 
-            value = {
-              dataSource,
-              symbol,
-              date: today,
-              marketPrice: latestActivity?.unitPrice ?? 0
-            };
+        await Promise.all(
+          batch.map(async ({ dataSource, symbol }) => {
+            try {
+              // If missing quote, fallback to the latest available historical market price
+              let value: GetValueObject = response.values.find(
+                (currentValue) => {
+                  return (
+                    currentValue.symbol === symbol &&
+                    isToday(currentValue.date)
+                  );
+                }
+              );
 
-            response.values.push(value);
-          }
+              if (!value) {
+                // Fallback to unit price of latest activity
+                const latestActivity =
+                  await this.orderService.getLatestOrder({
+                    dataSource,
+                    symbol
+                  });
 
-          const [latestValue] = response.values
-            .filter((currentValue) => {
-              return currentValue.symbol === symbol && currentValue.marketPrice;
-            })
-            .sort((a, b) => {
-              if (a.date < b.date) {
-                return 1;
+                value = {
+                  dataSource,
+                  symbol,
+                  date: today,
+                  marketPrice: latestActivity?.unitPrice ?? 0
+                };
+
+                response.values.push(value);
               }
 
-              if (a.date > b.date) {
-                return -1;
+              const [latestValue] = response.values
+                .filter((currentValue) => {
+                  return (
+                    currentValue.symbol === symbol &&
+                    currentValue.marketPrice
+                  );
+                })
+                .sort((a, b) => {
+                  if (a.date < b.date) {
+                    return 1;
+                  }
+
+                  if (a.date > b.date) {
+                    return -1;
+                  }
+
+                  return 0;
+                });
+
+              if (latestValue) {
+                value.marketPrice = latestValue.marketPrice;
               }
-
-              return 0;
-            });
-
-          value.marketPrice = latestValue.marketPrice;
-        } catch {}
+            } catch {}
+          })
+        );
       }
     }
 
