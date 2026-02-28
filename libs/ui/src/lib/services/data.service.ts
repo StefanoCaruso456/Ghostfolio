@@ -409,9 +409,13 @@ export class DataService {
     });
   }
 
-  public fetchMarketScreener(category: string, count: number = 20) {
+  public fetchMarketScreener(
+    category: string,
+    count: number = 20,
+    market: string = 'stocks'
+  ) {
     return this.http.get<MarketScreenerResponse>('/api/v1/market-screener', {
-      params: { category, count: count.toString() }
+      params: { category, count: count.toString(), market }
     });
   }
 

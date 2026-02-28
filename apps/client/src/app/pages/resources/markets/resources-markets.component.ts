@@ -213,7 +213,7 @@ export class ResourcesMarketsComponent implements OnInit, OnDestroy {
   public onDisplayModeChange(mode: DisplayMode) {
     this.displayMode = mode;
 
-    if (mode === 'table' && this.tableDataSource.data.length === 0) {
+    if (mode === 'table') {
       this.loadTableData();
     }
 
@@ -371,7 +371,7 @@ export class ResourcesMarketsComponent implements OnInit, OnDestroy {
     this.changeDetectorRef.markForCheck();
 
     this.dataService
-      .fetchMarketScreener(this.tableCategory)
+      .fetchMarketScreener(this.tableCategory, 20, this.marketView)
       .pipe(takeUntil(this.unsubscribeSubject))
       .subscribe({
         next: (response) => {

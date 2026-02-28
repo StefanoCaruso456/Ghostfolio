@@ -15,7 +15,8 @@ export class MarketScreenerController {
   @UseGuards(AuthGuard('jwt'))
   public async getScreener(
     @Query('category') category: string = 'most_actives',
-    @Query('count') count: string = '20'
+    @Query('count') count: string = '20',
+    @Query('market') market: string = 'stocks'
   ): Promise<MarketScreenerResponse> {
     const validCategories = [
       'most_actives',
@@ -28,9 +29,12 @@ export class MarketScreenerController {
       ? category
       : 'most_actives';
 
+    const safeMarket = market === 'crypto' ? 'crypto' : 'stocks';
+
     return this.marketScreenerService.getScreener(
       safeCategory as any,
-      Math.min(parseInt(count, 10) || 20, 50)
+      Math.min(parseInt(count, 10) || 20, 50),
+      safeMarket
     );
   }
 }

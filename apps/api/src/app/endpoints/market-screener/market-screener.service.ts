@@ -32,9 +32,10 @@ export class MarketScreenerService {
 
   public async getScreener(
     category: ScreenerCategory,
-    count: number = 20
+    count: number = 20,
+    market: 'stocks' | 'crypto' = 'stocks'
   ): Promise<MarketScreenerResponse> {
-    const cacheKey = `market-screener:${category}:${count}`;
+    const cacheKey = `market-screener:${market}:${category}:${count}`;
 
     try {
       const cached = await this.redisCacheService.get(cacheKey);
@@ -52,7 +53,9 @@ export class MarketScreenerService {
     try {
       let items: MarketScreenerItem[];
 
-      if (category === 'trending') {
+      if (market === 'crypto') {
+        items = await this.fetchCryptoQuotes(category, count);
+      } else if (category === 'trending') {
         items = await this.fetchTrending(count);
       } else {
         items = await this.fetchScreener(category, count);
@@ -77,7 +80,7 @@ export class MarketScreenerService {
       return response;
     } catch (error) {
       this.logger.error(
-        `Market screener error for ${category}: ${error.message}`
+        `Market screener error for ${market}/${category}: ${error.message}`
       );
 
       throw new HttpException(
@@ -85,6 +88,69 @@ export class MarketScreenerService {
         HttpStatus.BAD_GATEWAY
       );
     }
+  }
+
+  private readonly topCryptoSymbols = [
+    'BTC-USD',
+    'ETH-USD',
+    'SOL-USD',
+    'XRP-USD',
+    'DOGE-USD',
+    'ADA-USD',
+    'AVAX-USD',
+    'DOT-USD',
+    'MATIC-USD',
+    'LINK-USD',
+    'SHIB-USD',
+    'LTC-USD',
+    'UNI-USD',
+    'ATOM-USD',
+    'XLM-USD',
+    'FIL-USD',
+    'NEAR-USD',
+    'APT-USD',
+    'ARB-USD',
+    'OP-USD'
+  ];
+
+  private async fetchCryptoQuotes(
+    category: ScreenerCategory,
+    count: number
+  ): Promise<MarketScreenerItem[]> {
+    const quotes = await this.yahooFinance.quote(this.topCryptoSymbols);
+    const quotesArray = Array.isArray(quotes) ? quotes : [quotes];
+
+    let items: MarketScreenerItem[] = quotesArray
+      .filter((q) => q.regularMarketPrice != null)
+      .map((q) => ({
+        symbol: q.symbol,
+        name: q.shortName || q.longName || q.symbol,
+        price: q.regularMarketPrice ?? 0,
+        change: q.regularMarketChange ?? 0,
+        changePercent: q.regularMarketChangePercent ?? 0,
+        volume: q.regularMarketVolume,
+        marketCap: q.marketCap,
+        currency: q.currency || 'USD'
+      }));
+
+    // Sort based on category
+    switch (category) {
+      case 'day_gainers':
+        items.sort((a, b) => b.changePercent - a.changePercent);
+        break;
+      case 'day_losers':
+        items.sort((a, b) => a.changePercent - b.changePercent);
+        break;
+      case 'most_actives':
+        items.sort((a, b) => (b.volume ?? 0) - (a.volume ?? 0));
+        break;
+      case 'trending':
+      default:
+        items.sort((a, b) => (b.marketCap ?? 0) - (a.marketCap ?? 0));
+        break;
+    }
+
+    return items.slice(0, count);
   }
 
   private async fetchScreener(
