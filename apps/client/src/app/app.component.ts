@@ -190,7 +190,6 @@ export class GfAppComponent implements OnDestroy, OnInit {
             this.currentRoute === internalRoutes.account.path ||
             this.currentRoute === internalRoutes.adminControl.path ||
             this.currentRoute === internalRoutes.home.path ||
-            this.currentRoute === internalRoutes.portfolio.path ||
             this.currentRoute === internalRoutes.zen.path) &&
           this.deviceType !== 'mobile';
 

@@ -3,29 +3,22 @@ import { TabConfiguration, User } from '@ghostfolio/common/interfaces';
 import { internalRoutes } from '@ghostfolio/common/routes/routes';
 
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import { MatTabsModule } from '@angular/material/tabs';
-import { RouterModule } from '@angular/router';
-import { addIcons } from 'ionicons';
-import {
-  analyticsOutline,
-  calculatorOutline,
-  pieChartOutline,
-  scanOutline,
-  swapVerticalOutline
-} from 'ionicons/icons';
-import { DeviceDetectorService } from 'ngx-device-detector';
+import { MatOptionModule } from '@angular/material/core';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { filter, takeUntil } from 'rxjs/operators';
 
 @Component({
-  host: { class: 'page has-tabs' },
-  imports: [MatTabsModule, RouterModule],
+  host: { class: 'page' },
+  imports: [MatFormFieldModule, MatOptionModule, MatSelectModule, RouterModule],
   selector: 'gf-portfolio-page',
   styleUrls: ['./portfolio-page.scss'],
   templateUrl: './portfolio-page.html'
 })
 export class PortfolioPageComponent implements OnDestroy, OnInit {
-  public deviceType: string;
+  public activeTabRouterLink: string;
   public tabs: TabConfiguration[] = [];
   public user: User;
 
@@ -33,7 +26,7 @@ export class PortfolioPageComponent implements OnDestroy, OnInit {
 
   public constructor(
     private changeDetectorRef: ChangeDetectorRef,
-    private deviceService: DeviceDetectorService,
+    private router: Router,
     private userService: UserService
   ) {
     this.userService.stateChanged
@@ -70,26 +63,52 @@ export class PortfolioPageComponent implements OnDestroy, OnInit {
             }
           ];
           this.user = state.user;
-
+          this.updateActiveTab();
           this.changeDetectorRef.markForCheck();
         }
       });
 
-    addIcons({
-      analyticsOutline,
-      calculatorOutline,
-      pieChartOutline,
-      scanOutline,
-      swapVerticalOutline
-    });
+    this.router.events
+      .pipe(
+        filter((event) => event instanceof NavigationEnd),
+        takeUntil(this.unsubscribeSubject)
+      )
+      .subscribe(() => {
+        this.updateActiveTab();
+        this.changeDetectorRef.markForCheck();
+      });
   }
 
   public ngOnInit() {
-    this.deviceType = this.deviceService.getDeviceInfo().deviceType;
+    this.updateActiveTab();
   }
 
   public ngOnDestroy() {
     this.unsubscribeSubject.next();
     this.unsubscribeSubject.complete();
+  }
+
+  public onTabChange(routerLinkPath: string) {
+    this.router.navigateByUrl(routerLinkPath);
+  }
+
+  public toPath(routerLink: string[]): string {
+    return routerLink.join('/');
+  }
+
+  private updateActiveTab() {
+    const currentUrl = this.router.url.split('?')[0];
+
+    // Find the most specific matching tab (longest routerLink path that matches)
+    const matchingTab = this.tabs
+      .filter((tab) => currentUrl.startsWith(this.toPath(tab.routerLink)))
+      .sort(
+        (a, b) =>
+          this.toPath(b.routerLink).length - this.toPath(a.routerLink).length
+      )[0];
+
+    this.activeTabRouterLink =
+      this.toPath(matchingTab?.routerLink) ??
+      this.toPath(this.tabs[0]?.routerLink);
   }
 }
