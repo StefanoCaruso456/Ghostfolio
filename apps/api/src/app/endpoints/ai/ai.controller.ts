@@ -69,6 +69,15 @@ export class AiController {
     });
   }
 
+  @Get('diagnostics')
+  @HasPermission(permissions.readAiPrompt)
+  @UseGuards(AuthGuard('jwt'), HasPermissionGuard)
+  public async getDiagnostics() {
+    return this.aiService.getDiagnostics({
+      mcpClientService: this.mcpClientService
+    });
+  }
+
   @Get('prompt/:mode')
   @HasPermission(permissions.readAiPrompt)
   @UseGuards(AuthGuard('jwt'), HasPermissionGuard)

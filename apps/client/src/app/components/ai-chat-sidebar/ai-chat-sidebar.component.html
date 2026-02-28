@@ -1,46 +1,33 @@
-<div class="sidebar-container">
-  <!-- Header -->
-  <div class="sidebar-header">
-    <div class="header-left">
-      <ion-icon class="header-icon" name="sparkles-outline" />
-      <span class="header-title">Ghostfolio AI</span>
-    </div>
-    <div class="header-actions">
-      <button
-        class="icon-btn"
-        mat-icon-button
-        matTooltip="New conversation"
-        (click)="onNewConversation()"
-      >
-        <ion-icon name="create-outline" />
-      </button>
-      @if (mode === 'sidebar') {
-        <button
-          class="icon-btn"
-          mat-icon-button
-          matTooltip="Full screen"
-          (click)="onExpand()"
-        >
-          <ion-icon name="expand-outline" />
-        </button>
-        <button
-          class="icon-btn"
-          mat-icon-button
-          matTooltip="Close"
-          (click)="onClose()"
-        >
-          <ion-icon name="close-outline" />
-        </button>
-      }
-    </div>
-  </div>
-
-  <!-- History Panel -->
-  @if (showHistory) {
-    <div class="history-panel">
-      <div class="history-header">
-        <span class="history-title" i18n>Conversation History</span>
+<div class="sidebar-container" [class.fullscreen]="mode === 'fullscreen'">
+  <!-- Left History Sidebar -->
+  <div class="history-sidebar" [class.open]="showHistory">
+    <div class="sidebar-brand">
+      <div class="brand-left">
+        <ion-icon class="brand-icon" name="sparkles-outline" />
+        <span class="brand-title">Ghostfolio AI</span>
       </div>
+      <div class="brand-actions">
+        <button
+          class="new-chat-btn"
+          mat-icon-button
+          matTooltip="New conversation"
+          (click)="onNewConversation()"
+        >
+          <ion-icon name="create-outline" />
+        </button>
+        @if (mode === 'fullscreen') {
+          <button
+            class="sidebar-collapse-btn"
+            mat-icon-button
+            matTooltip="Close sidebar"
+            (click)="onToggleHistory()"
+          >
+            <ion-icon name="chevron-back-outline" />
+          </button>
+        }
+      </div>
+    </div>
+    <div class="conversation-list">
       @if (conversations.length === 0) {
         <div class="history-empty" i18n>No conversations yet</div>
       }
@@ -92,263 +79,324 @@
         </div>
       }
     </div>
-  }
-
-  <!-- Messages Area -->
-  <div #messagesContainer class="messages-container">
-    @if (!currentConversation || currentConversation.messages.length === 0) {
-      <!-- Welcome State -->
-      <div class="welcome-state">
-        <div class="welcome-icon-wrapper">
-          <ion-icon class="welcome-icon" name="sparkles-outline" />
-        </div>
-        <h2 class="welcome-title" i18n>How can I help you?</h2>
-        <p class="welcome-subtitle" i18n>
-          Ask me anything about your portfolio, investments, or financial
-          questions.
-        </p>
-        <div class="suggested-prompts">
-          @for (suggestion of suggestedPrompts; track suggestion.label) {
-            <button
-              class="suggested-prompt-btn"
-              (click)="onUseSuggestedPrompt(suggestion.prompt)"
-            >
-              <ion-icon class="suggestion-icon" [name]="suggestion.icon" />
-              <span>{{ suggestion.label }}</span>
-            </button>
-          }
-        </div>
-      </div>
-    } @else {
-      <!-- Chat Messages -->
-      @for (
-        message of currentConversation.messages;
-        track trackByIndex($index);
-        let i = $index
-      ) {
-        <div
-          class="message"
-          [class.message-assistant]="message.role === 'assistant'"
-          [class.message-error]="message.isError"
-          [class.message-user]="message.role === 'user'"
-        >
-          @if (message.role === 'assistant') {
-            <div class="message-avatar assistant-avatar">
-              <ion-icon name="sparkles-outline" />
-            </div>
-          }
-          <div class="message-body">
-            @if (message.role === 'user') {
-              @if (message.attachments?.length) {
-                <div class="message-attachments">
-                  @for (att of message.attachments; track att.name) {
-                    <div class="message-attachment-thumb">
-                      @if (att.type === 'image') {
-                        <img
-                          class="msg-thumb-image"
-                          [alt]="att.name"
-                          [src]="att.previewUrl"
-                        />
-                      } @else {
-                        <div class="msg-thumb-file">
-                          <ion-icon name="document-text-outline" />
-                          <span>{{ att.name }}</span>
-                        </div>
-                      }
-                    </div>
-                  }
-                </div>
-              }
-              <div class="message-content user-content">
-                {{ message.content }}
-              </div>
-            } @else if (message.isLoading) {
-              <div class="message-content assistant-content">
-                <div class="typing-indicator">
-                  <span class="dot"></span>
-                  <span class="dot"></span>
-                  <span class="dot"></span>
-                </div>
-              </div>
-            } @else {
-              <div class="message-content assistant-content">
-                <markdown [data]="message.content" />
-              </div>
-              <div class="message-actions">
-                <button
-                  class="action-btn"
-                  matTooltip="Copy"
-                  (click)="onCopyMessage(message)"
-                >
-                  <ion-icon
-                    [name]="
-                      message.isCopied ? 'checkmark-outline' : 'copy-outline'
-                    "
-                  />
-                  @if (message.isCopied) {
-                    <span class="action-label" i18n>Copied</span>
-                  }
-                </button>
-                @if (message.isError) {
-                  <button
-                    class="action-btn"
-                    matTooltip="Retry"
-                    (click)="onRetryMessage(i)"
-                  >
-                    <ion-icon name="refresh-outline" />
-                    <span class="action-label" i18n>Retry</span>
-                  </button>
-                }
-              </div>
-            }
-          </div>
-        </div>
-      }
-    }
   </div>
 
-  <!-- Reasoning Panel -->
-  @if (currentTraceId) {
-    <div class="reasoning-panel-wrapper">
-      <gf-reasoning-panel [traceId]="currentTraceId" />
-    </div>
-  }
-
-  <!-- History Toggle -->
-  @if (conversations.length > 0) {
-    <div class="history-toggle">
-      <button class="history-toggle-btn" (click)="onToggleHistory()">
-        <ion-icon name="chatbubble-ellipses-outline" />
-        <span i18n>{{ showHistory ? 'Hide' : 'Show' }} History</span>
-        <span class="history-count">{{ conversations.length }}</span>
-      </button>
-    </div>
-  }
-
-  <!-- Input Area -->
-  <div
-    class="input-area"
-    [class.dragging]="isDragging"
-    (dragenter)="onDragEnter($event)"
-    (dragleave)="onDragLeave($event)"
-    (dragover)="onDragOver($event)"
-    (drop)="onDrop($event)"
-  >
-    @if (isDragging) {
-      <div class="drag-overlay">
-        <ion-icon class="drag-icon" name="cloud-upload-outline" />
-        <span i18n>Drop files here</span>
-      </div>
-    }
-    @if (isGenerating) {
-      <div class="generating-indicator">
-        <div class="generating-dot"></div>
-        <span i18n>Generating response...</span>
-      </div>
-    }
-    @if (isRecording) {
-      <div class="recording-indicator">
-        <div class="recording-dot"></div>
-        <span i18n>Listening...</span>
-      </div>
-    }
-    <!-- Attachment Previews -->
-    @if (attachments.length > 0) {
-      <div class="attachment-previews">
-        @for (attachment of attachments; track attachment.name) {
-          <div class="attachment-thumbnail">
-            @if (attachment.type === 'image') {
-              <img
-                class="thumbnail-image"
-                [alt]="attachment.name"
-                [src]="attachment.previewUrl"
-              />
-            } @else {
-              <div class="thumbnail-file">
-                <ion-icon name="document-text-outline" />
-              </div>
-            }
-            <span class="thumbnail-name">{{ attachment.name }}</span>
-            <button
-              class="thumbnail-remove"
-              (click)="onRemoveAttachment(attachment)"
-            >
-              <ion-icon name="close-outline" />
-            </button>
-          </div>
+  <!-- Main Chat Area -->
+  <div class="chat-main">
+    <!-- Header -->
+    <div class="sidebar-header">
+      <div class="header-left">
+        @if (mode === 'fullscreen' && !showHistory) {
+          <button
+            class="sidebar-open-btn"
+            mat-icon-button
+            matTooltip="Open sidebar"
+            (click)="onToggleHistory()"
+          >
+            <ion-icon name="menu-outline" />
+          </button>
+        }
+        @if (mode === 'sidebar') {
+          <ion-icon class="header-icon" name="sparkles-outline" />
+          <span class="header-title">Ghostfolio AI</span>
         }
       </div>
-    }
-    <div class="input-wrapper">
-      <input
-        #fileInput
-        accept="image/png,image/jpeg,image/gif,image/webp,.csv"
-        hidden
-        multiple
-        type="file"
-        (change)="onFilesSelected($event)"
-      />
-      <textarea
-        #chatInput
-        class="chat-input"
-        i18n-placeholder
-        placeholder="Ask about your portfolio..."
-        rows="1"
-        [(ngModel)]="inputValue"
-        (input)="adjustTextareaHeight($event)"
-        (keydown)="onKeydown($event)"
-      ></textarea>
-      <div class="input-actions">
-        <div class="input-actions-left">
+      <div class="header-actions">
+        @if (mode === 'sidebar') {
           <button
-            class="attach-btn"
-            matTooltip="Attach image or CSV"
-            [disabled]="isGenerating"
-            (click)="fileInput.click()"
+            class="icon-btn"
+            mat-icon-button
+            matTooltip="New conversation"
+            (click)="onNewConversation()"
           >
-            <ion-icon name="attach-outline" />
+            <ion-icon name="create-outline" />
           </button>
-          @if (isSpeechSupported) {
-            <button
-              class="voice-btn"
-              [class.recording]="isRecording"
-              [disabled]="isGenerating"
-              [matTooltip]="isRecording ? 'Stop recording' : 'Voice input'"
-              (click)="onToggleVoiceInput()"
-            >
-              @if (isRecording) {
-                <ion-icon name="mic-off-outline" />
-              } @else {
-                <ion-icon name="mic-outline" />
-              }
-            </button>
-          }
-        </div>
-        <button
-          class="send-btn"
-          [class.active]="
-            inputValue.trim().length > 0 || attachments.length > 0
-          "
-          [disabled]="
-            (!inputValue.trim() && attachments.length === 0) || isGenerating
-          "
-          (click)="onSendMessage()"
-        >
-          @if (isGenerating) {
-            <ion-icon name="stop-circle-outline" />
-          } @else {
-            <ion-icon name="arrow-up-outline" />
-          }
-        </button>
+          <button
+            class="icon-btn"
+            mat-icon-button
+            matTooltip="Full screen"
+            (click)="onExpand()"
+          >
+            <ion-icon name="expand-outline" />
+          </button>
+          <button
+            class="icon-btn"
+            mat-icon-button
+            matTooltip="Close"
+            (click)="onClose()"
+          >
+            <ion-icon name="close-outline" />
+          </button>
+        }
+        @if (mode === 'fullscreen') {
+          <button
+            class="icon-btn"
+            mat-icon-button
+            matTooltip="New conversation"
+            (click)="onNewConversation()"
+          >
+            <ion-icon name="create-outline" />
+          </button>
+        }
       </div>
     </div>
-    <div class="input-footer">
-      <span class="disclaimer" i18n
-        >Disclaimer: Not financial, legal, or tax advice. Responses are
-        AI-generated, may be inaccurate, and should not be relied upon for
-        investment decisions. Consult a licensed professional. Use at your own
-        risk.</span
-      >
+
+    <!-- Messages Area -->
+    <div #messagesContainer class="messages-container">
+      @if (!currentConversation || currentConversation.messages.length === 0) {
+        <!-- Welcome State -->
+        <div class="welcome-state">
+          <div class="welcome-icon-wrapper">
+            <ion-icon class="welcome-icon" name="sparkles-outline" />
+          </div>
+          <h2 class="welcome-title" i18n>How can I help you?</h2>
+          <p class="welcome-subtitle" i18n>
+            Ask me anything about your portfolio, investments, or financial
+            questions.
+          </p>
+          <div class="suggested-prompts">
+            @for (suggestion of suggestedPrompts; track suggestion.label) {
+              <button
+                class="suggested-prompt-btn"
+                (click)="onUseSuggestedPrompt(suggestion.prompt)"
+              >
+                <ion-icon class="suggestion-icon" [name]="suggestion.icon" />
+                <span>{{ suggestion.label }}</span>
+              </button>
+            }
+          </div>
+        </div>
+      } @else {
+        <!-- Chat Messages -->
+        @for (
+          message of currentConversation.messages;
+          track trackByIndex($index);
+          let i = $index
+        ) {
+          <div
+            class="message"
+            [class.message-assistant]="message.role === 'assistant'"
+            [class.message-error]="message.isError"
+            [class.message-user]="message.role === 'user'"
+          >
+            @if (message.role === 'assistant') {
+              <div class="message-avatar assistant-avatar">
+                <ion-icon name="sparkles-outline" />
+              </div>
+            }
+            <div class="message-body">
+              @if (message.role === 'user') {
+                @if (message.attachments?.length) {
+                  <div class="message-attachments">
+                    @for (att of message.attachments; track att.name) {
+                      <div class="message-attachment-thumb">
+                        @if (att.type === 'image') {
+                          <img
+                            class="msg-thumb-image"
+                            [alt]="att.name"
+                            [src]="att.previewUrl"
+                          />
+                        } @else {
+                          <div class="msg-thumb-file">
+                            <ion-icon name="document-text-outline" />
+                            <span>{{ att.name }}</span>
+                          </div>
+                        }
+                      </div>
+                    }
+                  </div>
+                }
+                <div class="message-content user-content">
+                  {{ message.content }}
+                </div>
+              } @else if (message.isLoading) {
+                @if (currentTraceId) {
+                  <gf-reasoning-panel [traceId]="currentTraceId" />
+                } @else {
+                  <div class="message-content assistant-content">
+                    <div class="typing-indicator">
+                      <span class="dot"></span>
+                      <span class="dot"></span>
+                      <span class="dot"></span>
+                    </div>
+                  </div>
+                }
+              } @else {
+                @if (currentTraceId && isLastAssistantMessage(i)) {
+                  <gf-reasoning-panel [traceId]="currentTraceId" />
+                }
+                <div class="message-content assistant-content">
+                  <markdown [data]="message.content" />
+                </div>
+                <div class="message-actions">
+                  <button
+                    class="action-btn"
+                    matTooltip="Copy"
+                    (click)="onCopyMessage(message)"
+                  >
+                    <ion-icon
+                      [name]="
+                        message.isCopied ? 'checkmark-outline' : 'copy-outline'
+                      "
+                    />
+                    @if (message.isCopied) {
+                      <span class="action-label" i18n>Copied</span>
+                    }
+                  </button>
+                  @if (message.isError) {
+                    <button
+                      class="action-btn"
+                      matTooltip="Retry"
+                      (click)="onRetryMessage(i)"
+                    >
+                      <ion-icon name="refresh-outline" />
+                      <span class="action-label" i18n>Retry</span>
+                    </button>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+        }
+      }
+    </div>
+
+    <!-- History Toggle (sidebar mode only) -->
+    @if (mode === 'sidebar' && conversations.length > 0) {
+      <div class="history-toggle">
+        <button class="history-toggle-btn" (click)="onToggleHistory()">
+          <ion-icon name="chatbubble-ellipses-outline" />
+          <span i18n>{{ showHistory ? 'Hide' : 'Show' }} History</span>
+          <span class="history-count">{{ conversations.length }}</span>
+        </button>
+      </div>
+    }
+
+    <!-- Input Area -->
+    <div
+      class="input-area"
+      [class.dragging]="isDragging"
+      (dragenter)="onDragEnter($event)"
+      (dragleave)="onDragLeave($event)"
+      (dragover)="onDragOver($event)"
+      (drop)="onDrop($event)"
+    >
+      @if (isDragging) {
+        <div class="drag-overlay">
+          <ion-icon class="drag-icon" name="cloud-upload-outline" />
+          <span i18n>Drop files here</span>
+        </div>
+      }
+      @if (isGenerating) {
+        <div class="generating-indicator">
+          <div class="generating-dot"></div>
+          <span i18n>Generating response...</span>
+        </div>
+      }
+      @if (isRecording) {
+        <div class="recording-indicator">
+          <div class="recording-dot"></div>
+          <span i18n>Listening...</span>
+        </div>
+      }
+      <!-- Attachment Previews -->
+      @if (attachments.length > 0) {
+        <div class="attachment-previews">
+          @for (attachment of attachments; track attachment.name) {
+            <div class="attachment-thumbnail">
+              @if (attachment.type === 'image') {
+                <img
+                  class="thumbnail-image"
+                  [alt]="attachment.name"
+                  [src]="attachment.previewUrl"
+                />
+              } @else {
+                <div class="thumbnail-file">
+                  <ion-icon name="document-text-outline" />
+                </div>
+              }
+              <span class="thumbnail-name">{{ attachment.name }}</span>
+              <button
+                class="thumbnail-remove"
+                (click)="onRemoveAttachment(attachment)"
+              >
+                <ion-icon name="close-outline" />
+              </button>
+            </div>
+          }
+        </div>
+      }
+      <div class="input-wrapper">
+        <input
+          #fileInput
+          accept="image/png,image/jpeg,image/gif,image/webp,.csv"
+          hidden
+          multiple
+          type="file"
+          (change)="onFilesSelected($event)"
+        />
+        <textarea
+          #chatInput
+          class="chat-input"
+          i18n-placeholder
+          placeholder="Ask about your portfolio..."
+          rows="1"
+          [(ngModel)]="inputValue"
+          (input)="adjustTextareaHeight($event)"
+          (keydown)="onKeydown($event)"
+        ></textarea>
+        <div class="input-actions">
+          <div class="input-actions-left">
+            <button
+              class="attach-btn"
+              matTooltip="Attach image or CSV"
+              [disabled]="isGenerating"
+              (click)="fileInput.click()"
+            >
+              <ion-icon name="attach-outline" />
+            </button>
+            @if (isSpeechSupported) {
+              <button
+                class="voice-btn"
+                [class.recording]="isRecording"
+                [disabled]="isGenerating"
+                [matTooltip]="isRecording ? 'Stop recording' : 'Voice input'"
+                (click)="onToggleVoiceInput()"
+              >
+                @if (isRecording) {
+                  <ion-icon name="mic-off-outline" />
+                } @else {
+                  <ion-icon name="mic-outline" />
+                }
+              </button>
+            }
+          </div>
+          <button
+            class="send-btn"
+            [class.active]="
+              inputValue.trim().length > 0 || attachments.length > 0
+            "
+            [disabled]="
+              (!inputValue.trim() && attachments.length === 0) || isGenerating
+            "
+            (click)="onSendMessage()"
+          >
+            @if (isGenerating) {
+              <ion-icon name="stop-circle-outline" />
+            } @else {
+              <ion-icon name="arrow-up-outline" />
+            }
+          </button>
+        </div>
+      </div>
+      <div class="input-footer">
+        <span class="disclaimer" i18n
+          >Disclaimer: Not financial, legal, or tax advice. Responses are
+          AI-generated, may be inaccurate, and should not be relied upon for
+          investment decisions. Consult a licensed professional. Use at your own
+          risk.</span
+        >
+      </div>
     </div>
   </div>
 </div>

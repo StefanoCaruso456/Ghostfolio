@@ -1,159 +1,49 @@
 @if (preview) {
-  <div class="reasoning-panel" [class.collapsed]="isCollapsed">
-    <!-- Header -->
-    <button class="panel-header" (click)="onToggleCollapse()">
-      <div class="header-left">
-        <ion-icon class="header-icon" name="layers-outline" />
-        <span class="header-title" i18n>Reasoning</span>
-        @if (preview.steps.length > 0) {
-          <span class="step-count">{{ preview.steps.length }}</span>
-        }
-      </div>
-      <div class="header-right">
-        @if (preview.totalDurationMs !== null) {
-          <span class="total-duration">
-            <ion-icon name="time-outline" />
-            {{ formatDuration(preview.totalDurationMs) }}
-          </span>
-        }
-        <ion-icon
-          class="collapse-icon"
-          [name]="
-            isCollapsed ? 'chevron-forward-outline' : 'chevron-down-outline'
-          "
-        />
-      </div>
+  <div
+    class="reasoning-inline"
+    [class.completed]="preview.completedAt !== null"
+    [class.live]="preview.completedAt === null"
+  >
+    <!-- Collapsed summary (shown when completed or manually collapsed) -->
+    <button
+      class="reasoning-toggle"
+      [class.expanded]="!isCollapsed"
+      (click)="onToggleCollapse()"
+    >
+      @if (preview.completedAt === null) {
+        <div class="thinking-indicator">
+          <span class="thinking-dot"></span>
+          <span class="thinking-dot"></span>
+          <span class="thinking-dot"></span>
+        </div>
+        <span class="toggle-label" i18n>Thinking...</span>
+      } @else {
+        <ion-icon class="toggle-chevron" name="chevron-forward-outline" />
+        <span class="toggle-label" i18n>
+          Thought for {{ formatDuration(preview.totalDurationMs) }}
+        </span>
+      }
     </button>
 
+    <!-- Expanded step list -->
     @if (!isCollapsed) {
-      <div class="panel-body">
-        <!-- Trace ID + Copy -->
-        <div class="trace-id-bar">
-          <span class="trace-id-label">Trace:</span>
-          <code class="trace-id-value"
-            >{{ preview.traceId | slice: 0 : 12 }}...</code
+      <div class="reasoning-steps">
+        @for (step of preview.steps; track trackByStepId($index, step)) {
+          <div
+            class="step-line"
+            [class.step-enter]="isStepVisible(step.id)"
+            [class.step-error]="step.status === 'error'"
+            [class.step-running]="step.status === 'running'"
           >
-          <button
-            class="copy-trace-btn"
-            matTooltip="Copy trace ID"
-            (click)="onCopyTraceId()"
-          >
-            <ion-icon
-              [name]="
-                traceIdCopied ? 'checkmark-circle-outline' : 'clipboard-outline'
-              "
-            />
-            @if (traceIdCopied) {
-              <span class="copy-label" i18n>Copied</span>
+            <span class="step-text">{{ step.title }}</span>
+            @if (step.status === 'running') {
+              <span class="step-spinner"></span>
             }
-          </button>
-        </div>
-
-        <!-- Step Tree -->
-        <div class="step-tree">
-          @for (step of preview.steps; track trackByStepId($index, step)) {
-            <div
-              class="step-node"
-              [class.step-enter]="isStepVisible(step.id)"
-              [class.step-error]="step.status === 'error'"
-              [class.step-pending]="step.status === 'pending'"
-              [class.step-running]="step.status === 'running'"
-              [class.step-success]="step.status === 'success'"
-            >
-              <div class="step-header" (click)="onToggleStep(step.id)">
-                <div class="step-left">
-                  <ion-icon
-                    class="status-icon"
-                    [class.spinning]="step.status === 'running'"
-                    [name]="getStatusIcon(step.status)"
-                  />
-                  <ion-icon class="kind-icon" [name]="getStepIcon(step.kind)" />
-                  <span class="step-title">{{ step.title }}</span>
-                </div>
-                <div class="step-right">
-                  @if (step.durationMs !== null) {
-                    <span class="step-duration">{{
-                      formatDuration(step.durationMs)
-                    }}</span>
-                  }
-                  @if (step.redactionApplied) {
-                    <span
-                      class="redacted-badge"
-                      matTooltip="Sensitive data redacted"
-                      >R</span
-                    >
-                  }
-                  @if (step.detail || step.children.length > 0) {
-                    <ion-icon
-                      class="expand-icon"
-                      [name]="
-                        isStepExpanded(step.id)
-                          ? 'chevron-down-outline'
-                          : 'chevron-forward-outline'
-                      "
-                    />
-                  }
-                </div>
-              </div>
-
-              <!-- Expanded Detail -->
-              @if (isStepExpanded(step.id)) {
-                @if (step.detail) {
-                  <div class="step-detail">
-                    <pre>{{ step.detail }}</pre>
-                  </div>
-                }
-
-                <!-- Child Steps (e.g. tool_result) -->
-                @for (
-                  child of step.children;
-                  track trackByStepId($index, child)
-                ) {
-                  <div
-                    class="step-child"
-                    [class.step-error]="child.status === 'error'"
-                    [class.step-success]="child.status === 'success'"
-                  >
-                    <div class="child-header" (click)="onToggleStep(child.id)">
-                      <ion-icon
-                        class="status-icon child-status"
-                        [name]="getStatusIcon(child.status)"
-                      />
-                      <span class="child-title">{{ child.title }}</span>
-                      @if (child.redactionApplied) {
-                        <span
-                          class="redacted-badge"
-                          matTooltip="Sensitive data redacted"
-                          >R</span
-                        >
-                      }
-                      @if (child.detail) {
-                        <ion-icon
-                          class="expand-icon"
-                          [name]="
-                            isStepExpanded(child.id)
-                              ? 'chevron-down-outline'
-                              : 'chevron-forward-outline'
-                          "
-                        />
-                      }
-                    </div>
-                    @if (isStepExpanded(child.id) && child.detail) {
-                      <div class="step-detail child-detail">
-                        <pre>{{ child.detail }}</pre>
-                      </div>
-                    }
-                  </div>
-                }
-              }
-            </div>
-          }
-        </div>
-
-        @if (preview.completedAt === null && preview.steps.length > 0) {
-          <div class="reasoning-progress">
-            <div class="progress-dot"></div>
-            <span i18n>Reasoning in progress...</span>
+            @if (step.durationMs !== null && step.status !== 'running') {
+              <span class="step-time">{{
+                formatDuration(step.durationMs)
+              }}</span>
+            }
           </div>
         }
       </div>

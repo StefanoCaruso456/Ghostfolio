@@ -102,6 +102,8 @@ export class OrderService {
       assetClass?: AssetClass;
       assetSubClass?: AssetSubClass;
       currency?: string;
+      skipEvents?: boolean;
+      skipDataGathering?: boolean;
       symbol?: string;
       tags?: { id: string }[];
       updateAccountBalance?: boolean;
@@ -164,7 +166,10 @@ export class OrderService {
       };
     }
 
-    if (data.SymbolProfile.connectOrCreate.create.dataSource !== 'MANUAL') {
+    if (
+      !data.skipDataGathering &&
+      data.SymbolProfile.connectOrCreate.create.dataSource !== 'MANUAL'
+    ) {
       this.dataGatheringService.addJobToQueue({
         data: {
           dataSource: data.SymbolProfile.connectOrCreate.create.dataSource,
@@ -182,9 +187,13 @@ export class OrderService {
       });
     }
 
+    const skipEvents = data.skipEvents;
+
     delete data.accountId;
     delete data.assetClass;
     delete data.assetSubClass;
+    delete data.skipDataGathering;
+    delete data.skipEvents;
 
     if (!data.comment) {
       delete data.comment;
@@ -232,21 +241,23 @@ export class OrderService {
       });
     }
 
-    this.eventEmitter.emit(
-      AssetProfileChangedEvent.getName(),
-      new AssetProfileChangedEvent({
-        currency: order.SymbolProfile.currency,
-        dataSource: order.SymbolProfile.dataSource,
-        symbol: order.SymbolProfile.symbol
-      })
-    );
+    if (!skipEvents) {
+      this.eventEmitter.emit(
+        AssetProfileChangedEvent.getName(),
+        new AssetProfileChangedEvent({
+          currency: order.SymbolProfile.currency,
+          dataSource: order.SymbolProfile.dataSource,
+          symbol: order.SymbolProfile.symbol
+        })
+      );
 
-    this.eventEmitter.emit(
-      PortfolioChangedEvent.getName(),
-      new PortfolioChangedEvent({
-        userId: order.userId
-      })
-    );
+      this.eventEmitter.emit(
+        PortfolioChangedEvent.getName(),
+        new PortfolioChangedEvent({
+          userId: order.userId
+        })
+      );
+    }
 
     return order;
   }

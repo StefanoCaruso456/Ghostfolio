@@ -199,7 +199,7 @@ exports[`AI Chat Telemetry Integration Tool call scenario — getQuote should ma
   "toolSpans": [
     {
       "endedAt": "<timestamp>",
-      "error": "Failed to fetch quotes for all 1 symbols.",
+      "error": "Verification gate blocked: Verification failed: unknown",
       "executor": "local",
       "iterationIndex": 1,
       "latencyMs": "<ms>",
@@ -216,8 +216,8 @@ exports[`AI Chat Telemetry Integration Tool call scenario — getQuote should ma
       },
       "toolName": "getQuote",
       "toolOutput": {
-        "confidence": 0.1,
-        "message": "Failed to fetch quotes for all 1 symbols.",
+        "confidence": 0,
+        "message": "Verification gate blocked: Verification failed: unknown",
         "status": "error",
       },
       "traceId": "<uuid>",
@@ -248,7 +248,7 @@ exports[`AI Chat Telemetry Integration Tool call scenario — getQuote should ma
     "providerMeta": {
       "marketProviderName": "yahoo",
       "providerErrors": [
-        "getQuote: Failed to fetch quotes for all 1 symbols.",
+        "getQuote: Verification gate blocked: Verification failed: unknown",
       ],
       "rateLimited": false,
     },
@@ -267,12 +267,12 @@ exports[`AI Chat Telemetry Integration Tool call scenario — getQuote should ma
     "toolDataVolume": {
       "perTool": [
         {
-          "outputBytes": 89,
+          "outputBytes": 101,
           "outputRows": 1,
           "toolName": "getQuote",
         },
       ],
-      "toolOutputBytesTotal": 89,
+      "toolOutputBytesTotal": 101,
       "toolOutputRowsTotal": 1,
     },
     "toolLatencyTotalMs": "<ms>",

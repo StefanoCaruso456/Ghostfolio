@@ -8,7 +8,7 @@ import {
 import type { AiChatResponse, Filter } from '@ghostfolio/common/interfaces';
 import type { AiPromptMode, DateRange } from '@ghostfolio/common/types';
 
-import { Injectable, Logger } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { createOpenRouter } from '@openrouter/ai-sdk-provider';
 import { generateText, tool } from 'ai';
 import { randomUUID } from 'node:crypto';
@@ -87,11 +87,11 @@ import {
 /** MAX_ITERATIONS: 8-10 steps — prevent infinite loops + runaway cost */
 const MAX_ITERATIONS = 10;
 
-/** TIMEOUT: 45s base — matches user patience + gateway timeouts */
-const TIMEOUT_MS = 45_000;
+/** TIMEOUT: 90s base — generous budget for multi-step tool chains */
+const TIMEOUT_MS = 90_000;
 
-/** TIMEOUT_MULTIMODAL: 90s — image/vision requests need more time */
-const TIMEOUT_MULTIMODAL_MS = 90_000;
+/** TIMEOUT_MULTIMODAL: 180s — image/vision requests need more time */
+const TIMEOUT_MULTIMODAL_MS = 180_000;
 
 /** COST_LIMIT: $1/query — prevent bill explosions */
 const COST_LIMIT_USD = 1.0;
@@ -186,10 +186,13 @@ function buildReActSystemPrompt(
     '- If data is unavailable, say so explicitly — do NOT guess or fabricate.',
     '- When showing calculations, reference the exact tool-provided values.',
     '',
-    '# Response Guidelines',
-    '- Be concise but thorough. Use markdown formatting.',
+    '# Response Guidelines (BREVITY IS MANDATORY)',
+    '- **Keep responses SHORT.** 2–4 sentences for simple questions, 5–8 sentences max for complex ones.',
+    '- Lead with the direct answer. No preamble ("Sure!", "Great question!", "I\'d be happy to...").',
+    '- Use bullet points for lists — never write multi-sentence paragraphs when bullets will do.',
+    '- One line per data point. Do NOT repeat or rephrase tool results in multiple ways.',
+    '- Do NOT recap what the user asked. They already know.',
     '- Reference specific holdings by name and symbol when discussing them.',
-    '- Structure longer responses with sections and bullet points.',
     '- Always end responses with a sources line:',
     '  "Sources: Ghostfolio (portfolio), Yahoo Finance (market quotes)" — listing which data sources were used.',
     `- Respond in: ${languageCode}.`,
@@ -279,7 +282,55 @@ export class AiService {
     mcpClientService: McpClientService;
     userId: string;
   }) {
-    return mcpClientService.rpc('getDashboardConfig', { userId });
+    try {
+      return await mcpClientService.rpc('getDashboardConfig', { userId });
+    } catch (error) {
+      throw new HttpException(
+        {
+          message: 'MCP request failed',
+          upstreamStatus: (error as any)?.mcpStatus ?? null
+        },
+        HttpStatus.BAD_GATEWAY
+      );
+    }
+  }
+
+  public async getDiagnostics({
+    mcpClientService
+  }: {
+    mcpClientService: McpClientService;
+  }) {
+    const resolvedRpcUrl = mcpClientService.getResolvedRpcUrl();
+
+    let mcpProbe: {
+      body?: unknown;
+      status: string;
+      upstreamStatus?: number;
+    } = { status: 'skipped' };
+
+    if (mcpClientService.isConfigured()) {
+      try {
+        const result = await mcpClientService.rpc('getDashboardConfig', {
+          userId: 'diagnostic'
+        });
+        mcpProbe = { status: 'ok', body: result };
+      } catch (error) {
+        mcpProbe = {
+          body: (error as any)?.mcpBody ?? error?.message ?? 'unknown',
+          status: 'error',
+          upstreamStatus: (error as any)?.mcpStatus ?? null
+        };
+      }
+    }
+
+    return {
+      buildSha: process.env.BUILD_SHA ?? null,
+      hasMcpApiKey: mcpClientService.hasApiKey(),
+      hasMcpServerUrl: mcpClientService.isConfigured(),
+      mcpProbe,
+      nodeEnv: process.env.NODE_ENV ?? 'unknown',
+      resolvedRpcUrl
+    };
   }
 
   public async chat({
@@ -524,6 +575,10 @@ export class AiService {
         let result = dispatched.result;
         const durationMs = Date.now() - start;
 
+        // Estimate per-step cost: each tool call involves ~1K prompt tokens
+        // + ~500 completion tokens for the LLM's reasoning step
+        costLimiter.addCost(estimateCost(modelId, 1000, 500));
+
         // Runtime output schema validation (for local path; MCP path
         // validates inside ToolDispatcher, but we double-check here)
         if (dispatched.executor === 'local' && outputSchema) {
@@ -576,6 +631,19 @@ export class AiService {
           trace.addDomainViolation(
             `Verification gate BLOCKED after ${toolName}: ${gate.reason}`
           );
+
+          // Replace result with error so the LLM does not use blocked data
+          result = {
+            status: 'error',
+            data: undefined,
+            message: `Verification gate blocked: ${gate.reason}`,
+            verification: createVerificationResult({
+              passed: false,
+              confidence: 0,
+              errors: [`Blocked by verification gate: ${gate.reason}`],
+              sources: result.verification?.sources ?? [toolName]
+            })
+          } as unknown as T;
         } else if (gate.decision === 'human_review') {
           trace.addWarning(
             `Verification gate requires review after ${toolName}: ${gate.reason}`
@@ -650,6 +718,80 @@ export class AiService {
       }, effectiveTimeoutMs);
     });
 
+    // ── Safe portfolio data fetcher ─────────────────────────────────
+    // Wraps portfolioService calls to never throw; returns hasErrors: true
+    // on failure so portfolio tools degrade gracefully instead of aborting.
+    const safeGetDetails = async (
+      opts: { withSummary?: boolean } = {}
+    ): Promise<
+      Awaited<ReturnType<typeof this.portfolioService.getDetails>> & {
+        hasErrors: boolean;
+        _degraded?: boolean;
+      }
+    > => {
+      try {
+        return await this.portfolioService.getDetails({
+          userId,
+          impersonationId: undefined,
+          withSummary: opts.withSummary
+        });
+      } catch (err) {
+        Logger.warn(
+          `portfolioService.getDetails() failed, returning degraded result: ${err instanceof Error ? err.message : String(err)}`,
+          'AiService'
+        );
+
+        // Return a minimal result so tools can produce a meaningful "unavailable" response
+        // instead of crashing the entire tool call
+        return {
+          holdings: {},
+          accounts: {},
+          platforms: {},
+          hasErrors: true,
+          _degraded: true
+        } as any;
+      }
+    };
+
+    const safeGetPerformance = async (
+      dateRange: DateRange
+    ): Promise<
+      Awaited<ReturnType<typeof this.portfolioService.getPerformance>> & {
+        hasErrors: boolean;
+        _degraded?: boolean;
+      }
+    > => {
+      try {
+        return await this.portfolioService.getPerformance({
+          userId,
+          impersonationId: undefined,
+          dateRange
+        });
+      } catch (err) {
+        Logger.warn(
+          `portfolioService.getPerformance() failed, returning degraded result: ${err instanceof Error ? err.message : String(err)}`,
+          'AiService'
+        );
+
+        return {
+          chart: [],
+          hasErrors: true,
+          performance: {
+            currentNetWorth: 0,
+            currentValueInBaseCurrency: 0,
+            totalInvestment: 0,
+            netPerformance: 0,
+            netPerformancePercentage: 0,
+            netPerformanceWithCurrencyEffect: 0,
+            netPerformancePercentageWithCurrencyEffect: 0,
+            annualizedPerformancePercent: null
+          },
+          firstOrderDate: null,
+          _degraded: true
+        } as any;
+      }
+    };
+
     // ── ReAct loop via generateText with tools ──────────────────────
     trace.markLlmStart();
 
@@ -669,11 +811,7 @@ export class AiService {
                 'getPortfolioSummary',
                 args as unknown as Record<string, unknown>,
                 async () => {
-                  const details = await this.portfolioService.getDetails({
-                    userId,
-                    impersonationId: undefined,
-                    withSummary: true
-                  });
+                  const details = await safeGetDetails({ withSummary: true });
 
                   return buildPortfolioSummary(details, {
                     userCurrency: args.userCurrency || userCurrency
@@ -735,10 +873,7 @@ export class AiService {
                 'getAllocations',
                 args as unknown as Record<string, unknown>,
                 async () => {
-                  const details = await this.portfolioService.getDetails({
-                    userId,
-                    impersonationId: undefined
-                  });
+                  const details = await safeGetDetails();
 
                   return buildAllocationsResult(details) as ToolOutput<
                     ReturnType<typeof buildAllocationsResult>
@@ -757,17 +892,25 @@ export class AiService {
                 'getPerformance',
                 args as unknown as Record<string, unknown>,
                 async () => {
-                  const perf = await this.portfolioService.getPerformance({
-                    userId,
-                    impersonationId: undefined,
-                    dateRange: (args.dateRange as DateRange) || 'max'
-                  });
+                  const dateRange = (args.dateRange as DateRange) || 'max';
+                  const perf = await safeGetPerformance(dateRange);
 
-                  return buildPerformanceResult(
+                  const result = buildPerformanceResult(
                     perf,
-                    args.dateRange || 'max',
+                    dateRange,
                     userCurrency
-                  ) as ToolOutput<ReturnType<typeof buildPerformanceResult>>;
+                  );
+
+                  // Add quoteMetadata for degraded results
+                  if ((perf as any)._degraded) {
+                    (result as any).quoteMetadata = {
+                      quoteStatus: 'unavailable',
+                      message:
+                        'Performance data is based on last available prices — live market data was unreachable'
+                    };
+                  }
+
+                  return result as ToolOutput<typeof result>;
                 }
               );
             }
@@ -850,10 +993,7 @@ export class AiService {
                 'computeRebalance',
                 args as unknown as Record<string, unknown>,
                 async () => {
-                  const details = await this.portfolioService.getDetails({
-                    userId,
-                    impersonationId: undefined
-                  });
+                  const details = await safeGetDetails();
 
                   return buildRebalanceResult(details, args) as ToolOutput<
                     ReturnType<typeof buildRebalanceResult>
@@ -872,10 +1012,7 @@ export class AiService {
                 'scenarioImpact',
                 args as unknown as Record<string, unknown>,
                 async () => {
-                  const details = await this.portfolioService.getDetails({
-                    userId,
-                    impersonationId: undefined
-                  });
+                  const details = await safeGetDetails();
 
                   return buildScenarioImpactResult(details, args) as ToolOutput<
                     ReturnType<typeof buildScenarioImpactResult>
@@ -895,9 +1032,13 @@ export class AiService {
       // Record token usage and cost
       const inputTokens = result.usage?.promptTokens ?? 0;
       const outputTokens = result.usage?.completionTokens ?? 0;
+      const estimatedCost = estimateCost(modelId, inputTokens, outputTokens);
 
       trace.setTokens(inputTokens, outputTokens);
-      trace.setCost(estimateCost(modelId, inputTokens, outputTokens));
+      trace.setCost(estimatedCost);
+
+      // Wire cost limiter — accumulate actual cost so the guardrail works
+      costLimiter.addCost(estimatedCost);
       trace.setResponse(result.text);
       trace.setQueryCategory(this.classifyQuery(message));
       trace.setIterationCount(iterationCount);
@@ -958,9 +1099,11 @@ export class AiService {
         });
 
       // ── Persist conversation (non-blocking) ────────────────────────
+      // Detect new conversation: if no history was sent, this is the first message
+      // (the frontend always sends conversationId, so we can't rely on !conversationId)
       this.persistConversation({
         conversationId: activeConversationId,
-        isNew: !conversationId,
+        isNew: history.length === 0,
         messages: [
           { content: message, role: 'user' },
           { content: result.text, role: 'assistant' }
@@ -1016,7 +1159,7 @@ export class AiService {
       if (isGuardrail) {
         const isTimeout = errorMessage.includes('timed out');
         const friendlyMessage = isTimeout
-          ? 'Your request took too long to process. This can happen with large files or complex images. Try a smaller file, or ask a more specific question about the content.'
+          ? 'Your request took too long to process. This can happen with complex portfolio analysis, large files, or when market data providers are slow. Try a more specific question or ask about fewer symbols at once.'
           : 'I had to stop processing your request due to a safety guardrail. Please try rephrasing your question or ask something simpler.';
 
         return {
@@ -1030,7 +1173,16 @@ export class AiService {
         };
       }
 
-      throw error;
+      // Return the actual error message so the frontend can display it
+      return {
+        conversationId: activeConversationId,
+        message: {
+          content: `Something went wrong: ${errorMessage}`,
+          role: 'assistant',
+          timestamp: new Date().toISOString()
+        },
+        traceId: reasoningTraceId
+      };
     }
   }
 

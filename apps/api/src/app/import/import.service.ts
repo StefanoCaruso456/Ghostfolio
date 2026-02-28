@@ -2,6 +2,7 @@ import { AccountService } from '@ghostfolio/api/app/account/account.service';
 import { OrderService } from '@ghostfolio/api/app/order/order.service';
 import { PlatformService } from '@ghostfolio/api/app/platform/platform.service';
 import { PortfolioService } from '@ghostfolio/api/app/portfolio/portfolio.service';
+import { PortfolioChangedEvent } from '@ghostfolio/api/events/portfolio-changed.event';
 import { ApiService } from '@ghostfolio/api/services/api/api.service';
 import { DataProviderService } from '@ghostfolio/api/services/data-provider/data-provider.service';
 import { ExchangeRateDataService } from '@ghostfolio/api/services/exchange-rate-data/exchange-rate-data.service';
@@ -25,13 +26,10 @@ import {
   AssetProfileIdentifier
 } from '@ghostfolio/common/interfaces';
 import { hasPermission, permissions } from '@ghostfolio/common/permissions';
-import {
-  AccountWithValue,
-  OrderWithAccount,
-  UserWithSettings
-} from '@ghostfolio/common/types';
+import { AccountWithValue, UserWithSettings } from '@ghostfolio/common/types';
 
 import { Injectable } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { DataSource, Prisma } from '@prisma/client';
 import { Big } from 'big.js';
 import { endOfToday, isAfter, isSameSecond, parseISO } from 'date-fns';
@@ -40,6 +38,8 @@ import { randomUUID } from 'node:crypto';
 
 import { ImportDataDto } from './import-data.dto';
 
+const PARALLEL_BATCH_SIZE = 10;
+
 @Injectable()
 export class ImportService {
   public constructor(
@@ -47,6 +47,7 @@ export class ImportService {
     private readonly apiService: ApiService,
     private readonly dataGatheringService: DataGatheringService,
     private readonly dataProviderService: DataProviderService,
+    private readonly eventEmitter: EventEmitter2,
     private readonly exchangeRateDataService: ExchangeRateDataService,
     private readonly marketDataService: MarketDataService,
     private readonly orderService: OrderService,
@@ -438,68 +439,62 @@ export class ImportService {
 
     const activities: Activity[] = [];
 
-    for (const activity of activitiesExtendedWithErrors) {
-      const accountId = activity.accountId;
-      const comment = activity.comment;
-      const currency = activity.currency;
-      const date = activity.date;
-      const error = activity.error;
-      const fee = activity.fee;
-      const quantity = activity.quantity;
-      const SymbolProfile = activity.SymbolProfile;
-      const tagIds = activity.tagIds ?? [];
-      const type = activity.type;
-      const unitPrice = activity.unitPrice;
+    if (isDryRun) {
+      // Dry run: build in-memory objects (fast, no DB writes)
+      for (const activity of activitiesExtendedWithErrors) {
+        const accountId = activity.accountId;
+        const comment = activity.comment;
+        const currency = activity.currency;
+        const date = activity.date;
+        const error = activity.error;
+        const fee = activity.fee;
+        const quantity = activity.quantity;
+        const SymbolProfile = activity.SymbolProfile;
+        const tagIds = activity.tagIds ?? [];
+        const type = activity.type;
+        const unitPrice = activity.unitPrice;
 
-      const assetProfile = assetProfiles[
-        getAssetProfileIdentifier({
+        const assetProfile = assetProfiles[
+          getAssetProfileIdentifier({
+            dataSource: SymbolProfile.dataSource,
+            symbol: SymbolProfile.symbol
+          })
+        ] ?? {
           dataSource: SymbolProfile.dataSource,
           symbol: SymbolProfile.symbol
-        })
-      ] ?? {
-        dataSource: SymbolProfile.dataSource,
-        symbol: SymbolProfile.symbol
-      };
-      const {
-        assetClass,
-        assetSubClass,
-        countries,
-        createdAt,
-        cusip,
-        dataSource,
-        figi,
-        figiComposite,
-        figiShareClass,
-        holdings,
-        id,
-        isActive,
-        isin,
-        name,
-        scraperConfiguration,
-        sectors,
-        symbol,
-        symbolMapping,
-        url,
-        updatedAt
-      } = assetProfile;
-      const validatedAccount = accounts.find(({ id }) => {
-        return id === accountId;
-      });
-      const validatedTags = tags.filter(({ id: tagId }) => {
-        return tagIds.some((activityTagId) => {
-          return activityTagId === tagId;
+        };
+        const {
+          assetClass,
+          assetSubClass,
+          countries,
+          createdAt,
+          cusip,
+          dataSource,
+          figi,
+          figiComposite,
+          figiShareClass,
+          holdings,
+          id,
+          isActive,
+          isin,
+          name,
+          scraperConfiguration,
+          sectors,
+          symbol,
+          symbolMapping,
+          url,
+          updatedAt
+        } = assetProfile;
+        const validatedAccount = accounts.find(({ id }) => {
+          return id === accountId;
         });
-      });
-
-      let order:
-        | OrderWithAccount
-        | (Omit<OrderWithAccount, 'account' | 'tags'> & {
-            account?: { id: string; name: string };
-            tags?: { id: string; name: string }[];
+        const validatedTags = tags.filter(({ id: tagId }) => {
+          return tagIds.some((activityTagId) => {
+            return activityTagId === tagId;
           });
+        });
 
-      if (isDryRun) {
-        order = {
+        const order = {
           comment,
           currency,
           date,
@@ -543,68 +538,167 @@ export class ImportService {
           updatedAt: new Date(),
           userId: user.id
         };
-      } else {
-        if (error) {
-          continue;
-        }
 
-        order = await this.orderService.createOrder({
-          comment,
-          currency,
-          date,
-          fee,
-          quantity,
-          type,
-          unitPrice,
-          accountId: validatedAccount?.id,
-          SymbolProfile: {
-            connectOrCreate: {
-              create: {
-                dataSource,
-                name,
-                symbol,
-                currency: assetProfile.currency,
-                userId: dataSource === 'MANUAL' ? user.id : undefined
-              },
-              where: {
-                dataSource_symbol: {
-                  dataSource,
-                  symbol
-                }
-              }
-            }
-          },
-          tags: validatedTags.map(({ id }) => {
-            return { id };
-          }),
-          updateAccountBalance: false,
-          user: { connect: { id: user.id } },
-          userId: user.id
+        const value = new Big(quantity).mul(unitPrice).toNumber();
+
+        const valueInBaseCurrency =
+          this.exchangeRateDataService.toCurrencyAtDate(
+            value,
+            currency ?? assetProfile.currency,
+            userCurrency,
+            date
+          );
+
+        activities.push({
+          ...order,
+          error,
+          value,
+          valueInBaseCurrency: await valueInBaseCurrency,
+          // @ts-ignore
+          SymbolProfile: assetProfile
+        });
+      }
+    } else {
+      // Non-dry-run: create orders in parallel batches for performance
+      const activitiesToCreate = activitiesExtendedWithErrors.filter(
+        (activity) => !activity.error
+      );
+
+      // Pre-create all unique symbol profiles to avoid race conditions
+      // in parallel batches (concurrent connectOrCreate can hit unique constraint)
+      const uniqueProfileKeys = new Set<string>();
+
+      for (const activity of activitiesToCreate) {
+        const { dataSource, symbol } = activity.SymbolProfile;
+        const assetProfile = assetProfiles[
+          getAssetProfileIdentifier({ dataSource, symbol })
+        ] ?? { dataSource, symbol };
+
+        const key = getAssetProfileIdentifier({
+          dataSource: assetProfile.dataSource,
+          symbol: assetProfile.symbol
         });
 
-        if (order.SymbolProfile?.symbol) {
-          // Update symbol that may have been assigned in createOrder()
-          assetProfile.symbol = order.SymbolProfile.symbol;
+        if (!uniqueProfileKeys.has(key)) {
+          uniqueProfileKeys.add(key);
+
+          await this.symbolProfileService.addIfNotExists({
+            dataSource: assetProfile.dataSource,
+            symbol: assetProfile.symbol,
+            name: assetProfile.name,
+            currency: assetProfile.currency,
+            userId: assetProfile.dataSource === 'MANUAL' ? user.id : undefined
+          });
         }
       }
 
-      const value = new Big(quantity).mul(unitPrice).toNumber();
+      for (let i = 0; i < activitiesToCreate.length; i += PARALLEL_BATCH_SIZE) {
+        const batch = activitiesToCreate.slice(i, i + PARALLEL_BATCH_SIZE);
 
-      const valueInBaseCurrency = this.exchangeRateDataService.toCurrencyAtDate(
-        value,
-        currency ?? assetProfile.currency,
-        userCurrency,
-        date
+        const batchResults = await Promise.all(
+          batch.map(async (activity) => {
+            const accountId = activity.accountId;
+            const comment = activity.comment;
+            const currency = activity.currency;
+            const date = activity.date;
+            const fee = activity.fee;
+            const quantity = activity.quantity;
+            const SymbolProfile = activity.SymbolProfile;
+            const tagIds = activity.tagIds ?? [];
+            const type = activity.type;
+            const unitPrice = activity.unitPrice;
+
+            const assetProfile = assetProfiles[
+              getAssetProfileIdentifier({
+                dataSource: SymbolProfile.dataSource,
+                symbol: SymbolProfile.symbol
+              })
+            ] ?? {
+              dataSource: SymbolProfile.dataSource,
+              symbol: SymbolProfile.symbol
+            };
+            const { dataSource, name, symbol } = assetProfile;
+            const validatedAccount = accounts.find(({ id }) => {
+              return id === accountId;
+            });
+            const validatedTags = tags.filter(({ id: tagId }) => {
+              return tagIds.some((activityTagId) => {
+                return activityTagId === tagId;
+              });
+            });
+
+            const order = await this.orderService.createOrder({
+              comment,
+              currency,
+              date,
+              fee,
+              quantity,
+              type,
+              unitPrice,
+              accountId: validatedAccount?.id,
+              skipDataGathering: true,
+              skipEvents: true,
+              SymbolProfile: {
+                connectOrCreate: {
+                  create: {
+                    dataSource,
+                    name,
+                    symbol,
+                    currency: assetProfile.currency,
+                    userId: dataSource === 'MANUAL' ? user.id : undefined
+                  },
+                  where: {
+                    dataSource_symbol: {
+                      dataSource,
+                      symbol
+                    }
+                  }
+                }
+              },
+              tags: validatedTags.map(({ id }) => {
+                return { id };
+              }),
+              updateAccountBalance: false,
+              user: { connect: { id: user.id } },
+              userId: user.id
+            });
+
+            const orderWithProfile = order as any;
+
+            if (orderWithProfile.SymbolProfile?.symbol) {
+              assetProfile.symbol = orderWithProfile.SymbolProfile.symbol;
+            }
+
+            const value = new Big(quantity).mul(unitPrice).toNumber();
+
+            const valueInBaseCurrency =
+              this.exchangeRateDataService.toCurrencyAtDate(
+                value,
+                currency ?? assetProfile.currency,
+                userCurrency,
+                date
+              );
+
+            return {
+              ...order,
+              error: undefined,
+              value,
+              valueInBaseCurrency: await valueInBaseCurrency,
+              SymbolProfile: assetProfile
+            } as unknown as Activity;
+          })
+        );
+
+        activities.push(...batchResults);
+      }
+
+      // Emit events once after all orders are created
+      this.eventEmitter.emit(
+        PortfolioChangedEvent.getName(),
+        new PortfolioChangedEvent({
+          userId: user.id
+        })
       );
-
-      activities.push({
-        ...order,
-        error,
-        value,
-        valueInBaseCurrency: await valueInBaseCurrency,
-        // @ts-ignore
-        SymbolProfile: assetProfile
-      });
     }
 
     activities.sort((activity1, activity2) => {

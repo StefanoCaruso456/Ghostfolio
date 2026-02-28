@@ -69,6 +69,11 @@ export class ConfigurationService {
       TOOLS_DISPATCH_MODE: str({ default: 'local' }),
       MAX_ACTIVITIES_TO_IMPORT: num({ default: Number.MAX_SAFE_INTEGER }),
       MAX_CHART_ITEMS: num({ default: 365 }),
+      PLAID_API_KEY: str({ default: '' }),
+      PLAID_CLIENT_ID: str({ default: '' }),
+      PLAID_SECRET: str({ default: '' }),
+      PLAID_ENV: str({ default: 'sandbox' }),
+      PLAID_ENCRYPTION_KEY: str({ default: '' }),
       OIDC_AUTHORIZATION_URL: str({ default: '' }),
       OIDC_CALLBACK_URL: str({ default: '' }),
       OIDC_CLIENT_ID: str({

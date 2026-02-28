@@ -32,6 +32,10 @@ COPY ./tsconfig.base.json tsconfig.base.json
 
 ENV NX_DAEMON=false
 ENV NODE_OPTIONS="--max-old-space-size=4096"
+
+# Ensure Prisma client types are current (postinstall layer may be cached)
+RUN npx prisma generate
+
 RUN npm run build:production
 
 # Prepare the dist image with additional node_modules

@@ -13,6 +13,7 @@ import type {
   AllocationsData,
   GetAllocationsOutput
 } from './schemas/allocations.schema';
+import type { QuoteMetadata } from './schemas/quote-metadata.schema';
 
 const DOMAIN_RULES_CHECKED = [
   'portfolio-data-available',
@@ -129,10 +130,21 @@ export function buildAllocationsResult(
       holdingsCount: holdingsList.length
     };
 
+    const quoteMetadata: QuoteMetadata = details.hasErrors
+      ? {
+          quoteStatus: 'partial',
+          quotesAsOf: new Date().toISOString(),
+          message:
+            'Some market data was unavailable — allocation percentages may use last-known prices'
+        }
+      : { quoteStatus: 'fresh', quotesAsOf: new Date().toISOString() };
+
     return {
       status: 'success',
       data,
-      message: `Allocation breakdown for ${holdingsList.length} holdings across ${byAssetClass.length} asset classes and ${byCurrency.length} currencies.`,
+      message: details.hasErrors
+        ? `Allocation breakdown for ${holdingsList.length} holdings (some prices may be stale).`
+        : `Allocation breakdown for ${holdingsList.length} holdings across ${byAssetClass.length} asset classes and ${byCurrency.length} currencies.`,
       verification: createVerificationResult({
         passed: true,
         confidence: details.hasErrors ? 0.7 : 0.95,
@@ -140,7 +152,8 @@ export function buildAllocationsResult(
         sources: ['ghostfolio-portfolio-service'],
         domainRulesChecked: DOMAIN_RULES_CHECKED,
         verificationType: 'confidence_scoring'
-      })
+      }),
+      quoteMetadata
     };
   } catch (error) {
     return {

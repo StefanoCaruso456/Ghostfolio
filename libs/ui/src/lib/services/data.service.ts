@@ -40,6 +40,7 @@ import {
   ImportResponse,
   InfoItem,
   LookupResponse,
+  MarketChartResponse,
   MarketDataDetailsResponse,
   MarketDataOfMarketsResponse,
   OAuthResponse,
@@ -375,6 +376,36 @@ export class DataService {
 
   public deleteAccountBalance(aId: string) {
     return this.http.delete<any>(`/api/v1/account-balance/${aId}`);
+  }
+
+  public createPlaidLinkToken() {
+    return this.http.post<{ linkToken: string }>(
+      '/api/v1/plaid/link-token',
+      {}
+    );
+  }
+
+  public exchangePlaidPublicToken(data: {
+    publicToken: string;
+    institutionId: string;
+    institutionName: string;
+    accountId?: string;
+  }) {
+    return this.http.post<any>('/api/v1/plaid/exchange-token', data);
+  }
+
+  public syncPlaidItem(id: string) {
+    return this.http.post<{ synced: number }>(`/api/v1/plaid/${id}/sync`, {});
+  }
+
+  public disconnectPlaidItem(id: string) {
+    return this.http.delete<void>(`/api/v1/plaid/${id}`);
+  }
+
+  public fetchMarketChart(symbol: string, range: string) {
+    return this.http.get<MarketChartResponse>('/api/v1/market-chart', {
+      params: { symbol, range }
+    });
   }
 
   public deleteActivities({ filters }) {

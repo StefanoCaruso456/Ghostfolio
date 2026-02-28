@@ -36,6 +36,7 @@ import { ApiKeysModule } from './endpoints/api-keys/api-keys.module';
 import { AssetsModule } from './endpoints/assets/assets.module';
 import { BenchmarksModule } from './endpoints/benchmarks/benchmarks.module';
 import { GhostfolioModule } from './endpoints/data-providers/ghostfolio/ghostfolio.module';
+import { MarketChartModule } from './endpoints/market-chart/market-chart.module';
 import { MarketDataModule } from './endpoints/market-data/market-data.module';
 import { PlatformsModule } from './endpoints/platforms/platforms.module';
 import { PublicModule } from './endpoints/public/public.module';
@@ -51,6 +52,7 @@ import { ImportModule } from './import/import.module';
 import { InfoModule } from './info/info.module';
 import { LogoModule } from './logo/logo.module';
 import { OrderModule } from './order/order.module';
+import { PlaidModule } from './plaid/plaid.module';
 import { PlatformModule } from './platform/platform.module';
 import { PortfolioModule } from './portfolio/portfolio.module';
 import { RedisCacheModule } from './redis-cache/redis-cache.module';
@@ -96,8 +98,10 @@ import { UserModule } from './user/user.module';
     ImportModule,
     InfoModule,
     LogoModule,
+    MarketChartModule,
     MarketDataModule,
     OrderModule,
+    PlaidModule,
     PlatformModule,
     PlatformsModule,
     PortfolioModule,

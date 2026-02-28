@@ -4,15 +4,19 @@ import {
   CreateOrderDto,
   CreateTagDto
 } from '@ghostfolio/common/dtos';
-import { parseDate as parseDateHelper } from '@ghostfolio/common/helper';
+import {
+  detectDateFormatFromColumn,
+  parseDate as parseDateHelper
+} from '@ghostfolio/common/helper';
 import { Activity } from '@ghostfolio/common/interfaces';
 
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Account, DataSource, Type as ActivityType } from '@prisma/client';
 import { isFinite } from 'lodash';
+import ms from 'ms';
 import { parse as csvToJson } from 'papaparse';
-import { EMPTY } from 'rxjs';
+import { EMPTY, timeout } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 @Injectable({
@@ -58,6 +62,9 @@ export class ImportActivitiesService {
     const activities: CreateOrderDto[] = [];
     const assetProfiles: CreateAssetProfileWithMarketDataDto[] = [];
 
+    // Detect date format across the entire column before parsing individual rows
+    const dateFormat = this.detectDateFormat(content);
+
     for (const [index, item] of content.entries()) {
       const currency = this.parseCurrency({ content, index, item });
       const dataSource = this.parseDataSource({ item });
@@ -71,7 +78,7 @@ export class ImportActivitiesService {
         type,
         accountId: this.parseAccount({ item, userAccounts }),
         comment: this.parseComment({ item }),
-        date: this.parseDate({ content, index, item }),
+        date: this.parseDate({ content, dateFormat, index, item }),
         fee: this.parseFee({ content, index, item }),
         quantity: this.parseQuantity({ content, index, item }),
         unitPrice: this.parseUnitPrice({ content, index, item }),
@@ -145,14 +152,14 @@ export class ImportActivitiesService {
           })
         )
         .subscribe({
-          next: (data) => {
+          next: (data: { activities: Activity[] }) => {
             resolve(data);
           }
         });
     });
   }
 
-  public importSelectedActivities({
+  public async importSelectedActivities({
     accounts,
     activities,
     assetProfiles,
@@ -165,18 +172,39 @@ export class ImportActivitiesService {
   }): Promise<{
     activities: Activity[];
   }> {
-    const importData: CreateOrderDto[] = [];
+    const importData: CreateOrderDto[] = activities.map((activity) =>
+      this.convertToCreateOrderDto(activity)
+    );
 
-    for (const activity of activities) {
-      importData.push(this.convertToCreateOrderDto(activity));
+    // Chunk large imports to avoid request timeouts
+    const CHUNK_SIZE = 200;
+
+    if (importData.length <= CHUNK_SIZE) {
+      return this.importJson({
+        accounts,
+        assetProfiles,
+        tags,
+        activities: importData
+      });
     }
 
-    return this.importJson({
-      accounts,
-      assetProfiles,
-      tags,
-      activities: importData
-    });
+    const allActivities: Activity[] = [];
+
+    for (let i = 0; i < importData.length; i += CHUNK_SIZE) {
+      const chunk = importData.slice(i, i + CHUNK_SIZE);
+
+      // Send accounts, assetProfiles, and tags only with the first chunk
+      const result = await this.importJson({
+        activities: chunk,
+        accounts: i === 0 ? accounts : undefined,
+        assetProfiles: i === 0 ? assetProfiles : undefined,
+        tags: i === 0 ? tags : undefined
+      });
+
+      allActivities.push(...result.activities);
+    }
+
+    return { activities: allActivities };
   }
 
   private convertToCreateOrderDto({
@@ -287,12 +315,31 @@ export class ImportActivitiesService {
     return undefined;
   }
 
+  private detectDateFormat(content: any[]): string | undefined {
+    const dateStrings: string[] = [];
+
+    for (const item of content) {
+      const lowered = this.lowercaseKeys(item);
+
+      for (const key of ImportActivitiesService.DATE_KEYS) {
+        if (lowered[key]) {
+          dateStrings.push(lowered[key].toString());
+          break;
+        }
+      }
+    }
+
+    return detectDateFormatFromColumn(dateStrings);
+  }
+
   private parseDate({
     content,
+    dateFormat,
     index,
     item
   }: {
     content: any[];
+    dateFormat?: string;
     index: number;
     item: any;
   }) {
@@ -301,7 +348,10 @@ export class ImportActivitiesService {
     for (const key of ImportActivitiesService.DATE_KEYS) {
       if (item[key]) {
         try {
-          return parseDateHelper(item[key].toString()).toISOString();
+          return parseDateHelper(
+            item[key].toString(),
+            dateFormat
+          ).toISOString();
         } catch {}
       }
     }
@@ -451,9 +501,10 @@ export class ImportActivitiesService {
     },
     aIsDryRun = false
   ) {
-    return this.http.post<{ activities: Activity[] }>(
-      `/api/v1/import?dryRun=${aIsDryRun}`,
-      aImportData
-    );
+    return this.http
+      .post<{
+        activities: Activity[];
+      }>(`/api/v1/import?dryRun=${aIsDryRun}`, aImportData)
+      .pipe(timeout(ms('5 minutes')));
   }
 }

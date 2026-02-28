@@ -44,6 +44,11 @@ export interface Environment extends CleanedEnvAccessors {
   TOOLS_DISPATCH_MODE: string;
   MAX_ACTIVITIES_TO_IMPORT: number;
   MAX_CHART_ITEMS: number;
+  PLAID_API_KEY: string;
+  PLAID_CLIENT_ID: string;
+  PLAID_SECRET: string;
+  PLAID_ENV: string;
+  PLAID_ENCRYPTION_KEY: string;
   OIDC_AUTHORIZATION_URL: string;
   OIDC_CALLBACK_URL: string;
   OIDC_CLIENT_ID: string;

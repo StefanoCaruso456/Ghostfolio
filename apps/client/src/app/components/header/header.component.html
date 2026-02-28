@@ -11,131 +11,81 @@
         <gf-logo class="px-2" [label]="pageTitle" />
       </a>
     </div>
-    <span class="gf-spacer"></span>
-    <ul class="align-items-center d-flex list-inline m-0 px-2">
-      <li class="list-inline-item">
+    <nav
+      class="align-items-center d-none d-sm-flex header-nav justify-content-center"
+    >
+      <a
+        i18n
+        mat-flat-button
+        [ngClass]="{
+          'font-weight-bold': currentRoute === internalRoutes.portfolio.path,
+          'text-decoration-underline':
+            currentRoute === internalRoutes.portfolio.path
+        }"
+        [routerLink]="routerLinkPortfolio"
+        >Portfolio</a
+      >
+      <a
+        i18n
+        mat-flat-button
+        [ngClass]="{
+          'font-weight-bold': currentRoute === internalRoutes.accounts.path,
+          'text-decoration-underline':
+            currentRoute === internalRoutes.accounts.path
+        }"
+        [routerLink]="routerLinkAccounts"
+        >Accounts</a
+      >
+      <a
+        i18n
+        mat-flat-button
+        [ngClass]="{
+          'font-weight-bold': currentRoute === routeResources,
+          'text-decoration-underline': currentRoute === routeResources
+        }"
+        [routerLink]="routerLinkResources"
+        >Market</a
+      >
+      @if (hasPermissionToAccessAssistant) {
         <a
-          class="d-none d-sm-block"
-          i18n
           mat-flat-button
           [ngClass]="{
-            'font-weight-bold':
-              currentRoute === internalRoutes.home.path ||
-              currentRoute === internalRoutes.zen.path,
-            'text-decoration-underline':
-              currentRoute === internalRoutes.home.path ||
-              currentRoute === internalRoutes.zen.path
+            'font-weight-bold': currentRoute === routeAiChat,
+            'text-decoration-underline': currentRoute === routeAiChat
           }"
-          [routerLink]="['/']"
-          >Overview</a
+          [routerLink]="routerLinkAiChat"
+          >Ghostfolio AI</a
         >
-      </li>
-      <li class="list-inline-item">
-        <a
-          class="d-none d-sm-block"
-          i18n
-          mat-flat-button
-          [ngClass]="{
-            'font-weight-bold': currentRoute === internalRoutes.portfolio.path,
-            'text-decoration-underline':
-              currentRoute === internalRoutes.portfolio.path
-          }"
-          [routerLink]="routerLinkPortfolio"
-          >Portfolio</a
-        >
-      </li>
-      <li class="list-inline-item">
-        <a
-          class="d-none d-sm-block"
-          i18n
-          mat-flat-button
-          [ngClass]="{
-            'font-weight-bold': currentRoute === internalRoutes.accounts.path,
-            'text-decoration-underline':
-              currentRoute === internalRoutes.accounts.path
-          }"
-          [routerLink]="routerLinkAccounts"
-          >Accounts</a
-        >
-      </li>
-      @if (hasPermissionToAccessAdminControl) {
-        <li class="list-inline-item">
-          <a
-            class="d-none d-sm-block"
-            i18n
-            mat-flat-button
-            [ngClass]="{
-              'font-weight-bold':
-                currentRoute === internalRoutes.adminControl.path,
-              'text-decoration-underline':
-                currentRoute === internalRoutes.adminControl.path
-            }"
-            [routerLink]="routerLinkAdminControl"
-            >Admin Control</a
-          >
-        </li>
       }
-      <li class="list-inline-item">
-        <a
-          class="d-none d-sm-block"
-          i18n
+    </nav>
+    <ul class="align-items-center d-flex header-actions list-inline m-0 px-2">
+      <li class="list-inline-item d-none d-sm-block">
+        <button
+          class="no-min-width px-2"
           mat-flat-button
-          [ngClass]="{
-            'font-weight-bold': currentRoute === routeResources,
-            'text-decoration-underline': currentRoute === routeResources
-          }"
-          [routerLink]="routerLinkResources"
-          >Resources</a
+          [matMenuTriggerFor]="moreMenu"
         >
-      </li>
-      @if (
-        hasPermissionForSubscription && user?.subscription?.type === 'Basic'
-      ) {
-        <li class="list-inline-item">
-          <a
-            class="d-none d-sm-block"
-            mat-flat-button
-            [ngClass]="{
-              'font-weight-bold': currentRoute === routePricing,
-              'text-decoration-underline': currentRoute === routePricing
-            }"
-            [routerLink]="routerLinkPricing"
-          >
-            <span class="align-items-center d-flex">
-              <span i18n>Pricing</span>
-              @if (currentRoute !== routePricing && hasPromotion) {
-                <span class="badge badge-warning ml-1">%</span>
-              }
-            </span>
-          </a>
-        </li>
-      }
-      <li class="list-inline-item">
-        <a
-          class="d-none d-sm-block"
-          i18n
-          mat-flat-button
-          [ngClass]="{
-            'font-weight-bold': currentRoute === routeAbout,
-            'text-decoration-underline': currentRoute === routeAbout
-          }"
-          [routerLink]="routerLinkAbout"
-          >About</a
-        >
+          <ion-icon name="ellipsis-horizontal-outline" size="small" />
+          <span class="ml-1">More</span>
+        </button>
+        <mat-menu #moreMenu="matMenu" xPosition="before">
+          <a i18n mat-menu-item [routerLink]="routerLinkHoldings">Holdings</a>
+          <a i18n mat-menu-item [routerLink]="routerLinkSummary">Summary</a>
+          <a i18n mat-menu-item [routerLink]="routerLinkWatchlist">Watchlist</a>
+          <hr class="m-0" />
+          <a i18n mat-menu-item [routerLink]="routerLinkGuides">Guides</a>
+          <a i18n mat-menu-item [routerLink]="routerLinkGlossary">Glossary</a>
+          @if (hasPermissionToAccessAdminControl) {
+            <hr class="m-0" />
+            <a i18n mat-menu-item [routerLink]="routerLinkAdminControl"
+              >Admin Control</a
+            >
+          }
+          <hr class="m-0" />
+          <a i18n mat-menu-item [routerLink]="routerLinkAbout">About</a>
+        </mat-menu>
       </li>
       @if (hasPermissionToAccessAssistant) {
-        <li class="list-inline-item">
-          <a
-            class="d-none d-sm-block"
-            mat-flat-button
-            [ngClass]="{
-              'font-weight-bold': currentRoute === routeAiChat,
-              'text-decoration-underline': currentRoute === routeAiChat
-            }"
-            [routerLink]="routerLinkAiChat"
-            >Ghostfolio AI</a
-          >
-        </li>
         <li class="list-inline-item">
           <button
             #assistantTrigger="matMenuTrigger"
@@ -251,21 +201,6 @@
             class="d-flex d-sm-none"
             i18n
             mat-menu-item
-            [ngClass]="{
-              'font-weight-bold':
-                currentRoute === internalRoutes.home.path ||
-                currentRoute === internalRoutes.zen.path
-            }"
-            [routerLink]="['/']"
-            >Overview</a
-          >
-          <a
-            class="d-flex d-sm-none"
-            i18n
-            mat-menu-item
-            [ngClass]="{
-              'font-weight-bold': currentRoute === internalRoutes.portfolio.path
-            }"
             [routerLink]="routerLinkPortfolio"
             >Portfolio</a
           >
@@ -273,41 +208,20 @@
             class="d-flex d-sm-none"
             i18n
             mat-menu-item
-            [ngClass]="{
-              'font-weight-bold': currentRoute === internalRoutes.accounts.path
-            }"
             [routerLink]="routerLinkAccounts"
             >Accounts</a
           >
           <a
+            class="d-flex d-sm-none"
             i18n
             mat-menu-item
-            [ngClass]="{
-              'font-weight-bold': currentRoute === internalRoutes.account.path
-            }"
-            [routerLink]="routerLinkAccount"
-            >My Ghostfolio</a
+            [routerLink]="routerLinkResources"
+            >Market</a
           >
-          @if (hasPermissionToAccessAdminControl) {
-            <a
-              class="d-flex d-sm-none"
-              i18n
-              mat-menu-item
-              [ngClass]="{
-                'font-weight-bold':
-                  currentRoute === internalRoutes.adminControl.path
-              }"
-              [routerLink]="routerLinkAdminControl"
-              >Admin Control</a
-            >
-          }
           @if (hasPermissionToAccessAssistant) {
             <a
               class="d-flex d-sm-none"
               mat-menu-item
-              [ngClass]="{
-                'font-weight-bold': currentRoute === routeAiChat
-              }"
               [routerLink]="routerLinkAiChat"
               >Ghostfolio AI</a
             >
@@ -317,11 +231,55 @@
             class="d-flex d-sm-none"
             i18n
             mat-menu-item
-            [ngClass]="{
-              'font-weight-bold': currentRoute === routeResources
-            }"
-            [routerLink]="routerLinkResources"
-            >Resources</a
+            [routerLink]="routerLinkHoldings"
+            >Holdings</a
+          >
+          <a
+            class="d-flex d-sm-none"
+            i18n
+            mat-menu-item
+            [routerLink]="routerLinkSummary"
+            >Summary</a
+          >
+          <a
+            class="d-flex d-sm-none"
+            i18n
+            mat-menu-item
+            [routerLink]="routerLinkWatchlist"
+            >Watchlist</a
+          >
+          <a
+            class="d-flex d-sm-none"
+            i18n
+            mat-menu-item
+            [routerLink]="routerLinkGuides"
+            >Guides</a
+          >
+          <a
+            class="d-flex d-sm-none"
+            i18n
+            mat-menu-item
+            [routerLink]="routerLinkGlossary"
+            >Glossary</a
+          >
+          <a i18n mat-menu-item [routerLink]="routerLinkAccount"
+            >My Ghostfolio</a
+          >
+          @if (hasPermissionToAccessAdminControl) {
+            <a
+              class="d-flex d-sm-none"
+              i18n
+              mat-menu-item
+              [routerLink]="routerLinkAdminControl"
+              >Admin Control</a
+            >
+          }
+          <a
+            class="d-flex d-sm-none"
+            i18n
+            mat-menu-item
+            [routerLink]="routerLinkAbout"
+            >About</a
           >
           @if (
             hasPermissionForSubscription && user?.subscription?.type === 'Basic'
@@ -329,7 +287,6 @@
             <a
               class="d-flex d-sm-none"
               mat-menu-item
-              [ngClass]="{ 'font-weight-bold': currentRoute === routePricing }"
               [routerLink]="routerLinkPricing"
             >
               <span class="align-items-center d-flex">
@@ -340,14 +297,6 @@
               </span>
             </a>
           }
-          <a
-            class="d-flex d-sm-none"
-            i18n
-            mat-menu-item
-            [ngClass]="{ 'font-weight-bold': currentRoute === routeAbout }"
-            [routerLink]="routerLinkAbout"
-            >About Ghostfolio</a
-          >
           <hr class="d-flex d-sm-none m-0" />
           <button i18n mat-menu-item (click)="onSignOut()">Log out</button>
         </mat-menu>

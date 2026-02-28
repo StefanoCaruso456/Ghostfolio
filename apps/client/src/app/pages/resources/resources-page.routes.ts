@@ -12,23 +12,23 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        loadChildren: () =>
-          import('./overview/resources-overview.routes').then((m) => m.routes)
-      },
-      {
-        path: publicRoutes.resources.subRoutes.glossary.path,
-        loadChildren: () =>
-          import('./glossary/resources-glossary.routes').then((m) => m.routes)
-      },
-      {
-        path: publicRoutes.resources.subRoutes.guides.path,
-        loadChildren: () =>
-          import('./guides/resources-guides.routes').then((m) => m.routes)
+        redirectTo: publicRoutes.resources.subRoutes.markets.path,
+        pathMatch: 'full'
       },
       {
         path: publicRoutes.resources.subRoutes.markets.path,
         loadChildren: () =>
           import('./markets/resources-markets.routes').then((m) => m.routes)
+      },
+      {
+        path: publicRoutes.resources.subRoutes.guides.path,
+        loadChildren: () =>
+          import('./learn/resources-learn.routes').then((m) => m.routes)
+      },
+      {
+        path: publicRoutes.resources.subRoutes.glossary.path,
+        redirectTo: publicRoutes.resources.subRoutes.guides.path,
+        pathMatch: 'full'
       },
       {
         path: publicRoutes.resources.subRoutes.personalFinanceTools.path,

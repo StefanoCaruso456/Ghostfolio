@@ -46,7 +46,7 @@ export async function buildQuoteResult(
         returnedCount: result.quotes.length
       },
       message: allFailed
-        ? `Failed to fetch quotes for all ${input.symbols.length} symbols.`
+        ? `Failed to fetch quotes for all ${input.symbols.length} symbols (${result.errors.map((e) => `${e.symbol}: ${e.error}`).join(', ')})`
         : `Fetched ${result.quotes.length} of ${input.symbols.length} quotes.`,
       verification: createVerificationResult({
         passed: !allFailed,

@@ -17,7 +17,6 @@ import { IonIcon } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
   albumsOutline,
-  analyticsOutline,
   bookmarkOutline,
   newspaperOutline,
   readerOutline
@@ -56,14 +55,9 @@ export class GfHomePageComponent implements OnDestroy, OnInit {
 
           this.tabs = [
             {
-              iconName: 'analytics-outline',
-              label: internalRoutes.home.title,
-              routerLink: internalRoutes.home.routerLink
-            },
-            {
               iconName: 'albums-outline',
               label: internalRoutes.home.subRoutes.holdings.title,
-              routerLink: internalRoutes.home.subRoutes.holdings.routerLink
+              routerLink: internalRoutes.home.routerLink
             },
             {
               iconName: 'reader-outline',
@@ -98,7 +92,6 @@ export class GfHomePageComponent implements OnDestroy, OnInit {
 
     addIcons({
       albumsOutline,
-      analyticsOutline,
       bookmarkOutline,
       newspaperOutline,
       readerOutline
