@@ -269,11 +269,36 @@ export class SnaptradeService {
       );
     }
 
+    this.logger.log(
+      `Snaptrade listUserAccounts returned ${snaptradeAccounts.length} account(s) for userId=${userId}`
+    );
+
     let synced = 0;
 
     for (const snapAccount of snaptradeAccounts) {
-      const accountName = `Snaptrade – ${snapAccount.name || snapAccount.number || 'Account'}`;
+      const brokerName =
+        snapAccount.institution_name || snapAccount.name || 'Broker';
+      const accountLabel =
+        snapAccount.name || snapAccount.number || 'Account';
+      const accountName = `${brokerName} – ${accountLabel}`;
       const snapAccountId = snapAccount.id;
+
+      // Extract balance and currency from the proper SDK fields
+      const accountBalance = snapAccount.balance?.total?.amount ?? 0;
+      const accountCurrency =
+        snapAccount.balance?.total?.currency ??
+        snapAccount.meta?.currency ??
+        'USD';
+
+      this.logger.log(
+        `Snaptrade account: id=${snapAccountId}, name="${accountName}", balance=${accountBalance} ${accountCurrency}, syncStatus=${JSON.stringify(snapAccount.sync_status)}`
+      );
+
+      // Update brokerage name on the connection record
+      await this.prismaService.snapTradeConnection.update({
+        data: { brokerageName: brokerName },
+        where: { id: connection.id }
+      });
 
       // Find or create a matching Ghostfolio account
       const existingAccount = await this.prismaService.account.findFirst({
@@ -289,7 +314,11 @@ export class SnaptradeService {
         ghostfolioAccountId = existingAccount.id;
 
         await this.prismaService.account.update({
-          data: { name: accountName },
+          data: {
+            balance: accountBalance,
+            currency: accountCurrency,
+            name: accountName
+          },
           where: {
             id_userId: { id: existingAccount.id, userId }
           }
@@ -297,9 +326,9 @@ export class SnaptradeService {
       } else {
         const newAccount = await this.prismaService.account.create({
           data: {
-            balance: 0,
+            balance: accountBalance,
             comment: `snaptrade:${snapAccountId}`,
-            currency: snapAccount.meta?.currency ?? 'USD',
+            currency: accountCurrency,
             name: accountName,
             userId
           }
@@ -320,10 +349,21 @@ export class SnaptradeService {
 
         const positions = positionsResponse.data ?? [];
 
+        this.logger.log(
+          `Snaptrade account ${snapAccountId} has ${positions.length} position(s)`
+        );
+
         for (const position of positions) {
-          const symbol = position.symbol?.symbol?.symbol;
+          // SnapTrade nests symbol info: position.symbol.symbol.symbol
+          const symbol =
+            position.symbol?.symbol?.symbol ||
+            position.symbol?.symbol?.id ||
+            position.symbol?.id;
 
           if (!symbol) {
+            this.logger.warn(
+              `Skipping position with no symbol: ${JSON.stringify(position.symbol)}`
+            );
             continue;
           }
 
