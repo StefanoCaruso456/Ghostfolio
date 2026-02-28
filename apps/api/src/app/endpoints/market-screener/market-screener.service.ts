@@ -91,7 +91,10 @@ export class MarketScreenerService {
     scrId: 'most_actives' | 'day_gainers' | 'day_losers',
     count: number
   ): Promise<MarketScreenerItem[]> {
-    const result = await this.yahooFinance.screener(scrId, { count });
+    const result = await this.yahooFinance.screener({
+      scrIds: scrId,
+      count
+    });
 
     return result.quotes.map((q) => ({
       symbol: q.symbol,
