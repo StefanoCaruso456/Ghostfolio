@@ -30,8 +30,10 @@ import {
   debounceTime,
   distinctUntilChanged,
   filter,
+  retry,
   switchMap,
-  takeUntil
+  takeUntil,
+  timer
 } from 'rxjs';
 
 type MarketView = 'stocks' | 'crypto';
@@ -273,7 +275,10 @@ export class ResourcesMarketsComponent implements OnInit, OnDestroy {
 
     this.dataService
       .fetchMarketChart(symbol, this.selectedRange)
-      .pipe(takeUntil(this.unsubscribeSubject))
+      .pipe(
+        retry({ count: 2, delay: (_, retryIndex) => timer(retryIndex * 2000) }),
+        takeUntil(this.unsubscribeSubject)
+      )
       .subscribe({
         next: (response: MarketChartResponse) => {
           const items: LineChartItem[] = response.points.map((p) => ({
