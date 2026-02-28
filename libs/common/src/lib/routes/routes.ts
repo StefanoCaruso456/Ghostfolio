@@ -124,6 +124,11 @@ export const internalRoutes: Record<string, InternalRoute> = {
     routerLink: ['/i18n'],
     title: $localize`Internationalization`
   },
+  taxIntelligence: {
+    path: 'tax-intelligence',
+    routerLink: ['/tax-intelligence'],
+    title: $localize`Tax Intelligence`
+  },
   portfolio: {
     path: 'portfolio',
     routerLink: ['/portfolio'],
