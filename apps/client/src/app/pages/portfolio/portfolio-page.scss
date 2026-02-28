@@ -25,6 +25,14 @@
         .mdc-notched-outline__trailing {
           border-color: transparent !important;
         }
+
+        .mat-mdc-select-value {
+          color: rgba(var(--dark-primary-text));
+        }
+
+        .mat-mdc-select-arrow {
+          color: rgba(var(--dark-primary-text));
+        }
       }
     }
   }
@@ -45,9 +53,22 @@
     .portfolio-nav-select {
       ::ng-deep {
         .mat-mdc-text-field-wrapper {
+          background: rgb(var(--palette-background-card-dark));
           box-shadow:
             3px 3px 6px rgba(0, 0, 0, 0.3),
             -3px -3px 6px rgba(255, 255, 255, 0.05);
+        }
+
+        .mat-mdc-select-value {
+          color: rgba(var(--light-primary-text));
+        }
+
+        .mat-mdc-select-arrow {
+          color: rgba(var(--light-primary-text));
+        }
+
+        .mat-mdc-floating-label {
+          color: rgba(var(--light-primary-text));
         }
       }
     }
