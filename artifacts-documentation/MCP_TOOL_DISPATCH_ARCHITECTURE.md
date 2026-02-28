@@ -11,7 +11,7 @@ schema contracts, or telemetry pipeline.
 
 ### Scope
 
-- Routes 10 AI tools (`getQuote`, `getPortfolioSummary`, etc.) through a
+- Routes 13 AI tools (`getQuote`, `getPortfolioSummary`, `getHoldingDetail`, etc.) through a
   configurable dispatch layer
 - Validates MCP results against the same Zod schemas used for local execution
 - Wraps MCP results with the same verification contract as local results
@@ -37,7 +37,7 @@ schema contracts, or telemetry pipeline.
 | --------------------- | ------------------------------------------ |
 | ToolDispatcherService | Implemented, tested (15 tests)             |
 | McpClientService      | `callTool()` method added                  |
-| mcp-tool-map.ts       | All 10 tools mapped                        |
+| mcp-tool-map.ts       | All 13 tools mapped                        |
 | Hybrid allowlist      | `getQuote` only                            |
 | Telemetry fields      | `executor`, `mcpRequestId`, `mcpLatencyMs` |
 | Integration tests     | 15 unit + 20 telemetry (35 total passing)  |
