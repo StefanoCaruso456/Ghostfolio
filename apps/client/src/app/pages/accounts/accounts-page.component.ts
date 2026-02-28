@@ -223,6 +223,7 @@ export class GfAccountsPageComponent implements OnDestroy, OnInit {
     id,
     isExcluded,
     name,
+    plaidAccountId,
     platformId
   }: AccountModel) {
     const dialogRef = this.dialog.open<
@@ -237,6 +238,7 @@ export class GfAccountsPageComponent implements OnDestroy, OnInit {
           id,
           isExcluded,
           name,
+          plaidAccountId,
           platformId
         }
       },
@@ -317,6 +319,7 @@ export class GfAccountsPageComponent implements OnDestroy, OnInit {
           id: null,
           isExcluded: false,
           name: null,
+          plaidAccountId: null,
           platformId: null
         }
       },
