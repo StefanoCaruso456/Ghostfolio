@@ -65,6 +65,41 @@
   white-space: nowrap;
 }
 
+.market-toggle {
+  background: #e0e5ec;
+  border-radius: 14px;
+  box-shadow:
+    inset 2px 2px 5px rgba(0, 0, 0, 0.08),
+    inset -2px -2px 5px rgba(255, 255, 255, 0.9);
+  display: inline-flex;
+  gap: 0;
+  padding: 4px;
+}
+
+.market-toggle-btn {
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+  color: rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 8px 28px;
+  transition: all 0.25s ease;
+
+  &.active {
+    background: #f0f4f8;
+    box-shadow:
+      3px 3px 6px rgba(0, 0, 0, 0.1),
+      -3px -3px 6px rgba(255, 255, 255, 1);
+    color: rgba(var(--palette-primary-500), 1);
+  }
+
+  &:not(.active):hover {
+    color: rgba(0, 0, 0, 0.7);
+  }
+}
+
 .chart-grid {
   display: grid;
   gap: 1.5rem;
@@ -181,6 +216,29 @@
 
   .search-option-name {
     color: rgba(255, 255, 255, 0.55);
+  }
+
+  .market-toggle {
+    background: #1a1d24;
+    box-shadow:
+      inset 2px 2px 5px rgba(0, 0, 0, 0.4),
+      inset -2px -2px 5px rgba(255, 255, 255, 0.04);
+  }
+
+  .market-toggle-btn {
+    color: rgba(255, 255, 255, 0.45);
+
+    &.active {
+      background: #282c34;
+      box-shadow:
+        3px 3px 6px rgba(0, 0, 0, 0.4),
+        -3px -3px 6px rgba(255, 255, 255, 0.05);
+      color: rgba(var(--palette-primary-500), 1);
+    }
+
+    &:not(.active):hover {
+      color: rgba(255, 255, 255, 0.7);
+    }
   }
 
   .chart-card {

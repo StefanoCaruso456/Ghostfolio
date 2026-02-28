@@ -31,6 +31,26 @@
     </mat-form-field>
   </div>
 
+  <!-- Stocks / Crypto toggle -->
+  <div class="d-flex justify-content-center mb-3">
+    <div class="market-toggle">
+      <button
+        class="market-toggle-btn"
+        [class.active]="marketView === 'stocks'"
+        (click)="onMarketViewChange('stocks')"
+      >
+        Stocks
+      </button>
+      <button
+        class="market-toggle-btn"
+        [class.active]="marketView === 'crypto'"
+        (click)="onMarketViewChange('crypto')"
+      >
+        Crypto
+      </button>
+    </div>
+  </div>
+
   <!-- Range selector -->
   <div
     class="d-flex align-items-center justify-content-center mb-3 gap-2 flex-wrap"
