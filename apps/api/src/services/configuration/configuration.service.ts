@@ -74,6 +74,7 @@ export class ConfigurationService {
       PLAID_SECRET: str({ default: '' }),
       PLAID_ENV: str({ default: 'sandbox' }),
       PLAID_ENCRYPTION_KEY: str({ default: '' }),
+      PLAID_WEBHOOK_URL: str({ default: '' }),
       OIDC_AUTHORIZATION_URL: str({ default: '' }),
       OIDC_CALLBACK_URL: str({ default: '' }),
       OIDC_CLIENT_ID: str({
