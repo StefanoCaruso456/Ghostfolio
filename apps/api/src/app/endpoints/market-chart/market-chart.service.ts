@@ -37,73 +37,103 @@ export class MarketChartService {
     }
 
     // Convert Ghostfolio internal symbol to Yahoo Finance format
-    // e.g. BTCUSD -> BTC-USD, EURUSD -> EURUSD=X
     const yahooSymbol =
       this.yahooFinanceDataEnhancerService.convertToYahooFinanceSymbol(symbol);
 
-    // Fetch from Yahoo Finance using the shared instance
-    // (avoids duplicate cookie jar initialization that can fail independently)
     const yahooFinance =
       this.yahooFinanceDataEnhancerService.getYahooFinanceInstance();
 
-    try {
-      const now = new Date();
-      const period1 = this.getPeriodStart(range, now);
+    const now = new Date();
+    const period1 = this.getPeriodStart(range, now);
+    const interval = this.getInterval(range);
 
-      const interval = this.getInterval(range);
+    // Try fetching chart data with one retry after clearing stale crumb
+    let lastError: Error;
 
-      const result: ChartResultArray = await yahooFinance.chart(yahooSymbol, {
-        interval,
-        period1: format(period1, DATE_FORMAT),
-        period2: format(now, DATE_FORMAT)
-      });
+    for (let attempt = 0; attempt < 2; attempt++) {
+      try {
+        const result: ChartResultArray = await yahooFinance.chart(yahooSymbol, {
+          interval,
+          period1: format(period1, DATE_FORMAT),
+          period2: format(now, DATE_FORMAT)
+        });
 
-      const points: { t: number; v: number }[] = [];
+        const points: { t: number; v: number }[] = [];
 
-      if (result.quotes) {
-        for (const quote of result.quotes) {
-          if (quote.date && quote.close != null) {
-            points.push({
-              t: quote.date.getTime(),
-              v: quote.close
-            });
+        if (result.quotes) {
+          for (const quote of result.quotes) {
+            if (quote.date && quote.close != null) {
+              points.push({
+                t: quote.date.getTime(),
+                v: quote.close
+              });
+            }
+          }
+        }
+
+        const currency = result.meta?.currency ?? 'USD';
+
+        const response: MarketChartResponse = {
+          cached: false,
+          currency,
+          points,
+          range,
+          source: 'Yahoo Finance',
+          symbol
+        };
+
+        // Cache for 5 minutes
+        try {
+          await this.redisCacheService.set(
+            cacheKey,
+            JSON.stringify(response),
+            ms('5 minutes')
+          );
+        } catch (error) {
+          this.logger.warn(`Cache write error: ${error.message}`);
+        }
+
+        return response;
+      } catch (error) {
+        lastError = error;
+
+        this.logger.warn(
+          `Yahoo Finance chart attempt ${attempt + 1} failed for ${symbol} (yahoo=${yahooSymbol}): [${error.name}] ${error.message}`
+        );
+
+        if (attempt === 0) {
+          // yahoo-finance2 caches the first crumb fetch result at module
+          // scope. If it rejects (e.g. transient network error on deploy),
+          // ALL subsequent requests fail permanently. Clear the state so
+          // the retry can re-initialize the crumb.
+          try {
+            const cookieJar = (yahooFinance as any)._opts?.cookieJar;
+
+            if (cookieJar) {
+              // eslint-disable-next-line @typescript-eslint/no-require-imports
+              const { getCrumbClear } = require('yahoo-finance2/lib/getCrumb');
+              await getCrumbClear(cookieJar);
+              this.logger.log(
+                'Cleared Yahoo Finance crumb/cookie state, retrying...'
+              );
+            }
+          } catch (clearError) {
+            this.logger.warn(
+              `Failed to clear crumb state: ${clearError.message}`
+            );
           }
         }
       }
-
-      const currency = result.meta?.currency ?? 'USD';
-
-      const response: MarketChartResponse = {
-        cached: false,
-        currency,
-        points,
-        range,
-        source: 'Yahoo Finance',
-        symbol
-      };
-
-      // Cache for 60 seconds
-      try {
-        await this.redisCacheService.set(
-          cacheKey,
-          JSON.stringify(response),
-          ms('60 seconds')
-        );
-      } catch (error) {
-        this.logger.warn(`Cache write error: ${error.message}`);
-      }
-
-      return response;
-    } catch (error) {
-      this.logger.error(
-        `Yahoo Finance chart error for ${symbol} (yahoo=${yahooSymbol}, range=${range}): [${error.name}] ${error.message}`
-      );
-
-      throw new HttpException(
-        `Chart data unavailable for ${symbol}`,
-        HttpStatus.BAD_GATEWAY
-      );
     }
+
+    this.logger.error(
+      `Yahoo Finance chart error for ${symbol} (yahoo=${yahooSymbol}, range=${range}): [${lastError.name}] ${lastError.message}`
+    );
+
+    throw new HttpException(
+      `Chart data unavailable for ${symbol}`,
+      HttpStatus.BAD_GATEWAY
+    );
   }
 
   private getInterval(range: string): '1d' | '1wk' | '1mo' {
