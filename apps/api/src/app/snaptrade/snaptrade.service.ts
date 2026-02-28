@@ -21,7 +21,7 @@ export class SnaptradeService {
     private readonly prismaService: PrismaService
   ) {
     const clientId = this.configurationService.get('SNAPTRADE_CLIENT_ID');
-    const consumerKey = this.configurationService.get('SNAPTRADE_CONSUMER_KEY');
+    const consumerKey = this.configurationService.get('SNAPTRADE_SECRET');
 
     if (clientId && consumerKey) {
       this.snaptradeClient = new Snaptrade({
@@ -34,7 +34,7 @@ export class SnaptradeService {
       this.logger.warn(
         `Snaptrade not configured — missing: ${[
           !clientId && 'SNAPTRADE_CLIENT_ID',
-          !consumerKey && 'SNAPTRADE_CONSUMER_KEY'
+          !consumerKey && 'SNAPTRADE_SECRET'
         ]
           .filter(Boolean)
           .join(', ')}`
@@ -398,7 +398,7 @@ export class SnaptradeService {
   private ensureConfigured(): void {
     if (!this.snaptradeClient) {
       throw new ServiceUnavailableException(
-        'Snaptrade is not configured — check SNAPTRADE_CLIENT_ID and SNAPTRADE_CONSUMER_KEY env vars'
+        'Snaptrade is not configured — check SNAPTRADE_CLIENT_ID and SNAPTRADE_SECRET env vars'
       );
     }
   }

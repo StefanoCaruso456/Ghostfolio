@@ -76,7 +76,7 @@ export class ConfigurationService {
       PLAID_ENCRYPTION_KEY: str({ default: '' }),
       PLAID_WEBHOOK_URL: str({ default: '' }),
       SNAPTRADE_CLIENT_ID: str({ default: '' }),
-      SNAPTRADE_CONSUMER_KEY: str({ default: '' }),
+      SNAPTRADE_SECRET: str({ default: '' }),
       OIDC_AUTHORIZATION_URL: str({ default: '' }),
       OIDC_CALLBACK_URL: str({ default: '' }),
       OIDC_CLIENT_ID: str({

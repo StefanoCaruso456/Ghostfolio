@@ -51,7 +51,7 @@ export interface Environment extends CleanedEnvAccessors {
   PLAID_ENCRYPTION_KEY: string;
   PLAID_WEBHOOK_URL: string;
   SNAPTRADE_CLIENT_ID: string;
-  SNAPTRADE_CONSUMER_KEY: string;
+  SNAPTRADE_SECRET: string;
   OIDC_AUTHORIZATION_URL: string;
   OIDC_CALLBACK_URL: string;
   OIDC_CLIENT_ID: string;
