@@ -171,6 +171,7 @@ describe('PortfolioCalculator', () => {
             id: accountId,
             isExcluded: false,
             name: 'USD',
+            plaidAccountId: null,
             platformId: null,
             updatedAt: parseDate('2023-12-31'),
             userId: userDummyData.id
