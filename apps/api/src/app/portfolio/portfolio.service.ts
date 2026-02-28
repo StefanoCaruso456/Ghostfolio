@@ -65,7 +65,7 @@ import {
 } from '@ghostfolio/common/types';
 import { PerformanceCalculationType } from '@ghostfolio/common/types/performance-calculation-type.type';
 
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import {
   Account,
@@ -103,6 +103,8 @@ const europeMarkets = require('../../assets/countries/europe-markets.json');
 
 @Injectable()
 export class PortfolioService {
+  private readonly logger = new Logger(PortfolioService.name);
+
   public constructor(
     private readonly accountBalanceService: AccountBalanceService,
     private readonly accountService: AccountService,
@@ -159,22 +161,43 @@ export class PortfolioService {
       };
     }
 
-    const [accounts, details] = await Promise.all([
-      this.accountService.accounts({
+    let accounts: Awaited<ReturnType<typeof this.accountService.accounts>>;
+    let details: Awaited<ReturnType<typeof this.getDetails>>;
+
+    try {
+      [accounts, details] = await Promise.all([
+        this.accountService.accounts({
+          where,
+          include: {
+            activities: { include: { SymbolProfile: true } },
+            platform: true
+          },
+          orderBy: { name: 'asc' }
+        }),
+        this.getDetails({
+          filters,
+          withExcludedAccounts,
+          impersonationId: userId,
+          userId: this.request.user.id
+        })
+      ]);
+    } catch (error) {
+      this.logger.error(
+        `getAccounts: getDetails() failed, falling back to accounts without portfolio values: ${error instanceof Error ? error.message : error}`,
+        error instanceof Error ? error.stack : undefined
+      );
+
+      // Fall back: load accounts without portfolio values
+      accounts = await this.accountService.accounts({
         where,
         include: {
           activities: { include: { SymbolProfile: true } },
           platform: true
         },
         orderBy: { name: 'asc' }
-      }),
-      this.getDetails({
-        filters,
-        withExcludedAccounts,
-        impersonationId: userId,
-        userId: this.request.user.id
-      })
-    ]);
+      });
+      details = { accounts: {}, holdings: {}, platforms: {} } as any;
+    }
 
     const userCurrency = this.request.user.settings.settings.baseCurrency;
 
