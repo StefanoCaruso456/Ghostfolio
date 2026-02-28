@@ -1,0 +1,1001 @@
+Date,Code,DataSource,Currency,Price,Quantity,Action,Fee,Note
+05-01-2015,HOOD,YAHOO,USD,21.26,55,sell,0,Robinhood
+09-01-2015,RIOT,YAHOO,USD,12.07,11,sell,0,Riot Platforms
+12-01-2015,RIOT,YAHOO,USD,7.17,48,sell,0,Riot Platforms
+15-01-2015,MARA,YAHOO,USD,26.29,3,buy,9.95,Marathon Digital
+22-01-2015,RIOT,YAHOO,USD,11.9,20,buy,0,Riot Platforms
+22-01-2015,MSTR,YAHOO,USD,593.77,42,buy,0,MicroStrategy
+23-01-2015,AFRM,YAHOO,USD,3.16,19,dividend,0,Affirm Holdings dividend
+02-02-2015,RIOT,YAHOO,USD,20.57,60,buy,0,Riot Platforms
+02-02-2015,RIOT,YAHOO,USD,3.32,14,sell,9.95,Riot Platforms
+05-02-2015,MARA,YAHOO,USD,15.9,15,sell,0,Marathon Digital
+09-02-2015,RIOT,YAHOO,USD,2.82,39,dividend,0,Riot Platforms dividend
+09-02-2015,SQ,YAHOO,USD,61.06,1,sell,0,Block Inc
+11-02-2015,PYPL,YAHOO,USD,1.74,38,dividend,0,PayPal dividend
+11-02-2015,MARA,YAHOO,USD,0.1,28,dividend,0,Marathon Digital dividend
+17-02-2015,Account Fee,MANUAL,USD,0,0,fee,11.06,Quarterly fee
+19-02-2015,COIN,YAHOO,USD,331.84,46,buy,1.0,Coinbase
+20-02-2015,PYPL,YAHOO,USD,1.39,38,dividend,0,PayPal dividend
+23-02-2015,AFRM,YAHOO,USD,77.89,46,buy,1.0,Affirm Holdings
+02-03-2015,SQ,YAHOO,USD,226.43,78,buy,0,Block Inc
+03-03-2015,SQ,YAHOO,USD,127.72,35,buy,1.0,Block Inc
+06-03-2015,PYPL,YAHOO,USD,137.75,54,buy,1.0,PayPal
+11-03-2015,PYPL,YAHOO,USD,0.25,36,dividend,0,PayPal dividend
+16-03-2015,HOOD,YAHOO,USD,7.25,22,sell,9.95,Robinhood
+23-03-2015,HOOD,YAHOO,USD,3.47,18,dividend,0,Robinhood dividend
+23-03-2015,RIOT,YAHOO,USD,12.45,72,sell,1.0,Riot Platforms
+23-03-2015,Account Fee,MANUAL,USD,0,0,fee,44.83,Quarterly fee
+23-03-2015,RIOT,YAHOO,USD,5.78,19,sell,1.0,Riot Platforms
+02-04-2015,AFRM,YAHOO,USD,126.1,54,buy,0,Affirm Holdings
+03-04-2015,MSTR,YAHOO,USD,390.41,53,buy,4.95,MicroStrategy
+03-04-2015,SQ,YAHOO,USD,38.4,59,sell,0,Block Inc
+06-04-2015,AFRM,YAHOO,USD,97.82,30,buy,0,Affirm Holdings
+06-04-2015,MSTR,YAHOO,USD,687.32,50,buy,0,MicroStrategy
+07-04-2015,RIOT,YAHOO,USD,16.69,72,buy,9.95,Riot Platforms
+08-04-2015,MSTR,YAHOO,USD,749.22,49,buy,9.95,MicroStrategy
+13-04-2015,MSTR,YAHOO,USD,0.45,19,dividend,0,MicroStrategy dividend
+15-04-2015,HOOD,YAHOO,USD,29.31,21,buy,1.0,Robinhood
+15-04-2015,HOOD,YAHOO,USD,20.02,25,buy,0,Robinhood
+20-04-2015,RIOT,YAHOO,USD,23.51,26,buy,4.95,Riot Platforms
+20-04-2015,Account Fee,MANUAL,USD,0,0,fee,46.46,Quarterly fee
+21-04-2015,HOOD,YAHOO,USD,17.06,6,buy,0,Robinhood
+22-04-2015,Account Fee,MANUAL,USD,0,0,fee,14.67,Quarterly fee
+23-04-2015,MARA,YAHOO,USD,36.34,23,buy,0,Marathon Digital
+23-04-2015,MARA,YAHOO,USD,8.64,42,sell,1.0,Marathon Digital
+24-04-2015,AFRM,YAHOO,USD,127.59,67,buy,1.0,Affirm Holdings
+27-04-2015,COIN,YAHOO,USD,314.07,21,buy,4.95,Coinbase
+11-05-2015,COIN,YAHOO,USD,223.45,44,buy,1.0,Coinbase
+11-05-2015,MARA,YAHOO,USD,27.01,35,buy,4.95,Marathon Digital
+11-05-2015,PYPL,YAHOO,USD,2.59,16,dividend,0,PayPal dividend
+15-05-2015,PYPL,YAHOO,USD,43.19,2,sell,0,PayPal
+18-05-2015,RIOT,YAHOO,USD,5.14,22,sell,9.95,Riot Platforms
+20-05-2015,MARA,YAHOO,USD,20.2,77,buy,0,Marathon Digital
+29-05-2015,MARA,YAHOO,USD,15.46,49,sell,1.0,Marathon Digital
+05-06-2015,PYPL,YAHOO,USD,319.93,50,buy,0,PayPal
+08-06-2015,RIOT,YAHOO,USD,31.14,14,buy,1.0,Riot Platforms
+08-06-2015,PYPL,YAHOO,USD,202.64,57,buy,0,PayPal
+11-06-2015,AFRM,YAHOO,USD,40.23,36,sell,0,Affirm Holdings
+19-06-2015,SQ,YAHOO,USD,78.6,14,sell,0,Block Inc
+22-06-2015,MARA,YAHOO,USD,24.26,4,buy,1.0,Marathon Digital
+22-06-2015,COIN,YAHOO,USD,203.78,54,buy,0,Coinbase
+03-07-2015,MSTR,YAHOO,USD,439.76,54,buy,0,MicroStrategy
+07-07-2015,HOOD,YAHOO,USD,46.22,26,buy,0,Robinhood
+09-07-2015,MSTR,YAHOO,USD,593.47,9,buy,4.95,MicroStrategy
+09-07-2015,MARA,YAHOO,USD,22.79,57,buy,0,Marathon Digital
+10-07-2015,PYPL,YAHOO,USD,44.21,69,sell,0,PayPal
+13-07-2015,RIOT,YAHOO,USD,39.89,4,buy,0,Riot Platforms
+20-07-2015,MSTR,YAHOO,USD,2.54,18,dividend,0,MicroStrategy dividend
+20-07-2015,MARA,YAHOO,USD,7.56,39,sell,4.95,Marathon Digital
+20-07-2015,COIN,YAHOO,USD,76.3,15,sell,9.95,Coinbase
+27-07-2015,AFRM,YAHOO,USD,36.49,76,sell,0,Affirm Holdings
+27-07-2015,RIOT,YAHOO,USD,11.3,67,sell,4.95,Riot Platforms
+03-08-2015,HOOD,YAHOO,USD,10.38,49,buy,9.95,Robinhood
+03-08-2015,HOOD,YAHOO,USD,37.56,55,buy,0,Robinhood
+18-08-2015,MSTR,YAHOO,USD,2.68,23,dividend,0,MicroStrategy dividend
+24-08-2015,COIN,YAHOO,USD,1.33,3,dividend,0,Coinbase dividend
+25-08-2015,COIN,YAHOO,USD,78.9,77,sell,4.95,Coinbase
+27-08-2015,MARA,YAHOO,USD,25.77,39,buy,0,Marathon Digital
+03-09-2015,RIOT,YAHOO,USD,1.11,29,dividend,0,Riot Platforms dividend
+07-09-2015,RIOT,YAHOO,USD,6.21,6,sell,4.95,Riot Platforms
+10-09-2015,PYPL,YAHOO,USD,176.0,56,buy,9.95,PayPal
+21-09-2015,COIN,YAHOO,USD,338.61,15,buy,0,Coinbase
+22-09-2015,HOOD,YAHOO,USD,1.76,18,dividend,0,Robinhood dividend
+30-09-2015,PYPL,YAHOO,USD,87.33,4,sell,0,PayPal
+02-10-2015,RIOT,YAHOO,USD,10.45,40,sell,4.95,Riot Platforms
+05-10-2015,COIN,YAHOO,USD,60.53,55,sell,1.0,Coinbase
+07-10-2015,HOOD,YAHOO,USD,44.61,5,buy,0,Robinhood
+09-10-2015,PYPL,YAHOO,USD,271.75,71,buy,1.0,PayPal
+12-10-2015,HOOD,YAHOO,USD,1.25,32,dividend,0,Robinhood dividend
+15-10-2015,RIOT,YAHOO,USD,10.98,57,sell,0,Riot Platforms
+16-10-2015,HOOD,YAHOO,USD,36.66,15,buy,0,Robinhood
+19-10-2015,HOOD,YAHOO,USD,8.7,22,sell,0,Robinhood
+26-10-2015,MARA,YAHOO,USD,1.39,41,dividend,0,Marathon Digital dividend
+02-11-2015,SQ,YAHOO,USD,110.23,1,buy,0,Block Inc
+03-11-2015,HOOD,YAHOO,USD,25.92,43,buy,0,Robinhood
+05-11-2015,COIN,YAHOO,USD,357.42,40,buy,0,Coinbase
+16-11-2015,PYPL,YAHOO,USD,72.19,41,sell,1.0,PayPal
+19-11-2015,COIN,YAHOO,USD,35.48,6,sell,0,Coinbase
+23-11-2015,HOOD,YAHOO,USD,13.89,34,sell,0,Robinhood
+26-11-2015,MARA,YAHOO,USD,23.09,62,buy,0,Marathon Digital
+30-11-2015,MSTR,YAHOO,USD,79.03,54,sell,9.95,MicroStrategy
+07-12-2015,MSTR,YAHOO,USD,241.39,36,sell,1.0,MicroStrategy
+07-12-2015,HOOD,YAHOO,USD,7.23,13,sell,4.95,Robinhood
+08-12-2015,RIOT,YAHOO,USD,0.84,4,dividend,0,Riot Platforms dividend
+10-12-2015,Account Fee,MANUAL,USD,0,0,fee,34.29,Quarterly fee
+10-12-2015,COIN,YAHOO,USD,3.07,3,dividend,0,Coinbase dividend
+11-12-2015,COIN,YAHOO,USD,1.54,27,dividend,0,Coinbase dividend
+14-12-2015,AFRM,YAHOO,USD,106.18,60,buy,0,Affirm Holdings
+15-12-2015,MSTR,YAHOO,USD,461.43,78,buy,0,MicroStrategy
+21-12-2015,COIN,YAHOO,USD,2.21,6,dividend,0,Coinbase dividend
+28-12-2015,MSTR,YAHOO,USD,112.48,28,sell,9.95,MicroStrategy
+28-12-2015,MSTR,YAHOO,USD,473.75,11,buy,0,MicroStrategy
+04-01-2016,SQ,YAHOO,USD,47.97,64,sell,4.95,Block Inc
+05-01-2016,MARA,YAHOO,USD,1.41,27,dividend,0,Marathon Digital dividend
+11-01-2016,Account Fee,MANUAL,USD,0,0,fee,46.34,Quarterly fee
+11-01-2016,SQ,YAHOO,USD,192.79,7,buy,0,Block Inc
+13-01-2016,Account Fee,MANUAL,USD,0,0,fee,32.37,Quarterly fee
+22-01-2016,HOOD,YAHOO,USD,9.67,23,sell,1.0,Robinhood
+22-01-2016,PYPL,YAHOO,USD,54.18,70,sell,0,PayPal
+25-01-2016,MARA,YAHOO,USD,34.72,19,buy,0,Marathon Digital
+27-01-2016,Account Fee,MANUAL,USD,0,0,fee,14.01,Quarterly fee
+25-02-2016,COIN,YAHOO,USD,2.35,41,dividend,0,Coinbase dividend
+29-02-2016,AFRM,YAHOO,USD,90.52,56,buy,9.95,Affirm Holdings
+01-03-2016,MARA,YAHOO,USD,7.53,31,sell,0,Marathon Digital
+02-03-2016,COIN,YAHOO,USD,1.86,21,dividend,0,Coinbase dividend
+02-03-2016,SQ,YAHOO,USD,202.21,80,buy,9.95,Block Inc
+02-03-2016,HOOD,YAHOO,USD,10.12,71,sell,0,Robinhood
+07-03-2016,HOOD,YAHOO,USD,33.18,11,buy,0,Robinhood
+15-03-2016,SQ,YAHOO,USD,186.8,53,buy,0,Block Inc
+18-03-2016,MSTR,YAHOO,USD,249.28,45,sell,1.0,MicroStrategy
+21-03-2016,MARA,YAHOO,USD,36.9,33,buy,1.0,Marathon Digital
+21-03-2016,MARA,YAHOO,USD,17.54,12,sell,9.95,Marathon Digital
+23-03-2016,AFRM,YAHOO,USD,68.31,52,buy,1.0,Affirm Holdings
+30-03-2016,AFRM,YAHOO,USD,103.71,46,buy,1.0,Affirm Holdings
+31-03-2016,SQ,YAHOO,USD,0.25,26,dividend,0,Block Inc dividend
+04-04-2016,HOOD,YAHOO,USD,10.88,68,sell,0,Robinhood
+04-04-2016,MSTR,YAHOO,USD,3.5,36,dividend,0,MicroStrategy dividend
+25-04-2016,HOOD,YAHOO,USD,10.53,69,sell,0,Robinhood
+25-04-2016,MSTR,YAHOO,USD,2.74,21,dividend,0,MicroStrategy dividend
+04-05-2016,MARA,YAHOO,USD,0.51,9,dividend,0,Marathon Digital dividend
+11-05-2016,PYPL,YAHOO,USD,140.97,69,sell,9.95,PayPal
+16-05-2016,MARA,YAHOO,USD,11.68,2,sell,9.95,Marathon Digital
+20-05-2016,MARA,YAHOO,USD,47.0,12,buy,4.95,Marathon Digital
+24-05-2016,COIN,YAHOO,USD,125.21,2,buy,0,Coinbase
+30-05-2016,SQ,YAHOO,USD,125.15,50,sell,0,Block Inc
+06-06-2016,RIOT,YAHOO,USD,2.66,14,dividend,0,Riot Platforms dividend
+06-06-2016,SQ,YAHOO,USD,247.69,70,buy,0,Block Inc
+06-06-2016,RIOT,YAHOO,USD,4.35,72,sell,0,Riot Platforms
+06-06-2016,HOOD,YAHOO,USD,27.99,58,buy,0,Robinhood
+08-06-2016,MARA,YAHOO,USD,2.07,49,dividend,0,Marathon Digital dividend
+13-06-2016,AFRM,YAHOO,USD,37.43,34,buy,9.95,Affirm Holdings
+15-06-2016,MARA,YAHOO,USD,47.29,2,buy,0,Marathon Digital
+20-06-2016,MSTR,YAHOO,USD,124.49,5,sell,1.0,MicroStrategy
+20-06-2016,MSTR,YAHOO,USD,214.5,76,sell,4.95,MicroStrategy
+27-06-2016,PYPL,YAHOO,USD,1.19,48,dividend,0,PayPal dividend
+04-07-2016,AFRM,YAHOO,USD,43.4,65,buy,0,Affirm Holdings
+04-07-2016,MARA,YAHOO,USD,8.39,42,sell,4.95,Marathon Digital
+11-07-2016,RIOT,YAHOO,USD,38.85,69,buy,0,Riot Platforms
+13-07-2016,MSTR,YAHOO,USD,419.85,20,buy,1.0,MicroStrategy
+13-07-2016,COIN,YAHOO,USD,2.65,17,dividend,0,Coinbase dividend
+28-07-2016,MSTR,YAHOO,USD,3.01,1,dividend,0,MicroStrategy dividend
+29-07-2016,SQ,YAHOO,USD,131.75,40,buy,0,Block Inc
+01-08-2016,SQ,YAHOO,USD,136.28,65,buy,1.0,Block Inc
+08-08-2016,AFRM,YAHOO,USD,35.14,15,sell,4.95,Affirm Holdings
+15-08-2016,RIOT,YAHOO,USD,6.49,8,sell,1.0,Riot Platforms
+18-08-2016,HOOD,YAHOO,USD,31.01,70,buy,0,Robinhood
+19-08-2016,MSTR,YAHOO,USD,206.77,6,sell,0,MicroStrategy
+22-08-2016,MARA,YAHOO,USD,2.74,22,dividend,0,Marathon Digital dividend
+30-08-2016,MARA,YAHOO,USD,14.21,71,sell,9.95,Marathon Digital
+07-09-2016,Account Fee,MANUAL,USD,0,0,fee,12.29,Quarterly fee
+07-09-2016,HOOD,YAHOO,USD,25.93,79,buy,1.0,Robinhood
+19-09-2016,HOOD,YAHOO,USD,42.2,48,buy,0,Robinhood
+19-09-2016,MARA,YAHOO,USD,2.88,44,dividend,0,Marathon Digital dividend
+21-09-2016,HOOD,YAHOO,USD,32.06,80,buy,9.95,Robinhood
+23-09-2016,MSTR,YAHOO,USD,273.53,78,sell,9.95,MicroStrategy
+03-10-2016,COIN,YAHOO,USD,58.56,34,sell,9.95,Coinbase
+03-10-2016,SQ,YAHOO,USD,266.73,72,buy,0,Block Inc
+03-10-2016,SQ,YAHOO,USD,249.52,66,buy,0,Block Inc
+07-10-2016,AFRM,YAHOO,USD,2.56,36,dividend,0,Affirm Holdings dividend
+10-10-2016,MSTR,YAHOO,USD,110.43,12,sell,9.95,MicroStrategy
+17-10-2016,RIOT,YAHOO,USD,9.19,79,sell,4.95,Riot Platforms
+17-10-2016,PYPL,YAHOO,USD,193.44,70,buy,0,PayPal
+17-10-2016,MARA,YAHOO,USD,13.93,4,sell,0,Marathon Digital
+19-10-2016,AFRM,YAHOO,USD,1.87,13,dividend,0,Affirm Holdings dividend
+20-10-2016,PYPL,YAHOO,USD,139.03,74,buy,0,PayPal
+21-10-2016,MARA,YAHOO,USD,20.66,52,sell,4.95,Marathon Digital
+31-10-2016,COIN,YAHOO,USD,225.56,28,buy,0,Coinbase
+03-11-2016,Account Fee,MANUAL,USD,0,0,fee,43.37,Quarterly fee
+07-11-2016,HOOD,YAHOO,USD,8.24,57,sell,0,Robinhood
+23-11-2016,MSTR,YAHOO,USD,72.03,46,sell,1.0,MicroStrategy
+28-11-2016,SQ,YAHOO,USD,211.67,7,buy,0,Block Inc
+28-11-2016,HOOD,YAHOO,USD,16.26,69,buy,4.95,Robinhood
+05-12-2016,PYPL,YAHOO,USD,91.4,49,sell,0,PayPal
+05-12-2016,Account Fee,MANUAL,USD,0,0,fee,44.58,Quarterly fee
+08-12-2016,HOOD,YAHOO,USD,43.37,55,buy,4.95,Robinhood
+09-12-2016,PYPL,YAHOO,USD,89.86,57,sell,4.95,PayPal
+12-12-2016,SQ,YAHOO,USD,2.68,49,dividend,0,Block Inc dividend
+12-12-2016,MARA,YAHOO,USD,0.59,34,dividend,0,Marathon Digital dividend
+15-12-2016,COIN,YAHOO,USD,26.45,36,sell,0,Coinbase
+15-12-2016,MSTR,YAHOO,USD,578.43,25,buy,0,MicroStrategy
+15-12-2016,COIN,YAHOO,USD,38.74,54,sell,0,Coinbase
+19-12-2016,PYPL,YAHOO,USD,2.01,25,dividend,0,PayPal dividend
+19-12-2016,HOOD,YAHOO,USD,7.24,59,sell,0,Robinhood
+21-12-2016,MARA,YAHOO,USD,15.0,61,sell,0,Marathon Digital
+21-12-2016,MSTR,YAHOO,USD,426.94,34,buy,4.95,MicroStrategy
+02-01-2017,MSTR,YAHOO,USD,533.51,61,buy,9.95,MicroStrategy
+09-01-2017,AFRM,YAHOO,USD,35.68,3,sell,4.95,Affirm Holdings
+17-01-2017,MARA,YAHOO,USD,40.75,67,buy,4.95,Marathon Digital
+20-01-2017,PYPL,YAHOO,USD,43.94,31,sell,9.95,PayPal
+26-01-2017,COIN,YAHOO,USD,0.72,4,dividend,0,Coinbase dividend
+31-01-2017,COIN,YAHOO,USD,277.89,7,buy,0,Coinbase
+13-02-2017,MSTR,YAHOO,USD,478.73,60,buy,0,MicroStrategy
+20-02-2017,RIOT,YAHOO,USD,28.56,75,buy,9.95,Riot Platforms
+20-02-2017,MARA,YAHOO,USD,25.01,56,buy,4.95,Marathon Digital
+22-02-2017,MARA,YAHOO,USD,40.16,1,buy,0,Marathon Digital
+24-02-2017,MARA,YAHOO,USD,29.83,18,buy,4.95,Marathon Digital
+27-02-2017,PYPL,YAHOO,USD,244.84,78,buy,0,PayPal
+01-03-2017,AFRM,YAHOO,USD,1.64,31,dividend,0,Affirm Holdings dividend
+02-03-2017,COIN,YAHOO,USD,256.99,8,buy,4.95,Coinbase
+07-03-2017,MARA,YAHOO,USD,35.32,7,buy,0,Marathon Digital
+13-03-2017,RIOT,YAHOO,USD,24.36,47,buy,0,Riot Platforms
+20-03-2017,MARA,YAHOO,USD,33.52,62,buy,9.95,Marathon Digital
+20-03-2017,Account Fee,MANUAL,USD,0,0,fee,7.93,Quarterly fee
+20-03-2017,MARA,YAHOO,USD,11.73,22,sell,0,Marathon Digital
+22-03-2017,PYPL,YAHOO,USD,224.07,67,buy,1.0,PayPal
+27-03-2017,RIOT,YAHOO,USD,24.85,13,buy,0,Riot Platforms
+03-04-2017,HOOD,YAHOO,USD,51.95,27,buy,9.95,Robinhood
+10-04-2017,RIOT,YAHOO,USD,10.92,64,buy,0,Riot Platforms
+12-04-2017,COIN,YAHOO,USD,42.22,29,sell,9.95,Coinbase
+24-04-2017,MARA,YAHOO,USD,22.5,47,buy,1.0,Marathon Digital
+27-04-2017,MSTR,YAHOO,USD,238.32,17,buy,0,MicroStrategy
+02-05-2017,PYPL,YAHOO,USD,1.51,31,dividend,0,PayPal dividend
+02-05-2017,Account Fee,MANUAL,USD,0,0,fee,16.2,Quarterly fee
+09-05-2017,HOOD,YAHOO,USD,32.13,72,buy,1.0,Robinhood
+19-05-2017,RIOT,YAHOO,USD,9.09,67,sell,9.95,Riot Platforms
+23-05-2017,AFRM,YAHOO,USD,3.45,48,dividend,0,Affirm Holdings dividend
+31-05-2017,COIN,YAHOO,USD,66.3,33,sell,4.95,Coinbase
+06-06-2017,MARA,YAHOO,USD,4.56,49,sell,0,Marathon Digital
+12-06-2017,Account Fee,MANUAL,USD,0,0,fee,38.02,Quarterly fee
+13-06-2017,AFRM,YAHOO,USD,25.4,64,sell,4.95,Affirm Holdings
+14-06-2017,SQ,YAHOO,USD,1.36,31,dividend,0,Block Inc dividend
+19-06-2017,RIOT,YAHOO,USD,17.07,50,buy,0,Riot Platforms
+03-07-2017,PYPL,YAHOO,USD,2.45,27,dividend,0,PayPal dividend
+04-07-2017,Account Fee,MANUAL,USD,0,0,fee,24.44,Quarterly fee
+05-07-2017,PYPL,YAHOO,USD,90.19,57,sell,0,PayPal
+12-07-2017,SQ,YAHOO,USD,103.02,76,buy,9.95,Block Inc
+25-07-2017,COIN,YAHOO,USD,337.57,58,buy,0,Coinbase
+27-07-2017,MSTR,YAHOO,USD,367.36,32,buy,0,MicroStrategy
+02-08-2017,AFRM,YAHOO,USD,18.4,38,sell,4.95,Affirm Holdings
+04-08-2017,MARA,YAHOO,USD,40.48,38,buy,1.0,Marathon Digital
+14-08-2017,AFRM,YAHOO,USD,141.47,27,buy,0,Affirm Holdings
+17-08-2017,PYPL,YAHOO,USD,66.38,27,sell,9.95,PayPal
+18-08-2017,RIOT,YAHOO,USD,10.12,6,sell,0,Riot Platforms
+24-08-2017,MSTR,YAHOO,USD,141.02,31,sell,0,MicroStrategy
+28-08-2017,AFRM,YAHOO,USD,34.29,60,sell,1.0,Affirm Holdings
+28-08-2017,AFRM,YAHOO,USD,117.13,39,buy,1.0,Affirm Holdings
+04-09-2017,COIN,YAHOO,USD,59.14,27,sell,0,Coinbase
+05-09-2017,COIN,YAHOO,USD,118.1,69,buy,4.95,Coinbase
+14-09-2017,MARA,YAHOO,USD,6.16,10,sell,0,Marathon Digital
+14-09-2017,AFRM,YAHOO,USD,69.92,68,buy,4.95,Affirm Holdings
+15-09-2017,HOOD,YAHOO,USD,19.93,61,buy,0,Robinhood
+19-09-2017,MSTR,YAHOO,USD,547.75,62,buy,4.95,MicroStrategy
+21-09-2017,AFRM,YAHOO,USD,77.11,24,buy,0,Affirm Holdings
+21-09-2017,COIN,YAHOO,USD,423.0,52,buy,0,Coinbase
+25-09-2017,HOOD,YAHOO,USD,31.02,17,buy,4.95,Robinhood
+29-09-2017,Account Fee,MANUAL,USD,0,0,fee,36.65,Quarterly fee
+03-10-2017,SQ,YAHOO,USD,2.66,1,dividend,0,Block Inc dividend
+09-10-2017,HOOD,YAHOO,USD,42.33,70,buy,0,Robinhood
+18-10-2017,HOOD,YAHOO,USD,4.59,42,sell,0,Robinhood
+19-10-2017,SQ,YAHOO,USD,133.55,11,buy,0,Block Inc
+19-10-2017,MARA,YAHOO,USD,1.21,2,dividend,0,Marathon Digital dividend
+25-10-2017,AFRM,YAHOO,USD,32.33,12,buy,9.95,Affirm Holdings
+31-10-2017,MSTR,YAHOO,USD,2.84,37,dividend,0,MicroStrategy dividend
+13-11-2017,PYPL,YAHOO,USD,247.1,63,buy,0,PayPal
+13-11-2017,MSTR,YAHOO,USD,194.54,32,sell,0,MicroStrategy
+13-11-2017,COIN,YAHOO,USD,103.03,3,buy,1.0,Coinbase
+15-11-2017,RIOT,YAHOO,USD,26.13,49,buy,1.0,Riot Platforms
+20-11-2017,COIN,YAHOO,USD,257.66,19,buy,4.95,Coinbase
+24-11-2017,RIOT,YAHOO,USD,32.09,68,buy,1.0,Riot Platforms
+27-11-2017,SQ,YAHOO,USD,82.25,68,sell,1.0,Block Inc
+29-11-2017,SQ,YAHOO,USD,182.14,42,buy,0,Block Inc
+05-12-2017,PYPL,YAHOO,USD,76.82,21,sell,0,PayPal
+15-12-2017,MARA,YAHOO,USD,10.39,17,sell,0,Marathon Digital
+18-12-2017,COIN,YAHOO,USD,44.98,23,sell,9.95,Coinbase
+20-12-2017,COIN,YAHOO,USD,31.48,65,sell,4.95,Coinbase
+25-12-2017,AFRM,YAHOO,USD,20.8,79,sell,0,Affirm Holdings
+05-01-2018,HOOD,YAHOO,USD,3.87,78,sell,0,Robinhood
+10-01-2018,AFRM,YAHOO,USD,42.03,61,sell,0,Affirm Holdings
+12-01-2018,AFRM,YAHOO,USD,49.86,28,sell,1.0,Affirm Holdings
+15-01-2018,HOOD,YAHOO,USD,6.58,1,sell,0,Robinhood
+22-01-2018,SQ,YAHOO,USD,97.63,62,buy,9.95,Block Inc
+26-01-2018,COIN,YAHOO,USD,179.07,58,buy,4.95,Coinbase
+29-01-2018,MARA,YAHOO,USD,5.5,26,sell,9.95,Marathon Digital
+02-02-2018,AFRM,YAHOO,USD,26.66,9,sell,9.95,Affirm Holdings
+07-02-2018,SQ,YAHOO,USD,277.3,51,buy,0,Block Inc
+13-02-2018,AFRM,YAHOO,USD,49.0,9,buy,4.95,Affirm Holdings
+13-02-2018,COIN,YAHOO,USD,351.9,76,buy,0,Coinbase
+19-02-2018,COIN,YAHOO,USD,96.82,30,sell,1.0,Coinbase
+22-02-2018,COIN,YAHOO,USD,153.45,51,buy,0,Coinbase
+26-02-2018,RIOT,YAHOO,USD,10.28,19,buy,4.95,Riot Platforms
+26-02-2018,SQ,YAHOO,USD,1.67,28,dividend,0,Block Inc dividend
+28-02-2018,RIOT,YAHOO,USD,32.1,20,buy,0,Riot Platforms
+05-03-2018,PYPL,YAHOO,USD,225.1,71,buy,0,PayPal
+08-03-2018,COIN,YAHOO,USD,76.38,11,sell,0,Coinbase
+14-03-2018,MARA,YAHOO,USD,28.92,80,buy,0,Marathon Digital
+20-03-2018,COIN,YAHOO,USD,135.0,28,sell,0,Coinbase
+20-03-2018,COIN,YAHOO,USD,325.17,35,buy,0,Coinbase
+20-03-2018,PYPL,YAHOO,USD,1.17,31,dividend,0,PayPal dividend
+23-03-2018,SQ,YAHOO,USD,108.44,43,buy,4.95,Block Inc
+26-03-2018,COIN,YAHOO,USD,3.41,47,dividend,0,Coinbase dividend
+26-03-2018,HOOD,YAHOO,USD,6.15,14,sell,0,Robinhood
+27-03-2018,MARA,YAHOO,USD,44.98,31,buy,0,Marathon Digital
+02-04-2018,SQ,YAHOO,USD,95.96,3,sell,1.0,Block Inc
+04-04-2018,MSTR,YAHOO,USD,689.58,39,buy,0,MicroStrategy
+23-04-2018,MARA,YAHOO,USD,30.61,25,buy,0,Marathon Digital
+30-04-2018,PYPL,YAHOO,USD,233.98,24,buy,0,PayPal
+30-04-2018,MARA,YAHOO,USD,14.68,69,sell,9.95,Marathon Digital
+01-05-2018,RIOT,YAHOO,USD,16.73,4,sell,0,Riot Platforms
+08-05-2018,RIOT,YAHOO,USD,8.17,14,sell,9.95,Riot Platforms
+14-05-2018,MSTR,YAHOO,USD,99.42,29,sell,9.95,MicroStrategy
+15-05-2018,PYPL,YAHOO,USD,106.28,22,buy,4.95,PayPal
+21-05-2018,COIN,YAHOO,USD,333.2,76,buy,1.0,Coinbase
+21-05-2018,SQ,YAHOO,USD,218.28,24,buy,4.95,Block Inc
+21-05-2018,PYPL,YAHOO,USD,96.62,22,buy,1.0,PayPal
+23-05-2018,RIOT,YAHOO,USD,4.42,59,sell,9.95,Riot Platforms
+24-05-2018,AFRM,YAHOO,USD,76.22,16,sell,4.95,Affirm Holdings
+28-05-2018,AFRM,YAHOO,USD,65.57,40,sell,0,Affirm Holdings
+30-05-2018,HOOD,YAHOO,USD,19.16,27,sell,9.95,Robinhood
+11-06-2018,MARA,YAHOO,USD,38.2,35,buy,0,Marathon Digital
+18-06-2018,MARA,YAHOO,USD,34.52,51,buy,4.95,Marathon Digital
+18-06-2018,AFRM,YAHOO,USD,46.67,12,sell,0,Affirm Holdings
+25-06-2018,SQ,YAHOO,USD,70.23,21,sell,0,Block Inc
+02-07-2018,RIOT,YAHOO,USD,2.21,6,sell,9.95,Riot Platforms
+02-07-2018,PYPL,YAHOO,USD,0.98,22,dividend,0,PayPal dividend
+03-07-2018,AFRM,YAHOO,USD,125.05,45,buy,0,Affirm Holdings
+06-07-2018,AFRM,YAHOO,USD,165.85,19,buy,9.95,Affirm Holdings
+06-07-2018,MSTR,YAHOO,USD,273.21,30,buy,0,MicroStrategy
+09-07-2018,HOOD,YAHOO,USD,14.26,5,sell,1.0,Robinhood
+09-07-2018,MSTR,YAHOO,USD,619.55,72,buy,9.95,MicroStrategy
+10-07-2018,AFRM,YAHOO,USD,27.51,26,sell,0,Affirm Holdings
+16-07-2018,PYPL,YAHOO,USD,1.41,31,dividend,0,PayPal dividend
+23-07-2018,COIN,YAHOO,USD,114.79,16,buy,0,Coinbase
+25-07-2018,SQ,YAHOO,USD,99.62,57,buy,0,Block Inc
+26-07-2018,HOOD,YAHOO,USD,10.2,10,sell,4.95,Robinhood
+31-07-2018,PYPL,YAHOO,USD,253.64,54,buy,9.95,PayPal
+31-07-2018,SQ,YAHOO,USD,176.51,7,buy,4.95,Block Inc
+31-07-2018,RIOT,YAHOO,USD,17.93,74,buy,4.95,Riot Platforms
+02-08-2018,RIOT,YAHOO,USD,20.96,63,buy,0,Riot Platforms
+06-08-2018,SQ,YAHOO,USD,85.76,77,sell,0,Block Inc
+13-08-2018,HOOD,YAHOO,USD,7.61,28,sell,4.95,Robinhood
+16-08-2018,MSTR,YAHOO,USD,57.41,50,sell,0,MicroStrategy
+16-08-2018,RIOT,YAHOO,USD,17.19,1,buy,9.95,Riot Platforms
+20-08-2018,MARA,YAHOO,USD,7.93,33,sell,1.0,Marathon Digital
+20-08-2018,HOOD,YAHOO,USD,0.36,14,dividend,0,Robinhood dividend
+24-08-2018,COIN,YAHOO,USD,279.19,39,buy,0,Coinbase
+28-08-2018,SQ,YAHOO,USD,27.13,50,sell,0,Block Inc
+30-08-2018,Account Fee,MANUAL,USD,0,0,fee,18.66,Quarterly fee
+04-09-2018,SQ,YAHOO,USD,173.04,61,buy,1.0,Block Inc
+06-09-2018,PYPL,YAHOO,USD,263.33,47,buy,0,PayPal
+07-09-2018,MSTR,YAHOO,USD,159.39,75,sell,0,MicroStrategy
+17-09-2018,AFRM,YAHOO,USD,39.86,49,buy,1.0,Affirm Holdings
+18-09-2018,SQ,YAHOO,USD,86.28,71,sell,4.95,Block Inc
+18-09-2018,PYPL,YAHOO,USD,222.33,15,buy,1.0,PayPal
+19-09-2018,MARA,YAHOO,USD,22.67,69,buy,0,Marathon Digital
+21-09-2018,AFRM,YAHOO,USD,2.05,28,dividend,0,Affirm Holdings dividend
+24-09-2018,SQ,YAHOO,USD,163.2,32,buy,1.0,Block Inc
+24-09-2018,MARA,YAHOO,USD,0.52,3,dividend,0,Marathon Digital dividend
+01-10-2018,HOOD,YAHOO,USD,1.73,28,dividend,0,Robinhood dividend
+08-10-2018,MSTR,YAHOO,USD,85.11,43,sell,0,MicroStrategy
+08-10-2018,COIN,YAHOO,USD,180.8,2,buy,0,Coinbase
+29-10-2018,PYPL,YAHOO,USD,268.46,54,buy,0,PayPal
+29-10-2018,MARA,YAHOO,USD,10.49,6,sell,0,Marathon Digital
+31-10-2018,MSTR,YAHOO,USD,120.22,75,sell,0,MicroStrategy
+01-11-2018,SQ,YAHOO,USD,247.37,21,buy,0,Block Inc
+12-11-2018,HOOD,YAHOO,USD,37.36,3,buy,4.95,Robinhood
+15-11-2018,HOOD,YAHOO,USD,2.77,38,dividend,0,Robinhood dividend
+16-11-2018,HOOD,YAHOO,USD,15.08,60,sell,0,Robinhood
+19-11-2018,HOOD,YAHOO,USD,17.73,47,buy,9.95,Robinhood
+19-11-2018,AFRM,YAHOO,USD,48.78,13,sell,4.95,Affirm Holdings
+19-11-2018,COIN,YAHOO,USD,318.34,79,buy,1.0,Coinbase
+28-11-2018,PYPL,YAHOO,USD,101.55,80,buy,0,PayPal
+29-11-2018,AFRM,YAHOO,USD,3.22,14,dividend,0,Affirm Holdings dividend
+03-12-2018,MSTR,YAHOO,USD,262.86,28,buy,0,MicroStrategy
+03-12-2018,MSTR,YAHOO,USD,3.04,37,dividend,0,MicroStrategy dividend
+03-12-2018,HOOD,YAHOO,USD,12.84,56,buy,0,Robinhood
+10-12-2018,MARA,YAHOO,USD,6.16,32,sell,4.95,Marathon Digital
+10-12-2018,MARA,YAHOO,USD,38.51,72,buy,0,Marathon Digital
+11-12-2018,AFRM,YAHOO,USD,150.97,6,buy,0,Affirm Holdings
+12-12-2018,RIOT,YAHOO,USD,2.77,15,sell,1.0,Riot Platforms
+17-12-2018,RIOT,YAHOO,USD,37.25,4,buy,4.95,Riot Platforms
+20-12-2018,Account Fee,MANUAL,USD,0,0,fee,40.58,Quarterly fee
+24-12-2018,PYPL,YAHOO,USD,1.85,43,dividend,0,PayPal dividend
+15-01-2019,SQ,YAHOO,USD,1.87,35,dividend,0,Block Inc dividend
+21-01-2019,PYPL,YAHOO,USD,113.26,41,sell,1.0,PayPal
+21-01-2019,HOOD,YAHOO,USD,4.6,31,sell,0,Robinhood
+25-01-2019,COIN,YAHOO,USD,260.04,76,buy,0,Coinbase
+28-01-2019,HOOD,YAHOO,USD,39.59,29,buy,0,Robinhood
+28-01-2019,PYPL,YAHOO,USD,75.59,40,sell,0,PayPal
+28-01-2019,MARA,YAHOO,USD,32.91,8,buy,0,Marathon Digital
+04-02-2019,HOOD,YAHOO,USD,8.49,24,sell,1.0,Robinhood
+04-02-2019,PYPL,YAHOO,USD,87.05,29,sell,9.95,PayPal
+11-02-2019,PYPL,YAHOO,USD,107.14,17,buy,1.0,PayPal
+14-02-2019,SQ,YAHOO,USD,0.33,18,dividend,0,Block Inc dividend
+13-03-2019,MSTR,YAHOO,USD,0.29,18,dividend,0,MicroStrategy dividend
+19-03-2019,AFRM,YAHOO,USD,2.4,26,dividend,0,Affirm Holdings dividend
+20-03-2019,RIOT,YAHOO,USD,28.13,76,buy,0,Riot Platforms
+01-04-2019,AFRM,YAHOO,USD,65.75,54,buy,9.95,Affirm Holdings
+11-04-2019,MARA,YAHOO,USD,5.22,20,sell,9.95,Marathon Digital
+15-04-2019,RIOT,YAHOO,USD,30.28,78,buy,0,Riot Platforms
+16-04-2019,RIOT,YAHOO,USD,8.57,2,sell,0,Riot Platforms
+16-04-2019,AFRM,YAHOO,USD,151.93,33,buy,1.0,Affirm Holdings
+18-04-2019,RIOT,YAHOO,USD,0.74,2,dividend,0,Riot Platforms dividend
+18-04-2019,SQ,YAHOO,USD,120.1,34,sell,9.95,Block Inc
+29-04-2019,MSTR,YAHOO,USD,229.74,24,sell,0,MicroStrategy
+06-05-2019,MSTR,YAHOO,USD,1.99,8,dividend,0,MicroStrategy dividend
+08-05-2019,COIN,YAHOO,USD,146.68,5,sell,4.95,Coinbase
+20-05-2019,AFRM,YAHOO,USD,23.79,34,sell,0,Affirm Holdings
+22-05-2019,Account Fee,MANUAL,USD,0,0,fee,26.06,Quarterly fee
+27-05-2019,SQ,YAHOO,USD,224.94,8,buy,4.95,Block Inc
+27-05-2019,AFRM,YAHOO,USD,27.46,37,sell,0,Affirm Holdings
+29-05-2019,COIN,YAHOO,USD,50.22,15,sell,0,Coinbase
+30-05-2019,MSTR,YAHOO,USD,359.12,72,buy,4.95,MicroStrategy
+30-05-2019,AFRM,YAHOO,USD,91.07,45,buy,1.0,Affirm Holdings
+03-06-2019,SQ,YAHOO,USD,106.79,22,sell,9.95,Block Inc
+03-06-2019,RIOT,YAHOO,USD,2.76,24,sell,9.95,Riot Platforms
+03-06-2019,SQ,YAHOO,USD,224.1,77,buy,1.0,Block Inc
+04-06-2019,MSTR,YAHOO,USD,89.9,28,sell,4.95,MicroStrategy
+14-06-2019,AFRM,YAHOO,USD,75.55,73,sell,0,Affirm Holdings
+17-06-2019,AFRM,YAHOO,USD,59.37,4,buy,4.95,Affirm Holdings
+19-06-2019,RIOT,YAHOO,USD,10.23,28,sell,9.95,Riot Platforms
+02-07-2019,PYPL,YAHOO,USD,151.8,62,sell,0,PayPal
+02-07-2019,RIOT,YAHOO,USD,9.78,19,sell,1.0,Riot Platforms
+04-07-2019,Account Fee,MANUAL,USD,0,0,fee,14.13,Quarterly fee
+05-07-2019,SQ,YAHOO,USD,21.38,59,sell,0,Block Inc
+08-07-2019,MSTR,YAHOO,USD,400.65,30,buy,4.95,MicroStrategy
+09-07-2019,MARA,YAHOO,USD,46.08,69,buy,4.95,Marathon Digital
+25-07-2019,RIOT,YAHOO,USD,0.51,35,dividend,0,Riot Platforms dividend
+29-07-2019,COIN,YAHOO,USD,63.87,20,sell,0,Coinbase
+29-07-2019,AFRM,YAHOO,USD,88.98,49,buy,4.95,Affirm Holdings
+05-08-2019,RIOT,YAHOO,USD,6.17,3,sell,1.0,Riot Platforms
+07-08-2019,RIOT,YAHOO,USD,1.57,34,dividend,0,Riot Platforms dividend
+21-08-2019,MSTR,YAHOO,USD,354.4,3,buy,0,MicroStrategy
+26-08-2019,PYPL,YAHOO,USD,111.85,39,buy,0,PayPal
+26-08-2019,SQ,YAHOO,USD,91.81,25,sell,0,Block Inc
+02-09-2019,HOOD,YAHOO,USD,15.99,28,buy,0,Robinhood
+05-09-2019,AFRM,YAHOO,USD,16.77,14,sell,0,Affirm Holdings
+09-09-2019,AFRM,YAHOO,USD,118.67,22,buy,4.95,Affirm Holdings
+10-09-2019,MARA,YAHOO,USD,3.25,10,dividend,0,Marathon Digital dividend
+16-09-2019,MSTR,YAHOO,USD,824.31,28,buy,4.95,MicroStrategy
+16-09-2019,SQ,YAHOO,USD,31.23,27,sell,4.95,Block Inc
+18-09-2019,HOOD,YAHOO,USD,19.03,25,buy,0,Robinhood
+23-09-2019,HOOD,YAHOO,USD,0.26,23,dividend,0,Robinhood dividend
+27-09-2019,Account Fee,MANUAL,USD,0,0,fee,29.9,Quarterly fee
+30-09-2019,COIN,YAHOO,USD,49.24,70,sell,0,Coinbase
+07-10-2019,RIOT,YAHOO,USD,11.81,76,sell,0,Riot Platforms
+09-10-2019,AFRM,YAHOO,USD,130.45,46,buy,0,Affirm Holdings
+15-10-2019,HOOD,YAHOO,USD,40.52,77,buy,0,Robinhood
+23-10-2019,AFRM,YAHOO,USD,33.14,39,sell,4.95,Affirm Holdings
+25-10-2019,AFRM,YAHOO,USD,24.51,17,sell,0,Affirm Holdings
+28-10-2019,PYPL,YAHOO,USD,0.45,9,dividend,0,PayPal dividend
+04-11-2019,HOOD,YAHOO,USD,50.6,49,buy,9.95,Robinhood
+18-11-2019,Account Fee,MANUAL,USD,0,0,fee,42.34,Quarterly fee
+18-11-2019,MSTR,YAHOO,USD,523.36,4,buy,9.95,MicroStrategy
+22-11-2019,AFRM,YAHOO,USD,23.43,18,sell,4.95,Affirm Holdings
+25-11-2019,HOOD,YAHOO,USD,21.34,13,buy,1.0,Robinhood
+25-11-2019,MSTR,YAHOO,USD,357.04,70,buy,0,MicroStrategy
+26-11-2019,RIOT,YAHOO,USD,8.36,38,sell,1.0,Riot Platforms
+29-11-2019,COIN,YAHOO,USD,1.85,28,dividend,0,Coinbase dividend
+02-12-2019,COIN,YAHOO,USD,76.78,20,sell,4.95,Coinbase
+03-12-2019,MSTR,YAHOO,USD,0.34,39,dividend,0,MicroStrategy dividend
+06-12-2019,PYPL,YAHOO,USD,143.55,26,buy,0,PayPal
+09-12-2019,SQ,YAHOO,USD,159.82,16,buy,9.95,Block Inc
+09-12-2019,MARA,YAHOO,USD,10.79,79,sell,9.95,Marathon Digital
+13-12-2019,PYPL,YAHOO,USD,1.56,24,dividend,0,PayPal dividend
+16-12-2019,PYPL,YAHOO,USD,149.29,28,buy,0,PayPal
+16-12-2019,PYPL,YAHOO,USD,114.21,2,sell,0,PayPal
+23-12-2019,MSTR,YAHOO,USD,584.56,77,buy,0,MicroStrategy
+24-12-2019,MARA,YAHOO,USD,40.86,26,buy,0,Marathon Digital
+30-12-2019,RIOT,YAHOO,USD,2.56,33,dividend,0,Riot Platforms dividend
+31-12-2019,RIOT,YAHOO,USD,5.81,73,sell,9.95,Riot Platforms
+07-01-2020,MARA,YAHOO,USD,53.14,13,buy,0,Marathon Digital
+13-01-2020,PYPL,YAHOO,USD,275.91,67,buy,0,PayPal
+16-01-2020,COIN,YAHOO,USD,2.95,29,dividend,0,Coinbase dividend
+28-01-2020,MARA,YAHOO,USD,18.78,42,sell,0,Marathon Digital
+04-02-2020,PYPL,YAHOO,USD,159.95,68,buy,0,PayPal
+05-02-2020,RIOT,YAHOO,USD,2.73,16,dividend,0,Riot Platforms dividend
+05-02-2020,MARA,YAHOO,USD,46.11,15,buy,9.95,Marathon Digital
+14-02-2020,MSTR,YAHOO,USD,593.81,47,buy,1.0,MicroStrategy
+17-02-2020,MSTR,YAHOO,USD,122.93,36,sell,0,MicroStrategy
+17-02-2020,RIOT,YAHOO,USD,5.08,35,sell,9.95,Riot Platforms
+19-02-2020,SQ,YAHOO,USD,133.81,3,buy,1.0,Block Inc
+21-02-2020,PYPL,YAHOO,USD,79.59,2,sell,1.0,PayPal
+24-02-2020,SQ,YAHOO,USD,147.49,80,buy,9.95,Block Inc
+24-02-2020,MSTR,YAHOO,USD,304.86,60,sell,0,MicroStrategy
+02-03-2020,AFRM,YAHOO,USD,106.61,28,buy,1.0,Affirm Holdings
+05-03-2020,AFRM,YAHOO,USD,1.14,44,dividend,0,Affirm Holdings dividend
+09-03-2020,HOOD,YAHOO,USD,28.29,22,buy,1.0,Robinhood
+09-03-2020,PYPL,YAHOO,USD,0.98,31,dividend,0,PayPal dividend
+11-03-2020,RIOT,YAHOO,USD,24.41,10,buy,0,Riot Platforms
+11-03-2020,COIN,YAHOO,USD,2.49,37,dividend,0,Coinbase dividend
+12-03-2020,SQ,YAHOO,USD,58.55,34,sell,0,Block Inc
+18-03-2020,COIN,YAHOO,USD,240.93,73,buy,4.95,Coinbase
+19-03-2020,PYPL,YAHOO,USD,34.18,75,sell,4.95,PayPal
+23-03-2020,SQ,YAHOO,USD,61.32,6,sell,9.95,Block Inc
+25-03-2020,AFRM,YAHOO,USD,1.92,5,dividend,0,Affirm Holdings dividend
+30-03-2020,SQ,YAHOO,USD,95.87,9,buy,0,Block Inc
+30-03-2020,AFRM,YAHOO,USD,118.17,16,buy,0,Affirm Holdings
+30-03-2020,MARA,YAHOO,USD,17.02,51,buy,0,Marathon Digital
+06-04-2020,HOOD,YAHOO,USD,26.17,53,buy,0,Robinhood
+14-04-2020,COIN,YAHOO,USD,223.33,79,buy,9.95,Coinbase
+17-04-2020,COIN,YAHOO,USD,308.9,23,buy,4.95,Coinbase
+21-04-2020,Account Fee,MANUAL,USD,0,0,fee,30.98,Quarterly fee
+28-04-2020,HOOD,YAHOO,USD,20.97,61,buy,4.95,Robinhood
+29-04-2020,MARA,YAHOO,USD,19.73,26,buy,0,Marathon Digital
+05-05-2020,MARA,YAHOO,USD,7.03,51,sell,1.0,Marathon Digital
+08-05-2020,RIOT,YAHOO,USD,9.64,48,sell,4.95,Riot Platforms
+14-05-2020,MARA,YAHOO,USD,3.9,54,sell,0,Marathon Digital
+18-05-2020,MARA,YAHOO,USD,8.23,63,sell,9.95,Marathon Digital
+18-05-2020,HOOD,YAHOO,USD,3.79,56,sell,0,Robinhood
+19-05-2020,AFRM,YAHOO,USD,121.54,77,buy,9.95,Affirm Holdings
+25-05-2020,COIN,YAHOO,USD,316.58,8,buy,4.95,Coinbase
+01-06-2020,SQ,YAHOO,USD,96.59,43,sell,0,Block Inc
+05-06-2020,HOOD,YAHOO,USD,31.51,22,buy,1.0,Robinhood
+08-06-2020,RIOT,YAHOO,USD,5.17,67,sell,1.0,Riot Platforms
+08-06-2020,MARA,YAHOO,USD,17.73,15,sell,0,Marathon Digital
+08-06-2020,MARA,YAHOO,USD,33.27,47,buy,4.95,Marathon Digital
+11-06-2020,MARA,YAHOO,USD,0.36,39,dividend,0,Marathon Digital dividend
+23-06-2020,AFRM,YAHOO,USD,72.84,77,buy,9.95,Affirm Holdings
+29-06-2020,COIN,YAHOO,USD,42.15,68,sell,0,Coinbase
+06-07-2020,MARA,YAHOO,USD,18.01,51,sell,0,Marathon Digital
+08-07-2020,SQ,YAHOO,USD,109.0,3,buy,9.95,Block Inc
+15-07-2020,MSTR,YAHOO,USD,0.38,32,dividend,0,MicroStrategy dividend
+21-07-2020,MARA,YAHOO,USD,19.64,15,buy,0,Marathon Digital
+28-07-2020,AFRM,YAHOO,USD,7.71,25,sell,1.0,Affirm Holdings
+30-07-2020,PYPL,YAHOO,USD,41.21,17,sell,0,PayPal
+03-08-2020,PYPL,YAHOO,USD,2.16,40,dividend,0,PayPal dividend
+07-08-2020,AFRM,YAHOO,USD,42.97,40,sell,0,Affirm Holdings
+10-08-2020,MSTR,YAHOO,USD,607.65,67,buy,1.0,MicroStrategy
+11-08-2020,RIOT,YAHOO,USD,1.37,50,dividend,0,Riot Platforms dividend
+12-08-2020,COIN,YAHOO,USD,96.22,22,buy,0,Coinbase
+17-08-2020,PYPL,YAHOO,USD,2.37,27,dividend,0,PayPal dividend
+21-08-2020,SQ,YAHOO,USD,3.28,20,dividend,0,Block Inc dividend
+24-08-2020,AFRM,YAHOO,USD,39.4,71,buy,0,Affirm Holdings
+28-08-2020,HOOD,YAHOO,USD,27.81,31,buy,9.95,Robinhood
+31-08-2020,COIN,YAHOO,USD,271.04,27,buy,9.95,Coinbase
+31-08-2020,MSTR,YAHOO,USD,411.15,76,buy,0,MicroStrategy
+07-09-2020,MSTR,YAHOO,USD,225.23,48,sell,0,MicroStrategy
+09-09-2020,HOOD,YAHOO,USD,6.45,70,sell,4.95,Robinhood
+10-09-2020,SQ,YAHOO,USD,221.28,30,buy,9.95,Block Inc
+14-09-2020,Account Fee,MANUAL,USD,0,0,fee,37.4,Quarterly fee
+14-09-2020,PYPL,YAHOO,USD,74.26,40,buy,0,PayPal
+16-09-2020,PYPL,YAHOO,USD,56.76,68,sell,9.95,PayPal
+18-09-2020,SQ,YAHOO,USD,192.14,32,buy,1.0,Block Inc
+21-09-2020,MSTR,YAHOO,USD,280.87,68,sell,4.95,MicroStrategy
+28-09-2020,Account Fee,MANUAL,USD,0,0,fee,34.48,Quarterly fee
+28-09-2020,PYPL,YAHOO,USD,140.06,75,sell,1.0,PayPal
+01-10-2020,COIN,YAHOO,USD,195.21,55,sell,4.95,Coinbase
+02-10-2020,COIN,YAHOO,USD,233.42,79,buy,0,Coinbase
+02-10-2020,HOOD,YAHOO,USD,55.99,3,buy,0,Robinhood
+05-10-2020,PYPL,YAHOO,USD,86.92,31,sell,4.95,PayPal
+07-10-2020,COIN,YAHOO,USD,295.92,33,buy,9.95,Coinbase
+13-10-2020,RIOT,YAHOO,USD,12.15,57,sell,9.95,Riot Platforms
+14-10-2020,MARA,YAHOO,USD,12.31,32,sell,0,Marathon Digital
+21-10-2020,HOOD,YAHOO,USD,10.94,14,sell,0,Robinhood
+29-10-2020,MSTR,YAHOO,USD,595.41,75,buy,1.0,MicroStrategy
+04-11-2020,Account Fee,MANUAL,USD,0,0,fee,13.82,Quarterly fee
+05-11-2020,RIOT,YAHOO,USD,10.51,51,sell,0,Riot Platforms
+09-11-2020,PYPL,YAHOO,USD,127.33,6,sell,9.95,PayPal
+09-11-2020,MSTR,YAHOO,USD,348.91,44,buy,0,MicroStrategy
+11-11-2020,MSTR,YAHOO,USD,120.34,20,sell,1.0,MicroStrategy
+13-11-2020,RIOT,YAHOO,USD,12.69,28,sell,1.0,Riot Platforms
+26-11-2020,RIOT,YAHOO,USD,2.52,42,dividend,0,Riot Platforms dividend
+30-11-2020,MARA,YAHOO,USD,15.55,39,buy,0,Marathon Digital
+30-11-2020,SQ,YAHOO,USD,123.95,55,buy,1.0,Block Inc
+07-12-2020,AFRM,YAHOO,USD,37.49,14,buy,4.95,Affirm Holdings
+11-12-2020,COIN,YAHOO,USD,309.24,12,buy,9.95,Coinbase
+11-12-2020,SQ,YAHOO,USD,164.99,60,buy,9.95,Block Inc
+17-12-2020,HOOD,YAHOO,USD,2.78,14,sell,0,Robinhood
+21-12-2020,COIN,YAHOO,USD,356.0,33,buy,0,Coinbase
+28-12-2020,AFRM,YAHOO,USD,80.88,79,buy,9.95,Affirm Holdings
+04-01-2021,AFRM,YAHOO,USD,1.26,48,dividend,0,Affirm Holdings dividend
+11-01-2021,SQ,YAHOO,USD,83.71,32,sell,1.0,Block Inc
+18-01-2021,MSTR,YAHOO,USD,350.14,51,sell,9.95,MicroStrategy
+25-01-2021,MARA,YAHOO,USD,2.02,50,dividend,0,Marathon Digital dividend
+01-02-2021,MSTR,YAHOO,USD,459.78,44,buy,0,MicroStrategy
+08-02-2021,RIOT,YAHOO,USD,39.36,13,buy,9.95,Riot Platforms
+09-02-2021,HOOD,YAHOO,USD,2.14,12,dividend,0,Robinhood dividend
+11-02-2021,AFRM,YAHOO,USD,60.15,76,buy,0,Affirm Holdings
+15-02-2021,HOOD,YAHOO,USD,28.61,80,buy,9.95,Robinhood
+19-02-2021,SQ,YAHOO,USD,2.79,27,dividend,0,Block Inc dividend
+08-03-2021,COIN,YAHOO,USD,119.14,66,sell,0,Coinbase
+08-03-2021,COIN,YAHOO,USD,202.97,9,buy,1.0,Coinbase
+09-03-2021,MARA,YAHOO,USD,47.21,72,buy,4.95,Marathon Digital
+12-03-2021,AFRM,YAHOO,USD,46.39,18,sell,4.95,Affirm Holdings
+24-03-2021,MARA,YAHOO,USD,25.31,29,buy,0,Marathon Digital
+31-03-2021,MSTR,YAHOO,USD,545.09,6,buy,4.95,MicroStrategy
+05-04-2021,RIOT,YAHOO,USD,13.84,4,buy,0,Riot Platforms
+13-04-2021,HOOD,YAHOO,USD,8.07,41,sell,1.0,Robinhood
+19-04-2021,RIOT,YAHOO,USD,10.63,40,sell,9.95,Riot Platforms
+19-04-2021,HOOD,YAHOO,USD,30.44,76,buy,4.95,Robinhood
+21-04-2021,AFRM,YAHOO,USD,1.77,41,dividend,0,Affirm Holdings dividend
+22-04-2021,SQ,YAHOO,USD,2.91,38,dividend,0,Block Inc dividend
+26-04-2021,MARA,YAHOO,USD,38.0,9,buy,0,Marathon Digital
+04-05-2021,SQ,YAHOO,USD,181.27,54,buy,1.0,Block Inc
+12-05-2021,AFRM,YAHOO,USD,13.35,78,sell,1.0,Affirm Holdings
+17-05-2021,MARA,YAHOO,USD,42.87,15,buy,0,Marathon Digital
+17-05-2021,RIOT,YAHOO,USD,21.96,63,buy,0,Riot Platforms
+17-05-2021,Account Fee,MANUAL,USD,0,0,fee,26.6,Quarterly fee
+19-05-2021,RIOT,YAHOO,USD,1.46,30,dividend,0,Riot Platforms dividend
+27-05-2021,COIN,YAHOO,USD,134.18,11,sell,1.0,Coinbase
+03-06-2021,Account Fee,MANUAL,USD,0,0,fee,5.57,Quarterly fee
+18-06-2021,SQ,YAHOO,USD,76.4,44,sell,4.95,Block Inc
+18-06-2021,MARA,YAHOO,USD,19.83,42,sell,4.95,Marathon Digital
+21-06-2021,MARA,YAHOO,USD,38.62,48,buy,0,Marathon Digital
+21-06-2021,HOOD,YAHOO,USD,11.04,46,buy,0,Robinhood
+01-07-2021,RIOT,YAHOO,USD,5.93,37,sell,0,Riot Platforms
+05-07-2021,RIOT,YAHOO,USD,21.11,36,buy,1.0,Riot Platforms
+06-07-2021,HOOD,YAHOO,USD,16.21,67,sell,0,Robinhood
+19-07-2021,HOOD,YAHOO,USD,1.74,24,dividend,0,Robinhood dividend
+22-07-2021,COIN,YAHOO,USD,50.64,42,sell,0,Coinbase
+23-07-2021,PYPL,YAHOO,USD,291.52,65,buy,0,PayPal
+26-07-2021,AFRM,YAHOO,USD,61.84,18,sell,0,Affirm Holdings
+26-07-2021,MSTR,YAHOO,USD,694.22,39,buy,0,MicroStrategy
+02-08-2021,MSTR,YAHOO,USD,737.2,45,buy,0,MicroStrategy
+02-08-2021,COIN,YAHOO,USD,328.92,41,buy,0,Coinbase
+10-08-2021,RIOT,YAHOO,USD,2.64,77,sell,0,Riot Platforms
+16-08-2021,MSTR,YAHOO,USD,317.36,19,buy,1.0,MicroStrategy
+16-08-2021,MSTR,YAHOO,USD,235.85,73,sell,9.95,MicroStrategy
+25-08-2021,MSTR,YAHOO,USD,62.79,37,sell,4.95,MicroStrategy
+30-08-2021,MARA,YAHOO,USD,1.35,43,dividend,0,Marathon Digital dividend
+31-08-2021,MARA,YAHOO,USD,1.27,41,dividend,0,Marathon Digital dividend
+13-09-2021,AFRM,YAHOO,USD,78.11,30,buy,0,Affirm Holdings
+14-09-2021,PYPL,YAHOO,USD,20.88,9,sell,1.0,PayPal
+15-09-2021,PYPL,YAHOO,USD,19.36,4,sell,9.95,PayPal
+17-09-2021,MARA,YAHOO,USD,24.13,77,sell,0,Marathon Digital
+22-09-2021,COIN,YAHOO,USD,39.63,70,sell,0,Coinbase
+27-09-2021,HOOD,YAHOO,USD,9.73,79,sell,0,Robinhood
+27-09-2021,PYPL,YAHOO,USD,256.93,30,buy,4.95,PayPal
+27-09-2021,MSTR,YAHOO,USD,168.82,52,sell,0,MicroStrategy
+28-09-2021,PYPL,YAHOO,USD,144.43,40,buy,9.95,PayPal
+11-10-2021,HOOD,YAHOO,USD,1.39,2,dividend,0,Robinhood dividend
+11-10-2021,MSTR,YAHOO,USD,0.92,16,dividend,0,MicroStrategy dividend
+12-10-2021,MSTR,YAHOO,USD,581.82,75,buy,9.95,MicroStrategy
+15-10-2021,MSTR,YAHOO,USD,128.91,50,sell,0,MicroStrategy
+15-10-2021,COIN,YAHOO,USD,0.94,7,dividend,0,Coinbase dividend
+18-10-2021,RIOT,YAHOO,USD,26.39,5,buy,9.95,Riot Platforms
+18-10-2021,AFRM,YAHOO,USD,0.11,50,dividend,0,Affirm Holdings dividend
+18-10-2021,AFRM,YAHOO,USD,57.29,9,buy,1.0,Affirm Holdings
+25-10-2021,PYPL,YAHOO,USD,89.17,46,buy,9.95,PayPal
+25-10-2021,MARA,YAHOO,USD,13.5,76,sell,0,Marathon Digital
+02-11-2021,SQ,YAHOO,USD,174.83,10,buy,0,Block Inc
+02-11-2021,HOOD,YAHOO,USD,12.94,2,buy,0,Robinhood
+02-11-2021,COIN,YAHOO,USD,34.93,45,sell,9.95,Coinbase
+08-11-2021,AFRM,YAHOO,USD,47.67,20,buy,0,Affirm Holdings
+10-11-2021,HOOD,YAHOO,USD,7.59,40,sell,0,Robinhood
+16-11-2021,PYPL,YAHOO,USD,295.94,47,buy,0,PayPal
+29-11-2021,MARA,YAHOO,USD,37.74,67,buy,0,Marathon Digital
+29-11-2021,PYPL,YAHOO,USD,29.81,25,sell,0,PayPal
+29-11-2021,MARA,YAHOO,USD,15.57,20,sell,4.95,Marathon Digital
+30-11-2021,HOOD,YAHOO,USD,21.77,72,sell,1.0,Robinhood
+07-12-2021,SQ,YAHOO,USD,35.93,52,sell,0,Block Inc
+13-12-2021,SQ,YAHOO,USD,3.45,32,dividend,0,Block Inc dividend
+16-12-2021,AFRM,YAHOO,USD,43.6,35,buy,1.0,Affirm Holdings
+20-12-2021,MARA,YAHOO,USD,7.28,24,sell,0,Marathon Digital
+20-12-2021,AFRM,YAHOO,USD,2.68,13,dividend,0,Affirm Holdings dividend
+20-12-2021,SQ,YAHOO,USD,71.03,32,sell,4.95,Block Inc
+22-12-2021,MSTR,YAHOO,USD,228.38,14,sell,4.95,MicroStrategy
+23-12-2021,COIN,YAHOO,USD,1.42,4,dividend,0,Coinbase dividend
+27-12-2021,SQ,YAHOO,USD,126.89,28,buy,0,Block Inc
+27-12-2021,COIN,YAHOO,USD,95.78,29,sell,9.95,Coinbase
+27-12-2021,MSTR,YAHOO,USD,389.83,47,buy,1.0,MicroStrategy
+27-12-2021,RIOT,YAHOO,USD,12.04,52,buy,4.95,Riot Platforms
+31-12-2021,RIOT,YAHOO,USD,7.27,33,sell,0,Riot Platforms
+07-01-2022,COIN,YAHOO,USD,85.15,59,sell,1.0,Coinbase
+17-01-2022,HOOD,YAHOO,USD,1.57,9,dividend,0,Robinhood dividend
+20-01-2022,Account Fee,MANUAL,USD,0,0,fee,43.52,Quarterly fee
+24-01-2022,SQ,YAHOO,USD,105.41,26,buy,9.95,Block Inc
+25-01-2022,PYPL,YAHOO,USD,2.25,14,dividend,0,PayPal dividend
+25-01-2022,MSTR,YAHOO,USD,355.61,37,buy,4.95,MicroStrategy
+25-01-2022,SQ,YAHOO,USD,58.28,28,sell,0,Block Inc
+26-01-2022,MARA,YAHOO,USD,25.08,79,buy,4.95,Marathon Digital
+07-02-2022,HOOD,YAHOO,USD,42.41,5,buy,0,Robinhood
+09-02-2022,MSTR,YAHOO,USD,1.31,41,dividend,0,MicroStrategy dividend
+14-02-2022,COIN,YAHOO,USD,352.4,29,buy,0,Coinbase
+14-02-2022,Account Fee,MANUAL,USD,0,0,fee,7.35,Quarterly fee
+18-02-2022,AFRM,YAHOO,USD,78.68,29,buy,0,Affirm Holdings
+21-02-2022,HOOD,YAHOO,USD,32.83,16,buy,0,Robinhood
+22-02-2022,HOOD,YAHOO,USD,18.39,40,buy,0,Robinhood
+28-02-2022,RIOT,YAHOO,USD,2.58,50,dividend,0,Riot Platforms dividend
+28-02-2022,SQ,YAHOO,USD,41.61,22,sell,0,Block Inc
+01-03-2022,HOOD,YAHOO,USD,46.46,42,buy,0,Robinhood
+02-03-2022,Account Fee,MANUAL,USD,0,0,fee,23.53,Quarterly fee
+14-03-2022,COIN,YAHOO,USD,303.98,54,buy,0,Coinbase
+15-03-2022,MARA,YAHOO,USD,35.88,19,buy,9.95,Marathon Digital
+22-03-2022,RIOT,YAHOO,USD,24.24,78,buy,1.0,Riot Platforms
+28-03-2022,PYPL,YAHOO,USD,182.97,42,buy,0,PayPal
+31-03-2022,AFRM,YAHOO,USD,108.81,15,buy,9.95,Affirm Holdings
+04-04-2022,RIOT,YAHOO,USD,31.33,74,buy,9.95,Riot Platforms
+08-04-2022,SQ,YAHOO,USD,95.86,11,sell,0,Block Inc
+14-04-2022,MSTR,YAHOO,USD,1.73,16,dividend,0,MicroStrategy dividend
+15-04-2022,MSTR,YAHOO,USD,135.83,71,sell,0,MicroStrategy
+20-04-2022,SQ,YAHOO,USD,203.84,43,buy,0,Block Inc
+29-04-2022,AFRM,YAHOO,USD,29.41,60,sell,1.0,Affirm Holdings
+10-05-2022,HOOD,YAHOO,USD,7.6,54,sell,1.0,Robinhood
+16-05-2022,MSTR,YAHOO,USD,485.37,59,buy,0,MicroStrategy
+16-05-2022,RIOT,YAHOO,USD,11.56,37,sell,1.0,Riot Platforms
+18-05-2022,RIOT,YAHOO,USD,0.96,16,dividend,0,Riot Platforms dividend
+18-05-2022,COIN,YAHOO,USD,267.01,29,buy,0,Coinbase
+20-05-2022,PYPL,YAHOO,USD,280.69,2,buy,4.95,PayPal
+20-05-2022,AFRM,YAHOO,USD,36.37,73,sell,0,Affirm Holdings
+23-05-2022,HOOD,YAHOO,USD,26.42,69,buy,0,Robinhood
+25-05-2022,SQ,YAHOO,USD,2.53,19,dividend,0,Block Inc dividend
+03-06-2022,COIN,YAHOO,USD,90.63,72,sell,4.95,Coinbase
+06-06-2022,MSTR,YAHOO,USD,90.92,43,sell,4.95,MicroStrategy
+13-06-2022,HOOD,YAHOO,USD,13.45,45,sell,1.0,Robinhood
+17-06-2022,PYPL,YAHOO,USD,266.01,3,buy,0,PayPal
+17-06-2022,COIN,YAHOO,USD,271.57,47,buy,9.95,Coinbase
+20-06-2022,Account Fee,MANUAL,USD,0,0,fee,26.77,Quarterly fee
+20-06-2022,RIOT,YAHOO,USD,6.2,57,sell,1.0,Riot Platforms
+22-06-2022,SQ,YAHOO,USD,19.83,74,sell,4.95,Block Inc
+24-06-2022,Account Fee,MANUAL,USD,0,0,fee,42.45,Quarterly fee
+28-06-2022,PYPL,YAHOO,USD,87.31,76,buy,4.95,PayPal
+29-06-2022,SQ,YAHOO,USD,219.43,51,buy,1.0,Block Inc
+30-06-2022,MSTR,YAHOO,USD,2.75,2,dividend,0,MicroStrategy dividend
+01-07-2022,MSTR,YAHOO,USD,674.2,57,buy,0,MicroStrategy
+07-07-2022,AFRM,YAHOO,USD,0.65,34,dividend,0,Affirm Holdings dividend
+08-07-2022,Account Fee,MANUAL,USD,0,0,fee,6.39,Quarterly fee
+11-07-2022,AFRM,YAHOO,USD,168.32,19,buy,0,Affirm Holdings
+11-07-2022,RIOT,YAHOO,USD,37.87,36,buy,0,Riot Platforms
+18-07-2022,PYPL,YAHOO,USD,41.26,19,sell,9.95,PayPal
+20-07-2022,COIN,YAHOO,USD,118.89,63,buy,0,Coinbase
+21-07-2022,COIN,YAHOO,USD,98.85,25,sell,4.95,Coinbase
+25-07-2022,MSTR,YAHOO,USD,100.33,25,sell,1.0,MicroStrategy
+25-07-2022,AFRM,YAHOO,USD,46.42,8,buy,0,Affirm Holdings
+26-07-2022,Account Fee,MANUAL,USD,0,0,fee,25.91,Quarterly fee
+01-08-2022,MARA,YAHOO,USD,40.63,51,buy,1.0,Marathon Digital
+08-08-2022,COIN,YAHOO,USD,146.97,44,buy,0,Coinbase
+08-08-2022,AFRM,YAHOO,USD,27.48,61,sell,0,Affirm Holdings
+15-08-2022,PYPL,YAHOO,USD,35.58,49,sell,4.95,PayPal
+15-08-2022,MSTR,YAHOO,USD,187.98,75,sell,0,MicroStrategy
+22-08-2022,SQ,YAHOO,USD,133.51,66,buy,4.95,Block Inc
+22-08-2022,HOOD,YAHOO,USD,13.89,47,buy,4.95,Robinhood
+24-08-2022,HOOD,YAHOO,USD,19.84,32,sell,0,Robinhood
+29-08-2022,SQ,YAHOO,USD,1.54,27,dividend,0,Block Inc dividend
+30-08-2022,PYPL,YAHOO,USD,91.77,26,sell,9.95,PayPal
+01-09-2022,AFRM,YAHOO,USD,96.21,48,buy,4.95,Affirm Holdings
+05-09-2022,HOOD,YAHOO,USD,15.48,65,sell,9.95,Robinhood
+08-09-2022,HOOD,YAHOO,USD,41.77,78,buy,0,Robinhood
+08-09-2022,PYPL,YAHOO,USD,169.61,11,buy,0,PayPal
+12-09-2022,PYPL,YAHOO,USD,43.36,9,sell,4.95,PayPal
+13-09-2022,RIOT,YAHOO,USD,14.28,73,buy,4.95,Riot Platforms
+16-09-2022,HOOD,YAHOO,USD,1.05,5,dividend,0,Robinhood dividend
+19-09-2022,PYPL,YAHOO,USD,68.85,33,sell,0,PayPal
+26-09-2022,RIOT,YAHOO,USD,11.76,2,sell,1.0,Riot Platforms
+27-09-2022,AFRM,YAHOO,USD,2.26,12,dividend,0,Affirm Holdings dividend
+03-10-2022,RIOT,YAHOO,USD,2.7,37,dividend,0,Riot Platforms dividend
+03-10-2022,PYPL,YAHOO,USD,159.83,68,sell,9.95,PayPal
+03-10-2022,MSTR,YAHOO,USD,2.28,25,dividend,0,MicroStrategy dividend
+06-10-2022,MARA,YAHOO,USD,16.1,11,sell,9.95,Marathon Digital
+10-10-2022,RIOT,YAHOO,USD,17.94,24,buy,1.0,Riot Platforms
+12-10-2022,Account Fee,MANUAL,USD,0,0,fee,6.08,Quarterly fee
+17-10-2022,PYPL,YAHOO,USD,105.5,47,buy,4.95,PayPal
+18-10-2022,SQ,YAHOO,USD,97.22,56,buy,4.95,Block Inc
+19-10-2022,PYPL,YAHOO,USD,32.75,47,sell,0,PayPal
+19-10-2022,HOOD,YAHOO,USD,7.8,80,sell,1.0,Robinhood
+24-10-2022,COIN,YAHOO,USD,20.7,76,sell,0,Coinbase
+24-10-2022,PYPL,YAHOO,USD,108.7,69,sell,1.0,PayPal
+24-10-2022,COIN,YAHOO,USD,198.15,16,buy,0,Coinbase
+28-10-2022,HOOD,YAHOO,USD,31.38,78,buy,1.0,Robinhood
+02-11-2022,SQ,YAHOO,USD,43.81,74,sell,9.95,Block Inc
+03-11-2022,SQ,YAHOO,USD,42.35,79,sell,4.95,Block Inc
+07-11-2022,SQ,YAHOO,USD,67.32,2,sell,1.0,Block Inc
+08-11-2022,COIN,YAHOO,USD,1.14,26,dividend,0,Coinbase dividend
+11-11-2022,SQ,YAHOO,USD,51.17,77,sell,0,Block Inc
+14-11-2022,SQ,YAHOO,USD,1.59,14,dividend,0,Block Inc dividend
+16-11-2022,PYPL,YAHOO,USD,1.37,11,dividend,0,PayPal dividend
+18-11-2022,SQ,YAHOO,USD,1.63,16,dividend,0,Block Inc dividend
+21-11-2022,MARA,YAHOO,USD,36.74,25,buy,0,Marathon Digital
+21-11-2022,HOOD,YAHOO,USD,22.07,47,buy,4.95,Robinhood
+07-12-2022,COIN,YAHOO,USD,3.21,34,dividend,0,Coinbase dividend
+08-12-2022,COIN,YAHOO,USD,121.45,56,sell,0,Coinbase
+12-12-2022,MSTR,YAHOO,USD,205.5,36,sell,4.95,MicroStrategy
+12-12-2022,SQ,YAHOO,USD,96.88,45,buy,9.95,Block Inc
+16-12-2022,AFRM,YAHOO,USD,40.39,64,buy,0,Affirm Holdings
+23-12-2022,RIOT,YAHOO,USD,29.51,6,buy,0,Riot Platforms
+02-01-2023,AFRM,YAHOO,USD,28.99,9,sell,9.95,Affirm Holdings
+03-01-2023,MSTR,YAHOO,USD,146.14,44,sell,0,MicroStrategy
+13-01-2023,HOOD,YAHOO,USD,6.43,33,sell,0,Robinhood
+23-01-2023,HOOD,YAHOO,USD,14.59,12,buy,0,Robinhood
+23-01-2023,COIN,YAHOO,USD,58.84,65,sell,9.95,Coinbase
+25-01-2023,COIN,YAHOO,USD,120.51,24,sell,4.95,Coinbase
+30-01-2023,RIOT,YAHOO,USD,37.73,62,buy,9.95,Riot Platforms
+31-01-2023,COIN,YAHOO,USD,316.25,45,buy,1.0,Coinbase
+06-02-2023,HOOD,YAHOO,USD,6.05,17,sell,9.95,Robinhood
+06-02-2023,COIN,YAHOO,USD,308.06,54,buy,9.95,Coinbase
+09-02-2023,MARA,YAHOO,USD,34.22,46,buy,0,Marathon Digital
+16-02-2023,MSTR,YAHOO,USD,174.22,2,sell,0,MicroStrategy
+27-02-2023,MARA,YAHOO,USD,32.79,7,buy,1.0,Marathon Digital
+02-03-2023,COIN,YAHOO,USD,113.25,19,buy,0,Coinbase
+13-03-2023,HOOD,YAHOO,USD,47.5,38,buy,0,Robinhood
+14-03-2023,SQ,YAHOO,USD,207.08,66,buy,9.95,Block Inc
+16-03-2023,MARA,YAHOO,USD,4.57,63,sell,0,Marathon Digital
+20-03-2023,SQ,YAHOO,USD,24.31,29,sell,0,Block Inc
+20-03-2023,COIN,YAHOO,USD,127.17,21,sell,0,Coinbase
+27-03-2023,AFRM,YAHOO,USD,29.57,39,sell,0,Affirm Holdings
+28-03-2023,MARA,YAHOO,USD,45.33,13,buy,4.95,Marathon Digital
+03-04-2023,COIN,YAHOO,USD,127.81,35,buy,4.95,Coinbase
+05-04-2023,MSTR,YAHOO,USD,524.02,73,buy,0,MicroStrategy
+17-04-2023,SQ,YAHOO,USD,176.07,65,buy,0,Block Inc
+19-04-2023,AFRM,YAHOO,USD,35.22,47,sell,9.95,Affirm Holdings
+25-04-2023,COIN,YAHOO,USD,325.4,77,buy,4.95,Coinbase
+01-05-2023,PYPL,YAHOO,USD,1.57,48,dividend,0,PayPal dividend
+02-05-2023,MARA,YAHOO,USD,24.53,57,buy,4.95,Marathon Digital
+08-05-2023,PYPL,YAHOO,USD,63.4,14,sell,0,PayPal
+09-05-2023,MARA,YAHOO,USD,40.46,44,buy,0,Marathon Digital
+15-05-2023,MARA,YAHOO,USD,1.51,27,dividend,0,Marathon Digital dividend
+15-05-2023,RIOT,YAHOO,USD,27.16,43,buy,9.95,Riot Platforms
+15-05-2023,COIN,YAHOO,USD,64.77,37,sell,1.0,Coinbase
+22-05-2023,Account Fee,MANUAL,USD,0,0,fee,40.08,Quarterly fee
+22-05-2023,PYPL,YAHOO,USD,28.41,35,sell,1.0,PayPal
+23-05-2023,PYPL,YAHOO,USD,51.69,10,sell,9.95,PayPal
+24-05-2023,AFRM,YAHOO,USD,33.19,18,buy,0,Affirm Holdings
+25-05-2023,MSTR,YAHOO,USD,323.48,62,buy,4.95,MicroStrategy
+02-06-2023,AFRM,YAHOO,USD,110.0,35,buy,4.95,Affirm Holdings
+05-06-2023,PYPL,YAHOO,USD,221.32,52,buy,0,PayPal
+15-06-2023,RIOT,YAHOO,USD,15.14,49,buy,0,Riot Platforms
+20-06-2023,AFRM,YAHOO,USD,93.71,29,buy,0,Affirm Holdings
+04-07-2023,MSTR,YAHOO,USD,116.89,55,sell,0,MicroStrategy
+04-07-2023,COIN,YAHOO,USD,93.36,62,sell,9.95,Coinbase
+10-07-2023,RIOT,YAHOO,USD,7.03,50,sell,0,Riot Platforms
+10-07-2023,HOOD,YAHOO,USD,14.26,62,sell,1.0,Robinhood
+12-07-2023,HOOD,YAHOO,USD,2.3,27,dividend,0,Robinhood dividend
+12-07-2023,SQ,YAHOO,USD,36.37,77,sell,0,Block Inc
+17-07-2023,MARA,YAHOO,USD,22.99,26,buy,0,Marathon Digital
+17-07-2023,COIN,YAHOO,USD,51.01,48,sell,0,Coinbase
+17-07-2023,HOOD,YAHOO,USD,18.59,79,buy,4.95,Robinhood
+24-07-2023,COIN,YAHOO,USD,57.45,71,sell,4.95,Coinbase
+31-07-2023,HOOD,YAHOO,USD,30.49,19,buy,0,Robinhood
+01-08-2023,COIN,YAHOO,USD,59.73,72,sell,1.0,Coinbase
+14-08-2023,MSTR,YAHOO,USD,382.01,15,buy,4.95,MicroStrategy
+28-08-2023,COIN,YAHOO,USD,145.17,50,sell,4.95,Coinbase
+28-08-2023,COIN,YAHOO,USD,138.22,62,sell,4.95,Coinbase
+04-09-2023,MARA,YAHOO,USD,3.1,1,dividend,0,Marathon Digital dividend
+21-09-2023,MSTR,YAHOO,USD,586.1,39,buy,1.0,MicroStrategy
+02-10-2023,SQ,YAHOO,USD,241.19,14,buy,0,Block Inc
+02-10-2023,AFRM,YAHOO,USD,120.63,63,buy,9.95,Affirm Holdings
+03-10-2023,HOOD,YAHOO,USD,3.25,11,dividend,0,Robinhood dividend
+04-10-2023,SQ,YAHOO,USD,35.89,59,sell,0,Block Inc
+04-10-2023,COIN,YAHOO,USD,351.68,74,buy,1.0,Coinbase
+06-10-2023,SQ,YAHOO,USD,112.59,64,buy,0,Block Inc
+12-10-2023,SQ,YAHOO,USD,202.85,33,buy,0,Block Inc
+16-10-2023,COIN,YAHOO,USD,110.77,46,sell,0,Coinbase
+17-10-2023,PYPL,YAHOO,USD,44.84,44,sell,0,PayPal
+06-11-2023,AFRM,YAHOO,USD,1.47,5,dividend,0,Affirm Holdings dividend
+09-11-2023,SQ,YAHOO,USD,32.04,13,sell,1.0,Block Inc
+10-11-2023,AFRM,YAHOO,USD,69.7,48,buy,0,Affirm Holdings
+13-11-2023,AFRM,YAHOO,USD,75.86,52,buy,0,Affirm Holdings
+17-11-2023,MSTR,YAHOO,USD,137.72,13,sell,4.95,MicroStrategy
+17-11-2023,SQ,YAHOO,USD,107.11,28,buy,1.0,Block Inc
+27-11-2023,AFRM,YAHOO,USD,19.98,42,sell,1.0,Affirm Holdings
+27-11-2023,SQ,YAHOO,USD,203.0,51,buy,0,Block Inc
+29-11-2023,MSTR,YAHOO,USD,318.21,13,buy,1.0,MicroStrategy
+06-12-2023,MARA,YAHOO,USD,23.39,69,sell,4.95,Marathon Digital
+07-12-2023,COIN,YAHOO,USD,296.98,77,buy,0,Coinbase
+08-12-2023,HOOD,YAHOO,USD,26.59,14,buy,4.95,Robinhood
+11-12-2023,Account Fee,MANUAL,USD,0,0,fee,37.21,Quarterly fee
+12-12-2023,AFRM,YAHOO,USD,24.99,63,sell,4.95,Affirm Holdings
+14-12-2023,HOOD,YAHOO,USD,24.0,74,buy,1.0,Robinhood
+15-12-2023,MSTR,YAHOO,USD,56.19,31,sell,9.95,MicroStrategy
+18-12-2023,AFRM,YAHOO,USD,22.04,29,sell,9.95,Affirm Holdings
+21-12-2023,PYPL,YAHOO,USD,41.69,74,sell,1.0,PayPal
+01-01-2024,RIOT,YAHOO,USD,10.15,44,sell,0,Riot Platforms
+01-01-2024,RIOT,YAHOO,USD,2.24,50,dividend,0,Riot Platforms dividend
+04-01-2024,MSTR,YAHOO,USD,0.36,40,dividend,0,MicroStrategy dividend
+08-01-2024,SQ,YAHOO,USD,23.2,7,sell,1.0,Block Inc
+15-01-2024,MARA,YAHOO,USD,18.29,70,buy,4.95,Marathon Digital
+22-01-2024,MSTR,YAHOO,USD,191.28,77,sell,0,MicroStrategy
+22-01-2024,PYPL,YAHOO,USD,3.07,28,dividend,0,PayPal dividend
+31-01-2024,COIN,YAHOO,USD,149.98,10,sell,0,Coinbase
+05-02-2024,AFRM,YAHOO,USD,56.68,9,sell,0,Affirm Holdings
+07-02-2024,RIOT,YAHOO,USD,1.5,16,dividend,0,Riot Platforms dividend
+14-02-2024,RIOT,YAHOO,USD,11.21,64,buy,9.95,Riot Platforms
+14-02-2024,MARA,YAHOO,USD,41.93,55,buy,0,Marathon Digital
+21-02-2024,SQ,YAHOO,USD,207.07,64,buy,9.95,Block Inc
+21-02-2024,SQ,YAHOO,USD,1.08,24,dividend,0,Block Inc dividend
+22-02-2024,PYPL,YAHOO,USD,152.84,49,sell,4.95,PayPal
+23-02-2024,PYPL,YAHOO,USD,45.41,43,sell,1.0,PayPal
+26-02-2024,RIOT,YAHOO,USD,10.97,54,buy,0,Riot Platforms
+04-03-2024,AFRM,YAHOO,USD,99.95,49,buy,0,Affirm Holdings
+04-03-2024,Account Fee,MANUAL,USD,0,0,fee,12.96,Quarterly fee
+05-03-2024,MARA,YAHOO,USD,7.69,67,sell,0,Marathon Digital
+08-03-2024,HOOD,YAHOO,USD,40.35,44,buy,0,Robinhood
+11-03-2024,AFRM,YAHOO,USD,47.69,73,buy,1.0,Affirm Holdings
+11-03-2024,MSTR,YAHOO,USD,0.99,35,dividend,0,MicroStrategy dividend
+11-03-2024,COIN,YAHOO,USD,278.78,1,buy,0,Coinbase
+22-03-2024,MARA,YAHOO,USD,8.64,59,sell,0,Marathon Digital
+25-03-2024,RIOT,YAHOO,USD,3.49,43,sell,4.95,Riot Platforms
+25-03-2024,PYPL,YAHOO,USD,166.16,29,buy,0,PayPal
+01-04-2024,SQ,YAHOO,USD,163.26,27,buy,0,Block Inc
+02-04-2024,MARA,YAHOO,USD,3.31,44,dividend,0,Marathon Digital dividend
+05-04-2024,COIN,YAHOO,USD,20.89,14,sell,0,Coinbase
+08-04-2024,MARA,YAHOO,USD,16.0,47,buy,1.0,Marathon Digital
+10-04-2024,COIN,YAHOO,USD,2.73,13,dividend,0,Coinbase dividend
+15-04-2024,RIOT,YAHOO,USD,12.12,32,sell,0,Riot Platforms
+15-04-2024,SQ,YAHOO,USD,0.71,15,dividend,0,Block Inc dividend
+17-04-2024,RIOT,YAHOO,USD,4.54,5,sell,0,Riot Platforms
+29-04-2024,HOOD,YAHOO,USD,6.21,22,sell,1.0,Robinhood
+29-04-2024,SQ,YAHOO,USD,48.12,43,sell,0,Block Inc
+30-04-2024,MSTR,YAHOO,USD,498.79,17,buy,9.95,MicroStrategy
+06-05-2024,PYPL,YAHOO,USD,318.18,22,buy,0,PayPal
+07-05-2024,SQ,YAHOO,USD,41.1,58,sell,4.95,Block Inc
+08-05-2024,SQ,YAHOO,USD,19.75,53,sell,1.0,Block Inc
+13-05-2024,COIN,YAHOO,USD,112.61,7,buy,9.95,Coinbase
+13-05-2024,COIN,YAHOO,USD,80.05,45,sell,1.0,Coinbase
+16-05-2024,COIN,YAHOO,USD,100.84,29,buy,0,Coinbase
+20-05-2024,PYPL,YAHOO,USD,45.31,3,sell,1.0,PayPal
+20-05-2024,COIN,YAHOO,USD,148.83,17,sell,0,Coinbase
+21-05-2024,PYPL,YAHOO,USD,40.75,32,sell,0,PayPal
+23-05-2024,HOOD,YAHOO,USD,32.46,32,buy,9.95,Robinhood
+27-05-2024,RIOT,YAHOO,USD,15.49,61,buy,9.95,Riot Platforms
+03-06-2024,MSTR,YAHOO,USD,220.6,54,buy,0,MicroStrategy
+03-06-2024,MSTR,YAHOO,USD,546.17,69,buy,0,MicroStrategy
+12-06-2024,Account Fee,MANUAL,USD,0,0,fee,28.65,Quarterly fee
+13-06-2024,COIN,YAHOO,USD,293.34,73,buy,1.0,Coinbase
+17-06-2024,SQ,YAHOO,USD,118.62,40,sell,0,Block Inc
+18-06-2024,MARA,YAHOO,USD,26.15,41,buy,1.0,Marathon Digital
+20-06-2024,PYPL,YAHOO,USD,118.84,4,buy,4.95,PayPal
+25-06-2024,SQ,YAHOO,USD,66.87,72,sell,0,Block Inc
+01-07-2024,SQ,YAHOO,USD,161.22,4,buy,9.95,Block Inc
+01-07-2024,HOOD,YAHOO,USD,9.77,32,sell,4.95,Robinhood
+01-07-2024,MSTR,YAHOO,USD,170.78,33,sell,9.95,MicroStrategy
+01-07-2024,HOOD,YAHOO,USD,3.28,21,dividend,0,Robinhood dividend
+05-07-2024,HOOD,YAHOO,USD,3.35,44,dividend,0,Robinhood dividend
+08-07-2024,SQ,YAHOO,USD,3.49,20,dividend,0,Block Inc dividend
+08-07-2024,PYPL,YAHOO,USD,123.24,19,sell,0,PayPal
+09-07-2024,COIN,YAHOO,USD,1.24,29,dividend,0,Coinbase dividend
+11-07-2024,COIN,YAHOO,USD,110.49,5,buy,0,Coinbase
+11-07-2024,HOOD,YAHOO,USD,24.39,4,buy,0,Robinhood
+12-07-2024,AFRM,YAHOO,USD,2.35,31,dividend,0,Affirm Holdings dividend
+15-07-2024,MSTR,YAHOO,USD,546.92,66,buy,4.95,MicroStrategy
+15-07-2024,Account Fee,MANUAL,USD,0,0,fee,6.36,Quarterly fee
+16-07-2024,MARA,YAHOO,USD,17.94,31,buy,9.95,Marathon Digital
+18-07-2024,HOOD,YAHOO,USD,2.34,42,dividend,0,Robinhood dividend
+30-07-2024,PYPL,YAHOO,USD,332.38,5,buy,9.95,PayPal
+12-08-2024,AFRM,YAHOO,USD,78.81,18,buy,1.0,Affirm Holdings
+12-08-2024,HOOD,YAHOO,USD,38.13,5,buy,1.0,Robinhood
+14-08-2024,PYPL,YAHOO,USD,32.62,44,sell,0,PayPal
+16-08-2024,RIOT,YAHOO,USD,33.43,79,buy,0,Riot Platforms
+19-08-2024,AFRM,YAHOO,USD,1.37,34,dividend,0,Affirm Holdings dividend
+21-08-2024,Account Fee,MANUAL,USD,0,0,fee,5.22,Quarterly fee
+23-08-2024,Account Fee,MANUAL,USD,0,0,fee,46.44,Quarterly fee
+23-08-2024,COIN,YAHOO,USD,105.71,31,sell,0,Coinbase
+27-08-2024,HOOD,YAHOO,USD,16.5,22,buy,4.95,Robinhood
+02-09-2024,RIOT,YAHOO,USD,22.31,41,buy,4.95,Riot Platforms
+02-09-2024,PYPL,YAHOO,USD,0.96,36,dividend,0,PayPal dividend
+09-09-2024,RIOT,YAHOO,USD,3.57,21,sell,9.95,Riot Platforms
+09-09-2024,AFRM,YAHOO,USD,130.88,72,buy,0,Affirm Holdings
+16-09-2024,MARA,YAHOO,USD,2.15,13,dividend,0,Marathon Digital dividend
+19-09-2024,Account Fee,MANUAL,USD,0,0,fee,37.3,Quarterly fee
+20-09-2024,MARA,YAHOO,USD,8.23,12,sell,0,Marathon Digital
+23-09-2024,COIN,YAHOO,USD,333.08,54,buy,9.95,Coinbase
+23-09-2024,COIN,YAHOO,USD,47.38,77,sell,1.0,Coinbase
+23-09-2024,SQ,YAHOO,USD,224.82,23,buy,0,Block Inc
+26-09-2024,HOOD,YAHOO,USD,20.22,57,buy,0,Robinhood
+08-10-2024,HOOD,YAHOO,USD,11.06,71,sell,0,Robinhood
+09-10-2024,HOOD,YAHOO,USD,20.86,68,buy,1.0,Robinhood
+14-10-2024,MSTR,YAHOO,USD,460.38,55,buy,4.95,MicroStrategy
+18-10-2024,MARA,YAHOO,USD,1.89,11,dividend,0,Marathon Digital dividend
+22-10-2024,MARA,YAHOO,USD,22.6,34,buy,1.0,Marathon Digital
+28-10-2024,MARA,YAHOO,USD,5.61,31,sell,0,Marathon Digital
+01-11-2024,MSTR,YAHOO,USD,201.85,16,sell,0,MicroStrategy
+01-11-2024,COIN,YAHOO,USD,288.71,12,buy,0,Coinbase
+04-11-2024,PYPL,YAHOO,USD,0.55,36,dividend,0,PayPal dividend
+11-11-2024,AFRM,YAHOO,USD,16.15,62,sell,0,Affirm Holdings
+12-11-2024,MARA,YAHOO,USD,39.2,68,buy,9.95,Marathon Digital
+13-11-2024,COIN,YAHOO,USD,97.46,41,sell,1.0,Coinbase
+18-11-2024,MSTR,YAHOO,USD,2.27,13,dividend,0,MicroStrategy dividend
+19-11-2024,HOOD,YAHOO,USD,27.74,58,buy,1.0,Robinhood
+25-11-2024,MARA,YAHOO,USD,16.4,26,sell,9.95,Marathon Digital
+27-11-2024,HOOD,YAHOO,USD,1.85,47,dividend,0,Robinhood dividend
+29-11-2024,SQ,YAHOO,USD,103.54,33,buy,4.95,Block Inc
+05-12-2024,MARA,YAHOO,USD,41.22,36,buy,0,Marathon Digital
+06-12-2024,COIN,YAHOO,USD,379.74,25,buy,4.95,Coinbase
+10-12-2024,MARA,YAHOO,USD,2.84,30,dividend,0,Marathon Digital dividend
+12-12-2024,MARA,YAHOO,USD,17.04,29,sell,4.95,Marathon Digital
+12-12-2024,RIOT,YAHOO,USD,0.65,20,dividend,0,Riot Platforms dividend
+12-12-2024,PYPL,YAHOO,USD,1.0,10,dividend,0,PayPal dividend
+13-12-2024,MARA,YAHOO,USD,22.6,26,buy,0,Marathon Digital
+13-12-2024,SQ,YAHOO,USD,85.14,78,sell,0,Block Inc
+20-12-2024,SQ,YAHOO,USD,222.89,10,buy,1.0,Block Inc
+20-12-2024,COIN,YAHOO,USD,65.87,11,sell,0,Coinbase
+23-12-2024,MARA,YAHOO,USD,3.64,78,sell,4.95,Marathon Digital
+23-12-2024,MARA,YAHOO,USD,33.78,28,buy,0,Marathon Digital
+02-01-2025,COIN,YAHOO,USD,2.4,19,dividend,0,Coinbase dividend
+06-01-2025,HOOD,YAHOO,USD,1.57,21,dividend,0,Robinhood dividend
+13-01-2025,SQ,YAHOO,USD,214.99,63,buy,9.95,Block Inc
+14-01-2025,MSTR,YAHOO,USD,1.57,15,dividend,0,MicroStrategy dividend
+22-01-2025,Account Fee,MANUAL,USD,0,0,fee,49.75,Quarterly fee
+23-01-2025,RIOT,YAHOO,USD,6.7,50,sell,0,Riot Platforms
+24-01-2025,Account Fee,MANUAL,USD,0,0,fee,6.75,Quarterly fee
+27-01-2025,MSTR,YAHOO,USD,674.42,18,buy,0,MicroStrategy
+30-01-2025,PYPL,YAHOO,USD,108.55,24,buy,9.95,PayPal

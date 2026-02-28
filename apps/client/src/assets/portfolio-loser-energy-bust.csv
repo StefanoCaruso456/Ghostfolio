@@ -1,0 +1,1001 @@
+Date,Code,DataSource,Currency,Price,Quantity,Action,Fee,Note
+05-01-2015,SLB,YAHOO,USD,2.24,11,dividend,0,Schlumberger dividend
+05-01-2015,Account Fee,MANUAL,USD,0,0,fee,22.44,Quarterly fee
+12-01-2015,OXY,YAHOO,USD,12.82,28,sell,0,Occidental Petroleum
+12-01-2015,OXY,YAHOO,USD,68.99,55,buy,0,Occidental Petroleum
+12-01-2015,PLUG,YAHOO,USD,18.54,31,sell,1.0,Plug Power
+12-01-2015,Account Fee,MANUAL,USD,0,0,fee,29.96,Quarterly fee
+14-01-2015,MRO,YAHOO,USD,27.98,79,buy,9.95,Marathon Oil
+16-01-2015,PLUG,YAHOO,USD,28.69,79,buy,1.0,Plug Power
+21-01-2015,MRO,YAHOO,USD,21.17,71,buy,1.0,Marathon Oil
+26-01-2015,PLUG,YAHOO,USD,0.68,18,sell,0,Plug Power
+02-02-2015,MRO,YAHOO,USD,9.52,64,sell,9.95,Marathon Oil
+02-02-2015,OXY,YAHOO,USD,12.93,20,sell,0,Occidental Petroleum
+03-02-2015,HAL,YAHOO,USD,9.86,63,sell,4.95,Halliburton
+05-02-2015,MRO,YAHOO,USD,22.93,71,buy,1.0,Marathon Oil
+12-02-2015,OXY,YAHOO,USD,70.03,16,buy,0,Occidental Petroleum
+04-03-2015,MRO,YAHOO,USD,26.03,55,buy,9.95,Marathon Oil
+06-03-2015,SLB,YAHOO,USD,12.49,13,sell,0,Schlumberger
+09-03-2015,DVN,YAHOO,USD,20.79,62,sell,9.95,Devon Energy
+16-03-2015,DVN,YAHOO,USD,9.54,28,sell,0,Devon Energy
+18-03-2015,APA,YAHOO,USD,5.19,27,sell,9.95,APA Corp
+19-03-2015,APA,YAHOO,USD,0.48,9,dividend,0,APA Corp dividend
+24-03-2015,SLB,YAHOO,USD,11.84,11,sell,0,Schlumberger
+24-03-2015,MRO,YAHOO,USD,10.01,22,sell,0,Marathon Oil
+25-03-2015,OXY,YAHOO,USD,70.68,45,buy,1.0,Occidental Petroleum
+27-03-2015,FSLR,YAHOO,USD,203.76,40,buy,0,First Solar
+02-04-2015,HAL,YAHOO,USD,37.56,24,buy,0,Halliburton
+09-04-2015,HAL,YAHOO,USD,17.67,36,sell,1.0,Halliburton
+10-04-2015,SLB,YAHOO,USD,16.58,6,sell,1.0,Schlumberger
+20-04-2015,DVN,YAHOO,USD,54.21,18,buy,4.95,Devon Energy
+20-04-2015,PLUG,YAHOO,USD,9.28,63,sell,4.95,Plug Power
+22-04-2015,HAL,YAHOO,USD,10.1,36,sell,0,Halliburton
+23-04-2015,FSLR,YAHOO,USD,72.8,66,sell,9.95,First Solar
+27-04-2015,SLB,YAHOO,USD,9.87,68,sell,0,Schlumberger
+27-04-2015,DVN,YAHOO,USD,60.73,64,buy,0,Devon Energy
+06-05-2015,APA,YAHOO,USD,37.02,58,buy,9.95,APA Corp
+11-05-2015,DVN,YAHOO,USD,25.63,73,sell,0,Devon Energy
+11-05-2015,FSLR,YAHOO,USD,127.3,23,sell,4.95,First Solar
+13-05-2015,OXY,YAHOO,USD,72.08,45,buy,9.95,Occidental Petroleum
+15-05-2015,OXY,YAHOO,USD,37.48,40,sell,0,Occidental Petroleum
+18-05-2015,MRO,YAHOO,USD,27.08,76,buy,9.95,Marathon Oil
+18-05-2015,OXY,YAHOO,USD,14.18,45,sell,9.95,Occidental Petroleum
+18-05-2015,HAL,YAHOO,USD,35.02,43,buy,0,Halliburton
+20-05-2015,HAL,YAHOO,USD,29.93,63,buy,9.95,Halliburton
+25-05-2015,APA,YAHOO,USD,30.48,47,buy,9.95,APA Corp
+28-05-2015,HAL,YAHOO,USD,26.31,44,buy,9.95,Halliburton
+01-06-2015,SLB,YAHOO,USD,1.38,38,dividend,0,Schlumberger dividend
+01-06-2015,OXY,YAHOO,USD,69.04,64,buy,0,Occidental Petroleum
+10-06-2015,SLB,YAHOO,USD,17.88,44,sell,0,Schlumberger
+17-06-2015,HAL,YAHOO,USD,30.69,25,buy,0,Halliburton
+22-06-2015,HAL,YAHOO,USD,35.3,27,buy,0,Halliburton
+23-06-2015,FSLR,YAHOO,USD,108.09,43,sell,4.95,First Solar
+25-06-2015,PLUG,YAHOO,USD,14.46,80,buy,0,Plug Power
+29-06-2015,HAL,YAHOO,USD,1.57,48,dividend,0,Halliburton dividend
+07-07-2015,SLB,YAHOO,USD,47.6,33,buy,9.95,Schlumberger
+13-07-2015,SLB,YAHOO,USD,1.95,50,dividend,0,Schlumberger dividend
+13-07-2015,APA,YAHOO,USD,18.09,20,sell,0,APA Corp
+13-07-2015,PLUG,YAHOO,USD,8.68,58,buy,0,Plug Power
+20-07-2015,HAL,YAHOO,USD,15.84,61,sell,4.95,Halliburton
+20-07-2015,PLUG,YAHOO,USD,2.31,25,dividend,0,Plug Power dividend
+24-07-2015,HAL,YAHOO,USD,27.25,49,buy,1.0,Halliburton
+27-07-2015,APA,YAHOO,USD,3.21,17,dividend,0,APA Corp dividend
+27-07-2015,MRO,YAHOO,USD,28.92,18,buy,0,Marathon Oil
+28-07-2015,Account Fee,MANUAL,USD,0,0,fee,40.52,Quarterly fee
+29-07-2015,SLB,YAHOO,USD,27.22,25,sell,0,Schlumberger
+29-07-2015,FSLR,YAHOO,USD,237.13,20,buy,0,First Solar
+07-08-2015,Account Fee,MANUAL,USD,0,0,fee,41.73,Quarterly fee
+10-08-2015,OXY,YAHOO,USD,57.63,19,buy,1.0,Occidental Petroleum
+10-08-2015,DVN,YAHOO,USD,58.22,47,buy,0,Devon Energy
+13-08-2015,PLUG,YAHOO,USD,26.62,55,buy,4.95,Plug Power
+17-08-2015,PLUG,YAHOO,USD,9.15,31,buy,1.0,Plug Power
+17-08-2015,APA,YAHOO,USD,3.09,15,dividend,0,APA Corp dividend
+18-08-2015,MRO,YAHOO,USD,21.95,70,buy,4.95,Marathon Oil
+19-08-2015,DVN,YAHOO,USD,15.76,72,sell,9.95,Devon Energy
+20-08-2015,PLUG,YAHOO,USD,7.34,32,buy,1.0,Plug Power
+21-08-2015,HAL,YAHOO,USD,39.62,40,buy,1.0,Halliburton
+24-08-2015,DVN,YAHOO,USD,2.76,18,dividend,0,Devon Energy dividend
+24-08-2015,HAL,YAHOO,USD,34.95,42,buy,1.0,Halliburton
+28-08-2015,SLB,YAHOO,USD,29.83,20,sell,1.0,Schlumberger
+31-08-2015,PLUG,YAHOO,USD,9.78,17,buy,9.95,Plug Power
+14-09-2015,HAL,YAHOO,USD,34.64,47,buy,4.95,Halliburton
+14-09-2015,OXY,YAHOO,USD,56.22,12,buy,0,Occidental Petroleum
+21-09-2015,DVN,YAHOO,USD,48.61,31,buy,9.95,Devon Energy
+23-09-2015,DVN,YAHOO,USD,10.01,49,sell,4.95,Devon Energy
+25-09-2015,SLB,YAHOO,USD,51.53,12,buy,0,Schlumberger
+06-10-2015,MRO,YAHOO,USD,25.67,11,buy,0,Marathon Oil
+07-10-2015,APA,YAHOO,USD,17.23,23,sell,1.0,APA Corp
+15-10-2015,APA,YAHOO,USD,29.25,10,buy,0,APA Corp
+20-10-2015,FSLR,YAHOO,USD,199.81,70,buy,0,First Solar
+22-10-2015,HAL,YAHOO,USD,12.92,68,sell,0,Halliburton
+09-11-2015,PLUG,YAHOO,USD,14.18,46,sell,9.95,Plug Power
+12-11-2015,FSLR,YAHOO,USD,79.38,21,sell,0,First Solar
+16-11-2015,HAL,YAHOO,USD,30.22,55,buy,4.95,Halliburton
+18-11-2015,FSLR,YAHOO,USD,87.83,5,sell,0,First Solar
+19-11-2015,PLUG,YAHOO,USD,2.06,49,sell,0,Plug Power
+23-11-2015,FSLR,YAHOO,USD,241.08,31,buy,0,First Solar
+24-11-2015,DVN,YAHOO,USD,40.49,49,buy,0,Devon Energy
+26-11-2015,HAL,YAHOO,USD,36.08,55,buy,0,Halliburton
+07-12-2015,MRO,YAHOO,USD,4.79,69,sell,0,Marathon Oil
+22-12-2015,APA,YAHOO,USD,32.31,30,buy,9.95,APA Corp
+25-12-2015,FSLR,YAHOO,USD,55.25,21,sell,9.95,First Solar
+30-12-2015,SLB,YAHOO,USD,14.25,58,sell,4.95,Schlumberger
+31-12-2015,PLUG,YAHOO,USD,30.88,26,buy,0,Plug Power
+04-01-2016,HAL,YAHOO,USD,37.54,8,buy,4.95,Halliburton
+08-01-2016,DVN,YAHOO,USD,2.02,32,dividend,0,Devon Energy dividend
+13-01-2016,SLB,YAHOO,USD,59.05,63,buy,0,Schlumberger
+18-01-2016,MRO,YAHOO,USD,2.38,28,dividend,0,Marathon Oil dividend
+19-01-2016,FSLR,YAHOO,USD,1.54,18,dividend,0,First Solar dividend
+19-01-2016,DVN,YAHOO,USD,29.0,52,sell,9.95,Devon Energy
+19-01-2016,SLB,YAHOO,USD,15.43,15,sell,0,Schlumberger
+22-01-2016,DVN,YAHOO,USD,58.75,27,buy,9.95,Devon Energy
+25-01-2016,APA,YAHOO,USD,34.18,57,buy,0,APA Corp
+01-02-2016,DVN,YAHOO,USD,27.24,41,sell,0,Devon Energy
+04-02-2016,SLB,YAHOO,USD,1.81,18,dividend,0,Schlumberger dividend
+04-02-2016,DVN,YAHOO,USD,64.9,53,buy,0,Devon Energy
+04-02-2016,SLB,YAHOO,USD,58.58,76,buy,1.0,Schlumberger
+08-02-2016,OXY,YAHOO,USD,23.63,18,sell,9.95,Occidental Petroleum
+09-02-2016,Account Fee,MANUAL,USD,0,0,fee,21.65,Quarterly fee
+22-02-2016,FSLR,YAHOO,USD,92.39,29,buy,1.0,First Solar
+22-02-2016,SLB,YAHOO,USD,1.12,20,dividend,0,Schlumberger dividend
+22-02-2016,DVN,YAHOO,USD,51.41,79,buy,0,Devon Energy
+23-02-2016,OXY,YAHOO,USD,72.69,69,buy,0,Occidental Petroleum
+25-02-2016,FSLR,YAHOO,USD,93.89,8,sell,1.0,First Solar
+02-03-2016,DVN,YAHOO,USD,67.89,54,buy,4.95,Devon Energy
+07-03-2016,SLB,YAHOO,USD,58.12,49,buy,0,Schlumberger
+09-03-2016,DVN,YAHOO,USD,60.13,70,buy,9.95,Devon Energy
+14-03-2016,HAL,YAHOO,USD,12.79,66,sell,0,Halliburton
+14-03-2016,APA,YAHOO,USD,35.06,68,buy,9.95,APA Corp
+14-03-2016,PLUG,YAHOO,USD,34.55,16,buy,4.95,Plug Power
+14-03-2016,MRO,YAHOO,USD,14.22,66,sell,4.95,Marathon Oil
+15-03-2016,PLUG,YAHOO,USD,0.68,40,dividend,0,Plug Power dividend
+17-03-2016,SLB,YAHOO,USD,62.96,14,buy,4.95,Schlumberger
+21-03-2016,SLB,YAHOO,USD,53.98,31,buy,0,Schlumberger
+01-04-2016,HAL,YAHOO,USD,18.9,53,sell,0,Halliburton
+04-04-2016,FSLR,YAHOO,USD,70.84,50,sell,0,First Solar
+04-04-2016,PLUG,YAHOO,USD,4.37,13,sell,9.95,Plug Power
+04-04-2016,PLUG,YAHOO,USD,28.19,75,buy,0,Plug Power
+04-04-2016,HAL,YAHOO,USD,30.43,3,buy,9.95,Halliburton
+11-04-2016,OXY,YAHOO,USD,34.98,12,sell,0,Occidental Petroleum
+12-04-2016,OXY,YAHOO,USD,64.02,51,buy,0,Occidental Petroleum
+18-04-2016,SLB,YAHOO,USD,45.58,59,buy,0,Schlumberger
+18-04-2016,APA,YAHOO,USD,1.41,6,dividend,0,APA Corp dividend
+18-04-2016,SLB,YAHOO,USD,43.93,24,buy,0,Schlumberger
+25-04-2016,MRO,YAHOO,USD,11.51,6,sell,9.95,Marathon Oil
+02-05-2016,OXY,YAHOO,USD,79.2,33,buy,9.95,Occidental Petroleum
+05-05-2016,Account Fee,MANUAL,USD,0,0,fee,35.73,Quarterly fee
+11-05-2016,APA,YAHOO,USD,29.89,64,buy,0,APA Corp
+23-05-2016,PLUG,YAHOO,USD,17.86,25,buy,9.95,Plug Power
+26-05-2016,PLUG,YAHOO,USD,2.05,31,dividend,0,Plug Power dividend
+30-05-2016,MRO,YAHOO,USD,26.67,40,buy,0,Marathon Oil
+30-05-2016,SLB,YAHOO,USD,1.44,35,dividend,0,Schlumberger dividend
+01-06-2016,SLB,YAHOO,USD,50.3,53,buy,0,Schlumberger
+08-06-2016,DVN,YAHOO,USD,9.31,78,sell,0,Devon Energy
+08-06-2016,MRO,YAHOO,USD,27.25,79,buy,0,Marathon Oil
+09-06-2016,Account Fee,MANUAL,USD,0,0,fee,36.78,Quarterly fee
+14-06-2016,SLB,YAHOO,USD,51.46,68,buy,0,Schlumberger
+23-06-2016,OXY,YAHOO,USD,74.64,31,buy,1.0,Occidental Petroleum
+27-06-2016,FSLR,YAHOO,USD,202.95,67,buy,4.95,First Solar
+01-07-2016,APA,YAHOO,USD,14.17,71,sell,0,APA Corp
+04-07-2016,APA,YAHOO,USD,17.9,51,sell,4.95,APA Corp
+04-07-2016,FSLR,YAHOO,USD,228.34,53,buy,9.95,First Solar
+05-07-2016,APA,YAHOO,USD,42.58,64,buy,0,APA Corp
+06-07-2016,HAL,YAHOO,USD,11.59,33,sell,9.95,Halliburton
+11-07-2016,FSLR,YAHOO,USD,62.0,24,sell,4.95,First Solar
+15-07-2016,HAL,YAHOO,USD,30.77,62,buy,0,Halliburton
+18-07-2016,HAL,YAHOO,USD,0.89,14,dividend,0,Halliburton dividend
+18-07-2016,APA,YAHOO,USD,40.43,13,buy,0,APA Corp
+22-07-2016,MRO,YAHOO,USD,23.7,74,buy,0,Marathon Oil
+25-07-2016,PLUG,YAHOO,USD,29.87,30,buy,0,Plug Power
+25-07-2016,DVN,YAHOO,USD,10.14,50,sell,4.95,Devon Energy
+01-08-2016,DVN,YAHOO,USD,44.81,3,buy,9.95,Devon Energy
+03-08-2016,PLUG,YAHOO,USD,1.03,36,dividend,0,Plug Power dividend
+05-08-2016,APA,YAHOO,USD,15.08,66,sell,0,APA Corp
+08-08-2016,FSLR,YAHOO,USD,2.93,41,dividend,0,First Solar dividend
+12-08-2016,OXY,YAHOO,USD,27.54,60,sell,4.95,Occidental Petroleum
+12-08-2016,OXY,YAHOO,USD,27.75,1,sell,0,Occidental Petroleum
+15-08-2016,SLB,YAHOO,USD,54.93,42,buy,0,Schlumberger
+18-08-2016,OXY,YAHOO,USD,77.89,68,buy,9.95,Occidental Petroleum
+22-08-2016,MRO,YAHOO,USD,23.44,14,buy,9.95,Marathon Oil
+22-08-2016,HAL,YAHOO,USD,37.89,4,buy,4.95,Halliburton
+25-08-2016,HAL,YAHOO,USD,30.57,2,buy,9.95,Halliburton
+25-08-2016,HAL,YAHOO,USD,42.45,43,buy,0,Halliburton
+29-08-2016,FSLR,YAHOO,USD,143.43,47,buy,1.0,First Solar
+30-08-2016,HAL,YAHOO,USD,34.16,49,buy,0,Halliburton
+02-09-2016,OXY,YAHOO,USD,1.63,32,dividend,0,Occidental Petroleum dividend
+07-09-2016,DVN,YAHOO,USD,51.92,65,buy,4.95,Devon Energy
+09-09-2016,DVN,YAHOO,USD,27.1,70,sell,0,Devon Energy
+12-09-2016,OXY,YAHOO,USD,3.1,30,dividend,0,Occidental Petroleum dividend
+16-09-2016,PLUG,YAHOO,USD,10.45,45,sell,1.0,Plug Power
+19-09-2016,FSLR,YAHOO,USD,223.45,43,buy,0,First Solar
+21-09-2016,FSLR,YAHOO,USD,203.95,1,buy,9.95,First Solar
+21-09-2016,APA,YAHOO,USD,1.05,39,dividend,0,APA Corp dividend
+27-09-2016,SLB,YAHOO,USD,20.18,63,sell,4.95,Schlumberger
+28-09-2016,SLB,YAHOO,USD,1.04,6,dividend,0,Schlumberger dividend
+30-09-2016,DVN,YAHOO,USD,16.48,1,sell,0,Devon Energy
+03-10-2016,HAL,YAHOO,USD,35.65,56,buy,0,Halliburton
+03-10-2016,MRO,YAHOO,USD,24.25,63,buy,0,Marathon Oil
+06-10-2016,PLUG,YAHOO,USD,2.91,12,sell,0,Plug Power
+12-10-2016,Account Fee,MANUAL,USD,0,0,fee,11.31,Quarterly fee
+12-10-2016,HAL,YAHOO,USD,29.36,48,buy,0,Halliburton
+19-10-2016,FSLR,YAHOO,USD,252.68,42,buy,4.95,First Solar
+21-10-2016,SLB,YAHOO,USD,0.62,11,dividend,0,Schlumberger dividend
+24-10-2016,SLB,YAHOO,USD,12.5,27,sell,0,Schlumberger
+31-10-2016,FSLR,YAHOO,USD,2.68,31,dividend,0,First Solar dividend
+31-10-2016,DVN,YAHOO,USD,17.51,80,sell,9.95,Devon Energy
+07-11-2016,HAL,YAHOO,USD,32.7,16,buy,4.95,Halliburton
+07-11-2016,MRO,YAHOO,USD,21.82,17,buy,0,Marathon Oil
+07-11-2016,OXY,YAHOO,USD,72.95,72,buy,0,Occidental Petroleum
+10-11-2016,FSLR,YAHOO,USD,49.11,77,sell,4.95,First Solar
+14-11-2016,DVN,YAHOO,USD,65.03,32,buy,0,Devon Energy
+21-11-2016,MRO,YAHOO,USD,25.57,64,buy,0,Marathon Oil
+21-11-2016,MRO,YAHOO,USD,24.21,60,buy,4.95,Marathon Oil
+23-11-2016,HAL,YAHOO,USD,28.57,66,buy,0,Halliburton
+23-11-2016,APA,YAHOO,USD,16.1,52,sell,1.0,APA Corp
+25-11-2016,OXY,YAHOO,USD,37.86,17,sell,0,Occidental Petroleum
+30-11-2016,FSLR,YAHOO,USD,50.76,14,sell,9.95,First Solar
+05-12-2016,PLUG,YAHOO,USD,12.07,15,sell,1.0,Plug Power
+05-12-2016,PLUG,YAHOO,USD,30.56,26,buy,9.95,Plug Power
+13-12-2016,OXY,YAHOO,USD,73.43,67,buy,4.95,Occidental Petroleum
+14-12-2016,MRO,YAHOO,USD,21.12,10,buy,0,Marathon Oil
+19-12-2016,OXY,YAHOO,USD,18.16,49,sell,0,Occidental Petroleum
+22-12-2016,MRO,YAHOO,USD,27.91,16,buy,9.95,Marathon Oil
+27-12-2016,PLUG,YAHOO,USD,10.64,48,sell,0,Plug Power
+29-12-2016,HAL,YAHOO,USD,11.72,36,sell,0,Halliburton
+02-01-2017,Account Fee,MANUAL,USD,0,0,fee,17.06,Quarterly fee
+09-01-2017,MRO,YAHOO,USD,2.53,14,dividend,0,Marathon Oil dividend
+13-01-2017,APA,YAHOO,USD,35.28,70,buy,9.95,APA Corp
+27-01-2017,MRO,YAHOO,USD,21.5,50,buy,0,Marathon Oil
+27-01-2017,DVN,YAHOO,USD,23.88,69,sell,0,Devon Energy
+01-02-2017,FSLR,YAHOO,USD,79.77,57,sell,1.0,First Solar
+06-02-2017,HAL,YAHOO,USD,39.12,25,buy,0,Halliburton
+10-02-2017,HAL,YAHOO,USD,28.99,13,buy,0,Halliburton
+16-02-2017,OXY,YAHOO,USD,32.72,58,sell,1.0,Occidental Petroleum
+20-02-2017,OXY,YAHOO,USD,17.72,3,sell,9.95,Occidental Petroleum
+22-02-2017,FSLR,YAHOO,USD,71.37,5,sell,0,First Solar
+23-02-2017,FSLR,YAHOO,USD,225.48,63,buy,0,First Solar
+28-02-2017,Account Fee,MANUAL,USD,0,0,fee,9.17,Quarterly fee
+01-03-2017,MRO,YAHOO,USD,27.18,18,buy,0,Marathon Oil
+02-03-2017,Account Fee,MANUAL,USD,0,0,fee,46.93,Quarterly fee
+03-03-2017,MRO,YAHOO,USD,10.0,36,sell,0,Marathon Oil
+06-03-2017,FSLR,YAHOO,USD,254.23,74,buy,0,First Solar
+15-03-2017,SLB,YAHOO,USD,11.87,48,sell,1.0,Schlumberger
+15-03-2017,HAL,YAHOO,USD,12.53,27,sell,0,Halliburton
+17-03-2017,SLB,YAHOO,USD,2.51,28,dividend,0,Schlumberger dividend
+20-03-2017,APA,YAHOO,USD,6.28,16,sell,0,APA Corp
+20-03-2017,FSLR,YAHOO,USD,126.36,10,buy,1.0,First Solar
+30-03-2017,HAL,YAHOO,USD,7.6,11,sell,0,Halliburton
+03-04-2017,OXY,YAHOO,USD,0.73,25,dividend,0,Occidental Petroleum dividend
+19-04-2017,APA,YAHOO,USD,29.11,6,buy,9.95,APA Corp
+21-04-2017,DVN,YAHOO,USD,46.8,38,buy,9.95,Devon Energy
+21-04-2017,SLB,YAHOO,USD,41.3,65,buy,4.95,Schlumberger
+21-04-2017,SLB,YAHOO,USD,1.04,49,dividend,0,Schlumberger dividend
+24-04-2017,OXY,YAHOO,USD,29.32,60,sell,0,Occidental Petroleum
+05-05-2017,MRO,YAHOO,USD,14.15,19,sell,0,Marathon Oil
+05-05-2017,APA,YAHOO,USD,6.88,14,sell,1.0,APA Corp
+17-05-2017,PLUG,YAHOO,USD,33.14,50,buy,0,Plug Power
+19-05-2017,DVN,YAHOO,USD,10.8,70,sell,0,Devon Energy
+22-05-2017,SLB,YAHOO,USD,8.55,38,sell,0,Schlumberger
+22-05-2017,DVN,YAHOO,USD,11.79,58,sell,4.95,Devon Energy
+24-05-2017,MRO,YAHOO,USD,22.88,40,buy,4.95,Marathon Oil
+30-05-2017,Account Fee,MANUAL,USD,0,0,fee,24.83,Quarterly fee
+01-06-2017,OXY,YAHOO,USD,74.67,10,buy,1.0,Occidental Petroleum
+05-06-2017,MRO,YAHOO,USD,28.59,43,buy,9.95,Marathon Oil
+12-06-2017,APA,YAHOO,USD,40.02,6,buy,9.95,APA Corp
+12-06-2017,FSLR,YAHOO,USD,2.61,12,dividend,0,First Solar dividend
+14-06-2017,FSLR,YAHOO,USD,3.23,14,dividend,0,First Solar dividend
+19-06-2017,APA,YAHOO,USD,41.54,17,buy,4.95,APA Corp
+20-06-2017,APA,YAHOO,USD,1.95,14,dividend,0,APA Corp dividend
+29-06-2017,DVN,YAHOO,USD,17.11,53,sell,0,Devon Energy
+03-07-2017,PLUG,YAHOO,USD,19.12,49,buy,0,Plug Power
+03-07-2017,SLB,YAHOO,USD,45.73,76,buy,1.0,Schlumberger
+07-07-2017,APA,YAHOO,USD,16.2,19,sell,0,APA Corp
+20-07-2017,FSLR,YAHOO,USD,117.83,48,buy,0,First Solar
+07-08-2017,MRO,YAHOO,USD,10.2,22,sell,0,Marathon Oil
+14-08-2017,OXY,YAHOO,USD,71.11,13,buy,0,Occidental Petroleum
+14-08-2017,FSLR,YAHOO,USD,154.49,2,buy,9.95,First Solar
+21-08-2017,APA,YAHOO,USD,17.29,21,sell,0,APA Corp
+21-08-2017,DVN,YAHOO,USD,14.94,52,sell,0,Devon Energy
+04-09-2017,DVN,YAHOO,USD,0.43,50,dividend,0,Devon Energy dividend
+11-09-2017,FSLR,YAHOO,USD,233.47,79,buy,9.95,First Solar
+11-09-2017,HAL,YAHOO,USD,11.09,31,sell,4.95,Halliburton
+11-09-2017,DVN,YAHOO,USD,54.89,63,buy,9.95,Devon Energy
+11-09-2017,FSLR,YAHOO,USD,67.59,24,sell,0,First Solar
+11-09-2017,HAL,YAHOO,USD,0.68,7,dividend,0,Halliburton dividend
+13-09-2017,SLB,YAHOO,USD,14.38,9,sell,0,Schlumberger
+13-09-2017,FSLR,YAHOO,USD,194.8,79,buy,9.95,First Solar
+13-09-2017,HAL,YAHOO,USD,31.21,69,buy,0,Halliburton
+18-09-2017,MRO,YAHOO,USD,10.37,33,sell,4.95,Marathon Oil
+21-09-2017,OXY,YAHOO,USD,60.33,65,buy,0,Occidental Petroleum
+25-09-2017,DVN,YAHOO,USD,25.15,68,sell,1.0,Devon Energy
+25-09-2017,FSLR,YAHOO,USD,0.56,45,dividend,0,First Solar dividend
+26-09-2017,APA,YAHOO,USD,2.25,11,dividend,0,APA Corp dividend
+04-10-2017,Account Fee,MANUAL,USD,0,0,fee,7.99,Quarterly fee
+06-10-2017,APA,YAHOO,USD,13.99,3,sell,0,APA Corp
+06-10-2017,DVN,YAHOO,USD,52.1,67,buy,1.0,Devon Energy
+09-10-2017,APA,YAHOO,USD,1.87,15,dividend,0,APA Corp dividend
+09-10-2017,APA,YAHOO,USD,11.86,55,sell,4.95,APA Corp
+23-10-2017,FSLR,YAHOO,USD,0.17,22,dividend,0,First Solar dividend
+24-10-2017,MRO,YAHOO,USD,13.05,27,sell,0,Marathon Oil
+25-10-2017,OXY,YAHOO,USD,86.65,38,buy,0,Occidental Petroleum
+27-10-2017,PLUG,YAHOO,USD,5.63,14,sell,1.0,Plug Power
+08-11-2017,PLUG,YAHOO,USD,36.79,44,buy,9.95,Plug Power
+13-11-2017,HAL,YAHOO,USD,14.01,4,sell,1.0,Halliburton
+13-11-2017,FSLR,YAHOO,USD,142.87,39,buy,1.0,First Solar
+14-11-2017,MRO,YAHOO,USD,27.7,34,buy,0,Marathon Oil
+17-11-2017,APA,YAHOO,USD,0.74,17,dividend,0,APA Corp dividend
+27-11-2017,MRO,YAHOO,USD,24.85,61,buy,0,Marathon Oil
+04-12-2017,PLUG,YAHOO,USD,13.82,75,buy,9.95,Plug Power
+04-12-2017,PLUG,YAHOO,USD,9.02,44,buy,0,Plug Power
+04-12-2017,DVN,YAHOO,USD,2.75,35,dividend,0,Devon Energy dividend
+06-12-2017,OXY,YAHOO,USD,62.28,30,buy,4.95,Occidental Petroleum
+06-12-2017,OXY,YAHOO,USD,20.52,19,sell,0,Occidental Petroleum
+07-12-2017,SLB,YAHOO,USD,64.64,17,buy,0,Schlumberger
+11-12-2017,DVN,YAHOO,USD,53.19,4,buy,9.95,Devon Energy
+11-12-2017,OXY,YAHOO,USD,70.55,79,buy,0,Occidental Petroleum
+11-12-2017,FSLR,YAHOO,USD,58.14,63,sell,1.0,First Solar
+12-12-2017,APA,YAHOO,USD,3.47,23,dividend,0,APA Corp dividend
+18-12-2017,OXY,YAHOO,USD,69.33,23,buy,1.0,Occidental Petroleum
+19-12-2017,SLB,YAHOO,USD,43.0,34,buy,0,Schlumberger
+19-12-2017,PLUG,YAHOO,USD,4.13,13,sell,0,Plug Power
+21-12-2017,HAL,YAHOO,USD,26.81,5,buy,0,Halliburton
+22-12-2017,PLUG,YAHOO,USD,3.07,52,sell,4.95,Plug Power
+25-12-2017,PLUG,YAHOO,USD,1.8,37,dividend,0,Plug Power dividend
+26-12-2017,APA,YAHOO,USD,37.22,79,buy,9.95,APA Corp
+09-01-2018,MRO,YAHOO,USD,5.44,62,sell,0,Marathon Oil
+09-01-2018,APA,YAHOO,USD,38.12,61,buy,1.0,APA Corp
+15-01-2018,SLB,YAHOO,USD,56.83,43,buy,1.0,Schlumberger
+18-01-2018,PLUG,YAHOO,USD,5.22,3,buy,1.0,Plug Power
+22-01-2018,FSLR,YAHOO,USD,159.81,25,buy,0,First Solar
+23-01-2018,HAL,YAHOO,USD,9.75,13,sell,0,Halliburton
+23-01-2018,Account Fee,MANUAL,USD,0,0,fee,14.87,Quarterly fee
+26-01-2018,FSLR,YAHOO,USD,174.89,77,buy,4.95,First Solar
+26-01-2018,PLUG,YAHOO,USD,37.26,11,buy,4.95,Plug Power
+30-01-2018,DVN,YAHOO,USD,48.59,57,buy,0,Devon Energy
+06-02-2018,FSLR,YAHOO,USD,81.26,1,buy,1.0,First Solar
+07-02-2018,SLB,YAHOO,USD,53.23,70,buy,0,Schlumberger
+09-02-2018,DVN,YAHOO,USD,55.21,56,buy,9.95,Devon Energy
+16-02-2018,DVN,YAHOO,USD,42.6,1,buy,0,Devon Energy
+19-02-2018,PLUG,YAHOO,USD,0.37,11,dividend,0,Plug Power dividend
+26-02-2018,PLUG,YAHOO,USD,5.7,63,buy,4.95,Plug Power
+28-02-2018,MRO,YAHOO,USD,23.12,5,buy,1.0,Marathon Oil
+02-03-2018,SLB,YAHOO,USD,55.54,8,buy,4.95,Schlumberger
+02-03-2018,SLB,YAHOO,USD,2.83,22,dividend,0,Schlumberger dividend
+19-03-2018,DVN,YAHOO,USD,66.42,48,buy,0,Devon Energy
+19-03-2018,DVN,YAHOO,USD,57.06,50,buy,0,Devon Energy
+20-03-2018,PLUG,YAHOO,USD,30.07,39,buy,0,Plug Power
+23-03-2018,DVN,YAHOO,USD,32.4,55,sell,0,Devon Energy
+26-03-2018,HAL,YAHOO,USD,17.25,37,sell,9.95,Halliburton
+09-04-2018,APA,YAHOO,USD,2.83,40,dividend,0,APA Corp dividend
+11-04-2018,MRO,YAHOO,USD,30.47,5,buy,0,Marathon Oil
+12-04-2018,OXY,YAHOO,USD,72.54,2,buy,0,Occidental Petroleum
+16-04-2018,FSLR,YAHOO,USD,50.73,40,sell,1.0,First Solar
+16-04-2018,DVN,YAHOO,USD,0.39,39,dividend,0,Devon Energy dividend
+24-04-2018,MRO,YAHOO,USD,4.51,77,sell,1.0,Marathon Oil
+24-04-2018,MRO,YAHOO,USD,28.37,54,buy,0,Marathon Oil
+27-04-2018,DVN,YAHOO,USD,63.41,77,buy,0,Devon Energy
+01-05-2018,Account Fee,MANUAL,USD,0,0,fee,22.42,Quarterly fee
+09-05-2018,FSLR,YAHOO,USD,265.04,79,buy,0,First Solar
+21-05-2018,APA,YAHOO,USD,5.01,3,sell,0,APA Corp
+21-05-2018,SLB,YAHOO,USD,14.61,78,sell,1.0,Schlumberger
+28-05-2018,SLB,YAHOO,USD,52.16,19,buy,9.95,Schlumberger
+28-05-2018,DVN,YAHOO,USD,45.67,26,buy,0,Devon Energy
+11-06-2018,HAL,YAHOO,USD,41.55,38,buy,0,Halliburton
+11-06-2018,PLUG,YAHOO,USD,11.57,20,sell,0,Plug Power
+12-06-2018,MRO,YAHOO,USD,2.36,15,dividend,0,Marathon Oil dividend
+18-06-2018,SLB,YAHOO,USD,12.29,64,sell,9.95,Schlumberger
+20-06-2018,DVN,YAHOO,USD,30.18,54,sell,9.95,Devon Energy
+25-06-2018,DVN,YAHOO,USD,16.94,39,sell,4.95,Devon Energy
+27-06-2018,HAL,YAHOO,USD,5.44,52,sell,1.0,Halliburton
+02-07-2018,SLB,YAHOO,USD,1.31,19,dividend,0,Schlumberger dividend
+02-07-2018,Account Fee,MANUAL,USD,0,0,fee,23.71,Quarterly fee
+02-07-2018,APA,YAHOO,USD,23.8,12,sell,9.95,APA Corp
+04-07-2018,DVN,YAHOO,USD,23.83,46,sell,0,Devon Energy
+16-07-2018,HAL,YAHOO,USD,26.32,28,buy,0,Halliburton
+25-07-2018,DVN,YAHOO,USD,65.66,62,buy,0,Devon Energy
+26-07-2018,DVN,YAHOO,USD,48.78,38,buy,0,Devon Energy
+01-08-2018,MRO,YAHOO,USD,4.88,77,sell,0,Marathon Oil
+02-08-2018,OXY,YAHOO,USD,55.75,10,buy,4.95,Occidental Petroleum
+07-08-2018,Account Fee,MANUAL,USD,0,0,fee,20.64,Quarterly fee
+08-08-2018,MRO,YAHOO,USD,11.75,23,sell,0,Marathon Oil
+09-08-2018,OXY,YAHOO,USD,81.93,62,buy,9.95,Occidental Petroleum
+10-08-2018,HAL,YAHOO,USD,32.26,79,buy,1.0,Halliburton
+13-08-2018,APA,YAHOO,USD,26.29,58,buy,0,APA Corp
+14-08-2018,OXY,YAHOO,USD,66.15,7,buy,1.0,Occidental Petroleum
+20-08-2018,FSLR,YAHOO,USD,101.86,29,sell,4.95,First Solar
+31-08-2018,PLUG,YAHOO,USD,13.68,41,buy,0,Plug Power
+03-09-2018,FSLR,YAHOO,USD,90.13,46,sell,0,First Solar
+03-09-2018,FSLR,YAHOO,USD,198.82,35,buy,0,First Solar
+04-09-2018,SLB,YAHOO,USD,50.3,21,buy,9.95,Schlumberger
+04-09-2018,OXY,YAHOO,USD,58.15,65,buy,1.0,Occidental Petroleum
+20-09-2018,MRO,YAHOO,USD,26.63,79,buy,1.0,Marathon Oil
+24-09-2018,OXY,YAHOO,USD,25.71,43,sell,0,Occidental Petroleum
+04-10-2018,MRO,YAHOO,USD,7.16,63,sell,9.95,Marathon Oil
+08-10-2018,APA,YAHOO,USD,35.47,49,buy,1.0,APA Corp
+09-10-2018,APA,YAHOO,USD,12.44,15,sell,1.0,APA Corp
+15-10-2018,APA,YAHOO,USD,29.32,49,buy,1.0,APA Corp
+22-10-2018,DVN,YAHOO,USD,23.33,44,sell,9.95,Devon Energy
+26-10-2018,SLB,YAHOO,USD,47.53,73,buy,9.95,Schlumberger
+26-10-2018,MRO,YAHOO,USD,1.35,2,dividend,0,Marathon Oil dividend
+30-10-2018,DVN,YAHOO,USD,60.43,48,buy,0,Devon Energy
+31-10-2018,HAL,YAHOO,USD,41.43,72,buy,9.95,Halliburton
+01-11-2018,HAL,YAHOO,USD,7.62,66,sell,0,Halliburton
+15-11-2018,DVN,YAHOO,USD,51.71,31,buy,0,Devon Energy
+19-11-2018,PLUG,YAHOO,USD,3.01,70,sell,0,Plug Power
+19-11-2018,APA,YAHOO,USD,9.65,37,sell,0,APA Corp
+20-11-2018,APA,YAHOO,USD,35.95,1,buy,0,APA Corp
+20-11-2018,PLUG,YAHOO,USD,9.58,60,sell,0,Plug Power
+26-11-2018,Account Fee,MANUAL,USD,0,0,fee,32.25,Quarterly fee
+26-11-2018,FSLR,YAHOO,USD,215.09,55,buy,0,First Solar
+29-11-2018,HAL,YAHOO,USD,14.14,78,sell,0,Halliburton
+03-12-2018,MRO,YAHOO,USD,26.18,43,buy,1.0,Marathon Oil
+03-12-2018,APA,YAHOO,USD,33.48,67,buy,1.0,APA Corp
+03-12-2018,APA,YAHOO,USD,2.37,44,dividend,0,APA Corp dividend
+07-12-2018,HAL,YAHOO,USD,2.23,47,dividend,0,Halliburton dividend
+12-12-2018,PLUG,YAHOO,USD,25.75,72,buy,0,Plug Power
+17-12-2018,MRO,YAHOO,USD,28.83,8,buy,0,Marathon Oil
+24-12-2018,SLB,YAHOO,USD,3.34,4,dividend,0,Schlumberger dividend
+01-01-2019,SLB,YAHOO,USD,1.25,14,dividend,0,Schlumberger dividend
+02-01-2019,HAL,YAHOO,USD,32.87,77,buy,1.0,Halliburton
+28-01-2019,DVN,YAHOO,USD,53.87,22,buy,0,Devon Energy
+29-01-2019,DVN,YAHOO,USD,25.54,9,sell,1.0,Devon Energy
+01-02-2019,SLB,YAHOO,USD,62.62,77,buy,4.95,Schlumberger
+11-02-2019,DVN,YAHOO,USD,8.73,40,sell,0,Devon Energy
+25-02-2019,DVN,YAHOO,USD,1.85,28,dividend,0,Devon Energy dividend
+25-02-2019,FSLR,YAHOO,USD,139.8,56,sell,0,First Solar
+05-03-2019,HAL,YAHOO,USD,15.97,74,sell,0,Halliburton
+07-03-2019,PLUG,YAHOO,USD,29.15,23,buy,0,Plug Power
+13-03-2019,HAL,YAHOO,USD,37.3,29,buy,9.95,Halliburton
+15-03-2019,SLB,YAHOO,USD,56.66,39,buy,0,Schlumberger
+18-03-2019,DVN,YAHOO,USD,25.37,43,sell,1.0,Devon Energy
+20-03-2019,APA,YAHOO,USD,41.25,42,buy,0,APA Corp
+26-03-2019,DVN,YAHOO,USD,59.05,47,buy,0,Devon Energy
+01-04-2019,OXY,YAHOO,USD,64.0,32,buy,1.0,Occidental Petroleum
+02-04-2019,PLUG,YAHOO,USD,3.38,38,buy,4.95,Plug Power
+05-04-2019,DVN,YAHOO,USD,43.71,5,buy,1.0,Devon Energy
+09-04-2019,APA,YAHOO,USD,1.16,50,dividend,0,APA Corp dividend
+15-04-2019,SLB,YAHOO,USD,29.24,14,sell,1.0,Schlumberger
+16-04-2019,SLB,YAHOO,USD,14.88,4,sell,0,Schlumberger
+17-04-2019,APA,YAHOO,USD,2.2,26,dividend,0,APA Corp dividend
+22-04-2019,MRO,YAHOO,USD,3.28,26,dividend,0,Marathon Oil dividend
+22-04-2019,FSLR,YAHOO,USD,251.4,80,buy,0,First Solar
+24-04-2019,DVN,YAHOO,USD,52.45,13,buy,0,Devon Energy
+26-04-2019,Account Fee,MANUAL,USD,0,0,fee,19.4,Quarterly fee
+30-04-2019,APA,YAHOO,USD,41.75,37,buy,0,APA Corp
+02-05-2019,Account Fee,MANUAL,USD,0,0,fee,5.39,Quarterly fee
+09-05-2019,OXY,YAHOO,USD,31.98,52,sell,4.95,Occidental Petroleum
+16-05-2019,Account Fee,MANUAL,USD,0,0,fee,35.23,Quarterly fee
+16-05-2019,HAL,YAHOO,USD,3.4,6,dividend,0,Halliburton dividend
+20-05-2019,PLUG,YAHOO,USD,12.09,13,buy,1.0,Plug Power
+20-05-2019,HAL,YAHOO,USD,7.54,77,sell,4.95,Halliburton
+20-05-2019,FSLR,YAHOO,USD,112.37,15,buy,0,First Solar
+21-05-2019,HAL,YAHOO,USD,11.64,18,sell,4.95,Halliburton
+27-05-2019,FSLR,YAHOO,USD,42.55,72,sell,0,First Solar
+27-05-2019,APA,YAHOO,USD,31.91,17,buy,4.95,APA Corp
+30-05-2019,SLB,YAHOO,USD,42.78,66,buy,0,Schlumberger
+30-05-2019,FSLR,YAHOO,USD,107.0,7,buy,1.0,First Solar
+31-05-2019,APA,YAHOO,USD,0.48,41,dividend,0,APA Corp dividend
+06-06-2019,OXY,YAHOO,USD,3.34,9,dividend,0,Occidental Petroleum dividend
+17-06-2019,DVN,YAHOO,USD,22.94,17,sell,1.0,Devon Energy
+18-06-2019,HAL,YAHOO,USD,29.94,74,buy,0,Halliburton
+19-06-2019,HAL,YAHOO,USD,18.07,51,sell,0,Halliburton
+24-06-2019,PLUG,YAHOO,USD,13.54,53,buy,1.0,Plug Power
+28-06-2019,FSLR,YAHOO,USD,0.2,20,dividend,0,First Solar dividend
+01-07-2019,HAL,YAHOO,USD,28.94,53,buy,0,Halliburton
+01-07-2019,OXY,YAHOO,USD,30.91,61,sell,0,Occidental Petroleum
+11-07-2019,OXY,YAHOO,USD,26.61,11,sell,0,Occidental Petroleum
+15-07-2019,PLUG,YAHOO,USD,2.14,23,dividend,0,Plug Power dividend
+15-07-2019,HAL,YAHOO,USD,31.13,34,buy,1.0,Halliburton
+16-07-2019,SLB,YAHOO,USD,18.82,68,sell,0,Schlumberger
+17-07-2019,SLB,YAHOO,USD,22.44,16,sell,0,Schlumberger
+22-07-2019,OXY,YAHOO,USD,62.67,24,buy,9.95,Occidental Petroleum
+23-07-2019,DVN,YAHOO,USD,20.84,17,sell,4.95,Devon Energy
+30-07-2019,HAL,YAHOO,USD,40.8,32,buy,9.95,Halliburton
+01-08-2019,PLUG,YAHOO,USD,7.22,10,sell,0,Plug Power
+05-08-2019,Account Fee,MANUAL,USD,0,0,fee,27.57,Quarterly fee
+12-08-2019,HAL,YAHOO,USD,37.72,22,buy,1.0,Halliburton
+19-08-2019,SLB,YAHOO,USD,43.76,34,buy,1.0,Schlumberger
+23-08-2019,DVN,YAHOO,USD,10.52,70,sell,9.95,Devon Energy
+27-08-2019,FSLR,YAHOO,USD,44.5,43,sell,4.95,First Solar
+09-09-2019,OXY,YAHOO,USD,80.78,17,buy,0,Occidental Petroleum
+09-09-2019,PLUG,YAHOO,USD,2.64,40,sell,0,Plug Power
+09-09-2019,HAL,YAHOO,USD,26.36,49,buy,4.95,Halliburton
+11-09-2019,FSLR,YAHOO,USD,67.93,64,sell,1.0,First Solar
+20-09-2019,PLUG,YAHOO,USD,2.99,36,sell,0,Plug Power
+23-09-2019,DVN,YAHOO,USD,45.68,11,buy,0,Devon Energy
+27-09-2019,PLUG,YAHOO,USD,1.35,49,dividend,0,Plug Power dividend
+27-09-2019,MRO,YAHOO,USD,28.95,48,buy,9.95,Marathon Oil
+30-09-2019,DVN,YAHOO,USD,61.07,38,buy,4.95,Devon Energy
+30-09-2019,OXY,YAHOO,USD,65.67,73,buy,1.0,Occidental Petroleum
+08-10-2019,OXY,YAHOO,USD,50.43,80,buy,4.95,Occidental Petroleum
+17-10-2019,FSLR,YAHOO,USD,83.21,69,sell,0,First Solar
+21-10-2019,DVN,YAHOO,USD,15.41,78,sell,0,Devon Energy
+22-10-2019,DVN,YAHOO,USD,1.46,13,dividend,0,Devon Energy dividend
+24-10-2019,PLUG,YAHOO,USD,19.23,61,buy,4.95,Plug Power
+24-10-2019,MRO,YAHOO,USD,26.45,74,buy,9.95,Marathon Oil
+25-10-2019,HAL,YAHOO,USD,9.55,8,sell,0,Halliburton
+29-10-2019,FSLR,YAHOO,USD,187.88,16,buy,0,First Solar
+30-10-2019,SLB,YAHOO,USD,51.75,2,buy,4.95,Schlumberger
+01-11-2019,SLB,YAHOO,USD,61.43,11,buy,4.95,Schlumberger
+06-11-2019,MRO,YAHOO,USD,20.67,78,buy,1.0,Marathon Oil
+06-11-2019,SLB,YAHOO,USD,1.4,27,dividend,0,Schlumberger dividend
+12-11-2019,DVN,YAHOO,USD,70.1,63,buy,0,Devon Energy
+14-11-2019,DVN,YAHOO,USD,17.45,77,sell,9.95,Devon Energy
+14-11-2019,OXY,YAHOO,USD,85.78,10,buy,0,Occidental Petroleum
+18-11-2019,FSLR,YAHOO,USD,3.27,37,dividend,0,First Solar dividend
+18-11-2019,OXY,YAHOO,USD,25.8,79,sell,1.0,Occidental Petroleum
+25-11-2019,APA,YAHOO,USD,36.48,31,buy,9.95,APA Corp
+25-11-2019,SLB,YAHOO,USD,54.86,55,buy,0,Schlumberger
+02-12-2019,PLUG,YAHOO,USD,9.95,24,sell,0,Plug Power
+04-12-2019,FSLR,YAHOO,USD,98.31,23,sell,0,First Solar
+09-12-2019,SLB,YAHOO,USD,26.31,50,sell,0,Schlumberger
+09-12-2019,MRO,YAHOO,USD,14.45,69,sell,0,Marathon Oil
+16-12-2019,APA,YAHOO,USD,27.16,58,buy,1.0,APA Corp
+19-12-2019,APA,YAHOO,USD,11.01,13,sell,9.95,APA Corp
+20-12-2019,FSLR,YAHOO,USD,57.99,4,sell,0,First Solar
+30-12-2019,OXY,YAHOO,USD,73.64,28,buy,1.0,Occidental Petroleum
+03-01-2020,PLUG,YAHOO,USD,2.93,73,sell,9.95,Plug Power
+08-01-2020,APA,YAHOO,USD,9.93,8,sell,9.95,APA Corp
+10-01-2020,DVN,YAHOO,USD,45.28,7,buy,0,Devon Energy
+24-01-2020,FSLR,YAHOO,USD,1.65,40,dividend,0,First Solar dividend
+04-02-2020,Account Fee,MANUAL,USD,0,0,fee,13.41,Quarterly fee
+05-02-2020,OXY,YAHOO,USD,55.75,12,buy,4.95,Occidental Petroleum
+10-02-2020,APA,YAHOO,USD,1.76,48,dividend,0,APA Corp dividend
+10-02-2020,PLUG,YAHOO,USD,6.39,72,buy,0,Plug Power
+10-02-2020,OXY,YAHOO,USD,38.88,7,sell,0,Occidental Petroleum
+14-02-2020,OXY,YAHOO,USD,2.78,47,dividend,0,Occidental Petroleum dividend
+17-02-2020,PLUG,YAHOO,USD,3.49,1,buy,4.95,Plug Power
+17-02-2020,PLUG,YAHOO,USD,34.4,40,buy,1.0,Plug Power
+18-02-2020,SLB,YAHOO,USD,19.33,49,sell,1.0,Schlumberger
+20-02-2020,OXY,YAHOO,USD,2.33,28,dividend,0,Occidental Petroleum dividend
+25-02-2020,FSLR,YAHOO,USD,0.21,1,dividend,0,First Solar dividend
+26-02-2020,MRO,YAHOO,USD,26.3,6,buy,4.95,Marathon Oil
+06-03-2020,SLB,YAHOO,USD,54.31,13,buy,4.95,Schlumberger
+06-03-2020,SLB,YAHOO,USD,44.53,66,buy,0,Schlumberger
+11-03-2020,SLB,YAHOO,USD,11.98,26,sell,0,Schlumberger
+16-03-2020,PLUG,YAHOO,USD,5.21,17,sell,0,Plug Power
+20-03-2020,MRO,YAHOO,USD,29.62,3,buy,0,Marathon Oil
+23-03-2020,PLUG,YAHOO,USD,0.67,43,dividend,0,Plug Power dividend
+23-03-2020,OXY,YAHOO,USD,68.64,30,buy,4.95,Occidental Petroleum
+23-03-2020,MRO,YAHOO,USD,2.58,12,dividend,0,Marathon Oil dividend
+25-03-2020,DVN,YAHOO,USD,24.69,14,sell,4.95,Devon Energy
+31-03-2020,FSLR,YAHOO,USD,207.83,33,buy,1.0,First Solar
+08-04-2020,PLUG,YAHOO,USD,0.51,19,dividend,0,Plug Power dividend
+13-04-2020,HAL,YAHOO,USD,0.72,30,dividend,0,Halliburton dividend
+17-04-2020,PLUG,YAHOO,USD,40.13,8,buy,0,Plug Power
+04-05-2020,HAL,YAHOO,USD,41.33,59,buy,0,Halliburton
+11-05-2020,APA,YAHOO,USD,31.98,35,buy,4.95,APA Corp
+11-05-2020,SLB,YAHOO,USD,65.41,73,buy,1.0,Schlumberger
+19-05-2020,HAL,YAHOO,USD,33.41,28,buy,0,Halliburton
+20-05-2020,HAL,YAHOO,USD,18.1,52,sell,0,Halliburton
+25-05-2020,APA,YAHOO,USD,16.21,47,sell,0,APA Corp
+29-05-2020,OXY,YAHOO,USD,17.83,4,sell,0,Occidental Petroleum
+02-06-2020,APA,YAHOO,USD,35.6,51,buy,0,APA Corp
+04-06-2020,SLB,YAHOO,USD,9.53,61,sell,1.0,Schlumberger
+09-06-2020,OXY,YAHOO,USD,32.05,49,sell,1.0,Occidental Petroleum
+15-06-2020,FSLR,YAHOO,USD,40.84,63,sell,4.95,First Solar
+18-06-2020,FSLR,YAHOO,USD,117.95,26,sell,0,First Solar
+24-06-2020,APA,YAHOO,USD,6.22,57,sell,9.95,APA Corp
+26-06-2020,PLUG,YAHOO,USD,12.05,43,buy,1.0,Plug Power
+29-06-2020,APA,YAHOO,USD,35.8,58,buy,1.0,APA Corp
+29-06-2020,OXY,YAHOO,USD,73.7,40,buy,4.95,Occidental Petroleum
+30-06-2020,HAL,YAHOO,USD,13.08,65,sell,0,Halliburton
+10-07-2020,FSLR,YAHOO,USD,127.46,50,sell,4.95,First Solar
+14-07-2020,DVN,YAHOO,USD,38.88,63,buy,9.95,Devon Energy
+20-07-2020,PLUG,YAHOO,USD,31.38,4,buy,1.0,Plug Power
+20-07-2020,PLUG,YAHOO,USD,4.27,11,sell,9.95,Plug Power
+21-07-2020,HAL,YAHOO,USD,31.55,12,buy,0,Halliburton
+24-07-2020,DVN,YAHOO,USD,46.54,18,buy,0,Devon Energy
+27-07-2020,FSLR,YAHOO,USD,3.47,37,dividend,0,First Solar dividend
+03-08-2020,DVN,YAHOO,USD,21.36,35,sell,0,Devon Energy
+03-08-2020,MRO,YAHOO,USD,21.74,29,buy,0,Marathon Oil
+04-08-2020,PLUG,YAHOO,USD,2.97,13,dividend,0,Plug Power dividend
+06-08-2020,PLUG,YAHOO,USD,25.53,36,buy,4.95,Plug Power
+10-08-2020,OXY,YAHOO,USD,2.19,3,dividend,0,Occidental Petroleum dividend
+12-08-2020,HAL,YAHOO,USD,8.86,27,sell,0,Halliburton
+17-08-2020,FSLR,YAHOO,USD,103.53,43,buy,0,First Solar
+17-08-2020,PLUG,YAHOO,USD,20.04,37,sell,1.0,Plug Power
+19-08-2020,DVN,YAHOO,USD,48.39,23,buy,0,Devon Energy
+01-09-2020,MRO,YAHOO,USD,22.53,19,buy,1.0,Marathon Oil
+04-09-2020,HAL,YAHOO,USD,41.54,78,buy,4.95,Halliburton
+07-09-2020,DVN,YAHOO,USD,18.17,14,sell,4.95,Devon Energy
+10-09-2020,PLUG,YAHOO,USD,28.54,74,buy,0,Plug Power
+18-09-2020,PLUG,YAHOO,USD,10.48,80,sell,1.0,Plug Power
+21-09-2020,FSLR,YAHOO,USD,50.25,2,sell,1.0,First Solar
+05-10-2020,APA,YAHOO,USD,30.95,74,buy,0,APA Corp
+05-10-2020,FSLR,YAHOO,USD,78.53,27,sell,0,First Solar
+05-10-2020,SLB,YAHOO,USD,54.68,56,buy,4.95,Schlumberger
+07-10-2020,OXY,YAHOO,USD,60.02,19,buy,0,Occidental Petroleum
+23-10-2020,MRO,YAHOO,USD,21.34,11,buy,9.95,Marathon Oil
+03-11-2020,OXY,YAHOO,USD,79.02,17,buy,0,Occidental Petroleum
+09-11-2020,MRO,YAHOO,USD,1.68,14,dividend,0,Marathon Oil dividend
+13-11-2020,SLB,YAHOO,USD,19.22,35,sell,9.95,Schlumberger
+23-11-2020,SLB,YAHOO,USD,8.76,80,sell,4.95,Schlumberger
+23-11-2020,PLUG,YAHOO,USD,34.4,55,buy,0,Plug Power
+01-12-2020,MRO,YAHOO,USD,30.48,76,buy,9.95,Marathon Oil
+07-12-2020,DVN,YAHOO,USD,71.65,80,buy,0,Devon Energy
+07-12-2020,OXY,YAHOO,USD,56.3,58,buy,0,Occidental Petroleum
+14-12-2020,SLB,YAHOO,USD,49.44,70,buy,0,Schlumberger
+14-12-2020,SLB,YAHOO,USD,1.28,37,dividend,0,Schlumberger dividend
+14-12-2020,SLB,YAHOO,USD,52.58,51,buy,0,Schlumberger
+14-12-2020,DVN,YAHOO,USD,0.65,47,dividend,0,Devon Energy dividend
+25-12-2020,PLUG,YAHOO,USD,12.98,73,sell,1.0,Plug Power
+04-01-2021,HAL,YAHOO,USD,13.06,25,sell,0,Halliburton
+04-01-2021,DVN,YAHOO,USD,47.18,36,buy,0,Devon Energy
+06-01-2021,HAL,YAHOO,USD,28.32,56,buy,9.95,Halliburton
+08-01-2021,FSLR,YAHOO,USD,1.19,7,dividend,0,First Solar dividend
+13-01-2021,HAL,YAHOO,USD,16.25,11,sell,4.95,Halliburton
+15-01-2021,APA,YAHOO,USD,15.01,48,sell,4.95,APA Corp
+20-01-2021,HAL,YAHOO,USD,39.61,63,buy,0,Halliburton
+25-01-2021,PLUG,YAHOO,USD,37.77,1,buy,0,Plug Power
+25-01-2021,PLUG,YAHOO,USD,14.27,13,sell,9.95,Plug Power
+01-02-2021,APA,YAHOO,USD,16.39,62,sell,0,APA Corp
+02-02-2021,Account Fee,MANUAL,USD,0,0,fee,49.21,Quarterly fee
+04-02-2021,APA,YAHOO,USD,15.3,60,sell,0,APA Corp
+08-02-2021,OXY,YAHOO,USD,3.38,34,dividend,0,Occidental Petroleum dividend
+12-02-2021,APA,YAHOO,USD,34.28,7,buy,0,APA Corp
+15-02-2021,SLB,YAHOO,USD,16.66,5,sell,4.95,Schlumberger
+15-02-2021,APA,YAHOO,USD,2.85,17,dividend,0,APA Corp dividend
+16-02-2021,FSLR,YAHOO,USD,117.82,18,buy,9.95,First Solar
+26-02-2021,SLB,YAHOO,USD,57.83,36,buy,0,Schlumberger
+01-03-2021,MRO,YAHOO,USD,11.57,69,sell,0,Marathon Oil
+05-03-2021,SLB,YAHOO,USD,49.03,16,buy,9.95,Schlumberger
+05-03-2021,DVN,YAHOO,USD,16.51,75,sell,9.95,Devon Energy
+15-03-2021,APA,YAHOO,USD,14.62,68,sell,0,APA Corp
+15-03-2021,DVN,YAHOO,USD,60.91,80,buy,4.95,Devon Energy
+15-03-2021,Account Fee,MANUAL,USD,0,0,fee,38.62,Quarterly fee
+05-04-2021,OXY,YAHOO,USD,25.23,75,sell,4.95,Occidental Petroleum
+12-04-2021,MRO,YAHOO,USD,21.44,49,buy,0,Marathon Oil
+12-04-2021,PLUG,YAHOO,USD,14.01,43,buy,0,Plug Power
+12-04-2021,HAL,YAHOO,USD,2.28,38,dividend,0,Halliburton dividend
+15-04-2021,OXY,YAHOO,USD,2.63,37,dividend,0,Occidental Petroleum dividend
+16-04-2021,DVN,YAHOO,USD,15.19,36,sell,4.95,Devon Energy
+19-04-2021,MRO,YAHOO,USD,26.72,12,buy,0,Marathon Oil
+22-04-2021,HAL,YAHOO,USD,31.78,12,buy,0,Halliburton
+22-04-2021,MRO,YAHOO,USD,29.32,31,buy,0,Marathon Oil
+23-04-2021,SLB,YAHOO,USD,49.58,51,buy,0,Schlumberger
+26-04-2021,Account Fee,MANUAL,USD,0,0,fee,46.0,Quarterly fee
+29-04-2021,DVN,YAHOO,USD,2.35,18,dividend,0,Devon Energy dividend
+30-04-2021,FSLR,YAHOO,USD,93.29,56,sell,0,First Solar
+03-05-2021,PLUG,YAHOO,USD,3.9,37,sell,0,Plug Power
+07-05-2021,OXY,YAHOO,USD,67.34,54,buy,0,Occidental Petroleum
+17-05-2021,DVN,YAHOO,USD,26.12,13,sell,0,Devon Energy
+20-05-2021,FSLR,YAHOO,USD,59.15,68,sell,4.95,First Solar
+24-05-2021,APA,YAHOO,USD,40.63,49,buy,1.0,APA Corp
+28-05-2021,HAL,YAHOO,USD,33.8,42,buy,0,Halliburton
+31-05-2021,PLUG,YAHOO,USD,1.76,5,dividend,0,Plug Power dividend
+31-05-2021,FSLR,YAHOO,USD,67.16,70,sell,0,First Solar
+31-05-2021,MRO,YAHOO,USD,4.32,67,sell,0,Marathon Oil
+04-06-2021,OXY,YAHOO,USD,60.36,57,buy,0,Occidental Petroleum
+08-06-2021,OXY,YAHOO,USD,29.74,79,sell,9.95,Occidental Petroleum
+14-06-2021,APA,YAHOO,USD,24.85,1,buy,9.95,APA Corp
+14-06-2021,OXY,YAHOO,USD,68.91,60,buy,0,Occidental Petroleum
+14-06-2021,PLUG,YAHOO,USD,13.46,64,buy,0,Plug Power
+21-06-2021,APA,YAHOO,USD,17.5,68,sell,4.95,APA Corp
+22-06-2021,APA,YAHOO,USD,6.13,16,sell,0,APA Corp
+02-07-2021,APA,YAHOO,USD,39.88,65,buy,4.95,APA Corp
+06-07-2021,DVN,YAHOO,USD,33.3,33,sell,4.95,Devon Energy
+08-07-2021,FSLR,YAHOO,USD,67.7,9,sell,1.0,First Solar
+09-07-2021,PLUG,YAHOO,USD,8.74,29,buy,0,Plug Power
+19-07-2021,OXY,YAHOO,USD,62.32,13,buy,4.95,Occidental Petroleum
+21-07-2021,OXY,YAHOO,USD,2.03,20,dividend,0,Occidental Petroleum dividend
+22-07-2021,FSLR,YAHOO,USD,239.75,34,buy,4.95,First Solar
+22-07-2021,APA,YAHOO,USD,33.8,29,buy,1.0,APA Corp
+26-07-2021,HAL,YAHOO,USD,7.27,21,sell,0,Halliburton
+28-07-2021,APA,YAHOO,USD,32.55,71,buy,0,APA Corp
+29-07-2021,APA,YAHOO,USD,19.58,15,sell,4.95,APA Corp
+02-08-2021,HAL,YAHOO,USD,40.61,38,buy,0,Halliburton
+05-08-2021,PLUG,YAHOO,USD,6.98,46,sell,0,Plug Power
+09-08-2021,SLB,YAHOO,USD,1.93,11,dividend,0,Schlumberger dividend
+09-08-2021,PLUG,YAHOO,USD,11.18,43,buy,0,Plug Power
+09-08-2021,DVN,YAHOO,USD,9.78,76,sell,4.95,Devon Energy
+16-08-2021,OXY,YAHOO,USD,11.16,69,sell,4.95,Occidental Petroleum
+17-08-2021,MRO,YAHOO,USD,1.82,25,dividend,0,Marathon Oil dividend
+23-08-2021,MRO,YAHOO,USD,1.94,47,dividend,0,Marathon Oil dividend
+23-08-2021,PLUG,YAHOO,USD,23.76,30,buy,1.0,Plug Power
+25-08-2021,Account Fee,MANUAL,USD,0,0,fee,36.56,Quarterly fee
+30-08-2021,MRO,YAHOO,USD,4.78,20,sell,0,Marathon Oil
+03-09-2021,OXY,YAHOO,USD,1.95,28,dividend,0,Occidental Petroleum dividend
+06-09-2021,FSLR,YAHOO,USD,194.83,44,buy,0,First Solar
+08-09-2021,MRO,YAHOO,USD,25.2,46,buy,0,Marathon Oil
+13-09-2021,MRO,YAHOO,USD,24.6,47,buy,0,Marathon Oil
+15-09-2021,DVN,YAHOO,USD,48.64,52,buy,0,Devon Energy
+23-09-2021,PLUG,YAHOO,USD,9.09,44,sell,0,Plug Power
+23-09-2021,FSLR,YAHOO,USD,0.48,24,dividend,0,First Solar dividend
+24-09-2021,OXY,YAHOO,USD,20.84,67,sell,0,Occidental Petroleum
+28-09-2021,Account Fee,MANUAL,USD,0,0,fee,7.24,Quarterly fee
+01-10-2021,HAL,YAHOO,USD,9.26,25,sell,9.95,Halliburton
+04-10-2021,SLB,YAHOO,USD,13.52,36,sell,1.0,Schlumberger
+12-10-2021,DVN,YAHOO,USD,22.6,13,sell,1.0,Devon Energy
+19-10-2021,OXY,YAHOO,USD,0.11,1,dividend,0,Occidental Petroleum dividend
+25-10-2021,MRO,YAHOO,USD,28.97,8,buy,4.95,Marathon Oil
+25-10-2021,HAL,YAHOO,USD,1.13,21,dividend,0,Halliburton dividend
+01-11-2021,DVN,YAHOO,USD,14.6,47,sell,1.0,Devon Energy
+01-11-2021,FSLR,YAHOO,USD,2.74,41,dividend,0,First Solar dividend
+05-11-2021,SLB,YAHOO,USD,63.58,11,buy,0,Schlumberger
+08-11-2021,FSLR,YAHOO,USD,37.57,67,sell,0,First Solar
+10-11-2021,MRO,YAHOO,USD,24.1,51,buy,9.95,Marathon Oil
+10-11-2021,Account Fee,MANUAL,USD,0,0,fee,22.29,Quarterly fee
+11-11-2021,Account Fee,MANUAL,USD,0,0,fee,7.74,Quarterly fee
+12-11-2021,Account Fee,MANUAL,USD,0,0,fee,26.54,Quarterly fee
+15-11-2021,SLB,YAHOO,USD,22.33,10,sell,9.95,Schlumberger
+16-11-2021,HAL,YAHOO,USD,38.48,50,buy,1.0,Halliburton
+18-11-2021,FSLR,YAHOO,USD,69.62,29,sell,4.95,First Solar
+23-11-2021,HAL,YAHOO,USD,10.84,40,sell,1.0,Halliburton
+24-11-2021,DVN,YAHOO,USD,17.4,28,sell,0,Devon Energy
+24-11-2021,APA,YAHOO,USD,51.71,43,buy,0,APA Corp
+29-11-2021,APA,YAHOO,USD,36.3,12,buy,0,APA Corp
+29-11-2021,SLB,YAHOO,USD,26.1,77,sell,4.95,Schlumberger
+03-12-2021,PLUG,YAHOO,USD,22.53,23,buy,0,Plug Power
+08-12-2021,SLB,YAHOO,USD,17.54,60,sell,1.0,Schlumberger
+08-12-2021,SLB,YAHOO,USD,50.1,48,buy,9.95,Schlumberger
+15-12-2021,PLUG,YAHOO,USD,11.03,62,sell,0,Plug Power
+27-12-2021,APA,YAHOO,USD,6.74,49,sell,4.95,APA Corp
+27-12-2021,SLB,YAHOO,USD,26.55,24,sell,4.95,Schlumberger
+27-12-2021,Account Fee,MANUAL,USD,0,0,fee,12.1,Quarterly fee
+29-12-2021,SLB,YAHOO,USD,56.5,31,buy,0,Schlumberger
+30-12-2021,HAL,YAHOO,USD,35.73,45,buy,4.95,Halliburton
+03-01-2022,HAL,YAHOO,USD,12.88,2,sell,4.95,Halliburton
+12-01-2022,SLB,YAHOO,USD,24.57,73,sell,1.0,Schlumberger
+24-01-2022,MRO,YAHOO,USD,9.41,7,sell,4.95,Marathon Oil
+25-01-2022,APA,YAHOO,USD,42.07,52,buy,4.95,APA Corp
+27-01-2022,SLB,YAHOO,USD,16.05,10,sell,4.95,Schlumberger
+01-02-2022,APA,YAHOO,USD,12.2,39,sell,0,APA Corp
+02-02-2022,PLUG,YAHOO,USD,16.72,53,sell,0,Plug Power
+14-02-2022,SLB,YAHOO,USD,18.25,66,sell,4.95,Schlumberger
+14-02-2022,PLUG,YAHOO,USD,29.59,15,buy,9.95,Plug Power
+18-02-2022,FSLR,YAHOO,USD,2.2,29,dividend,0,First Solar dividend
+28-02-2022,APA,YAHOO,USD,38.04,19,buy,1.0,APA Corp
+28-02-2022,DVN,YAHOO,USD,47.51,54,buy,0,Devon Energy
+03-03-2022,MRO,YAHOO,USD,21.73,43,buy,0,Marathon Oil
+04-03-2022,SLB,YAHOO,USD,27.57,13,sell,9.95,Schlumberger
+07-03-2022,OXY,YAHOO,USD,16.72,24,sell,0,Occidental Petroleum
+07-03-2022,DVN,YAHOO,USD,45.17,55,buy,4.95,Devon Energy
+28-03-2022,OXY,YAHOO,USD,17.81,5,sell,0,Occidental Petroleum
+28-03-2022,OXY,YAHOO,USD,27.81,69,sell,9.95,Occidental Petroleum
+11-04-2022,DVN,YAHOO,USD,52.73,39,buy,1.0,Devon Energy
+12-04-2022,DVN,YAHOO,USD,22.89,35,sell,0,Devon Energy
+14-04-2022,DVN,YAHOO,USD,26.3,2,sell,9.95,Devon Energy
+19-05-2022,Account Fee,MANUAL,USD,0,0,fee,45.66,Quarterly fee
+23-05-2022,DVN,YAHOO,USD,49.95,34,buy,0,Devon Energy
+26-05-2022,HAL,YAHOO,USD,0.91,21,dividend,0,Halliburton dividend
+27-05-2022,FSLR,YAHOO,USD,1.06,1,dividend,0,First Solar dividend
+30-05-2022,FSLR,YAHOO,USD,114.78,17,buy,0,First Solar
+06-06-2022,FSLR,YAHOO,USD,29.92,33,sell,1.0,First Solar
+10-06-2022,OXY,YAHOO,USD,3.27,38,dividend,0,Occidental Petroleum dividend
+13-06-2022,OXY,YAHOO,USD,22.89,77,sell,1.0,Occidental Petroleum
+13-06-2022,FSLR,YAHOO,USD,211.97,65,buy,9.95,First Solar
+20-06-2022,MRO,YAHOO,USD,23.96,79,buy,4.95,Marathon Oil
+20-06-2022,DVN,YAHOO,USD,50.24,56,buy,9.95,Devon Energy
+21-06-2022,APA,YAHOO,USD,2.23,44,dividend,0,APA Corp dividend
+04-07-2022,APA,YAHOO,USD,16.28,16,sell,9.95,APA Corp
+08-07-2022,PLUG,YAHOO,USD,42.38,55,buy,9.95,Plug Power
+21-07-2022,OXY,YAHOO,USD,11.61,42,sell,4.95,Occidental Petroleum
+22-07-2022,SLB,YAHOO,USD,56.93,52,buy,4.95,Schlumberger
+28-07-2022,DVN,YAHOO,USD,62.81,53,buy,0,Devon Energy
+01-08-2022,DVN,YAHOO,USD,38.43,8,buy,0,Devon Energy
+01-08-2022,OXY,YAHOO,USD,60.19,77,buy,4.95,Occidental Petroleum
+05-08-2022,SLB,YAHOO,USD,18.86,48,sell,1.0,Schlumberger
+15-08-2022,SLB,YAHOO,USD,52.45,40,buy,1.0,Schlumberger
+24-08-2022,DVN,YAHOO,USD,12.05,49,sell,0,Devon Energy
+30-08-2022,MRO,YAHOO,USD,24.73,23,buy,1.0,Marathon Oil
+06-09-2022,DVN,YAHOO,USD,0.54,47,dividend,0,Devon Energy dividend
+06-09-2022,PLUG,YAHOO,USD,7.31,36,sell,9.95,Plug Power
+12-09-2022,DVN,YAHOO,USD,52.28,10,buy,0,Devon Energy
+13-09-2022,PLUG,YAHOO,USD,7.19,63,buy,0,Plug Power
+15-09-2022,SLB,YAHOO,USD,25.87,61,sell,4.95,Schlumberger
+19-09-2022,HAL,YAHOO,USD,8.49,78,sell,0,Halliburton
+20-09-2022,APA,YAHOO,USD,22.6,7,sell,0,APA Corp
+20-09-2022,Account Fee,MANUAL,USD,0,0,fee,16.41,Quarterly fee
+20-09-2022,FSLR,YAHOO,USD,108.84,24,sell,0,First Solar
+26-09-2022,HAL,YAHOO,USD,34.74,50,buy,0,Halliburton
+26-09-2022,MRO,YAHOO,USD,28.83,70,buy,9.95,Marathon Oil
+03-10-2022,FSLR,YAHOO,USD,197.15,15,buy,4.95,First Solar
+03-10-2022,SLB,YAHOO,USD,24.49,56,sell,0,Schlumberger
+07-10-2022,HAL,YAHOO,USD,10.87,49,sell,9.95,Halliburton
+10-10-2022,SLB,YAHOO,USD,60.75,20,buy,0,Schlumberger
+17-10-2022,FSLR,YAHOO,USD,1.75,34,dividend,0,First Solar dividend
+17-10-2022,DVN,YAHOO,USD,21.71,50,sell,0,Devon Energy
+17-10-2022,SLB,YAHOO,USD,24.6,54,sell,0,Schlumberger
+04-11-2022,OXY,YAHOO,USD,38.39,77,sell,0,Occidental Petroleum
+08-11-2022,Account Fee,MANUAL,USD,0,0,fee,14.87,Quarterly fee
+14-11-2022,Account Fee,MANUAL,USD,0,0,fee,24.71,Quarterly fee
+21-11-2022,FSLR,YAHOO,USD,104.37,24,sell,0,First Solar
+23-11-2022,FSLR,YAHOO,USD,71.73,68,sell,0,First Solar
+28-11-2022,PLUG,YAHOO,USD,27.84,36,buy,0,Plug Power
+30-11-2022,MRO,YAHOO,USD,26.75,36,buy,0,Marathon Oil
+06-12-2022,OXY,YAHOO,USD,87.99,16,buy,4.95,Occidental Petroleum
+09-12-2022,APA,YAHOO,USD,6.76,34,sell,1.0,APA Corp
+19-12-2022,FSLR,YAHOO,USD,195.4,30,buy,0,First Solar
+26-12-2022,APA,YAHOO,USD,7.3,11,sell,4.95,APA Corp
+26-12-2022,SLB,YAHOO,USD,45.3,2,buy,4.95,Schlumberger
+30-12-2022,APA,YAHOO,USD,28.22,57,buy,1.0,APA Corp
+02-01-2023,PLUG,YAHOO,USD,14.17,2,buy,0,Plug Power
+03-01-2023,MRO,YAHOO,USD,13.25,7,sell,0,Marathon Oil
+16-01-2023,DVN,YAHOO,USD,62.02,78,buy,9.95,Devon Energy
+16-01-2023,FSLR,YAHOO,USD,2.04,20,dividend,0,First Solar dividend
+17-01-2023,FSLR,YAHOO,USD,260.42,32,buy,0,First Solar
+18-01-2023,OXY,YAHOO,USD,60.49,13,buy,0,Occidental Petroleum
+18-01-2023,FSLR,YAHOO,USD,97.18,53,sell,0,First Solar
+18-01-2023,PLUG,YAHOO,USD,24.97,7,buy,0,Plug Power
+20-01-2023,HAL,YAHOO,USD,36.99,47,buy,0,Halliburton
+30-01-2023,HAL,YAHOO,USD,17.23,50,sell,0,Halliburton
+01-02-2023,OXY,YAHOO,USD,76.33,30,buy,1.0,Occidental Petroleum
+03-02-2023,Account Fee,MANUAL,USD,0,0,fee,27.59,Quarterly fee
+06-02-2023,OXY,YAHOO,USD,67.44,50,buy,0,Occidental Petroleum
+07-02-2023,SLB,YAHOO,USD,0.57,30,dividend,0,Schlumberger dividend
+20-02-2023,SLB,YAHOO,USD,45.71,15,buy,9.95,Schlumberger
+21-02-2023,MRO,YAHOO,USD,27.39,28,buy,4.95,Marathon Oil
+22-02-2023,SLB,YAHOO,USD,50.67,79,buy,4.95,Schlumberger
+02-03-2023,SLB,YAHOO,USD,52.46,20,buy,0,Schlumberger
+06-03-2023,MRO,YAHOO,USD,8.42,79,sell,9.95,Marathon Oil
+06-03-2023,HAL,YAHOO,USD,32.97,13,buy,0,Halliburton
+06-03-2023,MRO,YAHOO,USD,5.55,6,sell,4.95,Marathon Oil
+20-03-2023,OXY,YAHOO,USD,22.35,22,sell,1.0,Occidental Petroleum
+21-03-2023,FSLR,YAHOO,USD,184.33,29,buy,0,First Solar
+21-03-2023,MRO,YAHOO,USD,27.68,6,buy,4.95,Marathon Oil
+30-03-2023,DVN,YAHOO,USD,53.38,76,buy,0,Devon Energy
+05-04-2023,APA,YAHOO,USD,5.48,70,sell,0,APA Corp
+07-04-2023,HAL,YAHOO,USD,17.06,10,sell,0,Halliburton
+17-04-2023,SLB,YAHOO,USD,20.54,9,sell,0,Schlumberger
+17-04-2023,HAL,YAHOO,USD,32.86,49,buy,4.95,Halliburton
+27-04-2023,APA,YAHOO,USD,35.11,65,buy,0,APA Corp
+15-05-2023,APA,YAHOO,USD,9.6,19,sell,0,APA Corp
+22-05-2023,DVN,YAHOO,USD,64.2,65,buy,1.0,Devon Energy
+22-05-2023,DVN,YAHOO,USD,1.2,12,dividend,0,Devon Energy dividend
+23-05-2023,PLUG,YAHOO,USD,2.72,33,buy,1.0,Plug Power
+29-05-2023,FSLR,YAHOO,USD,0.44,3,dividend,0,First Solar dividend
+30-05-2023,MRO,YAHOO,USD,23.82,42,buy,1.0,Marathon Oil
+31-05-2023,HAL,YAHOO,USD,35.2,64,buy,0,Halliburton
+06-06-2023,DVN,YAHOO,USD,49.17,57,buy,1.0,Devon Energy
+12-06-2023,SLB,YAHOO,USD,52.61,26,buy,0,Schlumberger
+12-06-2023,SLB,YAHOO,USD,25.92,56,sell,4.95,Schlumberger
+12-06-2023,APA,YAHOO,USD,36.16,19,buy,0,APA Corp
+19-06-2023,FSLR,YAHOO,USD,2.23,22,dividend,0,First Solar dividend
+20-06-2023,HAL,YAHOO,USD,6.66,11,sell,0,Halliburton
+22-06-2023,SLB,YAHOO,USD,19.74,30,sell,4.95,Schlumberger
+26-06-2023,APA,YAHOO,USD,15.42,23,sell,0,APA Corp
+26-06-2023,APA,YAHOO,USD,26.41,63,buy,0,APA Corp
+29-06-2023,HAL,YAHOO,USD,7.09,40,sell,4.95,Halliburton
+29-06-2023,Account Fee,MANUAL,USD,0,0,fee,47.04,Quarterly fee
+03-07-2023,DVN,YAHOO,USD,8.23,75,sell,9.95,Devon Energy
+05-07-2023,FSLR,YAHOO,USD,3.2,17,dividend,0,First Solar dividend
+13-07-2023,APA,YAHOO,USD,30.44,46,buy,0,APA Corp
+19-07-2023,APA,YAHOO,USD,37.59,39,buy,4.95,APA Corp
+20-07-2023,APA,YAHOO,USD,46.96,6,buy,4.95,APA Corp
+24-07-2023,HAL,YAHOO,USD,2.81,27,dividend,0,Halliburton dividend
+27-07-2023,MRO,YAHOO,USD,25.26,43,buy,4.95,Marathon Oil
+27-07-2023,PLUG,YAHOO,USD,1.37,59,sell,4.95,Plug Power
+28-07-2023,Account Fee,MANUAL,USD,0,0,fee,27.34,Quarterly fee
+31-07-2023,PLUG,YAHOO,USD,1.59,37,dividend,0,Plug Power dividend
+07-08-2023,PLUG,YAHOO,USD,25.5,42,buy,0,Plug Power
+11-08-2023,HAL,YAHOO,USD,37.29,74,buy,0,Halliburton
+18-08-2023,APA,YAHOO,USD,10.96,70,sell,0,APA Corp
+21-08-2023,HAL,YAHOO,USD,28.51,71,buy,1.0,Halliburton
+21-09-2023,APA,YAHOO,USD,2.26,35,dividend,0,APA Corp dividend
+04-10-2023,MRO,YAHOO,USD,6.14,76,sell,9.95,Marathon Oil
+13-10-2023,APA,YAHOO,USD,12.25,42,sell,0,APA Corp
+16-10-2023,FSLR,YAHOO,USD,64.77,23,sell,9.95,First Solar
+16-10-2023,OXY,YAHOO,USD,72.42,62,buy,0,Occidental Petroleum
+16-10-2023,DVN,YAHOO,USD,41.79,79,buy,4.95,Devon Energy
+17-10-2023,MRO,YAHOO,USD,12.62,55,sell,0,Marathon Oil
+18-10-2023,Account Fee,MANUAL,USD,0,0,fee,22.29,Quarterly fee
+23-10-2023,MRO,YAHOO,USD,12.29,41,sell,9.95,Marathon Oil
+23-10-2023,PLUG,YAHOO,USD,0.31,45,dividend,0,Plug Power dividend
+30-10-2023,SLB,YAHOO,USD,1.21,46,dividend,0,Schlumberger dividend
+30-10-2023,SLB,YAHOO,USD,57.26,23,buy,0,Schlumberger
+01-11-2023,SLB,YAHOO,USD,16.38,33,sell,9.95,Schlumberger
+06-11-2023,SLB,YAHOO,USD,57.64,31,buy,9.95,Schlumberger
+06-11-2023,HAL,YAHOO,USD,10.71,65,sell,0,Halliburton
+07-11-2023,SLB,YAHOO,USD,46.36,16,buy,4.95,Schlumberger
+13-11-2023,PLUG,YAHOO,USD,20.66,30,buy,0,Plug Power
+13-11-2023,HAL,YAHOO,USD,25.54,56,buy,4.95,Halliburton
+15-11-2023,PLUG,YAHOO,USD,28.76,56,buy,1.0,Plug Power
+17-11-2023,OXY,YAHOO,USD,77.65,66,buy,4.95,Occidental Petroleum
+23-11-2023,MRO,YAHOO,USD,14.6,40,sell,4.95,Marathon Oil
+24-11-2023,OXY,YAHOO,USD,2.74,12,dividend,0,Occidental Petroleum dividend
+27-11-2023,SLB,YAHOO,USD,42.8,25,buy,9.95,Schlumberger
+29-11-2023,SLB,YAHOO,USD,18.92,10,sell,0,Schlumberger
+30-11-2023,Account Fee,MANUAL,USD,0,0,fee,13.8,Quarterly fee
+11-12-2023,OXY,YAHOO,USD,84.28,20,buy,1.0,Occidental Petroleum
+12-12-2023,SLB,YAHOO,USD,1.54,1,dividend,0,Schlumberger dividend
+18-12-2023,MRO,YAHOO,USD,2.8,29,dividend,0,Marathon Oil dividend
+18-12-2023,DVN,YAHOO,USD,52.4,66,buy,4.95,Devon Energy
+22-12-2023,DVN,YAHOO,USD,52.97,15,buy,0,Devon Energy
+25-12-2023,MRO,YAHOO,USD,30.04,13,buy,0,Marathon Oil
+26-12-2023,FSLR,YAHOO,USD,206.37,32,buy,1.0,First Solar
+01-01-2024,PLUG,YAHOO,USD,2.32,22,dividend,0,Plug Power dividend
+02-01-2024,HAL,YAHOO,USD,1.81,25,dividend,0,Halliburton dividend
+04-01-2024,DVN,YAHOO,USD,56.98,16,buy,1.0,Devon Energy
+05-01-2024,PLUG,YAHOO,USD,8.97,46,sell,4.95,Plug Power
+08-01-2024,MRO,YAHOO,USD,27.73,73,buy,4.95,Marathon Oil
+15-01-2024,APA,YAHOO,USD,46.86,77,buy,0,APA Corp
+15-01-2024,HAL,YAHOO,USD,15.06,73,sell,0,Halliburton
+17-01-2024,MRO,YAHOO,USD,9.26,9,sell,0,Marathon Oil
+22-01-2024,SLB,YAHOO,USD,52.54,44,buy,4.95,Schlumberger
+22-01-2024,OXY,YAHOO,USD,23.42,56,sell,1.0,Occidental Petroleum
+22-01-2024,PLUG,YAHOO,USD,24.95,15,buy,0,Plug Power
+22-01-2024,DVN,YAHOO,USD,63.8,37,buy,4.95,Devon Energy
+22-01-2024,PLUG,YAHOO,USD,4.16,30,sell,9.95,Plug Power
+22-01-2024,OXY,YAHOO,USD,1.74,50,dividend,0,Occidental Petroleum dividend
+26-01-2024,DVN,YAHOO,USD,54.98,44,buy,4.95,Devon Energy
+26-01-2024,DVN,YAHOO,USD,42.65,65,buy,9.95,Devon Energy
+26-01-2024,FSLR,YAHOO,USD,217.79,45,buy,4.95,First Solar
+29-01-2024,MRO,YAHOO,USD,8.69,26,sell,4.95,Marathon Oil
+05-02-2024,FSLR,YAHOO,USD,2.98,27,dividend,0,First Solar dividend
+12-02-2024,MRO,YAHOO,USD,22.15,26,buy,9.95,Marathon Oil
+15-02-2024,MRO,YAHOO,USD,30.25,77,buy,1.0,Marathon Oil
+19-02-2024,SLB,YAHOO,USD,12.64,12,sell,1.0,Schlumberger
+29-02-2024,FSLR,YAHOO,USD,163.57,78,buy,9.95,First Solar
+04-03-2024,FSLR,YAHOO,USD,253.77,41,buy,0,First Solar
+04-03-2024,OXY,YAHOO,USD,0.81,14,dividend,0,Occidental Petroleum dividend
+13-03-2024,OXY,YAHOO,USD,72.71,65,buy,1.0,Occidental Petroleum
+25-03-2024,FSLR,YAHOO,USD,2.91,23,dividend,0,First Solar dividend
+25-03-2024,FSLR,YAHOO,USD,1.5,8,dividend,0,First Solar dividend
+26-03-2024,FSLR,YAHOO,USD,40.06,44,sell,1.0,First Solar
+18-04-2024,SLB,YAHOO,USD,21.23,52,sell,1.0,Schlumberger
+22-04-2024,PLUG,YAHOO,USD,1.13,4,sell,9.95,Plug Power
+22-04-2024,OXY,YAHOO,USD,2.02,14,dividend,0,Occidental Petroleum dividend
+26-04-2024,DVN,YAHOO,USD,32.02,62,sell,0,Devon Energy
+29-04-2024,OXY,YAHOO,USD,37.47,40,sell,0,Occidental Petroleum
+30-04-2024,HAL,YAHOO,USD,36.38,15,buy,9.95,Halliburton
+30-04-2024,APA,YAHOO,USD,13.87,62,sell,0,APA Corp
+01-05-2024,HAL,YAHOO,USD,30.32,6,buy,0,Halliburton
+08-05-2024,APA,YAHOO,USD,12.17,70,sell,1.0,APA Corp
+10-05-2024,SLB,YAHOO,USD,10.07,70,sell,1.0,Schlumberger
+13-05-2024,HAL,YAHOO,USD,12.35,3,sell,0,Halliburton
+16-05-2024,DVN,YAHOO,USD,57.36,35,buy,4.95,Devon Energy
+23-05-2024,OXY,YAHOO,USD,72.62,66,buy,1.0,Occidental Petroleum
+28-05-2024,FSLR,YAHOO,USD,65.53,44,sell,4.95,First Solar
+31-05-2024,HAL,YAHOO,USD,18.29,12,sell,9.95,Halliburton
+03-06-2024,Account Fee,MANUAL,USD,0,0,fee,17.67,Quarterly fee
+03-06-2024,DVN,YAHOO,USD,10.54,23,sell,1.0,Devon Energy
+03-06-2024,DVN,YAHOO,USD,46.29,16,buy,0,Devon Energy
+10-06-2024,APA,YAHOO,USD,2.35,5,dividend,0,APA Corp dividend
+13-06-2024,OXY,YAHOO,USD,31.88,23,sell,0,Occidental Petroleum
+13-06-2024,MRO,YAHOO,USD,0.96,46,dividend,0,Marathon Oil dividend
+17-06-2024,HAL,YAHOO,USD,17.4,47,sell,9.95,Halliburton
+20-06-2024,FSLR,YAHOO,USD,154.75,71,buy,0,First Solar
+25-06-2024,DVN,YAHOO,USD,9.63,42,sell,0,Devon Energy
+01-07-2024,DVN,YAHOO,USD,24.68,73,sell,0,Devon Energy
+03-07-2024,Account Fee,MANUAL,USD,0,0,fee,21.2,Quarterly fee
+08-07-2024,DVN,YAHOO,USD,43.34,35,buy,0,Devon Energy
+18-07-2024,FSLR,YAHOO,USD,32.85,67,sell,0,First Solar
+23-07-2024,HAL,YAHOO,USD,35.53,23,buy,1.0,Halliburton
+25-07-2024,MRO,YAHOO,USD,25.07,67,buy,0,Marathon Oil
+25-07-2024,APA,YAHOO,USD,15.1,36,sell,0,APA Corp
+02-08-2024,DVN,YAHOO,USD,17.4,40,sell,1.0,Devon Energy
+06-08-2024,HAL,YAHOO,USD,33.02,18,buy,9.95,Halliburton
+08-08-2024,SLB,YAHOO,USD,20.47,36,sell,0,Schlumberger
+12-08-2024,OXY,YAHOO,USD,2.96,40,dividend,0,Occidental Petroleum dividend
+12-08-2024,APA,YAHOO,USD,12.4,33,sell,0,APA Corp
+13-08-2024,HAL,YAHOO,USD,8.47,52,sell,0,Halliburton
+14-08-2024,APA,YAHOO,USD,32.76,61,buy,0,APA Corp
+19-08-2024,HAL,YAHOO,USD,15.3,12,sell,9.95,Halliburton
+19-08-2024,OXY,YAHOO,USD,32.53,51,sell,0,Occidental Petroleum
+19-08-2024,MRO,YAHOO,USD,6.05,3,sell,4.95,Marathon Oil
+26-08-2024,APA,YAHOO,USD,12.96,26,sell,0,APA Corp
+02-09-2024,APA,YAHOO,USD,35.55,10,buy,4.95,APA Corp
+02-09-2024,SLB,YAHOO,USD,49.62,25,buy,0,Schlumberger
+09-09-2024,HAL,YAHOO,USD,1.34,34,dividend,0,Halliburton dividend
+16-09-2024,SLB,YAHOO,USD,47.4,65,buy,0,Schlumberger
+23-09-2024,APA,YAHOO,USD,16.7,34,sell,0,APA Corp
+25-09-2024,FSLR,YAHOO,USD,196.16,49,buy,0,First Solar
+27-09-2024,OXY,YAHOO,USD,78.93,5,buy,0,Occidental Petroleum
+27-09-2024,SLB,YAHOO,USD,64.03,44,buy,9.95,Schlumberger
+09-10-2024,DVN,YAHOO,USD,45.59,42,buy,4.95,Devon Energy
+10-10-2024,APA,YAHOO,USD,14.31,15,sell,1.0,APA Corp
+10-10-2024,HAL,YAHOO,USD,15.56,12,sell,4.95,Halliburton
+14-10-2024,SLB,YAHOO,USD,2.81,33,dividend,0,Schlumberger dividend
+22-10-2024,PLUG,YAHOO,USD,4.16,53,sell,9.95,Plug Power
+24-10-2024,HAL,YAHOO,USD,12.9,54,sell,9.95,Halliburton
+29-10-2024,PLUG,YAHOO,USD,10.0,13,sell,4.95,Plug Power
+04-11-2024,DVN,YAHOO,USD,27.73,53,sell,0,Devon Energy
+04-11-2024,MRO,YAHOO,USD,11.71,42,sell,0,Marathon Oil
+11-11-2024,PLUG,YAHOO,USD,12.12,63,sell,4.95,Plug Power
+12-11-2024,SLB,YAHOO,USD,53.36,1,buy,9.95,Schlumberger
+20-11-2024,HAL,YAHOO,USD,37.24,55,buy,0,Halliburton
+26-11-2024,PLUG,YAHOO,USD,11.61,46,sell,4.95,Plug Power
+05-12-2024,HAL,YAHOO,USD,6.51,6,sell,0,Halliburton
+09-12-2024,PLUG,YAHOO,USD,5.31,24,buy,4.95,Plug Power
+10-12-2024,FSLR,YAHOO,USD,56.86,47,sell,0,First Solar
+11-12-2024,PLUG,YAHOO,USD,18.67,30,sell,0,Plug Power
+16-12-2024,SLB,YAHOO,USD,56.84,18,buy,0,Schlumberger
+16-12-2024,FSLR,YAHOO,USD,86.28,54,buy,0,First Solar
+16-12-2024,APA,YAHOO,USD,6.92,60,sell,0,APA Corp
+18-12-2024,OXY,YAHOO,USD,35.77,37,sell,1.0,Occidental Petroleum
+20-12-2024,APA,YAHOO,USD,2.15,12,dividend,0,APA Corp dividend
+23-12-2024,FSLR,YAHOO,USD,251.53,41,buy,9.95,First Solar
+23-12-2024,FSLR,YAHOO,USD,241.67,26,buy,9.95,First Solar
+30-12-2024,PLUG,YAHOO,USD,29.66,64,buy,9.95,Plug Power
+07-01-2025,SLB,YAHOO,USD,62.61,29,buy,1.0,Schlumberger
+07-01-2025,PLUG,YAHOO,USD,26.1,19,buy,1.0,Plug Power
+13-01-2025,SLB,YAHOO,USD,49.78,3,buy,9.95,Schlumberger
+14-01-2025,DVN,YAHOO,USD,11.18,50,sell,1.0,Devon Energy
+17-01-2025,APA,YAHOO,USD,9.19,70,sell,0,APA Corp
+20-01-2025,MRO,YAHOO,USD,32.37,31,buy,0,Marathon Oil
+20-01-2025,DVN,YAHOO,USD,39.37,64,buy,4.95,Devon Energy
+27-01-2025,HAL,YAHOO,USD,8.22,10,sell,0,Halliburton
+27-01-2025,DVN,YAHOO,USD,49.64,61,buy,4.95,Devon Energy
+27-01-2025,SLB,YAHOO,USD,24.19,63,sell,0,Schlumberger
+28-01-2025,APA,YAHOO,USD,8.69,38,sell,4.95,APA Corp
