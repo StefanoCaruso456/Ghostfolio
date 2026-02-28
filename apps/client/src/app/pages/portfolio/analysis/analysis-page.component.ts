@@ -121,9 +121,13 @@ export class GfAnalysisPageComponent implements OnDestroy, OnInit {
 
   get savingsRate() {
     const savingsRatePerMonth =
-      this.hasImpersonationId || this.user.settings.isRestrictedView
+      this.hasImpersonationId || this.user?.settings?.isRestrictedView
         ? undefined
         : this.user?.settings?.savingsRate;
+
+    if (savingsRatePerMonth == null) {
+      return undefined;
+    }
 
     return this.mode === 'year'
       ? savingsRatePerMonth * 12

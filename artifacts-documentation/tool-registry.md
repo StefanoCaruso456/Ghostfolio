@@ -2,7 +2,7 @@
 
 ## Overview
 
-The AI chat system uses **10 production tools** registered with the Vercel AI SDK's `tool()` function. All tools are fully implemented (no stubs). Each tool has:
+The AI chat system uses **13 production tools** registered with the Vercel AI SDK's `tool()` function. All tools are fully implemented (no stubs). Each tool has:
 
 - **Input schema** (Zod) -- validates arguments from the LLM
 - **Output schema** (Zod) -- validates the ToolResult envelope at runtime
@@ -10,11 +10,14 @@ The AI chat system uses **10 production tools** registered with the Vercel AI SD
 
 ## Tool Table
 
-### Portfolio Tools (4)
+### Portfolio Tools (7)
 
 | Tool Name             | Description                                                      | Data Source      |
 | --------------------- | ---------------------------------------------------------------- | ---------------- |
 | `getPortfolioSummary` | Holdings count, top 5 positions, accounts, base currency         | PortfolioService |
+| `getHoldingDetail`    | Deep detail for one holding: position, performance, dividends, fees, historical data, ATH | PortfolioService |
+| `getPortfolioChart`   | Portfolio value time-series with peak/trough/change summary, configurable date range | PortfolioService |
+| `getDividendSummary`  | Dividend income by symbol, by period (month/year), recent events | OrderService     |
 | `listActivities`      | Orders/transactions with date, symbol, type filters              | OrderService     |
 | `getAllocations`      | Allocation breakdown by asset class, sub-class, currency, sector | PortfolioService |
 | `getPerformance`      | Net worth, total investment, returns %, first order date         | PortfolioService |
@@ -42,6 +45,34 @@ The AI chat system uses **10 production tools** registered with the Vercel AI SD
 ```typescript
 {
   userCurrency: string;
+}
+```
+
+### getHoldingDetail
+
+```typescript
+{
+  symbol: string,                // Ticker symbol (e.g. AAPL, VWRL.L)
+  dataSource?: DataSource        // Auto-resolved from portfolio if omitted
+}
+```
+
+### getPortfolioChart
+
+```typescript
+{
+  dateRange: '1d' | '1w' | '1m' | '3m' | '6m' | 'ytd' | '1y' | '5y' | 'max',
+  maxPoints?: number             // Max 200, default 100. Evenly sampled.
+}
+```
+
+### getDividendSummary
+
+```typescript
+{
+  year?: number,                 // Filter to specific year
+  symbol?: string,               // Filter to specific symbol
+  groupBy?: 'month' | 'year'    // Group totals by period
 }
 ```
 
@@ -196,6 +227,9 @@ Located in `tools/index.ts`. Maps every tool name to its Zod output schema for r
 ```typescript
 export const OUTPUT_SCHEMA_REGISTRY: Record<string, z.ZodType> = {
   getPortfolioSummary: GetPortfolioSummaryOutputSchema,
+  getHoldingDetail: GetHoldingDetailOutputSchema,
+  getPortfolioChart: GetPortfolioChartOutputSchema,
+  getDividendSummary: GetDividendSummaryOutputSchema,
   listActivities: ListActivitiesOutputSchema,
   getAllocations: GetAllocationsOutputSchema,
   getPerformance: GetPerformanceOutputSchema,
