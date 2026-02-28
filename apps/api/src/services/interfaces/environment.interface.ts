@@ -49,6 +49,7 @@ export interface Environment extends CleanedEnvAccessors {
   PLAID_SECRET: string;
   PLAID_ENV: string;
   PLAID_ENCRYPTION_KEY: string;
+  PLAID_WEBHOOK_URL: string;
   OIDC_AUTHORIZATION_URL: string;
   OIDC_CALLBACK_URL: string;
   OIDC_CLIENT_ID: string;

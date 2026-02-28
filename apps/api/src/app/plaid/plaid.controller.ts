@@ -11,6 +11,7 @@ import {
   HttpCode,
   HttpStatus,
   Inject,
+  Logger,
   Param,
   Post,
   UseGuards
@@ -22,6 +23,8 @@ import { PlaidService } from './plaid.service';
 
 @Controller('plaid')
 export class PlaidController {
+  private readonly logger = new Logger(PlaidController.name);
+
   public constructor(
     private readonly plaidService: PlaidService,
     @Inject(REQUEST) private readonly request: RequestWithUser
@@ -39,6 +42,18 @@ export class PlaidController {
   @UseGuards(AuthGuard('jwt'), HasPermissionGuard)
   public async exchangePublicToken(@Body() body: ExchangePlaidTokenDto) {
     return this.plaidService.exchangePublicToken(this.request.user.id, body);
+  }
+
+  // Webhook must be BEFORE :id routes so NestJS doesn't match "webhook" as :id
+  @Post('webhook')
+  @HttpCode(HttpStatus.OK)
+  public async handleWebhook(@Body() body: any) {
+    // TODO: Verify Plaid webhook JWS signature
+    // https://plaid.com/docs/api/webhooks/webhook-verification/
+    this.logger.log(
+      `Incoming Plaid webhook: ${body?.webhook_type}/${body?.webhook_code}`
+    );
+    return this.plaidService.handleWebhook(body);
   }
 
   @Post(':id/sync')
