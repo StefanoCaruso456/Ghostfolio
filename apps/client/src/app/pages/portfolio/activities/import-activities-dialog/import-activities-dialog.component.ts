@@ -189,15 +189,17 @@ export class GfImportActivitiesDialogComponent implements OnDestroy {
         }
       );
     } catch (error) {
-      this.snackBar.open(
-        $localize`Oops! Something went wrong.` +
+      const errorMessage =
+        error?.error?.message?.[0] || error?.message || error?.statusText || '';
+      const displayMessage = errorMessage
+        ? $localize`Oops! Something went wrong.` + ` (${errorMessage})`
+        : $localize`Oops! Something went wrong.` +
           ' ' +
-          $localize`Please try again later.`,
-        $localize`Okay`,
-        {
-          duration: ms('3 seconds')
-        }
-      );
+          $localize`Please try again later.`;
+
+      this.snackBar.open(displayMessage, $localize`Okay`, {
+        duration: ms('10 seconds')
+      });
     } finally {
       this.dialogRef.close();
     }
