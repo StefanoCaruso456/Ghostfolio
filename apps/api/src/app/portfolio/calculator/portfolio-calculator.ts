@@ -177,13 +177,25 @@ export abstract class PortfolioCalculator {
 
   @LogPerformance
   public async computeSnapshot(): Promise<PortfolioSnapshot> {
+    const snapshotStartTime = performance.now();
+
     const lastTransactionPoint = this.transactionPoints.at(-1);
 
     const transactionPoints = this.transactionPoints?.filter(({ date }) => {
       return isBefore(parseDate(date), this.endDate);
     });
 
+    Logger.log(
+      `computeSnapshot: ${this.activities.length} activities → ${transactionPoints.length} transaction points, dateRange ${format(this.startDate, DATE_FORMAT)} to ${format(this.endDate, DATE_FORMAT)}`,
+      'PortfolioCalculator'
+    );
+
     if (!transactionPoints.length) {
+      Logger.warn(
+        `computeSnapshot: No transaction points found for user — returning empty snapshot`,
+        'PortfolioCalculator'
+      );
+
       return {
         activitiesCount: 0,
         createdAt: new Date(),
@@ -224,6 +236,11 @@ export abstract class PortfolioCalculator {
       currencies[symbol] = currency;
     }
 
+    Logger.log(
+      `computeSnapshot: ${dataGatheringItems.length} symbols to gather market data for, ${Object.keys(currencies).length} unique currencies`,
+      'PortfolioCalculator'
+    );
+
     for (let i = 0; i < transactionPoints.length; i++) {
       if (
         !isBefore(parseDate(transactionPoints[i].date), this.startDate) &&
@@ -255,6 +272,18 @@ export abstract class PortfolioCalculator {
     });
 
     this.dataProviderInfos = dataProviderInfos;
+
+    Logger.log(
+      `computeSnapshot: Market data fetched — ${marketSymbols.length} data points, ${currentRateErrors.length} quote errors`,
+      'PortfolioCalculator'
+    );
+
+    if (currentRateErrors.length > 0) {
+      Logger.warn(
+        `computeSnapshot: Quote errors for: ${currentRateErrors.map(({ symbol }) => symbol).slice(0, 10).join(', ')}${currentRateErrors.length > 10 ? ` (+${currentRateErrors.length - 10} more)` : ''}`,
+        'PortfolioCalculator'
+      );
+    }
 
     const marketSymbolMap: {
       [date: string]: { [symbol: string]: Big };
@@ -644,6 +673,18 @@ export abstract class PortfolioCalculator {
         valueWithCurrencyEffect: totalCurrentValueWithCurrencyEffect.toNumber()
       };
     });
+
+    const nonZeroPositions = positions.filter(
+      ({ quantity }) => !quantity.eq(0)
+    );
+    const holdingsPositions = positions.filter(
+      ({ includeInHoldings }) => includeInHoldings
+    );
+
+    Logger.log(
+      `computeSnapshot: Built ${positions.length} total positions (${nonZeroPositions.length} with non-zero quantity, ${holdingsPositions.length} included in holdings, ${errors.length} errors) in ${((performance.now() - snapshotStartTime) / 1000).toFixed(1)}s`,
+      'PortfolioCalculator'
+    );
 
     const overall = this.calculateOverallPerformance(positions);
 
@@ -1170,6 +1211,11 @@ export abstract class PortfolioCalculator {
         });
       }
     } else {
+      Logger.log(
+        `No cached snapshot for user '${this.userId}' — submitting computation job (${this.activities.length} activities, ${this.transactionPoints.length} transaction points)`,
+        'PortfolioCalculator'
+      );
+
       // Wait for computation
       await this.portfolioSnapshotService.addJobToQueue({
         data: {
@@ -1189,7 +1235,53 @@ export abstract class PortfolioCalculator {
       const job = await this.portfolioSnapshotService.getJob(jobId);
 
       if (job) {
-        await job.finished();
+        // Add a timeout so we don't block the HTTP request forever
+        const JOB_WAIT_TIMEOUT_MS = 120_000; // 2 minutes
+
+        try {
+          await Promise.race([
+            job.finished(),
+            new Promise<never>((_, reject) =>
+              setTimeout(
+                () =>
+                  reject(
+                    new Error(
+                      `Portfolio snapshot job timed out after ${JOB_WAIT_TIMEOUT_MS / 1000}s for user '${this.userId}'`
+                    )
+                  ),
+                JOB_WAIT_TIMEOUT_MS
+              )
+            )
+          ]);
+        } catch (error) {
+          Logger.warn(
+            `Portfolio snapshot job did not complete in time for user '${this.userId}': ${error?.message}. The job may still be running in the background.`,
+            'PortfolioCalculator'
+          );
+
+          // Return an empty snapshot instead of hanging forever
+          this.snapshot = plainToClass(PortfolioSnapshot, {
+            activitiesCount: this.activities.length,
+            createdAt: new Date(),
+            currentValueInBaseCurrency: new Big(0),
+            errors: [],
+            hasErrors: true,
+            historicalData: [],
+            positions: [],
+            totalFeesWithCurrencyEffect: new Big(0),
+            totalInterestWithCurrencyEffect: new Big(0),
+            totalInvestment: new Big(0),
+            totalInvestmentWithCurrencyEffect: new Big(0),
+            totalLiabilitiesWithCurrencyEffect: new Big(0)
+          });
+
+          return;
+        }
+      } else {
+        Logger.warn(
+          `Could not find portfolio snapshot job for user '${this.userId}' — job may have completed already`,
+          'PortfolioCalculator'
+        );
       }
 
       await this.initialize();
