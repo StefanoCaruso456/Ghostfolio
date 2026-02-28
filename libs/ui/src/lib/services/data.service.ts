@@ -403,6 +403,31 @@ export class DataService {
     return this.http.delete<void>(`/api/v1/plaid/${id}`);
   }
 
+  public connectSnaptrade() {
+    return this.http.post<{ redirectUri: string }>(
+      '/api/v1/snaptrade/connect',
+      {}
+    );
+  }
+
+  public snaptradeCallback(authorizationId: string) {
+    return this.http.post<{ id: string; synced: number }>(
+      '/api/v1/snaptrade/callback',
+      { authorizationId }
+    );
+  }
+
+  public syncSnaptradeConnection(id: string) {
+    return this.http.post<{ synced: number }>(
+      `/api/v1/snaptrade/${id}/sync`,
+      {}
+    );
+  }
+
+  public disconnectSnaptradeConnection(id: string) {
+    return this.http.delete<void>(`/api/v1/snaptrade/${id}`);
+  }
+
   public fetchMarketChart(symbol: string, range: string) {
     return this.http.get<MarketChartResponse>('/api/v1/market-chart', {
       params: { symbol, range }

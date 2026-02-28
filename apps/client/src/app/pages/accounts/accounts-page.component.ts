@@ -188,6 +188,75 @@ export class GfAccountsPageComponent implements OnDestroy, OnInit {
     }
   }
 
+  public async onConnectSnaptrade() {
+    try {
+      // 1. Get the Snaptrade connection portal redirect URI
+      const { redirectUri } = await this.dataService
+        .connectSnaptrade()
+        .toPromise();
+
+      // 2. Open the Snaptrade connection portal in a popup window
+      const popup = window.open(
+        redirectUri,
+        'snaptrade-connect',
+        'width=800,height=700,scrollbars=yes,resizable=yes'
+      );
+
+      // 3. Listen for postMessage events from the popup
+      const result = await new Promise<{ authorizationId: string }>(
+        (resolve, reject) => {
+          const handleMessage = (event: MessageEvent) => {
+            if (event.data?.status === 'SUCCESS') {
+              window.removeEventListener('message', handleMessage);
+              clearInterval(pollTimer);
+              resolve({ authorizationId: event.data.authorizationId });
+            } else if (event.data?.status === 'ERROR') {
+              window.removeEventListener('message', handleMessage);
+              clearInterval(pollTimer);
+              reject(new Error(event.data?.detail || 'Connection failed'));
+            } else if (
+              event.data?.status === 'CLOSE_MODAL' ||
+              event.data?.status === 'ABANDONED'
+            ) {
+              window.removeEventListener('message', handleMessage);
+              clearInterval(pollTimer);
+              reject(new Error('User closed Snaptrade portal'));
+            }
+          };
+
+          window.addEventListener('message', handleMessage);
+
+          // Poll to detect if popup was closed manually
+          const pollTimer = setInterval(() => {
+            if (popup?.closed) {
+              clearInterval(pollTimer);
+              window.removeEventListener('message', handleMessage);
+              reject(new Error('User closed Snaptrade portal'));
+            }
+          }, 1000);
+        }
+      );
+
+      // 4. Send callback with authorizationId to sync accounts
+      await this.dataService
+        .snaptradeCallback(result.authorizationId)
+        .toPromise();
+
+      // 5. Refresh account list
+      this.fetchAccounts();
+
+      this.notificationService.alert({
+        title: $localize`Broker connected via Snaptrade!`
+      });
+    } catch (error) {
+      if (error?.message !== 'User closed Snaptrade portal') {
+        this.notificationService.alert({
+          title: $localize`Oops, Snaptrade connection failed.`
+        });
+      }
+    }
+  }
+
   public onDeleteAccount(aId: string) {
     this.reset();
 
