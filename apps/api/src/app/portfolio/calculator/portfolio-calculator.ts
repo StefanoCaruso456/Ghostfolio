@@ -278,15 +278,22 @@ export abstract class PortfolioCalculator {
 
     const daysInMarket = differenceInDays(this.endDate, this.startDate);
 
+    // Adaptive chart resolution: reduce chart density for large portfolios
+    const maxChartItems = this.configurationService.get('MAX_CHART_ITEMS');
+    const activityCount = this.activities.length;
+    const adaptiveMaxItems =
+      activityCount > 2000
+        ? Math.round(maxChartItems / 2)
+        : activityCount > 5000
+          ? Math.round(maxChartItems / 3)
+          : maxChartItems;
+
     const chartDateMap = this.getChartDateMap({
       endDate: this.endDate,
       startDate: this.startDate,
-      step: Math.round(
-        daysInMarket /
-          Math.min(
-            daysInMarket,
-            this.configurationService.get('MAX_CHART_ITEMS')
-          )
+      step: Math.max(
+        1,
+        Math.round(daysInMarket / Math.min(daysInMarket, adaptiveMaxItems))
       )
     });
 
@@ -294,9 +301,27 @@ export abstract class PortfolioCalculator {
       chartDateMap[accountBalanceItem.date] = true;
     }
 
-    const chartDates = sortBy(Object.keys(chartDateMap), (chartDate) => {
+    // Cap total chart dates to prevent excessive computation with large portfolios
+    let chartDates = sortBy(Object.keys(chartDateMap), (chartDate) => {
       return chartDate;
     });
+
+    if (chartDates.length > adaptiveMaxItems * 2 && activityCount > 2000) {
+      // Downsample: keep every Nth date but always keep first, last, and recent 30 days
+      const keepEveryN = Math.ceil(chartDates.length / adaptiveMaxItems);
+      const cutoffDate = format(subDays(this.endDate, 30), DATE_FORMAT);
+      const firstDate = chartDates[0];
+      const lastDate = chartDates[chartDates.length - 1];
+
+      chartDates = chartDates.filter((date, i) => {
+        return (
+          date === firstDate ||
+          date === lastDate ||
+          date >= cutoffDate ||
+          i % keepEveryN === 0
+        );
+      });
+    }
 
     if (firstIndex > 0) {
       firstIndex--;
