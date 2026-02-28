@@ -250,8 +250,14 @@ export class GfAccountsPageComponent implements OnDestroy, OnInit {
       });
     } catch (error) {
       if (error?.message !== 'User closed Snaptrade portal') {
+        // Surface backend error details from HttpErrorResponse
+        const detail =
+          error?.error?.message || error?.message || 'Unknown error';
+
+        console.error('Snaptrade connection error:', error);
+
         this.notificationService.alert({
-          title: $localize`Oops, Snaptrade connection failed.`
+          title: $localize`Snaptrade connection failed: ${detail}`
         });
       }
     }
