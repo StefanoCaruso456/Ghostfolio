@@ -24,8 +24,29 @@ export class SymbolProfileService {
 
   public async add(
     assetProfile: Prisma.SymbolProfileCreateInput
-  ): Promise<SymbolProfile | never> {
-    return this.prismaService.symbolProfile.create({ data: assetProfile });
+  ): Promise<SymbolProfile> {
+    try {
+      return await this.prismaService.symbolProfile.create({
+        data: assetProfile
+      });
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        // Unique constraint violation — return the existing record
+        return this.prismaService.symbolProfile.findUnique({
+          where: {
+            dataSource_symbol: {
+              dataSource: assetProfile.dataSource as DataSource,
+              symbol: assetProfile.symbol
+            }
+          }
+        });
+      }
+
+      throw error;
+    }
   }
 
   public async addIfNotExists({

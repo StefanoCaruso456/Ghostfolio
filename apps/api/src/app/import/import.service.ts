@@ -627,41 +627,63 @@ export class ImportService {
               });
             });
 
-            const order = await this.orderService.createOrder({
-              comment,
-              currency,
-              date,
-              fee,
-              quantity,
-              type,
-              unitPrice,
-              accountId: validatedAccount?.id,
-              skipDataGathering: true,
-              skipEvents: true,
-              SymbolProfile: {
-                connectOrCreate: {
-                  create: {
-                    dataSource,
-                    name,
-                    symbol,
-                    currency: assetProfile.currency,
-                    userId: dataSource === 'MANUAL' ? user.id : undefined
-                  },
-                  where: {
-                    dataSource_symbol: {
-                      dataSource,
-                      symbol
+            // Retry once on unique constraint race condition (P2002)
+            // connectOrCreate can race in parallel batches
+            let order;
+
+            for (let attempt = 0; attempt < 2; attempt++) {
+              try {
+                order = await this.orderService.createOrder({
+                  comment,
+                  currency,
+                  date,
+                  fee,
+                  quantity,
+                  type,
+                  unitPrice,
+                  accountId: validatedAccount?.id,
+                  skipDataGathering: true,
+                  skipEvents: true,
+                  SymbolProfile: {
+                    connectOrCreate: {
+                      create: {
+                        dataSource,
+                        name,
+                        symbol,
+                        currency: assetProfile.currency,
+                        userId:
+                          dataSource === 'MANUAL' ? user.id : undefined
+                      },
+                      where: {
+                        dataSource_symbol: {
+                          dataSource,
+                          symbol
+                        }
+                      }
                     }
-                  }
+                  },
+                  tags: validatedTags.map(({ id }) => {
+                    return { id };
+                  }),
+                  updateAccountBalance: false,
+                  user: { connect: { id: user.id } },
+                  userId: user.id
+                });
+                break;
+              } catch (retryError) {
+                if (
+                  retryError instanceof
+                    Prisma.PrismaClientKnownRequestError &&
+                  retryError.code === 'P2002' &&
+                  attempt === 0
+                ) {
+                  // Retry once — the profile now exists
+                  continue;
                 }
-              },
-              tags: validatedTags.map(({ id }) => {
-                return { id };
-              }),
-              updateAccountBalance: false,
-              user: { connect: { id: user.id } },
-              userId: user.id
-            });
+
+                throw retryError;
+              }
+            }
 
             const orderWithProfile = order as any;
 
