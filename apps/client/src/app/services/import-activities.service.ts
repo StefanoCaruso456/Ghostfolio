@@ -4,7 +4,10 @@ import {
   CreateOrderDto,
   CreateTagDto
 } from '@ghostfolio/common/dtos';
-import { parseDate as parseDateHelper } from '@ghostfolio/common/helper';
+import {
+  detectDateFormatFromColumn,
+  parseDate as parseDateHelper
+} from '@ghostfolio/common/helper';
 import { Activity } from '@ghostfolio/common/interfaces';
 
 import { HttpClient } from '@angular/common/http';
@@ -59,6 +62,9 @@ export class ImportActivitiesService {
     const activities: CreateOrderDto[] = [];
     const assetProfiles: CreateAssetProfileWithMarketDataDto[] = [];
 
+    // Detect date format across the entire column before parsing individual rows
+    const dateFormat = this.detectDateFormat(content);
+
     for (const [index, item] of content.entries()) {
       const currency = this.parseCurrency({ content, index, item });
       const dataSource = this.parseDataSource({ item });
@@ -72,7 +78,7 @@ export class ImportActivitiesService {
         type,
         accountId: this.parseAccount({ item, userAccounts }),
         comment: this.parseComment({ item }),
-        date: this.parseDate({ content, index, item }),
+        date: this.parseDate({ content, dateFormat, index, item }),
         fee: this.parseFee({ content, index, item }),
         quantity: this.parseQuantity({ content, index, item }),
         unitPrice: this.parseUnitPrice({ content, index, item }),
@@ -309,12 +315,31 @@ export class ImportActivitiesService {
     return undefined;
   }
 
+  private detectDateFormat(content: any[]): string | undefined {
+    const dateStrings: string[] = [];
+
+    for (const item of content) {
+      const lowered = this.lowercaseKeys(item);
+
+      for (const key of ImportActivitiesService.DATE_KEYS) {
+        if (lowered[key]) {
+          dateStrings.push(lowered[key].toString());
+          break;
+        }
+      }
+    }
+
+    return detectDateFormatFromColumn(dateStrings);
+  }
+
   private parseDate({
     content,
+    dateFormat,
     index,
     item
   }: {
     content: any[];
+    dateFormat?: string;
     index: number;
     item: any;
   }) {
@@ -323,7 +348,10 @@ export class ImportActivitiesService {
     for (const key of ImportActivitiesService.DATE_KEYS) {
       if (item[key]) {
         try {
-          return parseDateHelper(item[key].toString()).toISOString();
+          return parseDateHelper(
+            item[key].toString(),
+            dateFormat
+          ).toISOString();
         } catch {}
       }
     }
