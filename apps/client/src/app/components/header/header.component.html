@@ -46,6 +46,15 @@
         [routerLink]="routerLinkResources"
         >Market</a
       >
+      <a
+        mat-flat-button
+        [ngClass]="{
+          'font-weight-bold': currentRoute === routeTaxIntelligence,
+          'text-decoration-underline': currentRoute === routeTaxIntelligence
+        }"
+        [routerLink]="routerLinkTaxIntelligence"
+        >Tax Intelligence</a
+      >
       @if (hasPermissionToAccessAssistant) {
         <a
           mat-flat-button
@@ -217,6 +226,12 @@
             mat-menu-item
             [routerLink]="routerLinkResources"
             >Market</a
+          >
+          <a
+            class="d-flex d-sm-none"
+            mat-menu-item
+            [routerLink]="routerLinkTaxIntelligence"
+            >Tax Intelligence</a
           >
           @if (hasPermissionToAccessAssistant) {
             <a

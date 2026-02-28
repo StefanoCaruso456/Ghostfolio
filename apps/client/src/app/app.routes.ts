@@ -99,6 +99,13 @@ export const routes: Routes = [
       import('./pages/open/open-page.routes').then((m) => m.routes)
   },
   {
+    path: internalRoutes.taxIntelligence.path,
+    loadChildren: () =>
+      import('./pages/tax-intelligence/tax-intelligence-page.routes').then(
+        (m) => m.routes
+      )
+  },
+  {
     path: internalRoutes.portfolio.path,
     loadChildren: () =>
       import('./pages/portfolio/portfolio-page.routes').then((m) => m.routes)

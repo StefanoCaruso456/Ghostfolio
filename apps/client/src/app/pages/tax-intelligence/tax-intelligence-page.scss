@@ -1,0 +1,21 @@
+:host {
+  display: block;
+}
+
+.tax-intelligence-card {
+  background: rgb(var(--palette-background-card));
+  border-radius: 16px;
+  box-shadow:
+    6px 6px 12px rgba(0, 0, 0, 0.08),
+    -6px -6px 12px rgba(255, 255, 255, 0.6);
+  padding: 2rem;
+}
+
+:host-context(.theme-dark) {
+  .tax-intelligence-card {
+    background: rgb(var(--palette-background-card-dark, 45, 45, 45));
+    box-shadow:
+      6px 6px 12px rgba(0, 0, 0, 0.3),
+      -6px -6px 12px rgba(255, 255, 255, 0.05);
+  }
+}
