@@ -83,12 +83,19 @@ export class ResourcesMarketsComponent implements OnInit, OnDestroy {
     { label: 'Dogecoin', symbol: 'DOGE-USD', visible: true },
     { label: 'Cardano', symbol: 'ADA-USD', visible: true },
     { label: 'XRP', symbol: 'XRP-USD', visible: true },
-    { label: 'Avalanche', symbol: 'AVAX-USD', visible: false, toggleable: true },
+    {
+      label: 'Avalanche',
+      symbol: 'AVAX-USD',
+      visible: false,
+      toggleable: true
+    },
     { label: 'Polygon', symbol: 'MATIC-USD', visible: false, toggleable: true }
   ];
 
   public get chartConfigs(): ChartConfig[] {
-    return this.marketView === 'stocks' ? this.stockConfigs : this.cryptoConfigs;
+    return this.marketView === 'stocks'
+      ? this.stockConfigs
+      : this.cryptoConfigs;
   }
 
   public set chartConfigs(configs: ChartConfig[]) {

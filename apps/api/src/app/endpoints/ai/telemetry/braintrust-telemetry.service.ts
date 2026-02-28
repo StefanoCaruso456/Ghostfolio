@@ -588,7 +588,10 @@ export class BraintrustTelemetryService implements OnModuleInit {
         ...(span.assetType && { assetType: span.assetType }),
         ...(span.normalizedSymbol && {
           normalizedSymbol: span.normalizedSymbol
-        })
+        }),
+        ...(span.executor && { executor: span.executor }),
+        ...(span.mcpRequestId && { mcpRequestId: span.mcpRequestId }),
+        ...(span.mcpLatencyMs != null && { mcpLatencyMs: span.mcpLatencyMs })
       },
       metrics: {
         start: toolStartS,
@@ -604,7 +607,8 @@ export class BraintrustTelemetryService implements OnModuleInit {
             : 0,
         output_bytes: span.toolOutput
           ? JSON.stringify(span.toolOutput).length
-          : 0
+          : 0,
+        ...(span.mcpLatencyMs != null && { mcp_latency_ms: span.mcpLatencyMs })
       },
       scores: {
         success: span.status === 'success' ? 1 : 0
@@ -1144,6 +1148,9 @@ export class ToolSpanBuilder {
     toolOutput: Record<string, unknown> | null;
     error?: string;
     wasCorrectTool?: boolean;
+    executor?: 'local' | 'mcp';
+    mcpRequestId?: string | null;
+    mcpLatencyMs?: number | null;
   }): ToolSpan {
     const endedAt = new Date().toISOString();
 
@@ -1160,7 +1167,10 @@ export class ToolSpanBuilder {
       iterationIndex: this.iterationIndex,
       wasCorrectTool: params.wasCorrectTool ?? null,
       startedAt: this.startedAt,
-      endedAt
+      endedAt,
+      executor: params.executor ?? 'local',
+      mcpRequestId: params.mcpRequestId ?? null,
+      mcpLatencyMs: params.mcpLatencyMs ?? null
     };
   }
 }

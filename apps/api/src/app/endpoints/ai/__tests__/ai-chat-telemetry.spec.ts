@@ -11,6 +11,7 @@ import { ConfigurationService } from '@ghostfolio/api/services/configuration/con
 
 import { AiService } from '../ai.service';
 import { AiConversationService } from '../conversation/conversation.service';
+import { ToolDispatcherService } from '../mcp/tool-dispatcher.service';
 import { BraintrustTelemetryService } from '../telemetry/braintrust-telemetry.service';
 import type { TelemetryPayload } from '../telemetry/telemetry.interfaces';
 
@@ -125,6 +126,18 @@ describe('AI Chat Telemetry Integration', () => {
     persistTrace: jest.fn().mockResolvedValue(undefined)
   };
 
+  const mockToolDispatcher = {
+    getMode: jest.fn().mockReturnValue('local'),
+    dispatch: jest
+      .fn()
+      .mockImplementation(
+        async (_toolName: string, _args: any, localFn: () => any) => ({
+          result: await localFn(),
+          executor: 'local' as const
+        })
+      )
+  };
+
   const mockConfigService = {
     get: jest.fn().mockReturnValue(undefined) // No Braintrust key → disabled
   };
@@ -157,7 +170,8 @@ describe('AI Chat Telemetry Integration', () => {
       mockPortfolioService as any,
       mockPropertyService as any,
       mockReasoningTraceService as any,
-      telemetryService
+      telemetryService,
+      mockToolDispatcher as unknown as ToolDispatcherService
     );
   });
 

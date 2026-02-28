@@ -27,6 +27,10 @@ import {
 import { enforceVerificationGate } from '../../import-auditor/verification/enforce';
 import { AiConversationService } from './conversation/conversation.service';
 import { McpClientService } from './mcp/mcp-client.service';
+import {
+  ToolDispatcherService,
+  type DispatchResult
+} from './mcp/tool-dispatcher.service';
 import { ReasoningTraceService } from './reasoning/reasoning-trace.service';
 import { TraceContext } from './reasoning/trace-context';
 import { BraintrustTelemetryService } from './telemetry/braintrust-telemetry.service';
@@ -262,7 +266,8 @@ export class AiService {
     private readonly portfolioService: PortfolioService,
     private readonly propertyService: PropertyService,
     private readonly reasoningTraceService: ReasoningTraceService,
-    private readonly telemetryService: BraintrustTelemetryService
+    private readonly telemetryService: BraintrustTelemetryService,
+    private readonly toolDispatcher: ToolDispatcherService
   ) {}
 
   /**
@@ -559,17 +564,24 @@ export class AiService {
         const spanBuilder = trace.startToolSpan(toolName, args, iterationCount);
 
         const start = Date.now();
-        let result = await executeFn();
+
+        // ── Route through ToolDispatcher ───────────────────────────────
+        const outputSchema = OUTPUT_SCHEMA_REGISTRY[toolName];
+        const dispatched: DispatchResult<T> =
+          await this.toolDispatcher.dispatch<T>(toolName, args, executeFn, {
+            outputSchema
+          });
+
+        let result = dispatched.result;
         const durationMs = Date.now() - start;
 
         // Estimate per-step cost: each tool call involves ~1K prompt tokens
         // + ~500 completion tokens for the LLM's reasoning step
         costLimiter.addCost(estimateCost(modelId, 1000, 500));
 
-        // Runtime output schema validation
-        const outputSchema = OUTPUT_SCHEMA_REGISTRY[toolName];
-
-        if (outputSchema) {
+        // Runtime output schema validation (for local path; MCP path
+        // validates inside ToolDispatcher, but we double-check here)
+        if (dispatched.executor === 'local' && outputSchema) {
           const validation = outputSchema.safeParse(result);
 
           if (!validation.success) {
@@ -599,7 +611,10 @@ export class AiService {
               spanBuilder.end({
                 status: 'error',
                 toolOutput: result as unknown as Record<string, unknown>,
-                error: failureTracker.getAbortReason()
+                error: failureTracker.getAbortReason(),
+                executor: dispatched.executor,
+                mcpRequestId: dispatched.mcpRequestId,
+                mcpLatencyMs: dispatched.mcpLatencyMs
               })
             );
             throw new Error(`Guardrail: ${failureTracker.getAbortReason()}`);
@@ -651,7 +666,10 @@ export class AiService {
               message: (result as Record<string, unknown>).message,
               confidence: result.verification?.confidence
             },
-            error: spanError
+            error: spanError,
+            executor: dispatched.executor,
+            mcpRequestId: dispatched.mcpRequestId,
+            mcpLatencyMs: dispatched.mcpLatencyMs
           })
         );
 

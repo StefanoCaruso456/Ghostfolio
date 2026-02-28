@@ -66,6 +66,7 @@ export class ConfigurationService {
       MARKET_DATA_PROVIDER: str({ default: 'yahoo' }),
       MCP_API_KEY: str({ default: '' }),
       MCP_SERVER_URL: str({ default: '' }),
+      TOOLS_DISPATCH_MODE: str({ default: 'local' }),
       MAX_ACTIVITIES_TO_IMPORT: num({ default: Number.MAX_SAFE_INTEGER }),
       MAX_CHART_ITEMS: num({ default: 365 }),
       PLAID_API_KEY: str({ default: '' }),
