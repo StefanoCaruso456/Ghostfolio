@@ -22,9 +22,9 @@ import { GetValuesParams } from './interfaces/get-values-params.interface';
 @Injectable()
 export class CurrentRateService {
   private static readonly MARKET_DATA_PAGE_SIZE = 50000;
-  private static readonly QUOTE_FETCH_TIMEOUT_MS = 30_000; // 30 seconds max for all quote fetching
-  private static readonly QUOTE_REQUEST_TIMEOUT_MS = 10_000; // 10 seconds per Yahoo batch request
-  private static readonly FALLBACK_CONCURRENCY = 20; // Parallel fallback DB queries
+  private static readonly QUOTE_FETCH_TIMEOUT_MS = 120_000; // 120 seconds for all quote fetching (142 YAHOO symbols in 3 batches)
+  private static readonly QUOTE_REQUEST_TIMEOUT_MS = 20_000; // 20 seconds per Yahoo batch request
+  private static readonly FALLBACK_CONCURRENCY = 50; // Parallel fallback DB queries
 
   private readonly logger = new Logger(CurrentRateService.name);
 
@@ -56,6 +56,12 @@ export class CurrentRateService {
       let quotesBySymbol: { [symbol: string]: any } = {};
 
       try {
+        const quoteStartTime = Date.now();
+
+        this.logger.log(
+          `Fetching quotes for ${dataGatheringItems.length} items (timeout: ${CurrentRateService.QUOTE_FETCH_TIMEOUT_MS / 1000}s, per-batch: ${CurrentRateService.QUOTE_REQUEST_TIMEOUT_MS / 1000}s)`
+        );
+
         // Add a global timeout so slow data providers don't block the entire computation
         quotesBySymbol = await Promise.race([
           this.dataProviderService.getQuotes({
@@ -72,6 +78,13 @@ export class CurrentRateService {
             }, CurrentRateService.QUOTE_FETCH_TIMEOUT_MS)
           )
         ]);
+
+        const quoteCount = Object.keys(quotesBySymbol).length;
+        const quoteDurationSec = ((Date.now() - quoteStartTime) / 1000).toFixed(1);
+
+        this.logger.log(
+          `Quotes fetched: ${quoteCount}/${dataGatheringItems.length} in ${quoteDurationSec}s`
+        );
       } catch (error) {
         this.logger.error(
           `getQuotes failed: ${error instanceof Error ? error.message : error}`
@@ -146,8 +159,8 @@ export class CurrentRateService {
     };
 
     if (!isEmpty(quoteErrors)) {
-      this.logger.debug(
-        `Resolving ${quoteErrors.length} quote errors via fallback`
+      this.logger.log(
+        `Resolving ${quoteErrors.length} quote errors via fallback (concurrency: ${CurrentRateService.FALLBACK_CONCURRENCY})`
       );
 
       // Process fallback in batches to avoid N sequential DB queries
