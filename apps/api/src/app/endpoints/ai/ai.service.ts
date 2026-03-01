@@ -828,6 +828,8 @@ export class AiService {
     // ── Safe portfolio data fetcher ─────────────────────────────────
     // Wraps portfolioService calls to never throw; returns hasErrors: true
     // on failure so portfolio tools degrade gracefully instead of aborting.
+    // NOTE: Tools MUST check details.hasErrors when holdings is empty to
+    // distinguish a genuine empty portfolio from a failed data fetch.
     const safeGetDetails = async (
       opts: { withSummary?: boolean } = {}
     ): Promise<
@@ -837,19 +839,29 @@ export class AiService {
       }
     > => {
       try {
-        return await this.portfolioService.getDetails({
+        const result = await this.portfolioService.getDetails({
           userId,
           impersonationId: undefined,
           withSummary: opts.withSummary
         });
+
+        const holdingsCount = Object.keys(result.holdings).length;
+
+        Logger.debug(
+          `portfolioService.getDetails() returned ${holdingsCount} holdings, hasErrors=${result.hasErrors} for userId=${userId}`,
+          'AiService'
+        );
+
+        return result;
       } catch (err) {
-        Logger.warn(
-          `portfolioService.getDetails() failed, returning degraded result: ${err instanceof Error ? err.message : String(err)}`,
+        Logger.error(
+          `portfolioService.getDetails() failed for userId=${userId}, returning degraded result: ${err instanceof Error ? err.stack : String(err)}`,
           'AiService'
         );
 
         // Return a minimal result so tools can produce a meaningful "unavailable" response
-        // instead of crashing the entire tool call
+        // instead of crashing the entire tool call.
+        // Tools check hasErrors to distinguish this from a genuine empty portfolio.
         return {
           holdings: {},
           accounts: {},

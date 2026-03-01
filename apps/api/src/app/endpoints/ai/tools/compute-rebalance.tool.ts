@@ -66,13 +66,19 @@ export function buildRebalanceResult(
     const holdingsList = Object.values(details.holdings);
 
     if (holdingsList.length === 0) {
+      const isDegraded = details.hasErrors;
+
       return {
         status: 'error',
-        message: 'Portfolio is empty — cannot compute rebalance.',
+        message: isDegraded
+          ? 'Unable to retrieve portfolio data — the portfolio service encountered an error. Cannot compute rebalance, but the user may have holdings that could not be loaded.'
+          : 'Portfolio is empty — cannot compute rebalance.',
         verification: createVerificationResult({
           passed: false,
-          confidence: 0.3,
-          errors: ['Portfolio has zero holdings'],
+          confidence: isDegraded ? 0.1 : 0.3,
+          errors: isDegraded
+            ? ['Portfolio service returned an error — holdings could not be loaded']
+            : ['Portfolio has zero holdings'],
           sources: ['ghostfolio-portfolio-service'],
           domainRulesChecked: DOMAIN_RULES_CHECKED,
           verificationType: 'confidence_scoring'
