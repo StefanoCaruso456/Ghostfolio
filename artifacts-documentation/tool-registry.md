@@ -2,7 +2,7 @@
 
 ## Overview
 
-The AI chat system uses **22 production tools** registered with the Vercel AI SDK's `tool()` function. All tools are fully implemented (no stubs). Each tool has:
+The AI chat system uses **23 production tools** registered with the Vercel AI SDK's `tool()` function. All tools are fully implemented (no stubs). Each tool has:
 
 - **Input schema** (Zod) -- validates arguments from the LLM
 - **Output schema** (Zod) -- validates the ToolResult envelope at runtime
@@ -53,6 +53,14 @@ The AI chat system uses **22 production tools** registered with the Vercel AI SD
 | `deleteAdjustment`        | Delete a cost basis adjustment                                                  | TaxService  | confidence_scoring    |
 
 > **Note:** `simulateSale` uses `human_in_the_loop` verification with confidence capped at 0.8. Tax estimates are informational only — not tax advice.
+
+### Web Search Tools (1)
+
+| Tool Name    | Description                                                                                                | Data Source       | Verification Type |
+| ------------ | ---------------------------------------------------------------------------------------------------------- | ----------------- | ----------------- |
+| `webSearch`  | Search the web for real-time information — news, analysis, company data, market events, general knowledge  | Tavily Search API | fact_check        |
+
+> **Note:** `webSearch` requires `TAVILY_API_KEY` environment variable. Free tier: 1,000 searches/month. Results are pre-optimized for LLM consumption with relevance scoring. Low-relevance results (score < 0.3) are filtered out automatically.
 
 ## Tool Input Schemas
 
@@ -281,6 +289,17 @@ The AI chat system uses **22 production tools** registered with the Vercel AI SD
 }
 ```
 
+### webSearch
+
+```typescript
+{
+  query: string,                                    // Search query — be specific
+  maxResults?: number,                              // 1-10, default 5
+  topic?: 'general' | 'news',                      // Default 'general', use 'news' for current events
+  timeRange?: 'day' | 'week' | 'month' | 'year'   // Recency filter, omit for all-time
+}
+```
+
 ## ToolResult Envelope
 
 Every tool returns a consistent envelope shape:
@@ -349,7 +368,9 @@ export const OUTPUT_SCHEMA_REGISTRY: Record<string, z.ZodType> = {
   simulateSale: SimulateSaleOutputSchema,
   createAdjustment: CreateAdjustmentOutputSchema,
   updateAdjustment: UpdateAdjustmentOutputSchema,
-  deleteAdjustment: DeleteAdjustmentOutputSchema
+  deleteAdjustment: DeleteAdjustmentOutputSchema,
+  // Web Search
+  webSearch: WebSearchOutputSchema
 };
 ```
 

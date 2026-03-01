@@ -91,6 +91,7 @@ Agent must call Ghostfolio API tools — agent **cannot** call SnapTrade, Plaid,
 | 7 | `createAdjustment()` | Add manual cost-basis adjustment |
 | 8 | `updateAdjustment()` | Modify existing adjustment |
 | 9 | `deleteAdjustment()` | Remove an adjustment |
+| 10 | `webSearch()` | Search the web for real-time news, analysis, and general knowledge (Tavily API) |
 
 ### Features Out
 

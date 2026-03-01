@@ -58,6 +58,10 @@ import { buildListConnectedAccountsResult } from './tools/list-connected-account
 import { buildSimulateSaleResult } from './tools/simulate-sale.tool';
 import { buildSyncAccountResult } from './tools/sync-account.tool';
 import { buildUpdateAdjustmentResult } from './tools/update-adjustment.tool';
+import {
+  buildWebSearchResult,
+  executeWebSearch
+} from './tools/web-search.tool';
 import { GetAllocationsOutputSchema } from './tools/schemas/allocations.schema';
 import {
   ComputeRebalanceInputSchema,
@@ -143,6 +147,10 @@ import {
   UpdateAdjustmentInputSchema,
   UpdateAdjustmentOutputSchema
 } from './tools/schemas/update-adjustment.schema';
+import {
+  WebSearchInputSchema,
+  WebSearchOutputSchema
+} from './tools/schemas/web-search.schema';
 
 // ─── Production Guardrails (Non-Negotiable) ──────────────────────────
 
@@ -186,7 +194,10 @@ const OUTPUT_SCHEMA_REGISTRY: Record<string, ZodType> = {
   simulateSale: SimulateSaleOutputSchema,
   createAdjustment: CreateAdjustmentOutputSchema,
   updateAdjustment: UpdateAdjustmentOutputSchema,
-  deleteAdjustment: DeleteAdjustmentOutputSchema
+  deleteAdjustment: DeleteAdjustmentOutputSchema,
+
+  // Web Search
+  webSearch: WebSearchOutputSchema
 };
 
 // ─── Types ───────────────────────────────────────────────────────────
@@ -267,6 +278,12 @@ function buildReActSystemPrompt(
     '- **createAdjustment / updateAdjustment / deleteAdjustment**: Manage cost basis corrections.',
     '',
     'IMPORTANT: Tax simulations are estimates only — not tax advice. Always include a disclaimer.',
+    '',
+    '## Web Search Tools',
+    '- **webSearch**: Search the web for real-time information — news, analysis, company data, market events, or any general knowledge.',
+    '  Use when the user asks about current events, recent news, external data not in the portfolio, or anything beyond portfolio/market tool scope.',
+    '  Always cite sources from search results in your response.',
+    '  IMPORTANT: webSearch requires the TAVILY_API_KEY to be configured. If the search fails with an API key error, inform the user.',
     '',
     '# Groundedness Contract (ABSOLUTE RULES)',
     '- **NEVER output portfolio or market numbers unless they come from tool results.**',
@@ -1483,6 +1500,52 @@ export class AiService {
                   ) as ToolOutput<
                     ReturnType<typeof buildDeleteAdjustmentResult>
                   >;
+                }
+              );
+            }
+          }),
+
+          webSearch: tool({
+            description:
+              'Search the web for real-time information — news, analysis, company data, market events, or general knowledge. Use when the user asks about current events, recent news, external data not in the portfolio, or anything requiring live web data. Always cite sources from results.',
+            parameters: WebSearchInputSchema,
+            execute: async (args) => {
+              return executeWithGuardrails(
+                'webSearch',
+                args as unknown as Record<string, unknown>,
+                async () => {
+                  const tavilyApiKey = process.env.TAVILY_API_KEY;
+
+                  if (!tavilyApiKey) {
+                    return buildWebSearchResult(undefined, args,
+                      'Web search is not configured — TAVILY_API_KEY environment variable is missing.'
+                    ) as ToolOutput<ReturnType<typeof buildWebSearchResult>>;
+                  }
+
+                  try {
+                    const tavilyResponse = await executeWebSearch(
+                      args,
+                      tavilyApiKey
+                    );
+
+                    return buildWebSearchResult(
+                      tavilyResponse,
+                      args
+                    ) as ToolOutput<ReturnType<typeof buildWebSearchResult>>;
+                  } catch (searchError) {
+                    Logger.warn(
+                      `webSearch failed: ${searchError instanceof Error ? searchError.message : String(searchError)}`,
+                      'AiService'
+                    );
+
+                    return buildWebSearchResult(
+                      undefined,
+                      args,
+                      searchError instanceof Error
+                        ? searchError.message
+                        : 'Web search request failed'
+                    ) as ToolOutput<ReturnType<typeof buildWebSearchResult>>;
+                  }
                 }
               );
             }
