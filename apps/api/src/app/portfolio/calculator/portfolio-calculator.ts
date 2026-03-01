@@ -1236,7 +1236,7 @@ export abstract class PortfolioCalculator {
 
       if (job) {
         // Add a timeout so we don't block the HTTP request forever
-        const JOB_WAIT_TIMEOUT_MS = 120_000; // 2 minutes
+        const JOB_WAIT_TIMEOUT_MS = 600_000; // 10 minutes (large portfolios with 900+ symbols need more time)
 
         try {
           await Promise.race([
