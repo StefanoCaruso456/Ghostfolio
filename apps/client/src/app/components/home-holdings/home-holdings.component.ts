@@ -201,18 +201,20 @@ export class GfHomeHoldingsComponent implements OnDestroy, OnInit {
       );
     }
 
-    this.holdings = undefined;
+    // Keep existing holdings visible while refreshing (stale-while-revalidate)
+    const hadPreviousData = this.holdings !== undefined;
+
+    if (!hadPreviousData) {
+      this.holdings = undefined;
+    }
 
     // Phase 1: Fetch quick holdings (instant, ~5 seconds)
     this.fetchHoldingsQuick()
       .pipe(takeUntil(this.unsubscribeSubject))
       .subscribe(({ holdings }) => {
-        // Only apply quick data if full data hasn't arrived yet
-        if (this.holdings === undefined) {
-          this.holdings = holdings;
-          this.updateTreemap(holdings);
-          this.changeDetectorRef.markForCheck();
-        }
+        this.holdings = holdings;
+        this.updateTreemap(holdings);
+        this.changeDetectorRef.markForCheck();
       });
 
     // Phase 2: Fetch full holdings in background (may take minutes)
