@@ -155,19 +155,6 @@ export class GfHomeHoldingsComponent implements OnDestroy, OnInit {
     this.unsubscribeSubject.complete();
   }
 
-  private fetchHoldings() {
-    const filters = this.userService.getFilters();
-
-    if (this.holdingType === 'CLOSED') {
-      filters.push({ id: 'CLOSED', type: 'HOLDING_TYPE' });
-    }
-
-    return this.dataService.fetchPortfolioHoldings({
-      filters,
-      range: this.user?.settings?.dateRange
-    });
-  }
-
   private fetchHoldingsQuick() {
     const filters = this.userService.getFilters();
 
@@ -208,17 +195,10 @@ export class GfHomeHoldingsComponent implements OnDestroy, OnInit {
       this.holdings = undefined;
     }
 
-    // Phase 1: Fetch quick holdings (instant, ~5 seconds)
+    // Fetch quick holdings (instant, ~5 seconds with live Yahoo quotes)
+    // Full computation runs via Analysis/Summary pages — not triggered here
+    // to avoid duplicate Bull job submissions on every navigation
     this.fetchHoldingsQuick()
-      .pipe(takeUntil(this.unsubscribeSubject))
-      .subscribe(({ holdings }) => {
-        this.holdings = holdings;
-        this.updateTreemap(holdings);
-        this.changeDetectorRef.markForCheck();
-      });
-
-    // Phase 2: Fetch full holdings in background (may take minutes)
-    this.fetchHoldings()
       .pipe(takeUntil(this.unsubscribeSubject))
       .subscribe(({ holdings }) => {
         this.holdings = holdings;
