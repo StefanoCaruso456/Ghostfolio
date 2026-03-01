@@ -739,6 +739,349 @@ export class PortfolioService {
     return holdings;
   }
 
+  public async getDetailsQuick({
+    filters,
+    impersonationId,
+    userId
+  }: {
+    filters?: Filter[];
+    impersonationId: string;
+    userId: string;
+  }): Promise<PortfolioDetails & { hasErrors: boolean }> {
+    userId = await this.getUserId(impersonationId, userId);
+    const user = await this.userService.user({ id: userId });
+    const userCurrency = this.getUserCurrency(user);
+
+    // 1. Get quick holdings (reuses live quotes logic)
+    const holdingsArray = await this.getHoldingsQuick({
+      filters,
+      impersonationId,
+      userId
+    });
+
+    // 2. Get all activities for summary calculations
+    const { activities } = await this.orderService.getOrders({
+      userCurrency,
+      userId,
+      withExcludedAccountsAndActivities: true
+    });
+
+    const excludedActivities: Activity[] = [];
+    const nonExcludedActivities: Activity[] = [];
+
+    for (const activity of activities) {
+      if (
+        activity.account?.isExcluded ||
+        activity.tags?.some(({ id }) => {
+          return id === TAG_ID_EXCLUDE_FROM_ANALYSIS;
+        })
+      ) {
+        excludedActivities.push(activity);
+      } else {
+        nonExcludedActivities.push(activity);
+      }
+    }
+
+    // 3. Compute summary from activities + quick holdings
+    const totalBuy = this.getSumOfActivityType({
+      userCurrency,
+      activities: nonExcludedActivities,
+      activityType: 'BUY'
+    }).toNumber();
+
+    const totalSell = this.getSumOfActivityType({
+      userCurrency,
+      activities: nonExcludedActivities,
+      activityType: 'SELL'
+    }).toNumber();
+
+    // Fees: sum all fees from non-excluded activities
+    let totalFees = new Big(0);
+    let totalDividend = new Big(0);
+    let totalInterest = new Big(0);
+    let totalLiabilities = new Big(0);
+    let dateOfFirstActivity: Date = new Date();
+    let activityCount = 0;
+
+    for (const activity of nonExcludedActivities) {
+      const fee = new Big(activity.fee ?? 0);
+      const feeInBase = this.exchangeRateDataService.toCurrency(
+        fee.toNumber(),
+        activity.currency ?? activity.SymbolProfile?.currency,
+        userCurrency
+      );
+      totalFees = totalFees.plus(feeInBase ?? 0);
+
+      if (activity.type === 'DIVIDEND') {
+        const dividendValue = new Big(activity.quantity).mul(activity.unitPrice);
+        const dividendInBase = this.exchangeRateDataService.toCurrency(
+          dividendValue.toNumber(),
+          activity.currency ?? activity.SymbolProfile?.currency,
+          userCurrency
+        );
+        totalDividend = totalDividend.plus(dividendInBase ?? 0);
+      }
+
+      if (activity.type === 'INTEREST') {
+        const interestValue = new Big(activity.quantity).mul(activity.unitPrice);
+        const interestInBase = this.exchangeRateDataService.toCurrency(
+          interestValue.toNumber(),
+          activity.currency ?? activity.SymbolProfile?.currency,
+          userCurrency
+        );
+        totalInterest = totalInterest.plus(interestInBase ?? 0);
+      }
+
+      if (activity.type === 'LIABILITY') {
+        const liabilityValue = new Big(activity.quantity).mul(
+          activity.unitPrice
+        );
+        const liabilityInBase = this.exchangeRateDataService.toCurrency(
+          liabilityValue.toNumber(),
+          activity.currency ?? activity.SymbolProfile?.currency,
+          userCurrency
+        );
+        totalLiabilities = totalLiabilities.plus(liabilityInBase ?? 0);
+      }
+
+      if (['BUY', 'SELL'].includes(activity.type)) {
+        activityCount++;
+      }
+
+      const activityDate = new Date(activity.date);
+      if (activityDate < dateOfFirstActivity) {
+        dateOfFirstActivity = activityDate;
+      }
+    }
+
+    // 4. Current portfolio value from quick holdings
+    let currentValueInBaseCurrency = new Big(0);
+    let totalInvestment = new Big(0);
+
+    for (const holding of holdingsArray) {
+      currentValueInBaseCurrency = currentValueInBaseCurrency.plus(
+        holding.valueInBaseCurrency ?? 0
+      );
+      totalInvestment = totalInvestment.plus(holding.investment ?? 0);
+    }
+
+    // 5. Cash balance
+    const cashDetails = await this.accountService.getCashDetails({
+      userId,
+      currency: userCurrency
+    });
+    const balanceInBaseCurrency = cashDetails.balanceInBaseCurrency;
+
+    // 6. Emergency fund
+    const userSettings = user.settings?.settings as UserSettings;
+    const emergencyFundSetting = new Big(userSettings?.emergencyFund ?? 0);
+    const totalEmergencyFund = emergencyFundSetting.gt(0)
+      ? emergencyFundSetting
+      : new Big(0);
+
+    // 7. Net performance
+    const netPerformance = currentValueInBaseCurrency
+      .minus(totalInvestment)
+      .toNumber();
+    const netPerformancePercent = totalInvestment.gt(0)
+      ? currentValueInBaseCurrency
+          .minus(totalInvestment)
+          .div(totalInvestment.abs())
+          .toNumber()
+      : 0;
+
+    // 8. Excluded accounts
+    const cashDetailsWithExcluded =
+      await this.accountService.getCashDetails({
+        userId,
+        currency: userCurrency,
+        withExcludedAccounts: true
+      });
+
+    const excludedBalanceInBaseCurrency = new Big(
+      cashDetailsWithExcluded.balanceInBaseCurrency
+    ).minus(balanceInBaseCurrency);
+
+    const totalOfExcludedActivities = this.getSumOfActivityType({
+      userCurrency,
+      activities: excludedActivities,
+      activityType: 'BUY'
+    }).minus(
+      this.getSumOfActivityType({
+        userCurrency,
+        activities: excludedActivities,
+        activityType: 'SELL'
+      })
+    );
+
+    const excludedAccountsAndActivities = excludedBalanceInBaseCurrency
+      .plus(totalOfExcludedActivities)
+      .toNumber();
+
+    // 9. Net worth
+    const netWorth = new Big(balanceInBaseCurrency)
+      .plus(currentValueInBaseCurrency)
+      .plus(excludedAccountsAndActivities)
+      .minus(totalLiabilities)
+      .toNumber();
+
+    // 10. Annualized performance
+    const daysInMarket = differenceInDays(new Date(), dateOfFirstActivity);
+    const annualizedPerformancePercent = getAnnualizedPerformancePercent({
+      daysInMarket,
+      netPerformancePercentage: new Big(netPerformancePercent)
+    })?.toNumber();
+
+    const committedFunds = new Big(totalBuy).minus(totalSell);
+    const cash = new Big(balanceInBaseCurrency)
+      .minus(totalEmergencyFund)
+      .toNumber();
+
+    // Build holdings map
+    const holdingsMap: PortfolioDetails['holdings'] = {};
+    for (const holding of holdingsArray) {
+      holdingsMap[holding.symbol] = holding;
+    }
+
+    const summary: PortfolioSummary = {
+      activityCount,
+      annualizedPerformancePercent,
+      annualizedPerformancePercentWithCurrencyEffect: annualizedPerformancePercent,
+      cash,
+      committedFunds: committedFunds.toNumber(),
+      currentValueInBaseCurrency: currentValueInBaseCurrency.toNumber(),
+      dateOfFirstActivity,
+      dividendInBaseCurrency: totalDividend.toNumber(),
+      emergencyFund: {
+        assets: 0,
+        cash: totalEmergencyFund.toNumber(),
+        total: totalEmergencyFund.toNumber()
+      },
+      excludedAccountsAndActivities,
+      fees: totalFees.toNumber(),
+      filteredValueInBaseCurrency: currentValueInBaseCurrency.toNumber(),
+      filteredValueInPercentage: netWorth
+        ? currentValueInBaseCurrency.div(netWorth).toNumber()
+        : undefined,
+      fireWealth: {
+        today: {
+          valueInBaseCurrency: currentValueInBaseCurrency.toNumber()
+        }
+      },
+      grossPerformance: new Big(netPerformance).plus(totalFees).toNumber(),
+      grossPerformanceWithCurrencyEffect: new Big(netPerformance)
+        .plus(totalFees)
+        .toNumber(),
+      interestInBaseCurrency: totalInterest.toNumber(),
+      liabilitiesInBaseCurrency: totalLiabilities.toNumber(),
+      netPerformance,
+      netPerformancePercentage: netPerformancePercent,
+      netPerformancePercentageWithCurrencyEffect: netPerformancePercent,
+      netPerformanceWithCurrencyEffect: netPerformance,
+      totalBuy,
+      totalSell,
+      totalInvestment: totalInvestment.toNumber(),
+      totalInvestmentValueWithCurrencyEffect: totalInvestment.toNumber(),
+      totalValueInBaseCurrency: netWorth
+    };
+
+    this.logger.log(
+      `DetailsQuick: computed summary with ${holdingsArray.length} holdings, netWorth=${netWorth.toFixed(2)}`
+    );
+
+    return {
+      summary,
+      hasErrors: false,
+      accounts: {},
+      createdAt: dateOfFirstActivity,
+      holdings: holdingsMap,
+      platforms: {}
+    };
+  }
+
+  public async getPerformanceQuick({
+    impersonationId,
+    userId
+  }: {
+    impersonationId: string;
+    userId: string;
+  }): Promise<PortfolioPerformanceResponse> {
+    userId = await this.getUserId(impersonationId, userId);
+    const user = await this.userService.user({ id: userId });
+    const userCurrency = this.getUserCurrency(user);
+
+    // Get quick holdings for current value
+    const holdingsArray = await this.getHoldingsQuick({
+      impersonationId,
+      userId
+    });
+
+    let currentValueInBaseCurrency = new Big(0);
+    let totalInvestment = new Big(0);
+
+    for (const holding of holdingsArray) {
+      currentValueInBaseCurrency = currentValueInBaseCurrency.plus(
+        holding.valueInBaseCurrency ?? 0
+      );
+      totalInvestment = totalInvestment.plus(holding.investment ?? 0);
+    }
+
+    // Cash balance
+    const cashDetails = await this.accountService.getCashDetails({
+      userId,
+      currency: userCurrency
+    });
+
+    const netPerformance = currentValueInBaseCurrency
+      .minus(totalInvestment)
+      .toNumber();
+    const netPerformancePercent = totalInvestment.gt(0)
+      ? currentValueInBaseCurrency
+          .minus(totalInvestment)
+          .div(totalInvestment.abs())
+          .toNumber()
+      : 0;
+
+    const netWorth = new Big(cashDetails.balanceInBaseCurrency)
+      .plus(currentValueInBaseCurrency)
+      .toNumber();
+
+    // Get first order date
+    const { activities } =
+      await this.orderService.getOrdersForPortfolioCalculator({
+        userCurrency,
+        userId
+      });
+
+    let firstOrderDate: Date;
+    if (activities.length > 0) {
+      const sorted = [...activities].sort(
+        (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+      );
+      firstOrderDate = new Date(sorted[0].date);
+    }
+
+    this.logger.log(
+      `PerformanceQuick: ${holdingsArray.length} holdings, netPerformance=${netPerformance.toFixed(2)}, netWorth=${netWorth.toFixed(2)}`
+    );
+
+    return {
+      chart: [], // No historical chart without full computation
+      hasErrors: false,
+      firstOrderDate,
+      performance: {
+        netPerformance,
+        netPerformanceWithCurrencyEffect: netPerformance,
+        totalInvestment: totalInvestment.toNumber(),
+        totalInvestmentValueWithCurrencyEffect: totalInvestment.toNumber(),
+        currentNetWorth: netWorth,
+        currentValueInBaseCurrency: currentValueInBaseCurrency.toNumber(),
+        netPerformancePercentage: netPerformancePercent,
+        netPerformancePercentageWithCurrencyEffect: netPerformancePercent
+      }
+    };
+  }
+
   public async getInvestments({
     dateRange,
     filters,

@@ -503,6 +503,88 @@ export class PortfolioController {
     }
   }
 
+  @Get('details-quick')
+  @UseGuards(AuthGuard('jwt'), HasPermissionGuard)
+  @UseInterceptors(RedactValuesInResponseInterceptor)
+  @UseInterceptors(TransformDataSourceInRequestInterceptor)
+  @UseInterceptors(TransformDataSourceInResponseInterceptor)
+  public async getDetailsQuick(
+    @Headers(HEADER_KEY_IMPERSONATION.toLowerCase()) impersonationId: string,
+    @Query('accounts') filterByAccounts?: string,
+    @Query('assetClasses') filterByAssetClasses?: string,
+    @Query('dataSource') filterByDataSource?: string,
+    @Query('symbol') filterBySymbol?: string,
+    @Query('tags') filterByTags?: string
+  ): Promise<PortfolioDetails & { hasError: boolean }> {
+    const filters = this.apiService.buildFiltersFromQueryParams({
+      filterByAccounts,
+      filterByAssetClasses,
+      filterByDataSource,
+      filterBySymbol,
+      filterByTags
+    });
+
+    try {
+      const details = await this.portfolioService.getDetailsQuick({
+        filters,
+        impersonationId,
+        userId: this.request.user.id
+      });
+
+      return { ...details, hasError: false };
+    } catch (error) {
+      this.logger.error(
+        `getDetailsQuick failed for user ${this.request.user.id}: ${error instanceof Error ? error.message : error}`,
+        error instanceof Error ? error.stack : undefined
+      );
+
+      return {
+        hasError: true,
+        accounts: {},
+        createdAt: undefined,
+        holdings: {},
+        platforms: {},
+        summary: undefined
+      };
+    }
+  }
+
+  @Get('performance-quick')
+  @UseGuards(AuthGuard('jwt'), HasPermissionGuard)
+  @UseInterceptors(TransformDataSourceInRequestInterceptor)
+  @UseInterceptors(TransformDataSourceInResponseInterceptor)
+  public async getPerformanceQuick(
+    @Headers(HEADER_KEY_IMPERSONATION.toLowerCase()) impersonationId: string
+  ): Promise<PortfolioPerformanceResponse> {
+    try {
+      return await this.portfolioService.getPerformanceQuick({
+        impersonationId,
+        userId: this.request.user.id
+      });
+    } catch (error) {
+      this.logger.error(
+        `getPerformanceQuick failed for user ${this.request.user.id}: ${error instanceof Error ? error.message : error}`,
+        error instanceof Error ? error.stack : undefined
+      );
+
+      return {
+        chart: [],
+        hasErrors: true,
+        firstOrderDate: undefined,
+        performance: {
+          currentNetWorth: 0,
+          currentValueInBaseCurrency: 0,
+          netPerformance: 0,
+          netPerformancePercentage: 0,
+          netPerformancePercentageWithCurrencyEffect: 0,
+          netPerformanceWithCurrencyEffect: 0,
+          totalInvestment: 0,
+          totalInvestmentValueWithCurrencyEffect: 0
+        }
+      };
+    }
+  }
+
   @Get('investments')
   @UseGuards(AuthGuard('jwt'), HasPermissionGuard)
   @UseInterceptors(TransformDataSourceInRequestInterceptor)

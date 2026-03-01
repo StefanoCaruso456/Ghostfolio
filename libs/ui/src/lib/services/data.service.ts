@@ -697,6 +697,68 @@ export class DataService {
       );
   }
 
+  public fetchPortfolioDetailsQuick({
+    filters
+  }: {
+    filters?: Filter[];
+  } = {}): Observable<PortfolioDetails> {
+    const params = this.buildFiltersAsQueryParams({ filters });
+
+    return this.http
+      .get<any>('/api/v1/portfolio/details-quick', {
+        params
+      })
+      .pipe(
+        map((response) => {
+          if (response.holdings) {
+            for (const symbol of Object.keys(response.holdings)) {
+              response.holdings[symbol].assetClassLabel = translate(
+                response.holdings[symbol].assetClass
+              );
+
+              response.holdings[symbol].assetSubClassLabel = translate(
+                response.holdings[symbol].assetSubClass
+              );
+
+              response.holdings[symbol].dateOfFirstActivity = response.holdings[
+                symbol
+              ].dateOfFirstActivity
+                ? parseISO(response.holdings[symbol].dateOfFirstActivity)
+                : undefined;
+
+              response.holdings[symbol].value = isNumber(
+                response.holdings[symbol].value
+              )
+                ? response.holdings[symbol].value
+                : response.holdings[symbol].valueInPercentage;
+            }
+          }
+
+          if (response.summary?.dateOfFirstActivity) {
+            response.summary.dateOfFirstActivity = parseISO(
+              response.summary.dateOfFirstActivity
+            );
+          }
+
+          return response;
+        })
+      );
+  }
+
+  public fetchPortfolioPerformanceQuick(): Observable<PortfolioPerformanceResponse> {
+    return this.http
+      .get<any>('/api/v1/portfolio/performance-quick')
+      .pipe(
+        map((response) => {
+          if (response.firstOrderDate) {
+            response.firstOrderDate = parseISO(response.firstOrderDate);
+          }
+
+          return response;
+        })
+      );
+  }
+
   public fetchPortfolioHoldings({
     filters,
     range
