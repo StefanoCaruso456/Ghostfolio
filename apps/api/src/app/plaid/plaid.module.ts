@@ -8,6 +8,7 @@ import { PlaidService } from './plaid.service';
 
 @Module({
   controllers: [PlaidController],
+  exports: [PlaidService],
   imports: [ConfigurationModule, PrismaModule],
   providers: [PlaidService]
 })

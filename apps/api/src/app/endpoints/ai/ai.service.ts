@@ -1,5 +1,6 @@
 import { OrderService } from '@ghostfolio/api/app/order/order.service';
 import { PortfolioService } from '@ghostfolio/api/app/portfolio/portfolio.service';
+import { TaxService } from '@ghostfolio/api/app/tax/tax.service';
 import { PropertyService } from '@ghostfolio/api/services/property/property.service';
 import {
   PROPERTY_API_KEY_OPENROUTER,
@@ -48,6 +49,15 @@ import { buildPortfolioSummary } from './tools/get-portfolio-summary.tool';
 import { buildQuoteResult } from './tools/get-quote.tool';
 import { buildActivitiesResult } from './tools/list-activities.tool';
 import { buildScenarioImpactResult } from './tools/scenario-impact.tool';
+import { buildCreateAdjustmentResult } from './tools/create-adjustment.tool';
+import { buildDeleteAdjustmentResult } from './tools/delete-adjustment.tool';
+import { buildTaxHoldingsResult } from './tools/get-tax-holdings.tool';
+import { buildTaxLotsResult } from './tools/get-tax-lots.tool';
+import { buildTaxTransactionsResult } from './tools/get-tax-transactions.tool';
+import { buildListConnectedAccountsResult } from './tools/list-connected-accounts.tool';
+import { buildSimulateSaleResult } from './tools/simulate-sale.tool';
+import { buildSyncAccountResult } from './tools/sync-account.tool';
+import { buildUpdateAdjustmentResult } from './tools/update-adjustment.tool';
 import { GetAllocationsOutputSchema } from './tools/schemas/allocations.schema';
 import {
   ComputeRebalanceInputSchema,
@@ -97,6 +107,42 @@ import {
   ScenarioImpactInputSchema,
   ScenarioImpactOutputSchema
 } from './tools/schemas/scenario-impact.schema';
+import {
+  CreateAdjustmentInputSchema,
+  CreateAdjustmentOutputSchema
+} from './tools/schemas/create-adjustment.schema';
+import {
+  DeleteAdjustmentInputSchema,
+  DeleteAdjustmentOutputSchema
+} from './tools/schemas/delete-adjustment.schema';
+import {
+  GetTaxHoldingsInputSchema,
+  GetTaxHoldingsOutputSchema
+} from './tools/schemas/get-tax-holdings.schema';
+import {
+  GetTaxLotsInputSchema,
+  GetTaxLotsOutputSchema
+} from './tools/schemas/get-tax-lots.schema';
+import {
+  GetTaxTransactionsInputSchema,
+  GetTaxTransactionsOutputSchema
+} from './tools/schemas/get-tax-transactions.schema';
+import {
+  ListConnectedAccountsInputSchema,
+  ListConnectedAccountsOutputSchema
+} from './tools/schemas/list-connected-accounts.schema';
+import {
+  SimulateSaleInputSchema,
+  SimulateSaleOutputSchema
+} from './tools/schemas/simulate-sale.schema';
+import {
+  SyncAccountInputSchema,
+  SyncAccountOutputSchema
+} from './tools/schemas/sync-account.schema';
+import {
+  UpdateAdjustmentInputSchema,
+  UpdateAdjustmentOutputSchema
+} from './tools/schemas/update-adjustment.schema';
 
 // ─── Production Guardrails (Non-Negotiable) ──────────────────────────
 
@@ -130,7 +176,17 @@ const OUTPUT_SCHEMA_REGISTRY: Record<string, ZodType> = {
   getFundamentals: GetFundamentalsOutputSchema,
   getNews: GetNewsOutputSchema,
   computeRebalance: ComputeRebalanceOutputSchema,
-  scenarioImpact: ScenarioImpactOutputSchema
+  scenarioImpact: ScenarioImpactOutputSchema,
+  // Tax Intelligence tools
+  listConnectedAccounts: ListConnectedAccountsOutputSchema,
+  syncAccount: SyncAccountOutputSchema,
+  getTaxHoldings: GetTaxHoldingsOutputSchema,
+  getTaxTransactions: GetTaxTransactionsOutputSchema,
+  getTaxLots: GetTaxLotsOutputSchema,
+  simulateSale: SimulateSaleOutputSchema,
+  createAdjustment: CreateAdjustmentOutputSchema,
+  updateAdjustment: UpdateAdjustmentOutputSchema,
+  deleteAdjustment: DeleteAdjustmentOutputSchema
 };
 
 // ─── Types ───────────────────────────────────────────────────────────
@@ -200,6 +256,17 @@ function buildReActSystemPrompt(
     '## Decision-Support Tools',
     '- **computeRebalance**: Compare current vs target allocation and compute deltas. Use when user asks about rebalancing.',
     '- **scenarioImpact**: Estimate portfolio impact of hypothetical shocks. Use for "what if" questions.',
+    '',
+    '## Tax Intelligence Tools',
+    '- **listConnectedAccounts**: List connected brokerage/bank accounts (SnapTrade + Plaid).',
+    '- **syncAccount**: Trigger a sync for a connected account to refresh data.',
+    '- **getTaxHoldings**: Cross-account holdings with cost basis and unrealized gain/loss.',
+    '- **getTaxTransactions**: Tax-relevant transaction history with filtering.',
+    '- **getTaxLots**: FIFO-derived tax lots with holding periods (short/long term) and status.',
+    '- **simulateSale**: Estimate tax impact of selling shares — uses FIFO lot selection and federal tax brackets.',
+    '- **createAdjustment / updateAdjustment / deleteAdjustment**: Manage cost basis corrections.',
+    '',
+    'IMPORTANT: Tax simulations are estimates only — not tax advice. Always include a disclaimer.',
     '',
     '# Groundedness Contract (ABSOLUTE RULES)',
     '- **NEVER output portfolio or market numbers unless they come from tool results.**',
@@ -288,6 +355,7 @@ export class AiService {
     private readonly portfolioService: PortfolioService,
     private readonly propertyService: PropertyService,
     private readonly reasoningTraceService: ReasoningTraceService,
+    private readonly taxService: TaxService,
     private readonly telemetryService: BraintrustTelemetryService,
     private readonly toolDispatcher: ToolDispatcherService
   ) {}
@@ -1184,6 +1252,236 @@ export class AiService {
                     userCurrency
                   ) as ToolOutput<
                     ReturnType<typeof buildDividendSummaryResult>
+                  >;
+                }
+              );
+            }
+          }),
+
+          // ── Tax Intelligence Tools ─────────────────────────────────────
+
+          listConnectedAccounts: tool({
+            description:
+              'List all connected brokerage (SnapTrade) and bank (Plaid) accounts. Use when user asks about connected accounts or account connectivity.',
+            parameters: ListConnectedAccountsInputSchema,
+            execute: async (args) => {
+              return executeWithGuardrails(
+                'listConnectedAccounts',
+                args as unknown as Record<string, unknown>,
+                async () => {
+                  const accounts =
+                    await this.taxService.listConnectedAccounts(userId);
+
+                  return buildListConnectedAccountsResult(
+                    accounts
+                  ) as ToolOutput<
+                    ReturnType<typeof buildListConnectedAccountsResult>
+                  >;
+                }
+              );
+            }
+          }),
+
+          syncAccount: tool({
+            description:
+              'Trigger a sync for a specific connected brokerage or bank account. Use when user asks to refresh or update account data.',
+            parameters: SyncAccountInputSchema,
+            execute: async (args) => {
+              return executeWithGuardrails(
+                'syncAccount',
+                args as unknown as Record<string, unknown>,
+                async () => {
+                  const syncResult = await this.taxService.syncAccount(
+                    userId,
+                    args.connectionId,
+                    args.type
+                  );
+
+                  return buildSyncAccountResult(syncResult) as ToolOutput<
+                    ReturnType<typeof buildSyncAccountResult>
+                  >;
+                }
+              );
+            }
+          }),
+
+          getTaxHoldings: tool({
+            description:
+              'Get normalized holdings across all connected accounts with cost basis and unrealized gain/loss. Use for cross-account holdings or cost basis questions.',
+            parameters: GetTaxHoldingsInputSchema,
+            execute: async (args) => {
+              return executeWithGuardrails(
+                'getTaxHoldings',
+                args as unknown as Record<string, unknown>,
+                async () => {
+                  const holdings = await this.taxService.getTaxHoldings(
+                    userId,
+                    {
+                      symbol: args.symbol,
+                      accountId: args.accountId
+                    }
+                  );
+
+                  return buildTaxHoldingsResult(holdings) as ToolOutput<
+                    ReturnType<typeof buildTaxHoldingsResult>
+                  >;
+                }
+              );
+            }
+          }),
+
+          getTaxTransactions: tool({
+            description:
+              'Get tax-relevant transactions with optional date range and symbol filtering. Use for transaction history questions related to tax.',
+            parameters: GetTaxTransactionsInputSchema,
+            execute: async (args) => {
+              return executeWithGuardrails(
+                'getTaxTransactions',
+                args as unknown as Record<string, unknown>,
+                async () => {
+                  const { transactions, totalCount } =
+                    await this.taxService.getTaxTransactions(userId, {
+                      symbol: args.symbol,
+                      startDate: args.startDate,
+                      endDate: args.endDate,
+                      limit: args.limit
+                    });
+
+                  return buildTaxTransactionsResult(
+                    transactions,
+                    totalCount,
+                    {
+                      from: args.startDate ?? null,
+                      to: args.endDate ?? null
+                    }
+                  ) as ToolOutput<
+                    ReturnType<typeof buildTaxTransactionsResult>
+                  >;
+                }
+              );
+            }
+          }),
+
+          getTaxLots: tool({
+            description:
+              'Get tax lots derived from transactions using FIFO method. Shows cost basis, holding period (short/long term), and status. Use when user asks about cost basis, tax lots, or holding periods.',
+            parameters: GetTaxLotsInputSchema,
+            execute: async (args) => {
+              return executeWithGuardrails(
+                'getTaxLots',
+                args as unknown as Record<string, unknown>,
+                async () => {
+                  const lots = await this.taxService.getTaxLots(userId, {
+                    symbol: args.symbol,
+                    status: args.status as any
+                  });
+
+                  return buildTaxLotsResult(lots) as ToolOutput<
+                    ReturnType<typeof buildTaxLotsResult>
+                  >;
+                }
+              );
+            }
+          }),
+
+          simulateSale: tool({
+            description:
+              'Simulate selling shares and estimate tax impact using FIFO lot selection. Returns lots consumed, short-term vs long-term gains, and estimated federal tax. Use when user asks "what if I sell X shares of Y" or tax impact questions. IMPORTANT: Always include the disclaimer that this is an estimate, not tax advice.',
+            parameters: SimulateSaleInputSchema,
+            execute: async (args) => {
+              return executeWithGuardrails(
+                'simulateSale',
+                args as unknown as Record<string, unknown>,
+                async () => {
+                  const simulation =
+                    await this.taxService.simulateSaleForUser(userId, {
+                      symbol: args.symbol,
+                      quantity: args.quantity,
+                      pricePerShare: args.pricePerShare,
+                      taxBracketPct: args.taxBracketPct
+                    });
+
+                  return buildSimulateSaleResult(
+                    simulation
+                  ) as ToolOutput<
+                    ReturnType<typeof buildSimulateSaleResult>
+                  >;
+                }
+              );
+            }
+          }),
+
+          createAdjustment: tool({
+            description:
+              'Create a cost basis adjustment for a holding. Use when user wants to correct missing or wrong cost basis data.',
+            parameters: CreateAdjustmentInputSchema,
+            execute: async (args) => {
+              return executeWithGuardrails(
+                'createAdjustment',
+                args as unknown as Record<string, unknown>,
+                async () => {
+                  const adjustment =
+                    await this.taxService.createAdjustment(userId, {
+                      symbol: args.symbol,
+                      adjustmentType: args.adjustmentType as any,
+                      data: args.data,
+                      note: args.data.note
+                    });
+
+                  return buildCreateAdjustmentResult(
+                    adjustment
+                  ) as ToolOutput<
+                    ReturnType<typeof buildCreateAdjustmentResult>
+                  >;
+                }
+              );
+            }
+          }),
+
+          updateAdjustment: tool({
+            description:
+              'Update an existing cost basis adjustment. Use when user wants to modify a previously created adjustment.',
+            parameters: UpdateAdjustmentInputSchema,
+            execute: async (args) => {
+              return executeWithGuardrails(
+                'updateAdjustment',
+                args as unknown as Record<string, unknown>,
+                async () => {
+                  const adjustment =
+                    await this.taxService.updateAdjustment(
+                      userId,
+                      args.adjustmentId,
+                      { data: args.data, note: args.data.note }
+                    );
+
+                  return buildUpdateAdjustmentResult(
+                    adjustment
+                  ) as ToolOutput<
+                    ReturnType<typeof buildUpdateAdjustmentResult>
+                  >;
+                }
+              );
+            }
+          }),
+
+          deleteAdjustment: tool({
+            description:
+              'Delete a cost basis adjustment. Use when user wants to remove a previously created adjustment.',
+            parameters: DeleteAdjustmentInputSchema,
+            execute: async (args) => {
+              return executeWithGuardrails(
+                'deleteAdjustment',
+                args as unknown as Record<string, unknown>,
+                async () => {
+                  await this.taxService.deleteAdjustment(
+                    userId,
+                    args.adjustmentId
+                  );
+
+                  return buildDeleteAdjustmentResult(
+                    args.adjustmentId
+                  ) as ToolOutput<
+                    ReturnType<typeof buildDeleteAdjustmentResult>
                   >;
                 }
               );
