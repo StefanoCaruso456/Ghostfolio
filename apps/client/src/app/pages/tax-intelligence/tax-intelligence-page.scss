@@ -71,12 +71,12 @@
   margin-top: 1.5rem;
 }
 
-// ── Vision Text ──
-.vision-text {
+// ── Vision (bullet list) ──
+.vision-list {
   font-size: 0.95rem;
   line-height: 1.7;
 
-  strong {
+  li strong {
     color: #36cfcc;
   }
 }

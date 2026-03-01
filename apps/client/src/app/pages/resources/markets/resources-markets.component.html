@@ -36,6 +36,17 @@
       </div>
     </div>
   }
+  @if (displayMode === 'table' && !showNewsFeatureTip) {
+    <button
+      class="news-feature-show-again"
+      type="button"
+      mat-button
+      (click)="onShowNewsFeatureTipAgain()"
+    >
+      <ion-icon name="sparkles-outline" />
+      <span i18n>Show "New" tip again</span>
+    </button>
+  }
 
   <!-- Search bar -->
   <div class="search-container mb-3">
