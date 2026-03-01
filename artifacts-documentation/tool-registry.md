@@ -2,7 +2,7 @@
 
 ## Overview
 
-The AI chat system uses **13 production tools** registered with the Vercel AI SDK's `tool()` function. All tools are fully implemented (no stubs). Each tool has:
+The AI chat system uses **22 production tools** registered with the Vercel AI SDK's `tool()` function. All tools are fully implemented (no stubs). Each tool has:
 
 - **Input schema** (Zod) -- validates arguments from the LLM
 - **Output schema** (Zod) -- validates the ToolResult envelope at runtime
@@ -37,6 +37,22 @@ The AI chat system uses **13 production tools** registered with the Vercel AI SD
 | ------------------ | ------------------------------------------------------------------------------------------------------------- | ---------------- |
 | `computeRebalance` | Current vs target allocation deltas, suggested moves with rationale, constraint violations. NOT trade advice. | PortfolioService |
 | `scenarioImpact`   | "What if" portfolio impact simulation with shock scenarios (1-20 shocks)                                      | PortfolioService |
+
+### Tax Intelligence Tools (9)
+
+| Tool Name                 | Description                                                                     | Data Source | Verification Type     |
+| ------------------------- | ------------------------------------------------------------------------------- | ----------- | --------------------- |
+| `listConnectedAccounts`   | List all connected brokerage (SnapTrade) and bank (Plaid) accounts              | TaxService  | confidence_scoring    |
+| `syncAccount`             | Trigger a sync for a specific connected account to refresh data                 | TaxService  | confidence_scoring    |
+| `getTaxHoldings`          | Cross-account holdings with cost basis, unrealized gain/loss, market prices     | TaxService  | confidence_scoring    |
+| `getTaxTransactions`      | Tax-relevant transaction history with symbol/date/limit filtering               | TaxService  | confidence_scoring    |
+| `getTaxLots`              | FIFO-derived tax lots with holding periods (short/long term) and open/closed status | TaxService | confidence_scoring |
+| `simulateSale`            | Estimate tax impact of selling shares — FIFO lot consumption + federal brackets | TaxService  | human_in_the_loop     |
+| `createAdjustment`        | Create a cost basis adjustment (override, add lot, remove lot)                  | TaxService  | confidence_scoring    |
+| `updateAdjustment`        | Update an existing cost basis adjustment                                        | TaxService  | confidence_scoring    |
+| `deleteAdjustment`        | Delete a cost basis adjustment                                                  | TaxService  | confidence_scoring    |
+
+> **Note:** `simulateSale` uses `human_in_the_loop` verification with confidence capped at 0.8. Tax estimates are informational only — not tax advice.
 
 ## Tool Input Schemas
 
@@ -180,6 +196,91 @@ The AI chat system uses **13 production tools** registered with the Vercel AI SD
 }
 ```
 
+### listConnectedAccounts
+
+```typescript
+{}  // No parameters required
+```
+
+### syncAccount
+
+```typescript
+{
+  connectionId: string,            // ID of the connected account
+  type: 'snaptrade' | 'plaid'     // Connection type
+}
+```
+
+### getTaxHoldings
+
+```typescript
+{
+  symbol?: string,                 // Filter to specific symbol
+  accountId?: string               // Filter to specific account
+}
+```
+
+### getTaxTransactions
+
+```typescript
+{
+  symbol?: string,                 // Filter to specific symbol
+  startDate?: string,              // ISO date (e.g. "2024-01-01")
+  endDate?: string,                // ISO date
+  limit?: number                   // Max results (default 100)
+}
+```
+
+### getTaxLots
+
+```typescript
+{
+  symbol?: string,                 // Filter to specific symbol
+  status?: 'OPEN' | 'CLOSED' | 'ALL'  // Lot status filter (default ALL)
+}
+```
+
+### simulateSale
+
+```typescript
+{
+  symbol: string,                  // Ticker to simulate selling
+  quantity: number,                // Number of shares to sell
+  pricePerShare?: number,          // Sale price (defaults to current market price)
+  taxBracketPct?: number           // Federal marginal rate (default 24%)
+}
+```
+
+### createAdjustment
+
+```typescript
+{
+  symbol: string,
+  adjustmentType: 'COST_BASIS_OVERRIDE' | 'ADD_LOT' | 'REMOVE_LOT',
+  data: Record<string, any>,      // Adjustment-specific data (costBasis, quantity, acquiredDate, etc.)
+  note?: string,
+  dataSource?: string
+}
+```
+
+### updateAdjustment
+
+```typescript
+{
+  adjustmentId: string,
+  data?: Record<string, any>,
+  note?: string
+}
+```
+
+### deleteAdjustment
+
+```typescript
+{
+  adjustmentId: string
+}
+```
+
 ## ToolResult Envelope
 
 Every tool returns a consistent envelope shape:
@@ -238,7 +339,17 @@ export const OUTPUT_SCHEMA_REGISTRY: Record<string, z.ZodType> = {
   getFundamentals: GetFundamentalsOutputSchema,
   getNews: GetNewsOutputSchema,
   computeRebalance: ComputeRebalanceOutputSchema,
-  scenarioImpact: ScenarioImpactOutputSchema
+  scenarioImpact: ScenarioImpactOutputSchema,
+  // Tax Intelligence tools
+  listConnectedAccounts: ListConnectedAccountsOutputSchema,
+  syncAccount: SyncAccountOutputSchema,
+  getTaxHoldings: GetTaxHoldingsOutputSchema,
+  getTaxTransactions: GetTaxTransactionsOutputSchema,
+  getTaxLots: GetTaxLotsOutputSchema,
+  simulateSale: SimulateSaleOutputSchema,
+  createAdjustment: CreateAdjustmentOutputSchema,
+  updateAdjustment: UpdateAdjustmentOutputSchema,
+  deleteAdjustment: DeleteAdjustmentOutputSchema
 };
 ```
 
