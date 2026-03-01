@@ -133,22 +133,24 @@
       }
       <li class="list-inline-item">
         <button
-          class="no-min-width px-1"
+          class="no-min-width px-1 profile-trigger"
           mat-flat-button
           [matMenuTriggerFor]="accountMenu"
           (menuClosed)="onMenuClosed()"
           (menuOpened)="onMenuOpened()"
         >
-          <ion-icon
-            class="d-none d-sm-block"
-            name="person-circle-outline"
-            size="large"
-          />
-          <ion-icon
-            class="d-block d-sm-none"
-            size="large"
-            [name]="isMenuOpen ? 'close-outline' : 'menu-outline'"
-          />
+          <span class="profile-avatar-ring">
+            <ion-icon
+              class="d-none d-sm-block"
+              name="person-circle-outline"
+              size="large"
+            />
+            <ion-icon
+              class="d-block d-sm-none"
+              size="large"
+              [name]="isMenuOpen ? 'close-outline' : 'menu-outline'"
+            />
+          </span>
         </button>
         <mat-menu #accountMenu="matMenu" xPosition="before">
           @if (
