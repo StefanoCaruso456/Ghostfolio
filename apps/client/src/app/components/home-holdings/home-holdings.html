@@ -39,7 +39,7 @@
           [baseCurrency]="user?.settings?.baseCurrency"
           [colorScheme]="user?.settings?.colorScheme"
           [dateRange]="user?.settings?.dateRange"
-          [holdings]="holdings"
+          [holdings]="holdingsForTreemap"
           [locale]="user?.settings?.locale"
           (treemapChartClicked)="onHoldingClicked($event)"
         />
@@ -49,6 +49,7 @@
           [hasPermissionToShowQuantities]="false"
           [holdings]="holdings"
           [locale]="user?.settings?.locale"
+          [pageSize]="50"
           (holdingClicked)="onHoldingClicked($event)"
         />
         @if (
