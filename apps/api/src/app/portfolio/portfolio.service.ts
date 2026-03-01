@@ -590,8 +590,7 @@ export class PortfolioService {
             apikey: fmpApiKey
           });
 
-          const fmpQuotes: { price: number; symbol: string }[] =
-            await Promise.race([
+          const fmpResponse = await Promise.race([
               fetch(
                 `https://financialmodelingprep.com/stable/batch-quote-short?${queryParams.toString()}`,
                 { signal: AbortSignal.timeout(10_000) }
@@ -603,11 +602,18 @@ export class PortfolioService {
 
           let fmpCount = 0;
 
-          for (const { price, symbol } of fmpQuotes) {
-            if (price > 0) {
-              quotesBySymbol[symbol] = { marketPrice: price };
-              fmpCount++;
+          // FMP may return an error object instead of an array
+          if (Array.isArray(fmpResponse)) {
+            for (const { price, symbol } of fmpResponse) {
+              if (price > 0) {
+                quotesBySymbol[symbol] = { marketPrice: price };
+                fmpCount++;
+              }
             }
+          } else {
+            this.logger.warn(
+              `HoldingsQuick: FMP returned non-array response: ${JSON.stringify(fmpResponse).slice(0, 200)}`
+            );
           }
 
           this.logger.log(
