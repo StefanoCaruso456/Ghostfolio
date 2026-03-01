@@ -217,6 +217,190 @@ CREATE INDEX ON "AiConversation"("userId");
 CREATE INDEX ON "AiConversation"("updatedAt");
 ```
 
+---
+
+## Tax Intelligence Endpoints
+
+All tax endpoints require JWT authentication + `accessAssistant` permission. Controller: `TaxController`.
+
+### GET /api/tax/accounts
+
+List all connected brokerage (SnapTrade) and bank (Plaid) accounts.
+
+#### Response
+
+```typescript
+[
+  {
+    id: string,
+    type: 'snaptrade' | 'plaid',
+    brokerageName: string | null,
+    institutionName: string | null,
+    status: string,
+    lastSyncedAt: string | null,
+    accountCount: number
+  }
+]
+```
+
+### POST /api/tax/accounts/:id/sync
+
+Trigger a sync for a specific connected account.
+
+#### Request
+
+```typescript
+{
+  "type": "snaptrade" | "plaid"
+}
+```
+
+#### Response
+
+```typescript
+{
+  syncedAt: string,
+  holdingsCount: number,
+  transactionsCount: number,
+  status: 'success' | 'error',
+  message?: string
+}
+```
+
+### GET /api/tax/holdings
+
+Cross-account holdings with cost basis and unrealized gain/loss.
+
+#### Query Parameters
+
+| Param       | Type   | Description               |
+| ----------- | ------ | ------------------------- |
+| `symbol`    | string | Filter to specific symbol |
+| `accountId` | string | Filter to specific account |
+
+#### Response
+
+```typescript
+[
+  {
+    symbol: string,
+    name: string | null,
+    quantity: number,
+    marketPrice: number | null,
+    marketValue: number | null,
+    costBasis: number,
+    unrealizedGainLoss: number | null,
+    unrealizedGainLossPct: number | null,
+    currency: string,
+    accountName: string | null,
+    dataSource: string
+  }
+]
+```
+
+### GET /api/tax/transactions
+
+Tax-relevant transaction history.
+
+#### Query Parameters
+
+| Param       | Type   | Description          |
+| ----------- | ------ | -------------------- |
+| `symbol`    | string | Filter by symbol     |
+| `startDate` | string | ISO date lower bound |
+| `endDate`   | string | ISO date upper bound |
+| `limit`     | string | Max results          |
+
+#### Response
+
+```typescript
+{
+  transactions: TaxTransaction[],
+  totalCount: number
+}
+```
+
+### GET /api/tax/lots
+
+FIFO-derived tax lots.
+
+#### Query Parameters
+
+| Param    | Type   | Description                       |
+| -------- | ------ | --------------------------------- |
+| `symbol` | string | Filter by symbol                  |
+| `status` | string | `OPEN`, `CLOSED`, or `ALL`        |
+
+### POST /api/tax/simulate
+
+Simulate selling shares and estimate tax impact.
+
+#### Request
+
+```typescript
+{
+  symbol: string,
+  quantity: number,
+  pricePerShare?: number,
+  taxBracketPct?: number
+}
+```
+
+#### Response
+
+```typescript
+{
+  symbol: string,
+  quantitySold: number,
+  pricePerShare: number,
+  totalProceeds: number,
+  lotsConsumed: ConsumedLot[],
+  summary: {
+    totalCostBasis: number,
+    totalProceeds: number,
+    totalGainLoss: number,
+    shortTermGain: number,
+    longTermGain: number,
+    estimatedFederalTax: number,
+    effectiveTaxRate: number,
+    shortTermTaxRate: number,
+    longTermTaxRate: number,
+    currency: string
+  },
+  assumptions: string[]
+}
+```
+
+### POST /api/tax/adjustments
+
+Create a cost basis adjustment.
+
+#### Request
+
+```typescript
+{
+  symbol: string,
+  adjustmentType: 'COST_BASIS_OVERRIDE' | 'ADD_LOT' | 'REMOVE_LOT',
+  data: Record<string, any>,
+  note?: string,
+  dataSource?: string
+}
+```
+
+### PUT /api/tax/adjustments/:id
+
+Update an existing adjustment.
+
+### DELETE /api/tax/adjustments/:id
+
+Delete an adjustment.
+
+### GET /api/tax/adjustments
+
+List adjustments, optionally filtered by `?symbol=`.
+
+---
+
 ### AiConversationMessage
 
 ```sql

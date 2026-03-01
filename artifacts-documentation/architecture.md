@@ -26,7 +26,7 @@ AiService.chat()                 apps/api/src/app/endpoints/ai/ai.service.ts
   +-- telemetryService.startTrace()     Create Braintrust TraceContext
   +-- buildReActSystemPrompt()          Groundedness + safety + anti-hallucination rules
   +-- Assembles attachment context      CSV/PDF inline, images noted
-  +-- Creates 10 tools                  4 portfolio + 4 market + 2 decision-support
+  +-- Creates 22 tools                  7 portfolio + 4 market + 2 decision-support + 9 tax intelligence
   +-- executeWithGuardrails() per tool  Circuit breaker, cost limiter, schema validation
   |
   v
@@ -34,7 +34,7 @@ generateText()                   Vercel AI SDK
   |  model: OpenRouter LLM (configurable via admin settings)
   |  maxSteps: 10 (ReAct loop)
   |  messages: [system prompt, history, user message + attachments]
-  |  tools: { all 10 tools }
+  |  tools: { all 22 tools }
   |
   +-- LLM decides which tool(s) to call
   +-- Tool execute() runs via executeWithGuardrails()
@@ -67,7 +67,7 @@ GfAiChatSidebarComponent renders response with Markdown
 
 | Path                | Endpoint                      | Method                  | Purpose                                                   |
 | ------------------- | ----------------------------- | ----------------------- | --------------------------------------------------------- |
-| **Chat (primary)**  | `POST /api/v1/ai/chat`        | `AiService.chat()`      | Full ReAct loop with 10 tools + telemetry + persistence   |
+| **Chat (primary)**  | `POST /api/v1/ai/chat`        | `AiService.chat()`      | Full ReAct loop with 22 tools + telemetry + persistence   |
 | **Prompt (legacy)** | `GET /api/v1/ai/prompt/:mode` | `AiService.getPrompt()` | Generates markdown text for clipboard copy to external AI |
 
 The legacy prompt path has **no tools, no ReAct loop, no telemetry**. It only builds a text string.
@@ -136,7 +136,7 @@ apps/api/src/app/endpoints/ai/
   |   +-- cached-market-data.provider.ts   Caching layer with TTLs
   |   +-- index.ts                         Provider factory + cache stats
   +-- tools/
-      +-- index.ts                         Barrel + OUTPUT_SCHEMA_REGISTRY (10 tools)
+      +-- index.ts                         Barrel + OUTPUT_SCHEMA_REGISTRY (22 tools)
       +-- get-portfolio-summary.tool.ts    Real: portfolio holdings, allocations
       +-- list-activities.tool.ts          Real: orders/transactions with filters
       +-- get-allocations.tool.ts          Real: allocation breakdown by class/sector
@@ -147,8 +147,17 @@ apps/api/src/app/endpoints/ai/
       +-- get-news.tool.ts                Real: financial news articles
       +-- compute-rebalance.tool.ts       Real: rebalancing math (NOT trade advice)
       +-- scenario-impact.tool.ts         Real: "what if" portfolio simulation
+      +-- list-connected-accounts.tool.ts  Tax: connected brokerage/bank accounts
+      +-- sync-account.tool.ts             Tax: trigger account sync
+      +-- get-tax-holdings.tool.ts         Tax: cross-account holdings with cost basis
+      +-- get-tax-transactions.tool.ts     Tax: transaction history with filtering
+      +-- get-tax-lots.tool.ts             Tax: FIFO-derived tax lots
+      +-- simulate-sale.tool.ts            Tax: sale simulation + federal tax estimate
+      +-- create-adjustment.tool.ts        Tax: create cost basis adjustment
+      +-- update-adjustment.tool.ts        Tax: update adjustment
+      +-- delete-adjustment.tool.ts        Tax: delete adjustment
       +-- tool-result.helpers.ts          wrapToolResult, prepareToolSpanMetadata
-      +-- schemas/                        Zod input/output schemas for all 10 tools
+      +-- schemas/                        Zod input/output schemas for all 22 tools
       +-- __tests__/
           +-- tool-registry-match.spec.ts 9 registry sync proof tests
 
@@ -162,7 +171,18 @@ libs/common/src/lib/
   +-- dtos/update-ai-conversation.dto.ts  UpdateAiConversationDto { title }
   +-- interfaces/ai-chat-attachment.interface.ts  AiChatAttachment type
 
+apps/api/src/app/tax/
+  +-- tax.module.ts                  NestJS module (imports Prisma, DataProvider, Plaid, SnapTrade)
+  +-- tax.service.ts                 Business logic: lots, holdings, simulation, adjustments CRUD
+  +-- tax.controller.ts              REST endpoints: /api/tax/* (all JWT-guarded)
+  +-- tax-lot.engine.ts              Pure FIFO tax lot derivation from BUY/SELL orders
+  +-- tax-simulation.engine.ts       Pure sale simulation with federal bracket estimation
+  +-- interfaces/
+      +-- tax.interfaces.ts          Shared types: DerivedTaxLot, SaleSimulationResult, TaxHolding, etc.
+
 prisma/schema.prisma
   +-- AiConversation model               id, title, userId, timestamps
   +-- AiConversationMessage model        content, conversationId, role, timestamps
+  +-- TaxLot model                       FIFO tax lot tracking (userId, symbol, costBasis, holdingPeriod, status)
+  +-- TaxAdjustment model                Cost basis corrections (userId, symbol, adjustmentType, data)
 ```
