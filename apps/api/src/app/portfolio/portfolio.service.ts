@@ -540,11 +540,22 @@ export class PortfolioService {
 
     if (yahooItems.length > 0) {
       try {
-        const quotes = await this.dataProviderService.getQuotes({
-          items: yahooItems,
-          requestTimeout: 20_000,
-          user
-        });
+        // Hard 15s global timeout — if Yahoo is unreachable, fall back to purchase prices
+        const quotes = await Promise.race([
+          this.dataProviderService.getQuotes({
+            items: yahooItems,
+            requestTimeout: 10_000,
+            user
+          }),
+          new Promise<{ [symbol: string]: any }>((resolve) =>
+            setTimeout(() => {
+              this.logger.warn(
+                `HoldingsQuick: Yahoo quotes global timeout after 15s — using fallback prices`
+              );
+              resolve({});
+            }, 15_000)
+          )
+        ]);
 
         for (const [symbol, quote] of Object.entries(quotes)) {
           if (quote?.marketPrice) {
