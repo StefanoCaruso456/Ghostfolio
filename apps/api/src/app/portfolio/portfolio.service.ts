@@ -1046,7 +1046,7 @@ export class PortfolioService {
       .plus(currentValueInBaseCurrency)
       .toNumber();
 
-    // Get first order date
+    // Build chart from activities — cumulative investment over time
     const { activities } =
       await this.orderService.getOrdersForPortfolioCalculator({
         userCurrency,
@@ -1054,19 +1054,88 @@ export class PortfolioService {
       });
 
     let firstOrderDate: Date;
+    const chart: HistoricalDataItem[] = [];
+
     if (activities.length > 0) {
+      // Sort activities by date ascending
       const sorted = [...activities].sort(
         (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
       );
       firstOrderDate = new Date(sorted[0].date);
+
+      // Build cumulative investment by date
+      const investmentByDate = new Map<string, Big>();
+      let cumulativeInvestment = new Big(0);
+
+      for (const activity of sorted) {
+        const factor = getFactor(activity.type);
+        if (factor === 0 && activity.type !== 'DIVIDEND') continue;
+        if (activity.type === 'DIVIDEND') continue; // Skip dividends for investment line
+
+        const qty = new Big(activity.quantity);
+        const unitPrice = new Big(activity.unitPrice);
+        const valueInActivityCurrency = qty.mul(unitPrice).mul(factor);
+        const valueInBase = this.exchangeRateDataService.toCurrency(
+          valueInActivityCurrency.toNumber(),
+          activity.currency ?? activity.SymbolProfile?.currency,
+          userCurrency
+        );
+        cumulativeInvestment = cumulativeInvestment.plus(valueInBase ?? 0);
+
+        const dateKey = format(new Date(activity.date), DATE_FORMAT);
+        investmentByDate.set(dateKey, new Big(cumulativeInvestment));
+      }
+
+      // Convert to chart data points
+      const totalInvestmentFinal = cumulativeInvestment.toNumber();
+      const currentValue = currentValueInBaseCurrency.toNumber();
+
+      for (const [dateStr, cumInvestment] of investmentByDate) {
+        const investmentVal = cumInvestment.toNumber();
+        // For historical points, we only know the investment amount, not the value
+        // Estimate value by linear interpolation between investment and current value
+        const progressRatio = totalInvestmentFinal > 0
+          ? investmentVal / totalInvestmentFinal
+          : 0;
+        const estimatedValue = investmentVal + (currentValue - totalInvestmentFinal) * progressRatio;
+        const netPerfAtPoint = estimatedValue - investmentVal;
+        const netPerfPercent = investmentVal > 0 ? netPerfAtPoint / Math.abs(investmentVal) : 0;
+
+        chart.push({
+          date: dateStr,
+          totalInvestmentValueWithCurrencyEffect: investmentVal,
+          valueWithCurrencyEffect: estimatedValue,
+          valueInPercentage: progressRatio,
+          netPerformanceInPercentageWithCurrencyEffect: netPerfPercent,
+          netPerformanceWithCurrencyEffect: netPerfAtPoint,
+          netWorth: estimatedValue + (cashDetails.balanceInBaseCurrency ?? 0)
+        });
+      }
+
+      // Add today's data point with actual current value
+      const todayStr = format(new Date(), DATE_FORMAT);
+      const todayNetPerf = currentValue - totalInvestmentFinal;
+      const todayNetPerfPercent = totalInvestmentFinal > 0
+        ? todayNetPerf / Math.abs(totalInvestmentFinal)
+        : 0;
+
+      chart.push({
+        date: todayStr,
+        totalInvestmentValueWithCurrencyEffect: totalInvestmentFinal,
+        valueWithCurrencyEffect: currentValue,
+        valueInPercentage: 1,
+        netPerformanceInPercentageWithCurrencyEffect: todayNetPerfPercent,
+        netPerformanceWithCurrencyEffect: todayNetPerf,
+        netWorth: netWorth
+      });
     }
 
     this.logger.log(
-      `PerformanceQuick: ${holdingsArray.length} holdings, netPerformance=${netPerformance.toFixed(2)}, netWorth=${netWorth.toFixed(2)}`
+      `PerformanceQuick: ${holdingsArray.length} holdings, ${chart.length} chart points, netPerformance=${netPerformance.toFixed(2)}, netWorth=${netWorth.toFixed(2)}`
     );
 
     return {
-      chart: [], // No historical chart without full computation
+      chart,
       hasErrors: false,
       firstOrderDate,
       performance: {

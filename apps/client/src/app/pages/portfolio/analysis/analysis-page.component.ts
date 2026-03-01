@@ -286,18 +286,46 @@ export class GfAnalysisPageComponent implements OnDestroy, OnInit {
   private update() {
     this.isLoadingInvestmentChart = true;
 
-    // Phase 1: Quick performance numbers (instant, ~5 seconds)
+    // Quick performance with chart built from activities + current holdings value
     this.dataService
       .fetchPortfolioPerformanceQuick()
       .pipe(takeUntil(this.unsubscribeSubject))
-      .subscribe(({ firstOrderDate, performance }) => {
+      .subscribe(({ chart, firstOrderDate, performance }) => {
         this.firstOrderDate = firstOrderDate ?? new Date();
-        this.performance = performance;
 
-        // Quick endpoint has no chart data — set empty arrays
         this.investments = [];
+        this.performance = performance;
         this.performanceDataItems = [];
         this.performanceDataItemsInPercentage = [];
+
+        for (const [
+          index,
+          {
+            date,
+            netPerformanceInPercentageWithCurrencyEffect,
+            totalInvestmentValueWithCurrencyEffect,
+            valueInPercentage,
+            valueWithCurrencyEffect
+          }
+        ] of (chart ?? []).entries()) {
+          if (index > 0 || true) {
+            this.investments.push({
+              date,
+              investment: totalInvestmentValueWithCurrencyEffect
+            });
+            this.performanceDataItems.push({
+              date,
+              value: isNumber(valueWithCurrencyEffect)
+                ? valueWithCurrencyEffect
+                : valueInPercentage
+            });
+          }
+
+          this.performanceDataItemsInPercentage.push({
+            date,
+            value: netPerformanceInPercentageWithCurrencyEffect
+          });
+        }
 
         if (
           this.deviceType === 'mobile' &&
