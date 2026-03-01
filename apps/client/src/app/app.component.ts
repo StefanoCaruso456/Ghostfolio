@@ -40,6 +40,7 @@ import { GfFooterComponent } from './components/footer/footer.component';
 import { GfHeaderComponent } from './components/header/header.component';
 import { GfHoldingDetailDialogComponent } from './components/holding-detail-dialog/holding-detail-dialog.component';
 import { HoldingDetailDialogParams } from './components/holding-detail-dialog/interfaces/interfaces';
+import { AiSidebarService } from './services/ai-sidebar.service';
 import { ImpersonationStorageService } from './services/impersonation-storage.service';
 import { TokenStorageService } from './services/token-storage.service';
 import { UserService } from './services/user/user.service';
@@ -85,6 +86,7 @@ export class GfAppComponent implements OnDestroy, OnInit {
   private unsubscribeSubject = new Subject<void>();
 
   public constructor(
+    private aiSidebarService: AiSidebarService,
     private changeDetectorRef: ChangeDetectorRef,
     private dataService: DataService,
     private deviceService: DeviceDetectorService,
@@ -122,6 +124,15 @@ export class GfAppComponent implements OnDestroy, OnInit {
   public ngOnInit() {
     this.deviceType = this.deviceService.getDeviceInfo().deviceType;
     this.info = this.dataService.fetchInfo();
+
+    this.aiSidebarService.open$
+      .pipe(takeUntil(this.unsubscribeSubject))
+      .subscribe(() => {
+        if (!this.isAiSidebarOpen) {
+          this.isAiSidebarOpen = true;
+          this.changeDetectorRef.markForCheck();
+        }
+      });
 
     this.impersonationStorageService
       .onChangeHasImpersonation()

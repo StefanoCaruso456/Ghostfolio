@@ -363,19 +363,28 @@ export class YahooMarketDataProvider implements MarketDataProvider {
 
       const items: NormalizedNewsItem[] = (result?.news ?? [])
         .slice(0, limit)
-        .map((n: any) => ({
-          title: n.title ?? 'Untitled',
-          publisher: n.publisher ?? null,
-          url: n.link ?? null,
-          publishedAt: n.providerPublishTime
-            ? new Date(
-                typeof n.providerPublishTime === 'number'
-                  ? n.providerPublishTime * 1000
-                  : n.providerPublishTime
-              ).toISOString()
-            : new Date().toISOString(),
-          source: 'yahoo-finance2'
-        }));
+        .map((n: any) => {
+          const resolutions = n.thumbnail?.resolutions ?? [];
+          const thumbnail =
+            resolutions.length > 0
+              ? resolutions[resolutions.length - 1].url
+              : null;
+
+          return {
+            title: n.title ?? 'Untitled',
+            publisher: n.publisher ?? null,
+            url: n.link ?? null,
+            thumbnail,
+            publishedAt: n.providerPublishTime
+              ? new Date(
+                  typeof n.providerPublishTime === 'number'
+                    ? n.providerPublishTime * 1000
+                    : n.providerPublishTime
+                ).toISOString()
+              : new Date().toISOString(),
+            source: 'yahoo-finance2'
+          };
+        });
 
       return {
         items,

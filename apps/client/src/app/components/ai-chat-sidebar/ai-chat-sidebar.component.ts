@@ -1,4 +1,5 @@
 import { GfReasoningPanelComponent } from '@ghostfolio/client/components/reasoning-panel/reasoning-panel.component';
+import { AiSidebarService } from '@ghostfolio/client/services/ai-sidebar.service';
 import { ReasoningTraceService } from '@ghostfolio/client/services/reasoning-trace.service';
 import { UserService } from '@ghostfolio/client/services/user/user.service';
 import { User } from '@ghostfolio/common/interfaces';
@@ -153,6 +154,7 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
   private unsubscribeSubject = new Subject<void>();
 
   public constructor(
+    private aiSidebarService: AiSidebarService,
     private changeDetectorRef: ChangeDetectorRef,
     private dataService: DataService,
     private reasoningTraceService: ReasoningTraceService,
@@ -190,6 +192,20 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
 
     this.loadConversations();
     this.initSpeechRecognition();
+
+    this.aiSidebarService.prompt$
+      .pipe(takeUntil(this.unsubscribeSubject))
+      .subscribe(({ message, autoSend }) => {
+        this.onNewConversation();
+        this.inputValue = message;
+        this.changeDetectorRef.markForCheck();
+
+        if (autoSend) {
+          setTimeout(() => {
+            this.onSendMessage('news_channel');
+          }, 150);
+        }
+      });
 
     this.userService.stateChanged
       .pipe(takeUntil(this.unsubscribeSubject))
