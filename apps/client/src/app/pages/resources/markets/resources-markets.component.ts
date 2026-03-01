@@ -1,3 +1,4 @@
+import { AiSidebarService } from '@ghostfolio/client/services/ai-sidebar.service';
 import { UserService } from '@ghostfolio/client/services/user/user.service';
 import {
   LineChartItem,
@@ -29,8 +30,12 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { IonIcon } from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import { newspaperOutline } from 'ionicons/icons';
 import {
   Subject,
   debounceTime,
@@ -63,6 +68,7 @@ interface TableCategoryOption {
   imports: [
     CommonModule,
     GfLineChartComponent,
+    IonIcon,
     MatAutocompleteModule,
     MatButtonModule,
     MatButtonToggleModule,
@@ -72,6 +78,7 @@ interface TableCategoryOption {
     MatProgressSpinnerModule,
     MatSelectModule,
     MatSortModule,
+    MatTooltipModule,
     MatTableModule,
     ReactiveFormsModule
   ],
@@ -95,6 +102,7 @@ export class ResourcesMarketsComponent implements OnInit, OnDestroy {
   ];
   public tableCategory = 'most_actives';
   public tableColumns = [
+    'news',
     'symbol',
     'name',
     'price',
@@ -163,10 +171,13 @@ export class ResourcesMarketsComponent implements OnInit, OnDestroy {
   private unsubscribeSubject = new Subject<void>();
 
   public constructor(
+    private aiSidebarService: AiSidebarService,
     private changeDetectorRef: ChangeDetectorRef,
     private dataService: DataService,
     private userService: UserService
-  ) {}
+  ) {
+    addIcons({ newspaperOutline });
+  }
 
   public ngOnInit() {
     this.userService.stateChanged
@@ -273,6 +284,23 @@ export class ResourcesMarketsComponent implements OnInit, OnDestroy {
     this.searchControl.setValue('');
     this.searchResults = [];
     this.changeDetectorRef.markForCheck();
+  }
+
+  public onFetchNews(symbol: string) {
+    const prompt = [
+      `Retrieve the latest news for stock symbol: ${symbol}.`,
+      'Summarize the most recent articles.',
+      'For each article include:',
+      '- Headline',
+      '- 3–5 bullet summary',
+      '- Source',
+      '- URL (as a clickable link)',
+      '- Thumbnail image (if available, render as markdown image)',
+      '',
+      'Show the top 3 articles, each clearly separated.'
+    ].join('\n');
+
+    this.aiSidebarService.openWithPrompt(prompt);
   }
 
   public onRemoveChart(config: ChartConfig) {

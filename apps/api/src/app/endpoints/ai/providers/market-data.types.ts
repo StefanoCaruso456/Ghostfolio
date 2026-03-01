@@ -79,6 +79,7 @@ export interface NormalizedNewsItem {
   title: string;
   publisher: string | null;
   url: string | null;
+  thumbnail: string | null;
   publishedAt: string; // ISO 8601
   source: string;
 }

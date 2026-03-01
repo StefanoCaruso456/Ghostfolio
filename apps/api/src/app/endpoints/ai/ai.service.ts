@@ -262,7 +262,7 @@ function buildReActSystemPrompt(
     '- **getQuote**: Real-time quotes for 1–25 symbols. Use for current prices and daily changes.',
     '- **getHistory**: Historical price data with optional returns/volatility/drawdown. Use for trend analysis.',
     '- **getFundamentals**: Valuation ratios (P/E, EPS, dividend yield, market cap). Use for fundamental analysis.',
-    '- **getNews**: Recent news items for a symbol. Use for market context.',
+    '- **getNews**: Recent news items for a symbol with titles, URLs, thumbnails, and publisher info. Use for market context. Format results with thumbnail images, headline, bullet summary, source, and clickable link.',
     '',
     '## Decision-Support Tools',
     '- **computeRebalance**: Compare current vs target allocation and compute deltas. Use when user asks about rebalancing.',
@@ -1104,7 +1104,7 @@ export class AiService {
 
           getNews: tool({
             description:
-              'Get recent news items for a symbol. Use for market context and "what is happening with X" questions. Does not summarize — returns raw titles and links.',
+              'Get recent news items for a symbol. Returns titles, links, thumbnails, and publisher info. Use for market context and "what is happening with X" questions. When presenting results, include thumbnail images (as markdown images), headlines, bullet-point summaries, source attribution, and clickable article URLs.',
             parameters: GetNewsInputSchema,
             execute: async (args) => {
               return executeWithGuardrails(
