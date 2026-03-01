@@ -33,42 +33,71 @@
       <div *ngIf="activeTab === 'strategy'" class="tax-intelligence-card">
         <h2 class="section-title">Product Vision</h2>
         <ul class="vision-list styled-list">
-          <li><strong>For</strong> high-income US investors managing multiple brokerage accounts</li>
-          <li><strong>Who</strong> lack cross-account visibility into after-tax exposure before trading</li>
-          <li><strong>Ghostfolio Tax Intelligence</strong> is a connected portfolio intelligence module</li>
-          <li><strong>That</strong> unifies broker + bank data and enables deterministic tax simulations before execution</li>
-          <li><strong>Unlike</strong> siloed broker dashboards or spreadsheets</li>
-          <li><strong>Our product</strong> provides privacy-first, cross-account, explainable tax impact modeling accessible via AI tools</li>
+          <li>
+            <strong>For</strong> high-income US investors managing multiple
+            brokerage accounts
+          </li>
+          <li>
+            <strong>Who</strong> lack cross-account visibility into after-tax
+            exposure before trading
+          </li>
+          <li>
+            <strong>Ghostfolio Tax Intelligence</strong> is a connected
+            portfolio intelligence module
+          </li>
+          <li>
+            <strong>That</strong> unifies broker + bank data and enables
+            deterministic tax simulations before execution
+          </li>
+          <li>
+            <strong>Unlike</strong> siloed broker dashboards or spreadsheets
+          </li>
+          <li>
+            <strong>Our product</strong> provides privacy-first, cross-account,
+            explainable tax impact modeling accessible via AI tools
+          </li>
         </ul>
 
         <h2 class="section-title">Competitors</h2>
         <div class="info-table">
           <div class="info-row">
             <span class="info-label">Brokers (E*TRADE, IBKR)</span>
-            <span class="info-value">Siloed views, no cross-account tax modeling</span>
+            <span class="info-value"
+              >Siloed views, no cross-account tax modeling</span
+            >
           </div>
           <div class="info-row">
             <span class="info-label">Aggregators</span>
-            <span class="info-value">Aggregation without deterministic tax simulation</span>
+            <span class="info-value"
+              >Aggregation without deterministic tax simulation</span
+            >
           </div>
           <div class="info-row">
             <span class="info-label">Tax Software</span>
-            <span class="info-value">Filing-focused, not embedded in portfolio decision-making</span>
+            <span class="info-value"
+              >Filing-focused, not embedded in portfolio decision-making</span
+            >
           </div>
         </div>
         <p class="differentiator">
-          <strong>Differentiator:</strong> Connected accounts + deterministic tax simulation + structured AI tool access.
+          <strong>Differentiator:</strong> Connected accounts + deterministic
+          tax simulation + structured AI tool access.
         </p>
 
         <h2 class="section-title">Market Insight</h2>
         <div class="info-table">
           <div class="info-row">
             <span class="info-label">Target</span>
-            <span class="info-value">US high-income investor ($500K+ portfolio, 2+ brokers)</span>
+            <span class="info-value"
+              >US high-income investor ($500K+ portfolio, 2+ brokers)</span
+            >
           </div>
           <div class="info-row">
             <span class="info-label">Opportunity</span>
-            <span class="info-value">After-tax performance materially impacts real returns, yet is poorly surfaced pre-trade</span>
+            <span class="info-value"
+              >After-tax performance materially impacts real returns, yet is
+              poorly surfaced pre-trade</span
+            >
           </div>
         </div>
 
@@ -133,7 +162,9 @@
 
         <h2 class="section-title">Approach</h2>
         <ol class="approach-list">
-          <li><strong>SnapTrade</strong> &rarr; brokerage holdings + transactions</li>
+          <li>
+            <strong>SnapTrade</strong> &rarr; brokerage holdings + transactions
+          </li>
           <li><strong>Plaid</strong> &rarr; bank balances</li>
           <li><strong>Yahoo pipeline</strong> &rarr; live market pricing</li>
           <li><strong>Normalize</strong> into canonical ledger</li>
@@ -164,7 +195,10 @@
         <h2 class="section-title">Accountability</h2>
         <div class="metric-card north-star">
           <h4>North Star Metric</h4>
-          <p>% of connected users who run &ge; 1 tax simulation before a sell decision</p>
+          <p>
+            % of connected users who run &ge; 1 tax simulation before a sell
+            decision
+          </p>
         </div>
         <div class="info-table">
           <div class="info-row">
@@ -196,7 +230,9 @@
           <div class="info-table compact-meta">
             <div class="info-row">
               <span class="info-label">Title</span>
-              <span class="info-value">Tax Intelligence (Connected Accounts)</span>
+              <span class="info-value"
+                >Tax Intelligence (Connected Accounts)</span
+              >
             </div>
             <div class="info-row">
               <span class="info-label">Author</span>
@@ -211,14 +247,17 @@
 
         <h2 class="section-title">Overview</h2>
         <p>
-          Tax Intelligence connects brokerage (SnapTrade) and bank (Plaid) accounts, stores normalized portfolio data,
-          streams live pricing via Yahoo, and enables tax impact simulation through structured API tools accessible by Ghostfolio AI.
+          Tax Intelligence connects brokerage (SnapTrade) and bank (Plaid)
+          accounts, stores normalized portfolio data, streams live pricing via
+          Yahoo, and enables tax impact simulation through structured API tools
+          accessible by Ghostfolio AI.
         </p>
 
         <h2 class="section-title">Problem</h2>
         <p>
-          High-income multi-broker investors lack cross-account after-tax visibility before trading.
-          Selling decisions are made without deterministic exposure modeling.
+          High-income multi-broker investors lack cross-account after-tax
+          visibility before trading. Selling decisions are made without
+          deterministic exposure modeling.
         </p>
 
         <h2 class="section-title">Objectives</h2>
@@ -249,7 +288,10 @@
           </div>
           <div class="use-case-item">
             <span class="use-case-num">3</span>
-            <span>Ask AI: "If I sell 100 shares of NVDA today, what is my estimated tax impact?"</span>
+            <span
+              >Ask AI: "If I sell 100 shares of NVDA today, what is my estimated
+              tax impact?"</span
+            >
           </div>
           <div class="use-case-item">
             <span class="use-case-num">4</span>
@@ -300,7 +342,10 @@
         </div>
 
         <h3 class="subsection-title">4. Agent Tool Access</h3>
-        <p class="tool-note">Agent calls Ghostfolio API tools only &mdash; cannot call SnapTrade, Plaid, or Yahoo directly.</p>
+        <p class="tool-note">
+          Agent calls Ghostfolio API tools only &mdash; cannot call SnapTrade,
+          Plaid, or Yahoo directly.
+        </p>
         <div class="tool-grid">
           <div class="tool-item">
             <code>listConnectedAccounts()</code>
@@ -375,8 +420,14 @@
 
         <h2 class="section-title">GTM Approach</h2>
         <div class="gtm-card">
-          <p><strong>Messaging:</strong> "Simulate your tax impact before you trade &mdash; across every connected account."</p>
-          <p><strong>Positioning:</strong> Privacy-first, connected, deterministic financial intelligence.</p>
+          <p>
+            <strong>Messaging:</strong> "Simulate your tax impact before you
+            trade &mdash; across every connected account."
+          </p>
+          <p>
+            <strong>Positioning:</strong> Privacy-first, connected,
+            deterministic financial intelligence.
+          </p>
         </div>
 
         <h2 class="section-title">Timeline</h2>
@@ -401,7 +452,8 @@
         <div class="impact-header">
           <h2 class="section-title impact-title">Market Impact Summary</h2>
           <p class="impact-subtitle">
-            Target Persona: U.S. High Net Worth Brokerage Investors (&ge; $1M Net Worth)
+            Target Persona: U.S. High Net Worth Brokerage Investors (&ge; $1M
+            Net Worth)
           </p>
         </div>
 
@@ -444,7 +496,9 @@
             <span>Value</span>
           </div>
           <div class="impact-table-row">
-            <span class="impact-metric">% of U.S. Stock Market Owned by Top 10%</span>
+            <span class="impact-metric"
+              >% of U.S. Stock Market Owned by Top 10%</span
+            >
             <span class="impact-value">93%</span>
           </div>
           <div class="impact-table-row">
@@ -465,15 +519,21 @@
         <div class="takeaway-grid">
           <div class="takeaway-card">
             <span class="takeaway-stat">6.7%</span>
-            <span class="takeaway-label">of Americans control <strong>60%</strong> of U.S. wealth</span>
+            <span class="takeaway-label"
+              >of Americans control <strong>60%</strong> of U.S. wealth</span
+            >
           </div>
           <div class="takeaway-card">
             <span class="takeaway-stat">~85%</span>
-            <span class="takeaway-label">of public stock market wealth controlled by this segment</span>
+            <span class="takeaway-label"
+              >of public stock market wealth controlled by this segment</span
+            >
           </div>
           <div class="takeaway-card">
             <span class="takeaway-stat">~21M</span>
-            <span class="takeaway-label">HNW individuals actively hold stocks</span>
+            <span class="takeaway-label"
+              >HNW individuals actively hold stocks</span
+            >
           </div>
           <div class="takeaway-card">
             <span class="takeaway-stat">~6M</span>

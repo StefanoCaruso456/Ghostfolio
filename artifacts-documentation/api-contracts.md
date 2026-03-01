@@ -240,7 +240,7 @@ List all connected brokerage (SnapTrade) and bank (Plaid) accounts.
     lastSyncedAt: string | null,
     accountCount: number
   }
-]
+];
 ```
 
 ### POST /api/tax/accounts/:id/sync
@@ -273,9 +273,9 @@ Cross-account holdings with cost basis and unrealized gain/loss.
 
 #### Query Parameters
 
-| Param       | Type   | Description               |
-| ----------- | ------ | ------------------------- |
-| `symbol`    | string | Filter to specific symbol |
+| Param       | Type   | Description                |
+| ----------- | ------ | -------------------------- |
+| `symbol`    | string | Filter to specific symbol  |
 | `accountId` | string | Filter to specific account |
 
 #### Response
@@ -295,7 +295,7 @@ Cross-account holdings with cost basis and unrealized gain/loss.
     accountName: string | null,
     dataSource: string
   }
-]
+];
 ```
 
 ### GET /api/tax/transactions
@@ -326,10 +326,10 @@ FIFO-derived tax lots.
 
 #### Query Parameters
 
-| Param    | Type   | Description                       |
-| -------- | ------ | --------------------------------- |
-| `symbol` | string | Filter by symbol                  |
-| `status` | string | `OPEN`, `CLOSED`, or `ALL`        |
+| Param    | Type   | Description                |
+| -------- | ------ | -------------------------- |
+| `symbol` | string | Filter by symbol           |
+| `status` | string | `OPEN`, `CLOSED`, or `ALL` |
 
 ### POST /api/tax/simulate
 

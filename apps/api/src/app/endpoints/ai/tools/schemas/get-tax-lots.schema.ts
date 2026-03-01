@@ -5,10 +5,7 @@ import { VerificationResultSchema } from '../../../../import-auditor/schemas/ver
 // ─── Input ───────────────────────────────────────────────────────────
 
 export const GetTaxLotsInputSchema = z.object({
-  symbol: z
-    .string()
-    .optional()
-    .describe('Filter by ticker symbol'),
+  symbol: z.string().optional().describe('Filter by ticker symbol'),
   status: z
     .enum(['OPEN', 'CLOSED', 'ALL'])
     .optional()

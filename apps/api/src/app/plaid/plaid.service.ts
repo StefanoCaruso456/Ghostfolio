@@ -33,8 +33,7 @@ export class PlaidService {
       this.configurationService.get('PLAID_API_KEY');
     const secret = this.configurationService.get('PLAID_SECRET');
     const env = this.configurationService.get('PLAID_ENV');
-    const encryptionKey =
-      this.configurationService.get('PLAID_ENCRYPTION_KEY');
+    const encryptionKey = this.configurationService.get('PLAID_ENCRYPTION_KEY');
 
     // Validate encryption key format if provided
     if (encryptionKey && !/^[0-9a-f]{64}$/i.test(encryptionKey)) {
@@ -72,9 +71,7 @@ export class PlaidService {
     }
   }
 
-  public async createLinkToken(
-    userId: string
-  ): Promise<{ linkToken: string }> {
+  public async createLinkToken(userId: string): Promise<{ linkToken: string }> {
     this.ensureConfigured();
 
     const webhookUrl = this.configurationService.get('PLAID_WEBHOOK_URL');
@@ -109,8 +106,7 @@ export class PlaidService {
   }> {
     this.ensureConfigured();
 
-    const encryptionKey =
-      this.configurationService.get('PLAID_ENCRYPTION_KEY');
+    const encryptionKey = this.configurationService.get('PLAID_ENCRYPTION_KEY');
 
     if (!encryptionKey) {
       throw new ServiceUnavailableException(
@@ -175,12 +171,8 @@ export class PlaidService {
       throw new ForbiddenException('Not your Plaid item');
     }
 
-    const encryptionKey =
-      this.configurationService.get('PLAID_ENCRYPTION_KEY');
-    const accessToken = decrypt(
-      plaidItem.encryptedAccessToken,
-      encryptionKey
-    );
+    const encryptionKey = this.configurationService.get('PLAID_ENCRYPTION_KEY');
+    const accessToken = decrypt(plaidItem.encryptedAccessToken, encryptionKey);
 
     let holdingsResponse;
 
@@ -330,9 +322,7 @@ export class PlaidService {
       where: { id: plaidItemId }
     });
 
-    this.logger.log(
-      `Synced ${synced} holdings from PlaidItem ${plaidItemId}`
-    );
+    this.logger.log(`Synced ${synced} holdings from PlaidItem ${plaidItemId}`);
 
     return { synced };
   }
@@ -385,9 +375,7 @@ export class PlaidService {
         break;
 
       default:
-        this.logger.log(
-          `Unhandled webhook: ${webhook_type}/${webhook_code}`
-        );
+        this.logger.log(`Unhandled webhook: ${webhook_type}/${webhook_code}`);
     }
 
     return { received: true };

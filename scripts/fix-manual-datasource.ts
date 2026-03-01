@@ -18,7 +18,6 @@
  * Or on Railway (with DATABASE_URL set):
  *   npx ts-node scripts/fix-manual-datasource.ts
  */
-
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
@@ -38,7 +37,9 @@ async function main() {
   console.log(`Found ${manualProfiles.length} MANUAL symbol profiles\n`);
 
   if (manualProfiles.length === 0) {
-    console.log('Nothing to migrate. All profiles already have correct data sources.');
+    console.log(
+      'Nothing to migrate. All profiles already have correct data sources.'
+    );
     return;
   }
 

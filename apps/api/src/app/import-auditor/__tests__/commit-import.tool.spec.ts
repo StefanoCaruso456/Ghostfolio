@@ -1,9 +1,7 @@
-import { transformToCreateOrderDtos } from '../tools/commit-import.tool';
 import type { MappedActivity } from '../schemas/validate-transactions.schema';
+import { transformToCreateOrderDtos } from '../tools/commit-import.tool';
 
-function makeActivity(
-  overrides: Partial<MappedActivity> = {}
-): MappedActivity {
+function makeActivity(overrides: Partial<MappedActivity> = {}): MappedActivity {
   return {
     symbol: 'MSFT',
     date: '2023-09-16T00:00:00.000Z',

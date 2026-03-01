@@ -12,15 +12,15 @@ The AI chat system uses **23 production tools** registered with the Vercel AI SD
 
 ### Portfolio Tools (7)
 
-| Tool Name             | Description                                                      | Data Source      |
-| --------------------- | ---------------------------------------------------------------- | ---------------- |
-| `getPortfolioSummary` | Holdings count, top 5 positions, accounts, base currency         | PortfolioService |
+| Tool Name             | Description                                                                               | Data Source      |
+| --------------------- | ----------------------------------------------------------------------------------------- | ---------------- |
+| `getPortfolioSummary` | Holdings count, top 5 positions, accounts, base currency                                  | PortfolioService |
 | `getHoldingDetail`    | Deep detail for one holding: position, performance, dividends, fees, historical data, ATH | PortfolioService |
-| `getPortfolioChart`   | Portfolio value time-series with peak/trough/change summary, configurable date range | PortfolioService |
-| `getDividendSummary`  | Dividend income by symbol, by period (month/year), recent events | OrderService     |
-| `listActivities`      | Orders/transactions with date, symbol, type filters              | OrderService     |
-| `getAllocations`      | Allocation breakdown by asset class, sub-class, currency, sector | PortfolioService |
-| `getPerformance`      | Net worth, total investment, returns %, first order date         | PortfolioService |
+| `getPortfolioChart`   | Portfolio value time-series with peak/trough/change summary, configurable date range      | PortfolioService |
+| `getDividendSummary`  | Dividend income by symbol, by period (month/year), recent events                          | OrderService     |
+| `listActivities`      | Orders/transactions with date, symbol, type filters                                       | OrderService     |
+| `getAllocations`      | Allocation breakdown by asset class, sub-class, currency, sector                          | PortfolioService |
+| `getPerformance`      | Net worth, total investment, returns %, first order date                                  | PortfolioService |
 
 ### Market Tools (4)
 
@@ -40,25 +40,25 @@ The AI chat system uses **23 production tools** registered with the Vercel AI SD
 
 ### Tax Intelligence Tools (9)
 
-| Tool Name                 | Description                                                                     | Data Source | Verification Type     |
-| ------------------------- | ------------------------------------------------------------------------------- | ----------- | --------------------- |
-| `listConnectedAccounts`   | List all connected brokerage (SnapTrade) and bank (Plaid) accounts              | TaxService  | confidence_scoring    |
-| `syncAccount`             | Trigger a sync for a specific connected account to refresh data                 | TaxService  | confidence_scoring    |
-| `getTaxHoldings`          | Cross-account holdings with cost basis, unrealized gain/loss, market prices     | TaxService  | confidence_scoring    |
-| `getTaxTransactions`      | Tax-relevant transaction history with symbol/date/limit filtering               | TaxService  | confidence_scoring    |
-| `getTaxLots`              | FIFO-derived tax lots with holding periods (short/long term) and open/closed status | TaxService | confidence_scoring |
-| `simulateSale`            | Estimate tax impact of selling shares — FIFO lot consumption + federal brackets | TaxService  | human_in_the_loop     |
-| `createAdjustment`        | Create a cost basis adjustment (override, add lot, remove lot)                  | TaxService  | confidence_scoring    |
-| `updateAdjustment`        | Update an existing cost basis adjustment                                        | TaxService  | confidence_scoring    |
-| `deleteAdjustment`        | Delete a cost basis adjustment                                                  | TaxService  | confidence_scoring    |
+| Tool Name               | Description                                                                         | Data Source | Verification Type  |
+| ----------------------- | ----------------------------------------------------------------------------------- | ----------- | ------------------ |
+| `listConnectedAccounts` | List all connected brokerage (SnapTrade) and bank (Plaid) accounts                  | TaxService  | confidence_scoring |
+| `syncAccount`           | Trigger a sync for a specific connected account to refresh data                     | TaxService  | confidence_scoring |
+| `getTaxHoldings`        | Cross-account holdings with cost basis, unrealized gain/loss, market prices         | TaxService  | confidence_scoring |
+| `getTaxTransactions`    | Tax-relevant transaction history with symbol/date/limit filtering                   | TaxService  | confidence_scoring |
+| `getTaxLots`            | FIFO-derived tax lots with holding periods (short/long term) and open/closed status | TaxService  | confidence_scoring |
+| `simulateSale`          | Estimate tax impact of selling shares — FIFO lot consumption + federal brackets     | TaxService  | human_in_the_loop  |
+| `createAdjustment`      | Create a cost basis adjustment (override, add lot, remove lot)                      | TaxService  | confidence_scoring |
+| `updateAdjustment`      | Update an existing cost basis adjustment                                            | TaxService  | confidence_scoring |
+| `deleteAdjustment`      | Delete a cost basis adjustment                                                      | TaxService  | confidence_scoring |
 
 > **Note:** `simulateSale` uses `human_in_the_loop` verification with confidence capped at 0.8. Tax estimates are informational only — not tax advice.
 
 ### Web Search Tools (1)
 
-| Tool Name    | Description                                                                                                | Data Source       | Verification Type |
-| ------------ | ---------------------------------------------------------------------------------------------------------- | ----------------- | ----------------- |
-| `webSearch`  | Search the web for real-time information — news, analysis, company data, market events, general knowledge  | Tavily Search API | fact_check        |
+| Tool Name   | Description                                                                                               | Data Source       | Verification Type |
+| ----------- | --------------------------------------------------------------------------------------------------------- | ----------------- | ----------------- |
+| `webSearch` | Search the web for real-time information — news, analysis, company data, market events, general knowledge | Tavily Search API | fact_check        |
 
 > **Note:** `webSearch` requires `TAVILY_API_KEY` environment variable. Free tier: 1,000 searches/month. Results are pre-optimized for LLM consumption with relevance scoring. Low-relevance results (score < 0.3) are filtered out automatically.
 
@@ -207,7 +207,8 @@ The AI chat system uses **23 production tools** registered with the Vercel AI SD
 ### listConnectedAccounts
 
 ```typescript
-{}  // No parameters required
+{
+} // No parameters required
 ```
 
 ### syncAccount
@@ -285,7 +286,7 @@ The AI chat system uses **23 production tools** registered with the Vercel AI SD
 
 ```typescript
 {
-  adjustmentId: string
+  adjustmentId: string;
 }
 ```
 

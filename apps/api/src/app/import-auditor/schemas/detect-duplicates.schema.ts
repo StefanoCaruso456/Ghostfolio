@@ -36,9 +36,7 @@ export const DetectDuplicatesInputSchema = z.object({
   existingActivities: z.array(ExistingActivitySchema).optional().default([])
 });
 
-export type DetectDuplicatesInput = z.infer<
-  typeof DetectDuplicatesInputSchema
->;
+export type DetectDuplicatesInput = z.infer<typeof DetectDuplicatesInputSchema>;
 
 export const DetectDuplicatesDataSchema = z.object({
   duplicates: z.array(DuplicatePairSchema),

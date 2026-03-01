@@ -84,7 +84,9 @@ export class CurrentRateService {
         ]);
 
         const quoteCount = Object.keys(quotesBySymbol).length;
-        const quoteDurationSec = ((Date.now() - quoteStartTime) / 1000).toFixed(1);
+        const quoteDurationSec = ((Date.now() - quoteStartTime) / 1000).toFixed(
+          1
+        );
 
         this.logger.log(
           `Quotes fetched: ${quoteCount}/${dataGatheringItems.length} in ${quoteDurationSec}s`
@@ -189,19 +191,17 @@ export class CurrentRateService {
               let value: GetValueObject = response.values.find(
                 (currentValue) => {
                   return (
-                    currentValue.symbol === symbol &&
-                    isToday(currentValue.date)
+                    currentValue.symbol === symbol && isToday(currentValue.date)
                   );
                 }
               );
 
               if (!value) {
                 // Fallback to unit price of latest activity
-                const latestActivity =
-                  await this.orderService.getLatestOrder({
-                    dataSource,
-                    symbol
-                  });
+                const latestActivity = await this.orderService.getLatestOrder({
+                  dataSource,
+                  symbol
+                });
 
                 value = {
                   dataSource,
@@ -216,8 +216,7 @@ export class CurrentRateService {
               const [latestValue] = response.values
                 .filter((currentValue) => {
                   return (
-                    currentValue.symbol === symbol &&
-                    currentValue.marketPrice
+                    currentValue.symbol === symbol && currentValue.marketPrice
                   );
                 })
                 .sort((a, b) => {

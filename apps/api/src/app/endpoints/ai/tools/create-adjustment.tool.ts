@@ -50,9 +50,7 @@ export function buildCreateAdjustmentResult(adjustment: {
     return {
       status: 'error',
       message:
-        error instanceof Error
-          ? error.message
-          : 'Failed to create adjustment',
+        error instanceof Error ? error.message : 'Failed to create adjustment',
       verification: createVerificationResult({
         passed: false,
         confidence: 0,

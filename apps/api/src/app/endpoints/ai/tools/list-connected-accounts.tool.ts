@@ -6,9 +6,8 @@
  * Error-handled: returns ToolResult(status=error), never throws
  * Verified: includes confidence scoring + source attribution
  */
-import type { ConnectedAccountSummary } from '../../../tax/interfaces/tax.interfaces';
-
 import { createVerificationResult } from '../../../import-auditor/schemas/verification.schema';
+import type { ConnectedAccountSummary } from '../../../tax/interfaces/tax.interfaces';
 import type {
   ListConnectedAccountsData,
   ListConnectedAccountsOutput
@@ -20,7 +19,9 @@ export function buildListConnectedAccountsResult(
   accounts: ConnectedAccountSummary[]
 ): ListConnectedAccountsOutput {
   try {
-    const snaptradeCount = accounts.filter((a) => a.type === 'snaptrade').length;
+    const snaptradeCount = accounts.filter(
+      (a) => a.type === 'snaptrade'
+    ).length;
     const plaidCount = accounts.filter((a) => a.type === 'plaid').length;
 
     const data: ListConnectedAccountsData = {

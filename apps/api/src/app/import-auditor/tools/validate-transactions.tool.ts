@@ -65,14 +65,9 @@ export function validateTransactions(
   const totalErrors = errors.length;
 
   const status =
-    totalErrors > 0
-      ? 'fail'
-      : warnings.length > 0
-        ? 'warnings'
-        : 'pass';
+    totalErrors > 0 ? 'fail' : warnings.length > 0 ? 'warnings' : 'pass';
 
-  const confidence =
-    totalProcessed > 0 ? totalValid / totalProcessed : 0;
+  const confidence = totalProcessed > 0 ? totalValid / totalProcessed : 0;
 
   return {
     status,
@@ -168,10 +163,7 @@ function checkNumericInvariants(
   }
 
   if (activity.quantity !== undefined && activity.quantity !== null) {
-    if (
-      typeof activity.quantity !== 'number' ||
-      activity.quantity < 0
-    ) {
+    if (typeof activity.quantity !== 'number' || activity.quantity < 0) {
       errors.push({
         row,
         field: 'quantity',
@@ -183,10 +175,7 @@ function checkNumericInvariants(
   }
 
   if (activity.unitPrice !== undefined && activity.unitPrice !== null) {
-    if (
-      typeof activity.unitPrice !== 'number' ||
-      activity.unitPrice < 0
-    ) {
+    if (typeof activity.unitPrice !== 'number' || activity.unitPrice < 0) {
       errors.push({
         row,
         field: 'unitPrice',

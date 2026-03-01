@@ -1,12 +1,12 @@
 import { isSameSecond, parseISO } from 'date-fns';
 
-import type { MappedActivity } from '../schemas/validate-transactions.schema';
 import {
   DetectDuplicatesInput,
   DetectDuplicatesOutput,
   DuplicatePair,
   ExistingActivity
 } from '../schemas/detect-duplicates.schema';
+import type { MappedActivity } from '../schemas/validate-transactions.schema';
 import { createVerificationResult } from '../schemas/verification.schema';
 
 function buildBatchCompositeKey(activity: MappedActivity): string {
@@ -203,13 +203,15 @@ export function detectDuplicates(
     },
     verification: createVerificationResult({
       passed: totalDuplicates === 0,
-      confidence: totalDuplicates === 0
-        ? 1.0
-        : cleanActivities.length / activities.length,
+      confidence:
+        totalDuplicates === 0
+          ? 1.0
+          : cleanActivities.length / activities.length,
       warnings,
-      sources: existingActivities.length > 0
-        ? ['batch-duplicate-detection', 'database-duplicate-detection']
-        : ['batch-duplicate-detection']
+      sources:
+        existingActivities.length > 0
+          ? ['batch-duplicate-detection', 'database-duplicate-detection']
+          : ['batch-duplicate-detection']
     })
   };
 }

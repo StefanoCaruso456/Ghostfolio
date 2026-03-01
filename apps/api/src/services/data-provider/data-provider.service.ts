@@ -298,9 +298,7 @@ export class DataProviderService implements OnModuleInit {
       for (const identifier of symbolsToLookup) {
         const { dataSource, symbol } = identifier;
         const assetProfileIdentifier = getAssetProfileIdentifier(identifier);
-        const { currency } = symbolLookupActivities.get(
-          assetProfileIdentifier
-        );
+        const { currency } = symbolLookupActivities.get(assetProfileIdentifier);
 
         const assetProfile: Partial<SymbolProfile> = fetchedProfiles[
           symbol

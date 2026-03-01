@@ -19,11 +19,11 @@
 
 ### Competitors
 
-| Competitor Type | Limitation |
-|----------------|------------|
-| Brokers (E\*TRADE, IBKR) | Siloed views, no cross-account tax modeling |
-| Aggregators | Aggregation without deterministic tax simulation in workflow |
-| Tax Software | Filing-focused, not embedded in portfolio decision-making |
+| Competitor Type          | Limitation                                                   |
+| ------------------------ | ------------------------------------------------------------ |
+| Brokers (E\*TRADE, IBKR) | Siloed views, no cross-account tax modeling                  |
+| Aggregators              | Aggregation without deterministic tax simulation in workflow |
+| Tax Software             | Filing-focused, not embedded in portfolio decision-making    |
 
 **Differentiator:** Connected accounts + deterministic tax simulation + structured AI tool access.
 
@@ -45,13 +45,13 @@
 
 ### High-Income Multi-Broker Investor
 
-| Attribute | Detail |
-|-----------|--------|
-| Accounts | 2-4 brokerage accounts |
-| Banking | Separate bank accounts |
-| Behavior | Active allocation management |
-| Concern | Tax drag on portfolio returns |
-| Need | Control and predictability |
+| Attribute | Detail                        |
+| --------- | ----------------------------- |
+| Accounts  | 2-4 brokerage accounts        |
+| Banking   | Separate bank accounts        |
+| Behavior  | Active allocation management  |
+| Concern   | Tax drag on portfolio returns |
+| Need      | Control and predictability    |
 
 **Core Pain:** "I don't know my true tax exposure across accounts before I sell."
 
@@ -126,10 +126,10 @@
 
 ### Supporting Metrics
 
-| Metric | Purpose |
-|--------|---------|
-| Broker connect success rate | Connectivity reliability |
-| Sync reliability | Data freshness |
-| Simulation completion rate | Feature adoption |
-| Agent tool-call schema validity | System correctness |
-| User trust score | User confidence |
+| Metric                          | Purpose                  |
+| ------------------------------- | ------------------------ |
+| Broker connect success rate     | Connectivity reliability |
+| Sync reliability                | Data freshness           |
+| Simulation completion rate      | Feature adoption         |
+| Agent tool-call schema validity | System correctness       |
+| User trust score                | User confidence          |

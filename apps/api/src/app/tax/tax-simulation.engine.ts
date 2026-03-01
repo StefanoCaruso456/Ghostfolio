@@ -5,7 +5,6 @@
  * Idempotent: same inputs → same output
  * Deterministic: FIFO + fixed bracket tables
  */
-
 import {
   DEFAULT_SHORT_TERM_RATE,
   LONG_TERM_CAPITAL_GAINS_RATE,

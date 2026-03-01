@@ -45,7 +45,9 @@ export function buildScenarioImpactResult(
           passed: false,
           confidence: isDegraded ? 0.1 : 0.3,
           errors: isDegraded
-            ? ['Portfolio service returned an error — holdings could not be loaded']
+            ? [
+                'Portfolio service returned an error — holdings could not be loaded'
+              ]
             : ['Portfolio has zero holdings'],
           sources: ['ghostfolio-portfolio-service'],
           domainRulesChecked: DOMAIN_RULES_CHECKED,

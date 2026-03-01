@@ -6,9 +6,8 @@
  * Error-handled: returns ToolResult(status=error), never throws
  * Verified: includes confidence scoring + source attribution
  */
-import type { TaxHolding } from '../../../tax/interfaces/tax.interfaces';
-
 import { createVerificationResult } from '../../../import-auditor/schemas/verification.schema';
+import type { TaxHolding } from '../../../tax/interfaces/tax.interfaces';
 import type {
   GetTaxHoldingsData,
   GetTaxHoldingsOutput
@@ -85,9 +84,7 @@ export function buildTaxHoldingsResult(
     return {
       status: 'error',
       message:
-        error instanceof Error
-          ? error.message
-          : 'Failed to get tax holdings',
+        error instanceof Error ? error.message : 'Failed to get tax holdings',
       verification: createVerificationResult({
         passed: false,
         confidence: 0,

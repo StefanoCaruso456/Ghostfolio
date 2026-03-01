@@ -5,7 +5,6 @@
  * Idempotent: same orders → same lots
  * Deterministic: FIFO ordering is well-defined
  */
-
 import { differenceInDays } from 'date-fns';
 
 import type { DerivedTaxLot } from './interfaces/tax.interfaces';

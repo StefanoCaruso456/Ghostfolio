@@ -12,12 +12,7 @@ import { ImportAuditorService } from './import-auditor.service';
 @Module({
   controllers: [ImportAuditorController],
   exports: [ImportAuditorService],
-  imports: [
-    ConfigurationModule,
-    ImportModule,
-    OrderModule,
-    PropertyModule
-  ],
+  imports: [ConfigurationModule, ImportModule, OrderModule, PropertyModule],
   providers: [BraintrustTelemetryService, ImportAuditorService]
 })
 export class ImportAuditorModule {}

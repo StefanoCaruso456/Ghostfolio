@@ -4,9 +4,7 @@ import { VerificationResultSchema } from '../../../../import-auditor/schemas/ver
 
 // ─── Input ───────────────────────────────────────────────────────────
 export const UpdateAdjustmentInputSchema = z.object({
-  adjustmentId: z
-    .string()
-    .describe('ID of the adjustment to update'),
+  adjustmentId: z.string().describe('ID of the adjustment to update'),
   data: z
     .object({
       costBasis: z.number().optional(),
@@ -17,9 +15,7 @@ export const UpdateAdjustmentInputSchema = z.object({
     .describe('Updated adjustment data')
 });
 
-export type UpdateAdjustmentInput = z.infer<
-  typeof UpdateAdjustmentInputSchema
->;
+export type UpdateAdjustmentInput = z.infer<typeof UpdateAdjustmentInputSchema>;
 
 // ─── Data ────────────────────────────────────────────────────────────
 export const UpdateAdjustmentDataSchema = z.object({
@@ -30,9 +26,7 @@ export const UpdateAdjustmentDataSchema = z.object({
   updatedAt: z.string()
 });
 
-export type UpdateAdjustmentData = z.infer<
-  typeof UpdateAdjustmentDataSchema
->;
+export type UpdateAdjustmentData = z.infer<typeof UpdateAdjustmentDataSchema>;
 
 // ─── Output ──────────────────────────────────────────────────────────
 export const UpdateAdjustmentOutputSchema = z.object({

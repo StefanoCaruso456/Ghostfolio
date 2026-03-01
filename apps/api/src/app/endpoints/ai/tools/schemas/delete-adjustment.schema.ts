@@ -4,14 +4,10 @@ import { VerificationResultSchema } from '../../../../import-auditor/schemas/ver
 
 // ─── Input ───────────────────────────────────────────────────────────
 export const DeleteAdjustmentInputSchema = z.object({
-  adjustmentId: z
-    .string()
-    .describe('ID of the adjustment to delete')
+  adjustmentId: z.string().describe('ID of the adjustment to delete')
 });
 
-export type DeleteAdjustmentInput = z.infer<
-  typeof DeleteAdjustmentInputSchema
->;
+export type DeleteAdjustmentInput = z.infer<typeof DeleteAdjustmentInputSchema>;
 
 // ─── Data ────────────────────────────────────────────────────────────
 export const DeleteAdjustmentDataSchema = z.object({
@@ -19,9 +15,7 @@ export const DeleteAdjustmentDataSchema = z.object({
   id: z.string()
 });
 
-export type DeleteAdjustmentData = z.infer<
-  typeof DeleteAdjustmentDataSchema
->;
+export type DeleteAdjustmentData = z.infer<typeof DeleteAdjustmentDataSchema>;
 
 // ─── Output ──────────────────────────────────────────────────────────
 export const DeleteAdjustmentOutputSchema = z.object({

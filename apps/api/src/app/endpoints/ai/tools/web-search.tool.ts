@@ -79,9 +79,7 @@ export async function executeWebSearch(
     if (!response.ok) {
       const errorBody = await response.text().catch(() => 'Unknown error');
 
-      throw new Error(
-        `Tavily API returned ${response.status}: ${errorBody}`
-      );
+      throw new Error(`Tavily API returned ${response.status}: ${errorBody}`);
     }
 
     return (await response.json()) as TavilyResponse;
@@ -128,9 +126,7 @@ export function buildWebSearchResult(
     if (highRelevanceResults.length < results.length) {
       const lowCount = results.length - highRelevanceResults.length;
 
-      warnings.push(
-        `${lowCount} result(s) had low relevance scores (< 0.3)`
-      );
+      warnings.push(`${lowCount} result(s) had low relevance scores (< 0.3)`);
     }
 
     if (results.length === 0) {
@@ -142,9 +138,7 @@ export function buildWebSearchResult(
           answer: tavilyResponse.answer ?? null,
           results: [],
           resultCount: 0,
-          responseTimeMs: Math.round(
-            (tavilyResponse.response_time ?? 0) * 1000
-          )
+          responseTimeMs: Math.round((tavilyResponse.response_time ?? 0) * 1000)
         },
         message: `No results found for "${input.query}".`,
         verification: createVerificationResult({
@@ -180,8 +174,7 @@ export function buildWebSearchResult(
 
     // Compute confidence from average relevance score
     const avgScore =
-      cappedResults.reduce((sum, r) => sum + r.score, 0) /
-      cappedResults.length;
+      cappedResults.reduce((sum, r) => sum + r.score, 0) / cappedResults.length;
 
     const topResultsPreview = cappedResults
       .slice(0, 3)

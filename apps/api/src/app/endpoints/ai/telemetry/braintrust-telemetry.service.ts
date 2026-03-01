@@ -179,9 +179,7 @@ export class BraintrustTelemetryService implements OnModuleInit {
       }
 
       const toolSources = [
-        ...new Set(
-          payload.toolSpans.map((ts) => ts.executor ?? 'local')
-        )
+        ...new Set(payload.toolSpans.map((ts) => ts.executor ?? 'local'))
       ];
 
       for (const src of toolSources) {

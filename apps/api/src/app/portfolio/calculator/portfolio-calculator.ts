@@ -280,7 +280,12 @@ export abstract class PortfolioCalculator {
 
     if (currentRateErrors.length > 0) {
       Logger.warn(
-        `computeSnapshot: Quote errors for: ${currentRateErrors.map(({ symbol }) => symbol).slice(0, 10).join(', ')}${currentRateErrors.length > 10 ? ` (+${currentRateErrors.length - 10} more)` : ''}`,
+        `computeSnapshot: Quote errors for: ${currentRateErrors
+          .map(({ symbol }) => symbol)
+          .slice(0, 10)
+          .join(
+            ', '
+          )}${currentRateErrors.length > 10 ? ` (+${currentRateErrors.length - 10} more)` : ''}`,
         'PortfolioCalculator'
       );
     }

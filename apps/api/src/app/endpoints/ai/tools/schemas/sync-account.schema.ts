@@ -5,12 +5,8 @@ import { VerificationResultSchema } from '../../../../import-auditor/schemas/ver
 // ─── Input ───────────────────────────────────────────────────────────
 
 export const SyncAccountInputSchema = z.object({
-  connectionId: z
-    .string()
-    .describe('ID of the connected account to sync'),
-  type: z
-    .enum(['snaptrade', 'plaid'])
-    .describe('Type of connection to sync')
+  connectionId: z.string().describe('ID of the connected account to sync'),
+  type: z.enum(['snaptrade', 'plaid']).describe('Type of connection to sync')
 });
 
 export type SyncAccountInput = z.infer<typeof SyncAccountInputSchema>;

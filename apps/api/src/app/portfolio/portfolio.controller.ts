@@ -610,22 +610,24 @@ export class PortfolioController {
     let streaks: PortfolioInvestmentsResponse['streaks'];
 
     try {
-      ({ investments, streaks } =
-        await this.portfolioService.getInvestments({
-          dateRange,
-          filters,
-          groupBy,
-          impersonationId,
-          savingsRate: this.request.user?.settings?.settings.savingsRate,
-          userId: this.request.user.id
-        }));
+      ({ investments, streaks } = await this.portfolioService.getInvestments({
+        dateRange,
+        filters,
+        groupBy,
+        impersonationId,
+        savingsRate: this.request.user?.settings?.settings.savingsRate,
+        userId: this.request.user.id
+      }));
     } catch (error) {
       this.logger.error(
         `getInvestments failed for user ${this.request.user.id}: ${error instanceof Error ? error.message : error}`,
         error instanceof Error ? error.stack : undefined
       );
 
-      return { investments: [], streaks: { currentStreak: 0, longestStreak: 0 } };
+      return {
+        investments: [],
+        streaks: { currentStreak: 0, longestStreak: 0 }
+      };
     }
 
     if (

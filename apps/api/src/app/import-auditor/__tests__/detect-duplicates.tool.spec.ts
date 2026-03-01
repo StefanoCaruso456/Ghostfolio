@@ -1,10 +1,8 @@
-import { detectDuplicates } from '../tools/detect-duplicates.tool';
-import type { MappedActivity } from '../schemas/validate-transactions.schema';
 import type { ExistingActivity } from '../schemas/detect-duplicates.schema';
+import type { MappedActivity } from '../schemas/validate-transactions.schema';
+import { detectDuplicates } from '../tools/detect-duplicates.tool';
 
-function makeActivity(
-  overrides: Partial<MappedActivity> = {}
-): MappedActivity {
+function makeActivity(overrides: Partial<MappedActivity> = {}): MappedActivity {
   return {
     symbol: 'MSFT',
     date: '2023-09-16T00:00:00.000Z',

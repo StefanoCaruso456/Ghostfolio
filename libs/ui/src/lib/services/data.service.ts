@@ -746,17 +746,15 @@ export class DataService {
   }
 
   public fetchPortfolioPerformanceQuick(): Observable<PortfolioPerformanceResponse> {
-    return this.http
-      .get<any>('/api/v1/portfolio/performance-quick')
-      .pipe(
-        map((response) => {
-          if (response.firstOrderDate) {
-            response.firstOrderDate = parseISO(response.firstOrderDate);
-          }
+    return this.http.get<any>('/api/v1/portfolio/performance-quick').pipe(
+      map((response) => {
+        if (response.firstOrderDate) {
+          response.firstOrderDate = parseISO(response.firstOrderDate);
+        }
 
-          return response;
-        })
-      );
+        return response;
+      })
+    );
   }
 
   public fetchPortfolioHoldings({

@@ -12,10 +12,7 @@ import type {
   UpdateAdjustmentOutput
 } from './schemas/update-adjustment.schema';
 
-const DOMAIN_RULES_CHECKED = [
-  'adjustment-exists',
-  'adjustment-updated'
-];
+const DOMAIN_RULES_CHECKED = ['adjustment-exists', 'adjustment-updated'];
 
 export function buildUpdateAdjustmentResult(adjustment: {
   id: string;
@@ -49,9 +46,7 @@ export function buildUpdateAdjustmentResult(adjustment: {
     return {
       status: 'error',
       message:
-        error instanceof Error
-          ? error.message
-          : 'Failed to update adjustment',
+        error instanceof Error ? error.message : 'Failed to update adjustment',
       verification: createVerificationResult({
         passed: false,
         confidence: 0,

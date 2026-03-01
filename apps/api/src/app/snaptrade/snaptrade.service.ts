@@ -278,8 +278,7 @@ export class SnaptradeService {
     for (const snapAccount of snaptradeAccounts) {
       const brokerName =
         snapAccount.institution_name || snapAccount.name || 'Broker';
-      const accountLabel =
-        snapAccount.name || snapAccount.number || 'Account';
+      const accountLabel = snapAccount.name || snapAccount.number || 'Account';
       const accountName = `${brokerName} – ${accountLabel}`;
       const snapAccountId = snapAccount.id;
 
