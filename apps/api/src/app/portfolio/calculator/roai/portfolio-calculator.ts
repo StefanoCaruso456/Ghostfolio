@@ -357,15 +357,6 @@ export class RoaiPortfolioCalculator extends PortfolioCalculator {
           order.unitPriceFromMarketData =
             marketSymbolMap[dateString]?.[symbol] ?? lastUnitPrice;
         }
-      } else if (
-        dataSource === 'MANUAL' &&
-        !marketSymbolMap[dateString]?.[symbol]
-      ) {
-        // Skip creating synthetic orders for MANUAL symbols on chart dates
-        // without market data — the price is unchanged (flat line), so the
-        // synthetic order would contribute zero performance change. This avoids
-        // O(chartDates) Big.js iterations per MANUAL symbol.
-        continue;
       } else {
         orders.push({
           date: dateString,
