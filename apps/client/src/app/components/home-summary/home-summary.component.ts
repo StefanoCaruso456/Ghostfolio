@@ -105,10 +105,14 @@ export class GfHomeSummaryComponent implements OnDestroy, OnInit {
   }
 
   private update() {
-    this.isLoading = true;
+    // Stale-while-revalidate: keep existing summary visible while refreshing
+    if (!this.summary) {
+      this.isLoading = true;
+    }
 
+    // Phase 1: Quick summary (instant, ~5 seconds with live quotes)
     this.dataService
-      .fetchPortfolioDetails()
+      .fetchPortfolioDetailsQuick()
       .pipe(takeUntil(this.unsubscribeSubject))
       .subscribe(({ summary }) => {
         this.summary = summary;
