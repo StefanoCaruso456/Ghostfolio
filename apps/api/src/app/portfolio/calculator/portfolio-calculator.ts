@@ -401,6 +401,9 @@ export abstract class PortfolioCalculator {
       // Periodically yield the event loop so Bull's lock renewal timer fires
       if (++symbolsProcessed % YIELD_EVERY_N_SYMBOLS === 0) {
         await new Promise<void>((resolve) => setImmediate(resolve));
+
+        // Ping DB to keep connection pool alive during long computation
+        await this.currentRateService.keepAlive();
       }
 
       const marketPriceInBaseCurrency = (
@@ -553,6 +556,9 @@ export abstract class PortfolioCalculator {
       // Yield every 100 chart dates to keep event loop responsive for Bull heartbeat
       if (++chartDateIdx % 100 === 0) {
         await new Promise<void>((resolve) => setImmediate(resolve));
+
+        // Ping DB to keep connection pool alive during long computation
+        await this.currentRateService.keepAlive();
       }
 
       if (accountBalanceItemsMap[dateString] !== undefined) {

@@ -35,6 +35,10 @@ export class CurrentRateService {
     @Inject(REQUEST) private readonly request: RequestWithUser
   ) {}
 
+  public async keepAlive(): Promise<void> {
+    return this.marketDataService.keepAlive();
+  }
+
   @LogPerformance
   // TODO: Pass user instead of using this.request.user
   public async getValues({
@@ -120,23 +124,27 @@ export class CurrentRateService {
         return { dataSource, symbol };
       });
 
-    const marketDataCount = await this.marketDataService.getRangeCount({
-      assetProfileIdentifiers,
-      dateQuery
-    });
+    // Retry DB queries in case pool connections were killed during a previous long computation
+    const marketDataCount = await this.retryOnConnectionError(() =>
+      this.marketDataService.getRangeCount({
+        assetProfileIdentifiers,
+        dateQuery
+      })
+    );
 
     for (
       let i = 0;
       i < marketDataCount;
       i += CurrentRateService.MARKET_DATA_PAGE_SIZE
     ) {
-      // Use page size to limit the number of records fetched at once
-      const data = await this.marketDataService.getRange({
-        assetProfileIdentifiers,
-        dateQuery,
-        skip: i,
-        take: CurrentRateService.MARKET_DATA_PAGE_SIZE
-      });
+      const data = await this.retryOnConnectionError(() =>
+        this.marketDataService.getRange({
+          assetProfileIdentifiers,
+          dateQuery,
+          skip: i,
+          take: CurrentRateService.MARKET_DATA_PAGE_SIZE
+        })
+      );
 
       values.push(
         ...data.map(({ dataSource, date, marketPrice, symbol }) => ({
@@ -243,5 +251,32 @@ export class CurrentRateService {
       }
     }
     return false;
+  }
+
+  /**
+   * Retry a DB operation once if the connection was dropped (stale pool).
+   * Triggers a keepAlive (which reconnects on failure) before the retry.
+   */
+  private async retryOnConnectionError<T>(fn: () => Promise<T>): Promise<T> {
+    try {
+      return await fn();
+    } catch (error) {
+      const message = error?.message ?? '';
+
+      if (
+        message.includes('closed the connection') ||
+        message.includes('Connection refused') ||
+        message.includes('connection timeout') ||
+        message.includes('ECONNRESET')
+      ) {
+        this.logger.warn(
+          `DB connection error, retrying after keepAlive: ${message}`
+        );
+        await this.keepAlive();
+        return await fn();
+      }
+
+      throw error;
+    }
   }
 }

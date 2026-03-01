@@ -17,6 +17,10 @@ import {
 export class MarketDataService {
   public constructor(private readonly prismaService: PrismaService) {}
 
+  public async keepAlive(): Promise<void> {
+    return this.prismaService.keepAlive();
+  }
+
   public async deleteMany({ dataSource, symbol }: AssetProfileIdentifier) {
     return this.prismaService.marketData.deleteMany({
       where: {
