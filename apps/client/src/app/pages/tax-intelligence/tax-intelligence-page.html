@@ -20,6 +20,13 @@
         >
           PRD &amp; MVP
         </button>
+        <button
+          class="tab-toggle"
+          [class.active]="activeTab === 'impact'"
+          (click)="activeTab = 'impact'"
+        >
+          Impact
+        </button>
       </div>
 
       <!-- Strategy Tab -->
@@ -385,6 +392,100 @@
           <div class="timeline-phase">
             <span class="phase-label">Phase 3</span>
             <span>Agent tooling hardening + observability</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Impact Tab -->
+      <div *ngIf="activeTab === 'impact'" class="tax-intelligence-card">
+        <div class="impact-header">
+          <h2 class="section-title impact-title">Market Impact Summary</h2>
+          <p class="impact-subtitle">
+            Target Persona: U.S. High Net Worth Brokerage Investors (&ge; $1M Net Worth)
+          </p>
+        </div>
+
+        <h2 class="section-title">Population &amp; Wealth</h2>
+        <div class="impact-table">
+          <div class="impact-table-header">
+            <span>Metric</span>
+            <span>Value</span>
+          </div>
+          <div class="impact-table-row">
+            <span class="impact-metric">U.S. Population</span>
+            <span class="impact-value">339 million</span>
+          </div>
+          <div class="impact-table-row">
+            <span class="impact-metric">High Net Worth Individuals</span>
+            <span class="impact-value highlight">22.7 million</span>
+          </div>
+          <div class="impact-table-row">
+            <span class="impact-metric">% of U.S. Population</span>
+            <span class="impact-value">6.7%</span>
+          </div>
+          <div class="impact-table-row">
+            <span class="impact-metric">Total U.S. Household Wealth</span>
+            <span class="impact-value">$139 trillion</span>
+          </div>
+          <div class="impact-table-row">
+            <span class="impact-metric">Wealth Controlled by HNW</span>
+            <span class="impact-value highlight">$83 trillion</span>
+          </div>
+          <div class="impact-table-row">
+            <span class="impact-metric">% of Total Wealth Controlled</span>
+            <span class="impact-value highlight">60%</span>
+          </div>
+        </div>
+
+        <h2 class="section-title">Stock Market Ownership</h2>
+        <div class="impact-table">
+          <div class="impact-table-header">
+            <span>Metric</span>
+            <span>Value</span>
+          </div>
+          <div class="impact-table-row">
+            <span class="impact-metric">% of U.S. Stock Market Owned by Top 10%</span>
+            <span class="impact-value">93%</span>
+          </div>
+          <div class="impact-table-row">
+            <span class="impact-metric">Estimated % Owned by HNW (6.7%)</span>
+            <span class="impact-value highlight">~85%</span>
+          </div>
+          <div class="impact-table-row">
+            <span class="impact-metric">HNW Individuals Owning Stocks</span>
+            <span class="impact-value highlight">21.1 million</span>
+          </div>
+          <div class="impact-table-row">
+            <span class="impact-metric">HNW Individuals Owning Crypto</span>
+            <span class="impact-value">5.9 million</span>
+          </div>
+        </div>
+
+        <h2 class="section-title">Key Takeaways</h2>
+        <div class="takeaway-grid">
+          <div class="takeaway-card">
+            <span class="takeaway-stat">6.7%</span>
+            <span class="takeaway-label">of Americans control <strong>60%</strong> of U.S. wealth</span>
+          </div>
+          <div class="takeaway-card">
+            <span class="takeaway-stat">~85%</span>
+            <span class="takeaway-label">of public stock market wealth controlled by this segment</span>
+          </div>
+          <div class="takeaway-card">
+            <span class="takeaway-stat">~21M</span>
+            <span class="takeaway-label">HNW individuals actively hold stocks</span>
+          </div>
+          <div class="takeaway-card">
+            <span class="takeaway-stat">~6M</span>
+            <span class="takeaway-label">HNW individuals also hold crypto</span>
+          </div>
+        </div>
+
+        <h2 class="section-title">Strategic Implication</h2>
+        <div class="strategic-implication">
+          <p>Tax Intelligence is built for the segment that controls:</p>
+          <div class="implication-highlight">
+            The majority of U.S. investable capital.
           </div>
         </div>
       </div>

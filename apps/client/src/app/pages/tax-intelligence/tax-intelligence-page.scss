@@ -445,6 +445,153 @@
   padding: 0.35rem 0;
 }
 
+// ── Impact Tab ──
+.impact-header {
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.impact-title {
+  border-bottom: none;
+  font-size: 1.3rem;
+  margin-bottom: 0.25rem;
+  text-align: center;
+}
+
+.impact-subtitle {
+  color: rgba(var(--palette-foreground-text), 0.55);
+  font-size: 0.85rem;
+  font-style: italic;
+  margin-bottom: 0;
+}
+
+.impact-table {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.impact-table-header {
+  background: rgba(54, 207, 204, 0.1);
+  display: flex;
+  justify-content: space-between;
+  padding: 0.6rem 1rem;
+
+  span {
+    color: #36cfcc;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+}
+
+.impact-table-row {
+  align-items: center;
+  border-bottom: 1px solid rgba(var(--palette-foreground-text), 0.06);
+  display: flex;
+  justify-content: space-between;
+  padding: 0.65rem 1rem;
+  transition: background 0.15s ease;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover {
+    background: rgba(54, 207, 204, 0.03);
+  }
+}
+
+.impact-metric {
+  color: rgba(var(--palette-foreground-text), 0.7);
+  font-size: 0.875rem;
+}
+
+.impact-value {
+  color: rgba(var(--palette-foreground-text), 0.9);
+  font-size: 0.875rem;
+  font-weight: 600;
+
+  &.highlight {
+    color: #36cfcc;
+    font-size: 0.95rem;
+    font-weight: 700;
+  }
+}
+
+.takeaway-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr 1fr;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.takeaway-card {
+  align-items: center;
+  background: rgba(var(--palette-foreground-text), 0.02);
+  border-radius: 14px;
+  box-shadow:
+    4px 4px 8px rgba(0, 0, 0, 0.05),
+    -4px -4px 8px rgba(255, 255, 255, 0.4);
+  display: flex;
+  gap: 1rem;
+  padding: 1.1rem 1.25rem;
+  transition: transform 0.15s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
+
+.takeaway-stat {
+  color: #36cfcc;
+  flex-shrink: 0;
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  min-width: 64px;
+  text-align: center;
+}
+
+.takeaway-label {
+  color: rgba(var(--palette-foreground-text), 0.75);
+  font-size: 0.85rem;
+  line-height: 1.4;
+
+  strong {
+    color: rgba(var(--palette-foreground-text), 0.95);
+  }
+}
+
+.strategic-implication {
+  text-align: center;
+
+  p {
+    color: rgba(var(--palette-foreground-text), 0.7);
+    font-size: 0.95rem;
+    margin-bottom: 0.75rem;
+  }
+}
+
+.implication-highlight {
+  background: linear-gradient(135deg, rgba(54, 207, 204, 0.1), rgba(54, 134, 207, 0.08));
+  border: 1px solid rgba(54, 207, 204, 0.25);
+  border-radius: 14px;
+  box-shadow:
+    4px 4px 10px rgba(0, 0, 0, 0.06),
+    -4px -4px 10px rgba(255, 255, 255, 0.4),
+    inset 1px 1px 3px rgba(255, 255, 255, 0.2);
+  color: #36cfcc;
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  padding: 1.25rem 1.5rem;
+}
+
 // ── Dark Theme ──
 :host-context(.theme-dark) {
   .tax-intelligence-card {
@@ -496,5 +643,29 @@
 
   .gtm-card {
     background: rgba(54, 134, 207, 0.08);
+  }
+
+  .takeaway-card {
+    background: rgba(255, 255, 255, 0.03);
+    box-shadow:
+      4px 4px 8px rgba(0, 0, 0, 0.25),
+      -4px -4px 8px rgba(255, 255, 255, 0.02);
+  }
+
+  .impact-table-header {
+    background: rgba(54, 207, 204, 0.12);
+  }
+
+  .impact-table-row:hover {
+    background: rgba(54, 207, 204, 0.05);
+  }
+
+  .implication-highlight {
+    background: linear-gradient(135deg, rgba(54, 207, 204, 0.12), rgba(54, 134, 207, 0.1));
+    border-color: rgba(54, 207, 204, 0.3);
+    box-shadow:
+      4px 4px 10px rgba(0, 0, 0, 0.3),
+      -4px -4px 10px rgba(255, 255, 255, 0.02),
+      inset 1px 1px 3px rgba(255, 255, 255, 0.05);
   }
 }
