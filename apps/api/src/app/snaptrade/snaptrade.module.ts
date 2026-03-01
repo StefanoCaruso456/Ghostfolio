@@ -8,6 +8,7 @@ import { SnaptradeService } from './snaptrade.service';
 
 @Module({
   controllers: [SnaptradeController],
+  exports: [SnaptradeService],
   imports: [ConfigurationModule, PrismaModule],
   providers: [SnaptradeService]
 })

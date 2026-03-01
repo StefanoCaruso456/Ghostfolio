@@ -27,7 +27,18 @@ export const MCP_TOOL_MAP: Record<string, string> = {
   getFundamentals: 'getFundamentals',
   getNews: 'getNews',
   computeRebalance: 'computeRebalance',
-  scenarioImpact: 'scenarioImpact'
+  scenarioImpact: 'scenarioImpact',
+
+  // Tax Intelligence tools
+  listConnectedAccounts: 'listConnectedAccounts',
+  syncAccount: 'syncAccount',
+  getTaxHoldings: 'getTaxHoldings',
+  getTaxTransactions: 'getTaxTransactions',
+  getTaxLots: 'getTaxLots',
+  simulateSale: 'simulateSale',
+  createAdjustment: 'createAdjustment',
+  updateAdjustment: 'updateAdjustment',
+  deleteAdjustment: 'deleteAdjustment'
 };
 
 /**

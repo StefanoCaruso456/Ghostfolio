@@ -55,6 +55,7 @@ import { LogoModule } from './logo/logo.module';
 import { OrderModule } from './order/order.module';
 import { PlaidModule } from './plaid/plaid.module';
 import { SnaptradeModule } from './snaptrade/snaptrade.module';
+import { TaxModule } from './tax/tax.module';
 import { PlatformModule } from './platform/platform.module';
 import { PortfolioModule } from './portfolio/portfolio.module';
 import { RedisCacheModule } from './redis-cache/redis-cache.module';
@@ -146,6 +147,7 @@ import { UserModule } from './user/user.module';
     SitemapModule,
     SubscriptionModule,
     SymbolModule,
+    TaxModule,
     TagsModule,
     UserModule,
     WatchlistModule

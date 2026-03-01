@@ -418,6 +418,8 @@ model User {
   settings             Settings?
   subscriptions        Subscription[]
   tags                 Tag[]
+  taxAdjustments       TaxAdjustment[]
+  taxLots              TaxLot[]
   thirdPartyId         String?
   updatedAt            DateTime              @updatedAt
   watchlist            SymbolProfile[]       @relation("UserWatchlist")
@@ -505,4 +507,68 @@ enum Type {
 enum ViewMode {
   DEFAULT
   ZEN
+}
+
+// ─── Tax Intelligence ─────────────────────────────────────────────────
+
+enum HoldingPeriod {
+  SHORT_TERM
+  LONG_TERM
+}
+
+enum TaxLotStatus {
+  OPEN
+  CLOSED
+  PARTIAL
+}
+
+enum TaxAdjustmentType {
+  COST_BASIS_OVERRIDE
+  ADD_LOT
+  REMOVE_LOT
+}
+
+model TaxLot {
+  id                String        @id @default(cuid())
+  userId            String
+  accountId         String?
+  symbol            String
+  dataSource        String
+  acquiredDate      DateTime
+  quantity          Float
+  remainingQuantity Float
+  costBasisPerShare Float
+  costBasis         Float
+  currency          String
+  status            TaxLotStatus  @default(OPEN)
+  closedDate        DateTime?
+  closedQuantity    Float?
+  proceeds          Float?
+  gainLoss          Float?
+  holdingPeriod     HoldingPeriod?
+  method            String        @default("FIFO")
+  sourceOrderId     String?
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+  user              User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([userId, symbol])
+  @@index([userId, symbol, status])
+}
+
+model TaxAdjustment {
+  id             String            @id @default(cuid())
+  userId         String
+  symbol         String
+  dataSource     String?
+  adjustmentType TaxAdjustmentType
+  data           Json
+  note           String?
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+  user           User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([userId, symbol])
 }
