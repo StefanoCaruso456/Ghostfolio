@@ -36,7 +36,7 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { IonIcon } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { newspaperOutline, refreshOutline } from 'ionicons/icons';
+import { closeOutline, newspaperOutline, refreshOutline } from 'ionicons/icons';
 import {
   Subject,
   debounceTime,
@@ -114,6 +114,8 @@ export class ResourcesMarketsComponent implements OnInit, OnDestroy {
   public tableDataSource = new MatTableDataSource<MarketScreenerItem>([]);
   public tableLoading = false;
   public tableError = '';
+  public showNewsFeatureTip = true;
+  private static readonly NEWS_TIP_STORAGE_KEY = 'gf-markets-news-feature-tip-dismissed';
 
   // Chart view
   private stockConfigs: ChartConfig[] = [
@@ -177,10 +179,19 @@ export class ResourcesMarketsComponent implements OnInit, OnDestroy {
     private dataService: DataService,
     private userService: UserService
   ) {
-    addIcons({ newspaperOutline, refreshOutline });
+    addIcons({ closeOutline, newspaperOutline, refreshOutline });
   }
 
   public ngOnInit() {
+    try {
+      this.showNewsFeatureTip =
+        localStorage.getItem(
+          ResourcesMarketsComponent.NEWS_TIP_STORAGE_KEY
+        ) !== 'true';
+    } catch {
+      this.showNewsFeatureTip = true;
+    }
+
     this.userService.stateChanged
       .pipe(takeUntil(this.unsubscribeSubject))
       .subscribe((state) => {
@@ -251,6 +262,17 @@ export class ResourcesMarketsComponent implements OnInit, OnDestroy {
 
   public onRetryTable() {
     this.loadTableData();
+  }
+
+  public onDismissNewsFeatureTip() {
+    this.showNewsFeatureTip = false;
+    this.changeDetectorRef.markForCheck();
+    try {
+      localStorage.setItem(
+        ResourcesMarketsComponent.NEWS_TIP_STORAGE_KEY,
+        'true'
+      );
+    } catch {}
   }
 
   public onRangeChange(range: string) {

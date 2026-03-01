@@ -1,6 +1,42 @@
 <div class="container">
   <h1 class="h3 mb-3 text-center">Market</h1>
 
+  @if (displayMode === 'table' && showNewsFeatureTip) {
+    <div class="news-feature-callout" role="region" aria-label="New feature tip">
+      <div class="news-feature-callout-content">
+        <span class="news-feature-badge" i18n>New</span>
+        <p class="news-feature-text" i18n>Click NEWS on any row to get AI-powered article summaries</p>
+        <button
+          class="news-feature-dismiss"
+          type="button"
+          mat-icon-button
+          aria-label="Dismiss"
+          (click)="onDismissNewsFeatureTip()"
+        >
+          <ion-icon name="close-outline" />
+        </button>
+      </div>
+      <div class="news-feature-arrow" aria-hidden="true">
+        <svg viewBox="0 0 80 60" class="cartoon-arrow-svg">
+          <path
+            class="cartoon-arrow-line"
+            d="M 8 8 Q 45 20 70 50"
+            fill="none"
+            stroke-width="2.5"
+            stroke-linecap="round"
+          />
+          <path
+            class="cartoon-arrow-head"
+            d="M 70 50 L 62 42 M 70 50 L 58 48"
+            fill="none"
+            stroke-width="2.5"
+            stroke-linecap="round"
+          />
+        </svg>
+      </div>
+    </div>
+  }
+
   <!-- Search bar -->
   <div class="search-container mb-3">
     <mat-form-field
