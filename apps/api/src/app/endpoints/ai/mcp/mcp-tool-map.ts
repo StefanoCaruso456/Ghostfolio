@@ -38,7 +38,10 @@ export const MCP_TOOL_MAP: Record<string, string> = {
   simulateSale: 'simulateSale',
   createAdjustment: 'createAdjustment',
   updateAdjustment: 'updateAdjustment',
-  deleteAdjustment: 'deleteAdjustment'
+  deleteAdjustment: 'deleteAdjustment',
+
+  // Web Search
+  webSearch: 'webSearch'
 };
 
 /**
