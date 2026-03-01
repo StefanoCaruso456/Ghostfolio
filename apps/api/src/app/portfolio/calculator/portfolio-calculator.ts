@@ -392,7 +392,17 @@ export abstract class PortfolioCalculator {
       };
     } = {};
 
+    // Yield helper: allows Bull queue heartbeat to fire during heavy computation.
+    // Without this, the event loop is starved and the job stalls.
+    const YIELD_EVERY_N_SYMBOLS = 25;
+    let symbolsProcessed = 0;
+
     for (const item of lastTransactionPoint.items) {
+      // Periodically yield the event loop so Bull's lock renewal timer fires
+      if (++symbolsProcessed % YIELD_EVERY_N_SYMBOLS === 0) {
+        await new Promise<void>((resolve) => setImmediate(resolve));
+      }
+
       const marketPriceInBaseCurrency = (
         marketSymbolMap[endDateString]?.[item.symbol] ?? item.averagePrice
       ).mul(
@@ -537,7 +547,14 @@ export abstract class PortfolioCalculator {
 
     let lastKnownBalance = new Big(0);
 
+    let chartDateIdx = 0;
+
     for (const dateString of chartDates) {
+      // Yield every 100 chart dates to keep event loop responsive for Bull heartbeat
+      if (++chartDateIdx % 100 === 0) {
+        await new Promise<void>((resolve) => setImmediate(resolve));
+      }
+
       if (accountBalanceItemsMap[dateString] !== undefined) {
         // If there's an exact balance for this date, update lastKnownBalance
         lastKnownBalance = accountBalanceItemsMap[dateString];
@@ -1236,7 +1253,7 @@ export abstract class PortfolioCalculator {
 
       if (job) {
         // Add a timeout so we don't block the HTTP request forever
-        const JOB_WAIT_TIMEOUT_MS = 600_000; // 10 minutes (large portfolios with 900+ symbols need more time)
+        const JOB_WAIT_TIMEOUT_MS = 1_200_000; // 20 minutes (large portfolios with 900+ symbols need more time)
 
         try {
           await Promise.race([
