@@ -173,6 +173,21 @@ export class BraintrustTelemetryService implements OnModuleInit {
         tags.push(`trigger:${payload.trace.triggerSource}`);
       }
 
+      // ── Per-tool and executor tags for standalone column filtering ────
+      for (const toolName of payload.trace.toolNames) {
+        tags.push(`tool:${toolName}`);
+      }
+
+      const toolSources = [
+        ...new Set(
+          payload.toolSpans.map((ts) => ts.executor ?? 'local')
+        )
+      ];
+
+      for (const src of toolSources) {
+        tags.push(`source:${src}`);
+      }
+
       // ── 1. Root span with accurate timing + metrics ─────────────────
       const rootSpan = this.logger.startSpan({
         name: 'ai-chat',
@@ -240,6 +255,7 @@ export class BraintrustTelemetryService implements OnModuleInit {
           // Tool usage
           usedTools: payload.trace.usedTools,
           toolNames: payload.trace.toolNames,
+          toolSources: toolSources,
 
           // Guardrails
           guardrailsTriggered: payload.trace.guardrailsTriggered,
@@ -568,6 +584,10 @@ export class BraintrustTelemetryService implements OnModuleInit {
     const toolStartS = new Date(span.startedAt).getTime() / 1000;
     const toolEndS = new Date(span.endedAt).getTime() / 1000;
 
+    // Resolve executor — always LOCAL unless explicitly MCP
+    const toolSource: 'LOCAL' | 'MCP' =
+      span.executor === 'mcp' ? 'MCP' : 'LOCAL';
+
     const toolSpan = parentSpan.startSpan({
       name: `tool:${span.toolName}`,
       spanAttributes: { type: 'tool' },
@@ -577,7 +597,13 @@ export class BraintrustTelemetryService implements OnModuleInit {
     toolSpan.log({
       input: span.toolInput,
       output: span.toolOutput,
+      tags: [`tool:${span.toolName}`, `source:${toolSource}`],
       metadata: {
+        // ── Standalone columns (top-level for Braintrust filtering) ──
+        tool_name: span.toolName,
+        tool_source: toolSource,
+
+        // ── Existing fields ─────────────────────────────────────────
         toolName: span.toolName,
         status: span.status,
         error: span.error,
@@ -589,7 +615,7 @@ export class BraintrustTelemetryService implements OnModuleInit {
         ...(span.normalizedSymbol && {
           normalizedSymbol: span.normalizedSymbol
         }),
-        ...(span.executor && { executor: span.executor }),
+        executor: span.executor ?? 'local',
         ...(span.mcpRequestId && { mcpRequestId: span.mcpRequestId }),
         ...(span.mcpLatencyMs != null && { mcpLatencyMs: span.mcpLatencyMs })
       },
