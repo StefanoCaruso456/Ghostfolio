@@ -4,6 +4,7 @@ import { PortfolioCalculatorFactory } from '@ghostfolio/api/app/portfolio/calcul
 import { PortfolioSnapshotValue } from '@ghostfolio/api/app/portfolio/interfaces/snapshot-value.interface';
 import { RedisCacheService } from '@ghostfolio/api/app/redis-cache/redis-cache.service';
 import { ConfigurationService } from '@ghostfolio/api/services/configuration/configuration.service';
+import { PrismaService } from '@ghostfolio/api/services/prisma/prisma.service';
 import {
   CACHE_TTL_INFINITE,
   DEFAULT_PROCESSOR_PORTFOLIO_SNAPSHOT_COMPUTATION_CONCURRENCY,
@@ -26,6 +27,7 @@ export class PortfolioSnapshotProcessor {
     private readonly calculatorFactory: PortfolioCalculatorFactory,
     private readonly configurationService: ConfigurationService,
     private readonly orderService: OrderService,
+    private readonly prismaService: PrismaService,
     private readonly redisCacheService: RedisCacheService
   ) {}
 
@@ -45,6 +47,10 @@ export class PortfolioSnapshotProcessor {
         `Portfolio snapshot calculation of user '${job.data.userId}' has been started (jobId=${job.id})`,
         `PortfolioSnapshotProcessor (${PORTFOLIO_SNAPSHOT_PROCESS_JOB_NAME})`
       );
+
+      // Warm up DB connection pool — previous long computations may have
+      // caused idle connections to be dropped by the PostgreSQL proxy.
+      await this.prismaService.keepAlive();
 
       const fetchOrdersStart = performance.now();
 

@@ -7,6 +7,7 @@ import { ConfigurationModule } from '@ghostfolio/api/services/configuration/conf
 import { DataProviderModule } from '@ghostfolio/api/services/data-provider/data-provider.module';
 import { ExchangeRateDataModule } from '@ghostfolio/api/services/exchange-rate-data/exchange-rate-data.module';
 import { MarketDataModule } from '@ghostfolio/api/services/market-data/market-data.module';
+import { PrismaModule } from '@ghostfolio/api/services/prisma/prisma.module';
 import { PortfolioSnapshotService } from '@ghostfolio/api/services/queues/portfolio-snapshot/portfolio-snapshot.service';
 import {
   DEFAULT_PROCESSOR_PORTFOLIO_SNAPSHOT_COMPUTATION_TIMEOUT,
@@ -44,6 +45,7 @@ import { PortfolioSnapshotProcessor } from './portfolio-snapshot.processor';
     ExchangeRateDataModule,
     MarketDataModule,
     OrderModule,
+    PrismaModule,
     RedisCacheModule
   ],
   providers: [
