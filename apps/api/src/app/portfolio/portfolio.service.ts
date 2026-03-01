@@ -568,8 +568,56 @@ export class PortfolioService {
         );
       } catch (error) {
         this.logger.warn(
-          `HoldingsQuick: Yahoo quotes failed, using fallback prices: ${error instanceof Error ? error.message : error}`
+          `HoldingsQuick: Yahoo quotes failed: ${error instanceof Error ? error.message : error}`
         );
+      }
+
+      // FMP fallback: if Yahoo returned few/no quotes, try Financial Modeling Prep
+      const missingSymbols = yahooItems
+        .map((item) => item.symbol)
+        .filter((symbol) => !quotesBySymbol[symbol]);
+
+      const fmpApiKey = process.env.API_KEY_FINANCIAL_MODELING_PREP;
+
+      if (missingSymbols.length > 0 && fmpApiKey) {
+        this.logger.log(
+          `HoldingsQuick: trying FMP fallback for ${missingSymbols.length} symbols`
+        );
+
+        try {
+          const queryParams = new URLSearchParams({
+            symbols: missingSymbols.join(','),
+            apikey: fmpApiKey
+          });
+
+          const fmpQuotes: { price: number; symbol: string }[] =
+            await Promise.race([
+              fetch(
+                `https://financialmodelingprep.com/stable/batch-quote-short?${queryParams.toString()}`,
+                { signal: AbortSignal.timeout(10_000) }
+              ).then((res) => res.json()),
+              new Promise<[]>((resolve) =>
+                setTimeout(() => resolve([]), 12_000)
+              )
+            ]);
+
+          let fmpCount = 0;
+
+          for (const { price, symbol } of fmpQuotes) {
+            if (price > 0) {
+              quotesBySymbol[symbol] = { marketPrice: price };
+              fmpCount++;
+            }
+          }
+
+          this.logger.log(
+            `HoldingsQuick: FMP fallback fetched ${fmpCount}/${missingSymbols.length} quotes`
+          );
+        } catch (error) {
+          this.logger.warn(
+            `HoldingsQuick: FMP fallback failed: ${error instanceof Error ? error.message : error}`
+          );
+        }
       }
     }
 
