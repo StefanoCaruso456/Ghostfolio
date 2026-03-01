@@ -24,9 +24,9 @@
 }
 
 .news-feature-badge {
-  background: rgba(var(--palette-primary-500), 0.2);
+  background: rgba(220, 53, 69, 0.25);
   border-radius: 6px;
-  color: rgba(var(--palette-primary-500), 1);
+  color: #dc3545;
   flex-shrink: 0;
   font-size: 0.7rem;
   font-weight: 800;
@@ -55,11 +55,11 @@
 
 .news-feature-arrow {
   display: block;
-  height: 56px;
-  left: 1rem;
+  height: 68px;
+  left: 0;
   position: absolute;
   top: 100%;
-  width: 72px;
+  width: 80px;
 }
 
 .cartoon-arrow-svg {
@@ -508,6 +508,11 @@
     box-shadow:
       6px 6px 12px rgba(0, 0, 0, 0.35),
       -6px -6px 12px rgba(255, 255, 255, 0.04);
+  }
+
+  .news-feature-badge {
+    background: rgba(248, 113, 113, 0.25);
+    color: #f87171;
   }
 
   .news-feature-text {
