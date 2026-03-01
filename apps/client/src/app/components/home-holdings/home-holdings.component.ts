@@ -59,6 +59,7 @@ export class GfHomeHoldingsComponent implements OnDestroy, OnInit {
   public hasPermissionToAccessHoldingsChart: boolean;
   public hasPermissionToCreateActivity: boolean;
   public holdings: PortfolioPosition[];
+  public holdingsForTreemap: PortfolioPosition[];
   public holdingType: HoldingType = 'ACTIVE';
   public holdingTypeOptions: ToggleOption[] = [
     { label: $localize`Active`, value: 'ACTIVE' },
@@ -196,6 +197,15 @@ export class GfHomeHoldingsComponent implements OnDestroy, OnInit {
       .pipe(takeUntil(this.unsubscribeSubject))
       .subscribe(({ holdings }) => {
         this.holdings = holdings;
+
+        // Limit treemap to top 50 holdings by allocation for readability
+        if (holdings?.length > 50) {
+          this.holdingsForTreemap = [...holdings]
+            .sort((a, b) => b.allocationInPercentage - a.allocationInPercentage)
+            .slice(0, 50);
+        } else {
+          this.holdingsForTreemap = holdings;
+        }
 
         this.changeDetectorRef.markForCheck();
       });
