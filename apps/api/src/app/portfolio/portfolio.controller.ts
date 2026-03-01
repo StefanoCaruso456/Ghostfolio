@@ -460,6 +460,49 @@ export class PortfolioController {
     }
   }
 
+  @Get('holdings-quick')
+  @UseGuards(AuthGuard('jwt'), HasPermissionGuard)
+  @UseInterceptors(RedactValuesInResponseInterceptor)
+  @UseInterceptors(TransformDataSourceInRequestInterceptor)
+  @UseInterceptors(TransformDataSourceInResponseInterceptor)
+  public async getHoldingsQuick(
+    @Headers(HEADER_KEY_IMPERSONATION.toLowerCase()) impersonationId: string,
+    @Query('accounts') filterByAccounts?: string,
+    @Query('assetClasses') filterByAssetClasses?: string,
+    @Query('dataSource') filterByDataSource?: string,
+    @Query('holdingType') filterByHoldingType?: string,
+    @Query('query') filterBySearchQuery?: string,
+    @Query('symbol') filterBySymbol?: string,
+    @Query('tags') filterByTags?: string
+  ): Promise<PortfolioHoldingsResponse> {
+    const filters = this.apiService.buildFiltersFromQueryParams({
+      filterByAccounts,
+      filterByAssetClasses,
+      filterByDataSource,
+      filterByHoldingType,
+      filterBySearchQuery,
+      filterBySymbol,
+      filterByTags
+    });
+
+    try {
+      const holdings = await this.portfolioService.getHoldingsQuick({
+        filters,
+        impersonationId,
+        userId: this.request.user.id
+      });
+
+      return { holdings };
+    } catch (error) {
+      this.logger.error(
+        `getHoldingsQuick failed for user ${this.request.user.id}: ${error instanceof Error ? error.message : error}`,
+        error instanceof Error ? error.stack : undefined
+      );
+
+      return { holdings: [] };
+    }
+  }
+
   @Get('investments')
   @UseGuards(AuthGuard('jwt'), HasPermissionGuard)
   @UseInterceptors(TransformDataSourceInRequestInterceptor)

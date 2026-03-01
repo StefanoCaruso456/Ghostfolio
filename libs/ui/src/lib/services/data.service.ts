@@ -745,6 +745,48 @@ export class DataService {
       );
   }
 
+  public fetchPortfolioHoldingsQuick({
+    filters
+  }: {
+    filters?: Filter[];
+  } = {}) {
+    const params = this.buildFiltersAsQueryParams({ filters });
+
+    return this.http
+      .get<PortfolioHoldingsResponse>('/api/v1/portfolio/holdings-quick', {
+        params
+      })
+      .pipe(
+        map((response) => {
+          if (response.holdings) {
+            for (const symbol of Object.keys(response.holdings)) {
+              response.holdings[symbol].assetClassLabel = translate(
+                response.holdings[symbol].assetClass
+              );
+
+              response.holdings[symbol].assetSubClassLabel = translate(
+                response.holdings[symbol].assetSubClass
+              );
+
+              response.holdings[symbol].dateOfFirstActivity = response.holdings[
+                symbol
+              ].dateOfFirstActivity
+                ? parseISO(response.holdings[symbol].dateOfFirstActivity)
+                : undefined;
+
+              response.holdings[symbol].value = isNumber(
+                response.holdings[symbol].value
+              )
+                ? response.holdings[symbol].value
+                : response.holdings[symbol].valueInPercentage;
+            }
+          }
+
+          return response;
+        })
+      );
+  }
+
   public fetchPortfolioPerformance({
     filters,
     range,
