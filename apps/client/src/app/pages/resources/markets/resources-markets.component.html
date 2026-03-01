@@ -184,7 +184,18 @@
           <mat-spinner diameter="36"></mat-spinner>
         </div>
       } @else if (tableError) {
-        <div class="table-error">{{ tableError }}</div>
+        <div class="table-error-container">
+          <p class="table-error">{{ tableError }}</p>
+          <button
+            class="table-retry-btn"
+            mat-flat-button
+            color="primary"
+            (click)="onRetryTable()"
+          >
+            <ion-icon name="refresh-outline" />
+            <span i18n>Retry</span>
+          </button>
+        </div>
       } @else {
         <div class="table-wrapper">
           <table

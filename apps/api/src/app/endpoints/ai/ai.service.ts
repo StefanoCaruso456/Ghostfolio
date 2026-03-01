@@ -262,7 +262,7 @@ function buildReActSystemPrompt(
     '- **getQuote**: Real-time quotes for 1–25 symbols. Use for current prices and daily changes.',
     '- **getHistory**: Historical price data with optional returns/volatility/drawdown. Use for trend analysis.',
     '- **getFundamentals**: Valuation ratios (P/E, EPS, dividend yield, market cap). Use for fundamental analysis.',
-    '- **getNews**: Recent news items for a symbol with titles, URLs, thumbnails, and publisher info. Use for market context. Format results with thumbnail images, headline, bullet summary, source, and clickable link.',
+    '- **getNews**: Recent news items for a symbol with titles, URLs, thumbnails, and publisher info. Use for market context. Format results with thumbnail images as clickable links (markdown: [![Headline](thumbnail_url)](article_url)), headline, bullet summary, source, and clickable article URL.',
     '',
     '## Decision-Support Tools',
     '- **computeRebalance**: Compare current vs target allocation and compute deltas. Use when user asks about rebalancing.',
@@ -1104,7 +1104,7 @@ export class AiService {
 
           getNews: tool({
             description:
-              'Get recent news items for a symbol. Returns titles, links, thumbnails, and publisher info. Use for market context and "what is happening with X" questions. When presenting results, include thumbnail images (as markdown images), headlines, bullet-point summaries, source attribution, and clickable article URLs.',
+              'Get recent news items for a symbol. Returns titles, links, thumbnails, and publisher info. Use for market context and "what is happening with X" questions. When presenting results: (1) Make each thumbnail a clickable link to the article using markdown [![Headline](thumbnail_url)](article_url); (2) include headline, bullet-point summary, source, and a separate clickable article URL.',
             parameters: GetNewsInputSchema,
             execute: async (args) => {
               return executeWithGuardrails(

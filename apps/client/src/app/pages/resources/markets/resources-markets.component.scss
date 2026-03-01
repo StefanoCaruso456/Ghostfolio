@@ -289,14 +289,32 @@
   min-height: 200px;
 }
 
-.table-error {
+.table-error-container {
   align-items: center;
-  color: #ef4444;
   display: flex;
-  font-size: 0.9rem;
+  flex-direction: column;
+  gap: 1rem;
   justify-content: center;
   min-height: 200px;
-  opacity: 0.8;
+  padding: 1.5rem;
+}
+
+.table-error {
+  color: #ef4444;
+  font-size: 0.9rem;
+  margin: 0;
+  opacity: 0.9;
+  text-align: center;
+}
+
+.table-retry-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+
+  ion-icon {
+    font-size: 1.1rem;
+  }
 }
 
 .screener-table {
@@ -482,6 +500,10 @@
     box-shadow:
       6px 6px 12px rgba(0, 0, 0, 0.35),
       -6px -6px 12px rgba(255, 255, 255, 0.04);
+  }
+
+  .table-error {
+    color: #f87171;
   }
 
   .news-btn {

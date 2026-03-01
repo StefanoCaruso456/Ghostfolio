@@ -81,12 +81,29 @@ export class MarketScreenerService {
 
       return response;
     } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      const isRateLimit =
+        message.includes('429') ||
+        message.toLowerCase().includes('rate limit');
+      const isNetwork =
+        message.includes('fetch') ||
+        message.includes('ECONNREFUSED') ||
+        message.includes('ETIMEDOUT') ||
+        message.includes('ENOTFOUND');
+
       this.logger.error(
-        `Market screener error for ${market}/${category}: ${error.message}`
+        `Market screener error for ${market}/${category}: ${message}`,
+        error instanceof Error ? error.stack : undefined
       );
 
+      const userMessage = isRateLimit
+        ? 'Market data rate limit reached. Please try again in a minute.'
+        : isNetwork
+          ? 'Unable to reach market data service. Check your connection.'
+          : 'Market data temporarily unavailable. Please try again.';
+
       throw new HttpException(
-        'Yahoo Finance screener unavailable',
+        { message: userMessage, code: 'MARKET_SCREENER_UNAVAILABLE' },
         HttpStatus.BAD_GATEWAY
       );
     }
@@ -123,16 +140,16 @@ export class MarketScreenerService {
     const quotesArray = Array.isArray(quotes) ? quotes : [quotes];
 
     let items: MarketScreenerItem[] = quotesArray
-      .filter((q) => q.regularMarketPrice != null)
-      .map((q) => ({
-        symbol: q.symbol,
-        name: q.shortName || q.longName || q.symbol,
-        price: q.regularMarketPrice ?? 0,
-        change: q.regularMarketChange ?? 0,
-        changePercent: q.regularMarketChangePercent ?? 0,
-        volume: q.regularMarketVolume,
-        marketCap: q.marketCap,
-        currency: q.currency || 'USD'
+      .filter((q: any) => q?.regularMarketPrice != null)
+      .map((q: any) => ({
+        symbol: q?.symbol ?? '',
+        name: q?.shortName || q?.longName || q?.symbol || '',
+        price: q?.regularMarketPrice ?? 0,
+        change: q?.regularMarketChange ?? 0,
+        changePercent: q?.regularMarketChangePercent ?? 0,
+        volume: q?.regularMarketVolume,
+        marketCap: q?.marketCap,
+        currency: q?.currency || 'USD'
       }));
 
     // Sort based on category
@@ -164,30 +181,32 @@ export class MarketScreenerService {
       count
     });
 
-    return result.quotes.map((q) => ({
-      symbol: q.symbol,
-      name: q.shortName || q.longName || q.symbol,
-      price: q.regularMarketPrice ?? 0,
-      change: q.regularMarketChange ?? 0,
-      changePercent: q.regularMarketChangePercent ?? 0,
-      volume: q.regularMarketVolume,
-      marketCap: q.marketCap,
-      currency: q.currency || 'USD'
+    const quotes = Array.isArray(result?.quotes) ? result.quotes : [];
+    return quotes.map((q: any) => ({
+      symbol: q?.symbol ?? '',
+      name: q?.shortName || q?.longName || q?.symbol || '',
+      price: q?.regularMarketPrice ?? 0,
+      change: q?.regularMarketChange ?? 0,
+      changePercent: q?.regularMarketChangePercent ?? 0,
+      volume: q?.regularMarketVolume,
+      marketCap: q?.marketCap,
+      currency: q?.currency || 'USD'
     }));
   }
 
   private async fetchTrending(count: number): Promise<MarketScreenerItem[]> {
     const trending = await this.yahooFinance.trendingSymbols('US', { count });
-    const symbols = trending.quotes.map((q) => q.symbol);
+    const quotes = Array.isArray(trending?.quotes) ? trending.quotes : [];
+    const symbols = quotes.map((q: any) => q?.symbol).filter(Boolean);
 
     if (symbols.length === 0) {
       return [];
     }
 
-    const quotes = await this.yahooFinance.quote(symbols);
-    const quotesArray = Array.isArray(quotes) ? quotes : [quotes];
+    const quoteResult = await this.yahooFinance.quote(symbols);
+    const quotesArray = Array.isArray(quoteResult) ? quoteResult : [quoteResult];
 
-    return quotesArray.map((q) => ({
+    return quotesArray.map((q: any) => ({
       symbol: q.symbol,
       name: q.shortName || q.longName || q.symbol,
       price: q.regularMarketPrice ?? 0,
