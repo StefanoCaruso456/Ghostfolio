@@ -168,6 +168,16 @@ export class GfHomeHoldingsComponent implements OnDestroy, OnInit {
     });
   }
 
+  private fetchHoldingsQuick() {
+    const filters = this.userService.getFilters();
+
+    if (this.holdingType === 'CLOSED') {
+      filters.push({ id: 'CLOSED', type: 'HOLDING_TYPE' });
+    }
+
+    return this.dataService.fetchPortfolioHoldingsQuick({ filters });
+  }
+
   private initialize() {
     this.viewModeFormControl.disable({ emitEvent: false });
 
@@ -193,21 +203,35 @@ export class GfHomeHoldingsComponent implements OnDestroy, OnInit {
 
     this.holdings = undefined;
 
+    // Phase 1: Fetch quick holdings (instant, ~5 seconds)
+    this.fetchHoldingsQuick()
+      .pipe(takeUntil(this.unsubscribeSubject))
+      .subscribe(({ holdings }) => {
+        // Only apply quick data if full data hasn't arrived yet
+        if (this.holdings === undefined) {
+          this.holdings = holdings;
+          this.updateTreemap(holdings);
+          this.changeDetectorRef.markForCheck();
+        }
+      });
+
+    // Phase 2: Fetch full holdings in background (may take minutes)
     this.fetchHoldings()
       .pipe(takeUntil(this.unsubscribeSubject))
       .subscribe(({ holdings }) => {
         this.holdings = holdings;
-
-        // Limit treemap to top 50 holdings by allocation for readability
-        if (holdings?.length > 50) {
-          this.holdingsForTreemap = [...holdings]
-            .sort((a, b) => b.allocationInPercentage - a.allocationInPercentage)
-            .slice(0, 50);
-        } else {
-          this.holdingsForTreemap = holdings;
-        }
-
+        this.updateTreemap(holdings);
         this.changeDetectorRef.markForCheck();
       });
+  }
+
+  private updateTreemap(holdings: PortfolioPosition[]) {
+    if (holdings?.length > 50) {
+      this.holdingsForTreemap = [...holdings]
+        .sort((a, b) => b.allocationInPercentage - a.allocationInPercentage)
+        .slice(0, 50);
+    } else {
+      this.holdingsForTreemap = holdings;
+    }
   }
 }

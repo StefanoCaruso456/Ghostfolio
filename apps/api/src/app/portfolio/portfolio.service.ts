@@ -408,6 +408,272 @@ export class PortfolioService {
     return holdings;
   }
 
+  /**
+   * Fast holdings endpoint: aggregates positions from orders + live Yahoo
+   * quotes without running the heavy computeSnapshot() pipeline.
+   * Returns in ~5 seconds vs 60+ minutes for the full computation.
+   */
+  public async getHoldingsQuick({
+    filters,
+    impersonationId,
+    userId
+  }: {
+    filters?: Filter[];
+    impersonationId: string;
+    userId: string;
+  }): Promise<PortfolioPosition[]> {
+    userId = await this.getUserId(impersonationId, userId);
+    const user = await this.userService.user({ id: userId });
+    const userCurrency = this.getUserCurrency(user);
+
+    const { activities } =
+      await this.orderService.getOrdersForPortfolioCalculator({
+        filters,
+        userCurrency,
+        userId
+      });
+
+    if (activities.length === 0) {
+      return [];
+    }
+
+    // Aggregate positions from activities (simplified computeTransactionPoints)
+    const positionMap = new Map<
+      string,
+      {
+        currency: string;
+        dataSource: DataSource;
+        dateOfFirstActivity: string;
+        activitiesCount: number;
+        quantity: Big;
+        investment: Big;
+        dividend: Big;
+        fees: Big;
+        symbol: string;
+        tags: Tag[];
+      }
+    >();
+
+    // Sort activities by date ascending for correct accumulation
+    const sortedActivities = [...activities].sort(
+      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+    );
+
+    for (const activity of sortedActivities) {
+      const symbol = activity.SymbolProfile?.symbol;
+      if (!symbol) continue;
+
+      const factor = getFactor(activity.type);
+      if (factor === 0 && activity.type !== 'DIVIDEND') continue;
+
+      const qty = new Big(activity.quantity);
+      const unitPrice = new Big(activity.unitPrice);
+      const fee = new Big(activity.fee);
+
+      let pos = positionMap.get(symbol);
+      if (!pos) {
+        pos = {
+          symbol,
+          currency: activity.SymbolProfile.currency,
+          dataSource: activity.SymbolProfile.dataSource,
+          dateOfFirstActivity: format(new Date(activity.date), DATE_FORMAT),
+          activitiesCount: 0,
+          quantity: new Big(0),
+          investment: new Big(0),
+          dividend: new Big(0),
+          fees: new Big(0),
+          tags: []
+        };
+        positionMap.set(symbol, pos);
+      }
+
+      pos.activitiesCount++;
+
+      if (activity.type === 'DIVIDEND') {
+        pos.dividend = pos.dividend.plus(qty.mul(unitPrice));
+      } else {
+        pos.quantity = pos.quantity.plus(qty.mul(factor));
+        pos.investment = pos.investment.plus(qty.mul(unitPrice).mul(factor));
+      }
+
+      pos.fees = pos.fees.plus(fee);
+
+      // Merge tags
+      if (activity.tags) {
+        for (const tag of activity.tags) {
+          if (!pos.tags.some((t) => t.id === tag.id)) {
+            pos.tags.push(tag);
+          }
+        }
+      }
+    }
+
+    // Filter to only positions with quantity > 0 (open holdings)
+    const openPositions = Array.from(positionMap.values()).filter((p) =>
+      p.quantity.gt(0)
+    );
+
+    if (openPositions.length === 0) {
+      return [];
+    }
+
+    // Get symbol profiles for asset details
+    const assetProfileIdentifiers = openPositions.map(({ dataSource, symbol }) => ({
+      dataSource,
+      symbol
+    }));
+
+    const symbolProfiles =
+      await this.symbolProfileService.getSymbolProfiles(assetProfileIdentifiers);
+
+    const symbolProfileMap: { [symbol: string]: EnhancedSymbolProfile } = {};
+    for (const profile of symbolProfiles) {
+      symbolProfileMap[profile.symbol] = profile;
+    }
+
+    // Fetch live quotes for YAHOO symbols (same as Markets page)
+    const yahooItems = openPositions
+      .filter((p) => p.dataSource === DataSource.YAHOO)
+      .map(({ dataSource, symbol }) => ({ dataSource, symbol }));
+
+    let quotesBySymbol: { [symbol: string]: { marketPrice: number } } = {};
+
+    if (yahooItems.length > 0) {
+      try {
+        const quotes = await this.dataProviderService.getQuotes({
+          items: yahooItems,
+          requestTimeout: 20_000,
+          user
+        });
+
+        for (const [symbol, quote] of Object.entries(quotes)) {
+          if (quote?.marketPrice) {
+            quotesBySymbol[symbol] = { marketPrice: quote.marketPrice };
+          }
+        }
+
+        this.logger.log(
+          `HoldingsQuick: fetched ${Object.keys(quotesBySymbol).length}/${yahooItems.length} Yahoo quotes`
+        );
+      } catch (error) {
+        this.logger.warn(
+          `HoldingsQuick: Yahoo quotes failed, using fallback prices: ${error instanceof Error ? error.message : error}`
+        );
+      }
+    }
+
+    // Build PortfolioPosition[] response
+    let totalValueInBaseCurrency = new Big(0);
+    const holdingsPreAlloc: Array<{
+      position: PortfolioPosition;
+      valueInBaseCurrency: Big;
+    }> = [];
+
+    for (const pos of openPositions) {
+      const profile = symbolProfileMap[pos.symbol];
+      if (!profile) continue;
+
+      // Get market price: prefer live quote, fall back to average price
+      const quote = quotesBySymbol[pos.symbol];
+      let marketPrice: number;
+
+      if (quote?.marketPrice) {
+        marketPrice = quote.marketPrice;
+      } else if (pos.investment.gt(0) && pos.quantity.gt(0)) {
+        // Fallback: use average purchase price
+        marketPrice = pos.investment.div(pos.quantity).toNumber();
+      } else {
+        marketPrice = 0;
+      }
+
+      // Convert to base currency
+      const valueInSymbolCurrency = pos.quantity.toNumber() * marketPrice;
+      const valueInBase = this.exchangeRateDataService.toCurrency(
+        valueInSymbolCurrency,
+        pos.currency,
+        userCurrency
+      );
+
+      const investmentInBase = this.exchangeRateDataService.toCurrency(
+        pos.investment.toNumber(),
+        pos.currency,
+        userCurrency
+      );
+
+      const valueInBaseBig = new Big(valueInBase ?? 0);
+      totalValueInBaseCurrency = totalValueInBaseCurrency.plus(valueInBaseBig);
+
+      const netPerf = (valueInBase ?? 0) - (investmentInBase ?? 0);
+      const investmentNum = investmentInBase ?? 0;
+      const netPerfPercent =
+        investmentNum !== 0 ? netPerf / Math.abs(investmentNum) : 0;
+
+      holdingsPreAlloc.push({
+        valueInBaseCurrency: valueInBaseBig,
+        position: {
+          marketPrice,
+          activitiesCount: pos.activitiesCount,
+          allocationInPercentage: 0, // calculated after totals
+          assetClass: profile.assetClass,
+          assetSubClass: profile.assetSubClass,
+          countries: profile.countries,
+          currency: pos.currency,
+          dataSource: pos.dataSource,
+          dateOfFirstActivity: parseDate(pos.dateOfFirstActivity),
+          dividend: pos.dividend.toNumber(),
+          grossPerformance: netPerf, // simplified: same as net for quick view
+          grossPerformancePercent: netPerfPercent,
+          grossPerformancePercentWithCurrencyEffect: netPerfPercent,
+          grossPerformanceWithCurrencyEffect: netPerf,
+          holdings: profile.holdings?.map(
+            ({ allocationInPercentage, name }) => ({
+              allocationInPercentage,
+              name,
+              valueInBaseCurrency: valueInBaseBig
+                .mul(allocationInPercentage)
+                .toNumber()
+            })
+          ) ?? [],
+          investment: investmentNum,
+          name: profile.name,
+          netPerformance: netPerf,
+          netPerformancePercent: netPerfPercent,
+          netPerformancePercentWithCurrencyEffect: netPerfPercent,
+          netPerformanceWithCurrencyEffect: netPerf,
+          quantity: pos.quantity.toNumber(),
+          sectors: profile.sectors,
+          symbol: pos.symbol,
+          tags: pos.tags,
+          url: profile.url,
+          valueInBaseCurrency: valueInBase ?? 0
+        }
+      });
+    }
+
+    // Calculate allocation percentages
+    for (const item of holdingsPreAlloc) {
+      if (totalValueInBaseCurrency.gt(0)) {
+        item.position.allocationInPercentage = item.valueInBaseCurrency
+          .div(totalValueInBaseCurrency)
+          .toNumber();
+      }
+    }
+
+    // Apply search filter if present
+    let holdings = holdingsPreAlloc.map((item) => item.position);
+
+    const searchQuery = filters?.find(({ type }) => type === 'SEARCH_QUERY')?.id;
+    if (searchQuery) {
+      const fuse = new Fuse(holdings, {
+        keys: ['isin', 'name', 'symbol'],
+        threshold: 0.3
+      });
+      holdings = fuse.search(searchQuery).map(({ item }) => item);
+    }
+
+    return holdings;
+  }
+
   public async getInvestments({
     dateRange,
     filters,
