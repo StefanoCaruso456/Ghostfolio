@@ -11,6 +11,7 @@ import { ColorScheme } from '@ghostfolio/common/types';
 import { GfLineChartComponent } from '@ghostfolio/ui/line-chart';
 import { DataService } from '@ghostfolio/ui/services';
 
+import { HttpErrorResponse } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
@@ -35,7 +36,7 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { IonIcon } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { newspaperOutline } from 'ionicons/icons';
+import { closeOutline, newspaperOutline, refreshOutline } from 'ionicons/icons';
 import {
   Subject,
   debounceTime,
@@ -113,6 +114,8 @@ export class ResourcesMarketsComponent implements OnInit, OnDestroy {
   public tableDataSource = new MatTableDataSource<MarketScreenerItem>([]);
   public tableLoading = false;
   public tableError = '';
+  public showNewsFeatureTip = true;
+  private static readonly NEWS_TIP_STORAGE_KEY = 'gf-markets-news-feature-tip-dismissed';
 
   // Chart view
   private stockConfigs: ChartConfig[] = [
@@ -176,10 +179,19 @@ export class ResourcesMarketsComponent implements OnInit, OnDestroy {
     private dataService: DataService,
     private userService: UserService
   ) {
-    addIcons({ newspaperOutline });
+    addIcons({ closeOutline, newspaperOutline, refreshOutline });
   }
 
   public ngOnInit() {
+    try {
+      this.showNewsFeatureTip =
+        localStorage.getItem(
+          ResourcesMarketsComponent.NEWS_TIP_STORAGE_KEY
+        ) !== 'true';
+    } catch {
+      this.showNewsFeatureTip = true;
+    }
+
     this.userService.stateChanged
       .pipe(takeUntil(this.unsubscribeSubject))
       .subscribe((state) => {
@@ -248,6 +260,21 @@ export class ResourcesMarketsComponent implements OnInit, OnDestroy {
     this.loadTableData();
   }
 
+  public onRetryTable() {
+    this.loadTableData();
+  }
+
+  public onDismissNewsFeatureTip() {
+    this.showNewsFeatureTip = false;
+    this.changeDetectorRef.markForCheck();
+    try {
+      localStorage.setItem(
+        ResourcesMarketsComponent.NEWS_TIP_STORAGE_KEY,
+        'true'
+      );
+    } catch {}
+  }
+
   public onRangeChange(range: string) {
     this.selectedRange = range;
     this.loadAllVisibleCharts();
@@ -295,7 +322,7 @@ export class ResourcesMarketsComponent implements OnInit, OnDestroy {
       '- 3–5 bullet summary',
       '- Source',
       '- URL (as a clickable link)',
-      '- Thumbnail image (if available, render as markdown image)',
+      '- Thumbnail image as a clickable link to the article (markdown: [![Headline](thumbnail_url)](article_url))',
       '',
       'Show the top 3 articles, each clearly separated.'
     ].join('\n');
@@ -393,6 +420,23 @@ export class ResourcesMarketsComponent implements OnInit, OnDestroy {
     return volume.toLocaleString();
   }
 
+  private getMarketDataErrorMessage(err: HttpErrorResponse): string {
+    if (err?.status === 401) {
+      return $localize`Please sign in to load market data.`;
+    }
+    const body = err?.error;
+    if (body?.message && typeof body.message === 'string') {
+      return body.message;
+    }
+    if (err?.status && err.status >= 500) {
+      return $localize`Market data temporarily unavailable. Please try again.`;
+    }
+    if (err?.status === 0 || err?.message?.includes('Http failure')) {
+      return $localize`Unable to reach server. Check your connection and try again.`;
+    }
+    return $localize`Failed to load market data. Please try again.`;
+  }
+
   private loadTableData() {
     this.tableLoading = true;
     this.tableError = '';
@@ -412,8 +456,8 @@ export class ResourcesMarketsComponent implements OnInit, OnDestroy {
           this.tableLoading = false;
           this.changeDetectorRef.markForCheck();
         },
-        error: () => {
-          this.tableError = 'Failed to load market data';
+        error: (err: HttpErrorResponse) => {
+          this.tableError = this.getMarketDataErrorMessage(err);
           this.tableLoading = false;
           this.changeDetectorRef.markForCheck();
         }
