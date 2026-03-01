@@ -20,7 +20,7 @@ import { Subject, takeUntil } from 'rxjs';
   templateUrl: './tax-intelligence-page.html'
 })
 export class GfTaxIntelligencePageComponent implements OnDestroy, OnInit {
-  public activeTab: 'strategy' | 'prd' = 'strategy';
+  public activeTab: 'strategy' | 'prd' | 'impact' = 'strategy';
   public user: User;
 
   private unsubscribeSubject = new Subject<void>();
