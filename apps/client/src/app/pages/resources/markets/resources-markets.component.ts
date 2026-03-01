@@ -36,7 +36,12 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { IonIcon } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { closeOutline, newspaperOutline, refreshOutline } from 'ionicons/icons';
+import {
+  closeOutline,
+  newspaperOutline,
+  refreshOutline,
+  sparklesOutline
+} from 'ionicons/icons';
 import {
   Subject,
   debounceTime,
@@ -179,7 +184,12 @@ export class ResourcesMarketsComponent implements OnInit, OnDestroy {
     private dataService: DataService,
     private userService: UserService
   ) {
-    addIcons({ closeOutline, newspaperOutline, refreshOutline });
+    addIcons({
+      closeOutline,
+      newspaperOutline,
+      refreshOutline,
+      sparklesOutline
+    });
   }
 
   public ngOnInit() {
@@ -272,6 +282,14 @@ export class ResourcesMarketsComponent implements OnInit, OnDestroy {
         ResourcesMarketsComponent.NEWS_TIP_STORAGE_KEY,
         'true'
       );
+    } catch {}
+  }
+
+  public onShowNewsFeatureTipAgain() {
+    this.showNewsFeatureTip = true;
+    this.changeDetectorRef.markForCheck();
+    try {
+      localStorage.removeItem(ResourcesMarketsComponent.NEWS_TIP_STORAGE_KEY);
     } catch {}
   }
 
