@@ -2,6 +2,43 @@
   display: block;
 }
 
+// ── Tab Toggle Group ──
+.tab-toggle-group {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.tab-toggle {
+  background: rgb(var(--palette-background-card));
+  border: none;
+  border-radius: 24px;
+  box-shadow:
+    4px 4px 8px rgba(0, 0, 0, 0.06),
+    -4px -4px 8px rgba(255, 255, 255, 0.5);
+  color: rgba(var(--palette-foreground-text), 0.6);
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  padding: 0.5rem 1.5rem;
+  transition: all 0.2s ease;
+
+  &:hover {
+    color: rgba(var(--palette-foreground-text), 0.85);
+  }
+
+  &.active {
+    background: #36cfcc;
+    box-shadow:
+      inset 2px 2px 4px rgba(0, 0, 0, 0.12),
+      inset -2px -2px 4px rgba(255, 255, 255, 0.15);
+    color: #fff;
+    font-weight: 600;
+  }
+}
+
+// ── Card ──
 .tax-intelligence-card {
   background: rgb(var(--palette-background-card));
   border-radius: 16px;
@@ -11,11 +48,453 @@
   padding: 2rem;
 }
 
+// ── Section Titles ──
+.section-title {
+  border-bottom: 2px solid #36cfcc;
+  color: rgba(var(--palette-foreground-text), 0.9);
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  margin-top: 2rem;
+  padding-bottom: 0.4rem;
+
+  &:first-child {
+    margin-top: 0;
+  }
+}
+
+.subsection-title {
+  color: #36cfcc;
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+// ── Vision Text ──
+.vision-text {
+  font-size: 0.95rem;
+  line-height: 1.7;
+
+  strong {
+    color: #36cfcc;
+  }
+}
+
+// ── Info Table (key-value rows) ──
+.info-table {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.info-row {
+  align-items: center;
+  border-bottom: 1px solid rgba(var(--palette-foreground-text), 0.08);
+  display: flex;
+  justify-content: space-between;
+  padding: 0.6rem 0;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.info-label {
+  color: rgba(var(--palette-foreground-text), 0.6);
+  flex-shrink: 0;
+  font-size: 0.85rem;
+  font-weight: 500;
+  max-width: 40%;
+}
+
+.info-value {
+  color: rgba(var(--palette-foreground-text), 0.9);
+  font-size: 0.85rem;
+  text-align: right;
+}
+
+.differentiator {
+  background: rgba(54, 207, 204, 0.08);
+  border-left: 3px solid #36cfcc;
+  border-radius: 0 8px 8px 0;
+  font-size: 0.9rem;
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+}
+
+// ── Lists ──
+.styled-list {
+  list-style: none;
+  padding: 0;
+
+  li {
+    font-size: 0.9rem;
+    padding: 0.4rem 0 0.4rem 1.2rem;
+    position: relative;
+
+    &::before {
+      color: #36cfcc;
+      content: '\2022';
+      font-size: 1.2em;
+      left: 0;
+      position: absolute;
+      top: 0.35rem;
+    }
+  }
+
+  &.compact li {
+    padding: 0.25rem 0 0.25rem 1.2rem;
+  }
+
+  &.features-out li::before {
+    color: rgba(var(--palette-foreground-text), 0.3);
+    content: '\2013';
+  }
+}
+
+.approach-list {
+  counter-reset: approach;
+  list-style: none;
+  padding: 0;
+
+  li {
+    counter-increment: approach;
+    font-size: 0.9rem;
+    padding: 0.5rem 0 0.5rem 2rem;
+    position: relative;
+
+    &::before {
+      align-items: center;
+      background: #36cfcc;
+      border-radius: 50%;
+      color: #fff;
+      content: counter(approach);
+      display: flex;
+      font-size: 0.7rem;
+      font-weight: 700;
+      height: 20px;
+      justify-content: center;
+      left: 0;
+      position: absolute;
+      top: 0.55rem;
+      width: 20px;
+    }
+  }
+}
+
+// ── Persona Card ──
+.persona-card {
+  background: rgba(54, 207, 204, 0.04);
+  border-radius: 12px;
+  box-shadow:
+    inset 2px 2px 4px rgba(0, 0, 0, 0.04),
+    inset -2px -2px 4px rgba(255, 255, 255, 0.3);
+  padding: 1.25rem;
+
+  h3 {
+    color: #36cfcc;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+  }
+}
+
+.core-pain {
+  border-left: 3px solid #36cfcc;
+  color: rgba(var(--palette-foreground-text), 0.85);
+  font-style: italic;
+  margin-top: 0.75rem;
+  padding-left: 1rem;
+}
+
+// ── Challenge Grid ──
+.challenge-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr 1fr;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.challenge-block {
+  background: rgba(var(--palette-foreground-text), 0.02);
+  border-radius: 10px;
+  box-shadow:
+    3px 3px 6px rgba(0, 0, 0, 0.04),
+    -3px -3px 6px rgba(255, 255, 255, 0.3);
+  padding: 1rem;
+
+  h4 {
+    color: #36cfcc;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+  }
+}
+
+// ── Do's / Don'ts ──
+.dos-donts {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr 1fr;
+  margin-top: 1rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.do-block,
+.dont-block {
+  border-radius: 10px;
+  padding: 1rem;
+
+  h4 {
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+  }
+}
+
+.do-block {
+  background: rgba(54, 207, 204, 0.06);
+  border-left: 3px solid #36cfcc;
+
+  h4 {
+    color: #36cfcc;
+  }
+}
+
+.dont-block {
+  background: rgba(255, 100, 100, 0.04);
+  border-left: 3px solid rgba(255, 100, 100, 0.5);
+
+  h4 {
+    color: rgba(255, 100, 100, 0.7);
+  }
+}
+
+// ── Metric Card ──
+.metric-card {
+  border-radius: 10px;
+  margin-bottom: 1rem;
+  padding: 1rem;
+
+  h4 {
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+    text-transform: uppercase;
+  }
+
+  p {
+    font-size: 0.95rem;
+    margin: 0;
+  }
+
+  &.north-star {
+    background: rgba(54, 207, 204, 0.08);
+    border: 1px solid rgba(54, 207, 204, 0.25);
+
+    h4 {
+      color: #36cfcc;
+    }
+  }
+}
+
+// ── Use Case Grid ──
+.use-case-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.use-case-item {
+  align-items: center;
+  display: flex;
+  font-size: 0.9rem;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+}
+
+.use-case-num {
+  align-items: center;
+  background: #36cfcc;
+  border-radius: 50%;
+  color: #fff;
+  display: flex;
+  flex-shrink: 0;
+  font-size: 0.7rem;
+  font-weight: 700;
+  height: 22px;
+  justify-content: center;
+  width: 22px;
+}
+
+// ── Tool Grid ──
+.tool-note {
+  color: rgba(var(--palette-foreground-text), 0.55);
+  font-size: 0.8rem;
+  font-style: italic;
+  margin-bottom: 0.75rem;
+}
+
+.tool-grid {
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: 1fr 1fr 1fr;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.tool-item {
+  background: rgba(var(--palette-foreground-text), 0.02);
+  border-radius: 8px;
+  box-shadow:
+    2px 2px 4px rgba(0, 0, 0, 0.04),
+    -2px -2px 4px rgba(255, 255, 255, 0.3);
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.6rem 0.8rem;
+
+  code {
+    color: #36cfcc;
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+
+  span {
+    color: rgba(var(--palette-foreground-text), 0.6);
+    font-size: 0.75rem;
+  }
+}
+
+// ── GTM Card ──
+.gtm-card {
+  background: rgba(54, 134, 207, 0.06);
+  border-left: 3px solid #3686cf;
+  border-radius: 0 10px 10px 0;
+  padding: 1rem;
+
+  p {
+    font-size: 0.9rem;
+    margin: 0.3rem 0;
+  }
+}
+
+// ── Timeline ──
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  position: relative;
+
+  &::before {
+    background: rgba(54, 207, 204, 0.3);
+    content: '';
+    height: 100%;
+    left: 10px;
+    position: absolute;
+    top: 0;
+    width: 2px;
+  }
+}
+
+.timeline-phase {
+  align-items: center;
+  display: flex;
+  font-size: 0.9rem;
+  gap: 1rem;
+  padding: 0.6rem 0 0.6rem 2rem;
+  position: relative;
+
+  &::before {
+    background: #36cfcc;
+    border-radius: 50%;
+    content: '';
+    height: 10px;
+    left: 6px;
+    position: absolute;
+    width: 10px;
+  }
+}
+
+.phase-label {
+  background: #36cfcc;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.15rem 0.5rem;
+}
+
+// ── PRD Header ──
+.prd-header {
+  margin-bottom: 1rem;
+}
+
+.compact-meta .info-row {
+  padding: 0.35rem 0;
+}
+
+// ── Dark Theme ──
 :host-context(.theme-dark) {
   .tax-intelligence-card {
     background: rgb(var(--palette-background-card-dark, 45, 45, 45));
     box-shadow:
       6px 6px 12px rgba(0, 0, 0, 0.3),
       -6px -6px 12px rgba(255, 255, 255, 0.05);
+  }
+
+  .tab-toggle {
+    background: rgb(var(--palette-background-card-dark, 45, 45, 45));
+    box-shadow:
+      4px 4px 8px rgba(0, 0, 0, 0.3),
+      -4px -4px 8px rgba(255, 255, 255, 0.04);
+
+    &.active {
+      background: #36cfcc;
+    }
+  }
+
+  .persona-card {
+    background: rgba(54, 207, 204, 0.06);
+    box-shadow:
+      inset 2px 2px 4px rgba(0, 0, 0, 0.15),
+      inset -2px -2px 4px rgba(255, 255, 255, 0.02);
+  }
+
+  .challenge-block {
+    background: rgba(255, 255, 255, 0.03);
+    box-shadow:
+      3px 3px 6px rgba(0, 0, 0, 0.2),
+      -3px -3px 6px rgba(255, 255, 255, 0.02);
+  }
+
+  .tool-item {
+    background: rgba(255, 255, 255, 0.03);
+    box-shadow:
+      2px 2px 4px rgba(0, 0, 0, 0.2),
+      -2px -2px 4px rgba(255, 255, 255, 0.02);
+  }
+
+  .differentiator {
+    background: rgba(54, 207, 204, 0.1);
+  }
+
+  .dont-block {
+    background: rgba(255, 100, 100, 0.06);
+  }
+
+  .gtm-card {
+    background: rgba(54, 134, 207, 0.08);
   }
 }
