@@ -29,7 +29,14 @@ import { PortfolioSnapshotProcessor } from './portfolio-snapshot.processor';
           process.env.PROCESSOR_PORTFOLIO_SNAPSHOT_COMPUTATION_TIMEOUT ??
             DEFAULT_PROCESSOR_PORTFOLIO_SNAPSHOT_COMPUTATION_TIMEOUT.toString(),
           10
-        )
+        ),
+        // Allow up to 10 stall detections before killing the job.
+        // Heavy portfolios (1000+ symbols) block the event loop;
+        // combined with setImmediate yielding in computeSnapshot this
+        // gives the job enough runway to complete.
+        maxStalledCount: 10,
+        // Check for stalled jobs less aggressively (every 5 minutes)
+        stalledInterval: 300_000
       }
     }),
     ConfigurationModule,
