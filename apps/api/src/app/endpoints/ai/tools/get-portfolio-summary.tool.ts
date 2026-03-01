@@ -30,8 +30,12 @@ export function buildPortfolioSummary(
     const holdings = Object.values(details.holdings);
 
     if (holdings.length === 0) {
+      // Distinguish between a genuinely empty portfolio and a failed data fetch.
+      // When safeGetDetails() catches an error, it returns { holdings: {}, hasErrors: true }.
+      const isDegraded = details.hasErrors;
+
       return {
-        status: 'success',
+        status: isDegraded ? 'error' : 'success',
         data: {
           holdingsCount: 0,
           cashPct: null,
@@ -40,11 +44,21 @@ export function buildPortfolioSummary(
           accountsCount: Object.keys(details.accounts).length,
           baseCurrency: input.userCurrency
         },
-        message: 'Portfolio is empty — no holdings found.',
+        message: isDegraded
+          ? 'Unable to retrieve portfolio data — the portfolio service encountered an error. The user may have holdings that could not be loaded.'
+          : 'Portfolio is empty — no holdings found.',
         verification: createVerificationResult({
-          passed: true,
-          confidence: 1.0,
-          warnings: ['Portfolio has zero holdings'],
+          passed: !isDegraded,
+          confidence: isDegraded ? 0.1 : 1.0,
+          warnings: isDegraded
+            ? [
+                'Portfolio data fetch failed — holdings may exist but could not be loaded',
+                'Recommend retrying or checking portfolio service health'
+              ]
+            : ['Portfolio has zero holdings'],
+          errors: isDegraded
+            ? ['Portfolio service returned an error — empty result is not reliable']
+            : undefined,
           sources: ['ghostfolio-portfolio-service'],
           domainRulesChecked: DOMAIN_RULES_CHECKED,
           verificationType: 'confidence_scoring'

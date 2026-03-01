@@ -826,8 +826,11 @@ export class AiService {
     });
 
     // ── Safe portfolio data fetcher ─────────────────────────────────
-    // Wraps portfolioService calls to never throw; returns hasErrors: true
-    // on failure so portfolio tools degrade gracefully instead of aborting.
+    // Prefers getDetailsQuick() which computes holdings directly from
+    // activities + live quotes — no Redis cache or BullMQ job queue
+    // dependency. Falls back to getDetails() if quick path fails.
+    // NOTE: Tools MUST check details.hasErrors when holdings is empty to
+    // distinguish a genuine empty portfolio from a failed data fetch.
     const safeGetDetails = async (
       opts: { withSummary?: boolean } = {}
     ): Promise<
@@ -836,20 +839,54 @@ export class AiService {
         _degraded?: boolean;
       }
     > => {
+      // 1. Try getDetailsQuick — computes holdings in-process from
+      //    activities + live quotes. No Redis/BullMQ dependency.
       try {
-        return await this.portfolioService.getDetails({
+        const result = await this.portfolioService.getDetailsQuick({
+          userId,
+          impersonationId: undefined
+        });
+
+        const holdingsCount = Object.keys(result.holdings).length;
+
+        Logger.debug(
+          `portfolioService.getDetailsQuick() returned ${holdingsCount} holdings, hasErrors=${result.hasErrors} for userId=${userId}`,
+          'AiService'
+        );
+
+        return result;
+      } catch (quickErr) {
+        Logger.warn(
+          `portfolioService.getDetailsQuick() failed for userId=${userId}, falling back to getDetails(): ${quickErr instanceof Error ? quickErr.message : String(quickErr)}`,
+          'AiService'
+        );
+      }
+
+      // 2. Fallback to getDetails (uses Redis + BullMQ snapshot pipeline)
+      try {
+        const result = await this.portfolioService.getDetails({
           userId,
           impersonationId: undefined,
           withSummary: opts.withSummary
         });
+
+        const holdingsCount = Object.keys(result.holdings).length;
+
+        Logger.debug(
+          `portfolioService.getDetails() fallback returned ${holdingsCount} holdings, hasErrors=${result.hasErrors} for userId=${userId}`,
+          'AiService'
+        );
+
+        return result;
       } catch (err) {
-        Logger.warn(
-          `portfolioService.getDetails() failed, returning degraded result: ${err instanceof Error ? err.message : String(err)}`,
+        Logger.error(
+          `portfolioService.getDetails() fallback also failed for userId=${userId}: ${err instanceof Error ? err.stack : String(err)}`,
           'AiService'
         );
 
         // Return a minimal result so tools can produce a meaningful "unavailable" response
-        // instead of crashing the entire tool call
+        // instead of crashing the entire tool call.
+        // Tools check hasErrors to distinguish this from a genuine empty portfolio.
         return {
           holdings: {},
           accounts: {},
@@ -868,6 +905,28 @@ export class AiService {
         _degraded?: boolean;
       }
     > => {
+      // 1. Try getPerformanceQuick — computes in-process, no Redis/BullMQ.
+      //    Note: does not support dateRange filtering (always returns full range).
+      try {
+        const result = await this.portfolioService.getPerformanceQuick({
+          userId,
+          impersonationId: undefined
+        });
+
+        Logger.debug(
+          `portfolioService.getPerformanceQuick() succeeded for userId=${userId}`,
+          'AiService'
+        );
+
+        return result;
+      } catch (quickErr) {
+        Logger.warn(
+          `portfolioService.getPerformanceQuick() failed for userId=${userId}, falling back to getPerformance(): ${quickErr instanceof Error ? quickErr.message : String(quickErr)}`,
+          'AiService'
+        );
+      }
+
+      // 2. Fallback to getPerformance (uses Redis + BullMQ snapshot pipeline)
       try {
         return await this.portfolioService.getPerformance({
           userId,
@@ -875,8 +934,8 @@ export class AiService {
           dateRange
         });
       } catch (err) {
-        Logger.warn(
-          `portfolioService.getPerformance() failed, returning degraded result: ${err instanceof Error ? err.message : String(err)}`,
+        Logger.error(
+          `portfolioService.getPerformance() fallback also failed for userId=${userId}: ${err instanceof Error ? err.message : String(err)}`,
           'AiService'
         );
 
