@@ -109,6 +109,7 @@ export class ExportService {
             id,
             isExcluded,
             name,
+            plaidAccountId: null as string,
             platformId
           };
         }

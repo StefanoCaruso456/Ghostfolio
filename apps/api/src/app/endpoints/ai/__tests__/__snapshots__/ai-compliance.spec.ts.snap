@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`E) Cost Projections cost projection snapshot should match snapshot for default assumptions 1`] = `
+[
+  {
+    "costPerQuery": 0.0112,
+    "costPerUser": 1.01,
+    "queriesPerMonth": 9000,
+    "users": 100,
+  },
+  {
+    "costPerQuery": 0.0112,
+    "costPerUser": 1.01,
+    "queriesPerMonth": 90000,
+    "users": 1000,
+  },
+  {
+    "costPerQuery": 0.0112,
+    "costPerUser": 1.01,
+    "queriesPerMonth": 900000,
+    "users": 10000,
+  },
+  {
+    "costPerQuery": 0.0112,
+    "costPerUser": 1.01,
+    "queriesPerMonth": 9000000,
+    "users": 100000,
+  },
+]
+`;

@@ -40,6 +40,8 @@ import {
   ImportResponse,
   InfoItem,
   LookupResponse,
+  MarketChartResponse,
+  MarketScreenerResponse,
   MarketDataDetailsResponse,
   MarketDataOfMarketsResponse,
   OAuthResponse,
@@ -79,7 +81,7 @@ import {
 import { format, parseISO } from 'date-fns';
 import { cloneDeep, groupBy, isNumber } from 'lodash';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, timeout } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -88,19 +90,71 @@ export class DataService {
   public constructor(private http: HttpClient) {}
 
   public chatWithAi({
+    attachments,
     conversationId,
     history,
-    message
+    message,
+    traceId,
+    triggerSource
   }: {
+    attachments?: {
+      content: string;
+      fileName: string;
+      mimeType: string;
+      size: number;
+    }[];
     conversationId?: string;
     history?: { content: string; role: 'assistant' | 'user' }[];
     message: string;
+    traceId?: string;
+    triggerSource?: string;
   }) {
-    return this.http.post<AiChatResponse>('/api/v1/ai/chat', {
-      conversationId,
-      history,
-      message
-    });
+    return this.http
+      .post<AiChatResponse>('/api/v1/ai/chat', {
+        attachments,
+        conversationId,
+        history,
+        message,
+        traceId,
+        triggerSource
+      })
+      .pipe(
+        // 180s frontend safety net — slightly longer than backend's 150s
+        // so the backend timeout error propagates cleanly first.
+        timeout(180_000)
+      );
+  }
+
+  public deleteAiConversation(id: string) {
+    return this.http.delete<void>(`/api/v1/ai/conversations/${id}`);
+  }
+
+  public getAiConversations() {
+    return this.http.get<
+      {
+        createdAt: string;
+        id: string;
+        title: string;
+        updatedAt: string;
+      }[]
+    >('/api/v1/ai/conversations');
+  }
+
+  public getAiConversation(id: string) {
+    return this.http.get<{
+      id: string;
+      messages: {
+        content: string;
+        createdAt: string;
+        id: string;
+        role: string;
+      }[];
+      title: string;
+    }>(`/api/v1/ai/conversations/${id}`);
+  }
+
+  public updateAiConversation(id: string, data: { title: string }) {
+    return this.http.patch(`/api/v1/ai/conversations/${id}`, data);
   }
 
   public buildFiltersAsQueryParams({ filters }: { filters?: Filter[] }) {
@@ -329,6 +383,94 @@ export class DataService {
 
   public deleteAccountBalance(aId: string) {
     return this.http.delete<any>(`/api/v1/account-balance/${aId}`);
+  }
+
+  public createPlaidLinkToken() {
+    return this.http.post<{ linkToken: string }>(
+      '/api/v1/plaid/link-token',
+      {}
+    );
+  }
+
+  public exchangePlaidPublicToken(data: {
+    publicToken: string;
+    institutionId: string;
+    institutionName: string;
+    accountId?: string;
+  }) {
+    return this.http.post<any>('/api/v1/plaid/exchange-token', data);
+  }
+
+  public syncPlaidItem(id: string) {
+    return this.http.post<{ synced: number }>(`/api/v1/plaid/${id}/sync`, {});
+  }
+
+  public disconnectPlaidItem(id: string) {
+    return this.http.delete<void>(`/api/v1/plaid/${id}`);
+  }
+
+  public connectSnaptrade() {
+    return this.http.post<{ redirectUri: string }>(
+      '/api/v1/snaptrade/connect',
+      {}
+    );
+  }
+
+  public snaptradeCallback(authorizationId: string) {
+    return this.http.post<{ id: string; synced: number }>(
+      '/api/v1/snaptrade/callback',
+      { authorizationId }
+    );
+  }
+
+  public syncSnaptradeConnection(id: string) {
+    return this.http.post<{ synced: number }>(
+      `/api/v1/snaptrade/${id}/sync`,
+      {}
+    );
+  }
+
+  public disconnectSnaptradeConnection(id: string) {
+    return this.http.delete<void>(`/api/v1/snaptrade/${id}`);
+  }
+
+  public fetchMarketChart(symbol: string, range: string) {
+    return this.http.get<MarketChartResponse>('/api/v1/market-chart', {
+      params: { symbol, range }
+    });
+  }
+
+  public fetchNews(symbols?: string[], limit?: number) {
+    const params: any = {};
+
+    if (symbols?.length) {
+      params.symbols = symbols.join(',');
+    }
+
+    if (limit) {
+      params.limit = limit.toString();
+    }
+
+    return this.http.get<{
+      items: {
+        title: string;
+        publisher: string | null;
+        url: string | null;
+        thumbnail: string | null;
+        publishedAt: string;
+        source: string;
+      }[];
+    }>('/api/v1/news', { params });
+  }
+
+  public fetchMarketScreener(
+    category: string,
+    count: number = 20,
+    market: string = 'stocks'
+  ) {
+    return this.http.get<MarketScreenerResponse>('/api/v1/market-screener', {
+      params: { category, count: count.toString(), market }
+    });
   }
 
   public deleteActivities({ filters }) {
@@ -584,6 +726,66 @@ export class DataService {
       );
   }
 
+  public fetchPortfolioDetailsQuick({
+    filters
+  }: {
+    filters?: Filter[];
+  } = {}): Observable<PortfolioDetails> {
+    const params = this.buildFiltersAsQueryParams({ filters });
+
+    return this.http
+      .get<any>('/api/v1/portfolio/details-quick', {
+        params
+      })
+      .pipe(
+        map((response) => {
+          if (response.holdings) {
+            for (const symbol of Object.keys(response.holdings)) {
+              response.holdings[symbol].assetClassLabel = translate(
+                response.holdings[symbol].assetClass
+              );
+
+              response.holdings[symbol].assetSubClassLabel = translate(
+                response.holdings[symbol].assetSubClass
+              );
+
+              response.holdings[symbol].dateOfFirstActivity = response.holdings[
+                symbol
+              ].dateOfFirstActivity
+                ? parseISO(response.holdings[symbol].dateOfFirstActivity)
+                : undefined;
+
+              response.holdings[symbol].value = isNumber(
+                response.holdings[symbol].value
+              )
+                ? response.holdings[symbol].value
+                : response.holdings[symbol].valueInPercentage;
+            }
+          }
+
+          if (response.summary?.dateOfFirstActivity) {
+            response.summary.dateOfFirstActivity = parseISO(
+              response.summary.dateOfFirstActivity
+            );
+          }
+
+          return response;
+        })
+      );
+  }
+
+  public fetchPortfolioPerformanceQuick(): Observable<PortfolioPerformanceResponse> {
+    return this.http.get<any>('/api/v1/portfolio/performance-quick').pipe(
+      map((response) => {
+        if (response.firstOrderDate) {
+          response.firstOrderDate = parseISO(response.firstOrderDate);
+        }
+
+        return response;
+      })
+    );
+  }
+
   public fetchPortfolioHoldings({
     filters,
     range
@@ -599,6 +801,48 @@ export class DataService {
 
     return this.http
       .get<PortfolioHoldingsResponse>('/api/v1/portfolio/holdings', {
+        params
+      })
+      .pipe(
+        map((response) => {
+          if (response.holdings) {
+            for (const symbol of Object.keys(response.holdings)) {
+              response.holdings[symbol].assetClassLabel = translate(
+                response.holdings[symbol].assetClass
+              );
+
+              response.holdings[symbol].assetSubClassLabel = translate(
+                response.holdings[symbol].assetSubClass
+              );
+
+              response.holdings[symbol].dateOfFirstActivity = response.holdings[
+                symbol
+              ].dateOfFirstActivity
+                ? parseISO(response.holdings[symbol].dateOfFirstActivity)
+                : undefined;
+
+              response.holdings[symbol].value = isNumber(
+                response.holdings[symbol].value
+              )
+                ? response.holdings[symbol].value
+                : response.holdings[symbol].valueInPercentage;
+            }
+          }
+
+          return response;
+        })
+      );
+  }
+
+  public fetchPortfolioHoldingsQuick({
+    filters
+  }: {
+    filters?: Filter[];
+  } = {}) {
+    const params = this.buildFiltersAsQueryParams({ filters });
+
+    return this.http
+      .get<PortfolioHoldingsResponse>('/api/v1/portfolio/holdings-quick', {
         params
       })
       .pipe(

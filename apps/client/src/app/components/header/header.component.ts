@@ -42,6 +42,7 @@ import { IonIcon } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
   closeOutline,
+  ellipsisHorizontalOutline,
   logoGithub,
   menuOutline,
   optionsOutline,
@@ -101,7 +102,6 @@ export class GfHeaderComponent implements OnChanges {
   @Input() user: User;
 
   @Output() signOut = new EventEmitter<void>();
-  @Output() toggleAiSidebar = new EventEmitter<void>();
 
   @ViewChild('assistant') assistantElement: GfAssistantComponent;
   @ViewChild('assistantTrigger') assistentMenuTriggerElement: MatMenuTrigger;
@@ -120,20 +120,33 @@ export class GfHeaderComponent implements OnChanges {
   public internalRoutes = internalRoutes;
   public isMenuOpen: boolean;
   public routeAbout = publicRoutes.about.path;
+  public routeAiChat = internalRoutes.aiChat.path;
   public routeFeatures = publicRoutes.features.path;
   public routeMarkets = publicRoutes.markets.path;
+  public routeNews = internalRoutes.news.path;
   public routePricing = publicRoutes.pricing.path;
   public routeResources = publicRoutes.resources.path;
   public routerLinkAbout = publicRoutes.about.routerLink;
   public routerLinkAccount = internalRoutes.account.routerLink;
   public routerLinkAccounts = internalRoutes.accounts.routerLink;
   public routerLinkAdminControl = internalRoutes.adminControl.routerLink;
+  public routerLinkAiChat = internalRoutes.aiChat.routerLink;
   public routerLinkFeatures = publicRoutes.features.routerLink;
+  public routerLinkGlossary =
+    publicRoutes.resources.subRoutes.guides.routerLink;
+  public routerLinkGuides = publicRoutes.resources.subRoutes.guides.routerLink;
+  public routerLinkHoldings = internalRoutes.home.routerLink;
   public routerLinkMarkets = publicRoutes.markets.routerLink;
+  public routerLinkNews = internalRoutes.news.routerLink;
   public routerLinkPortfolio = internalRoutes.portfolio.routerLink;
   public routerLinkPricing = publicRoutes.pricing.routerLink;
   public routerLinkRegister = publicRoutes.register.routerLink;
   public routerLinkResources = publicRoutes.resources.routerLink;
+  public routerLinkSummary = internalRoutes.home.subRoutes.summary.routerLink;
+  public routerLinkTaxIntelligence = internalRoutes.taxIntelligence.routerLink;
+  public routeTaxIntelligence = internalRoutes.taxIntelligence.path;
+  public routerLinkWatchlist =
+    internalRoutes.home.subRoutes.watchlist.routerLink;
 
   private unsubscribeSubject = new Subject<void>();
 
@@ -158,6 +171,7 @@ export class GfHeaderComponent implements OnChanges {
 
     addIcons({
       closeOutline,
+      ellipsisHorizontalOutline,
       logoGithub,
       menuOutline,
       optionsOutline,

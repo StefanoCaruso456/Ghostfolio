@@ -66,10 +66,10 @@ describe('Verification Gate: enforceVerificationGate', () => {
     expect((gate as { reason: string }).reason).toContain('Something failed');
   });
 
-  it('G002: blocks when domainRulesFailed is non-empty', () => {
+  it('G002: blocks when domainRulesFailed is non-empty and passed=false', () => {
     const v = createVerificationResult({
-      passed: true,
-      confidence: 1.0,
+      passed: false,
+      confidence: 0,
       domainRulesFailed: ['error-free-commit-gate']
     });
 
@@ -80,8 +80,23 @@ describe('Verification Gate: enforceVerificationGate', () => {
 
     expect(gate.decision).toBe('block');
     expect((gate as { reason: string }).reason).toContain(
-      'error-free-commit-gate'
+      'Verification failed'
     );
+  });
+
+  it('G002b: allows continue when domainRulesFailed is non-empty but passed=true (degraded)', () => {
+    const v = createVerificationResult({
+      passed: true,
+      confidence: 0.8,
+      domainRulesFailed: ['market-prices-fetched']
+    });
+
+    const gate = enforceVerificationGate(v, {
+      highStakes: false,
+      minConfidence: 0.7
+    });
+
+    expect(gate.decision).toBe('continue');
   });
 
   it('G003: requests human_review on highStakes + confidence < minConfidence', () => {

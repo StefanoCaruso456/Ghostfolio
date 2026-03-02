@@ -18,6 +18,7 @@ import {
   UNKNOWN_KEY
 } from '@ghostfolio/common/config';
 import {
+  InvestmentItem,
   PortfolioDetails,
   PortfolioDividendsResponse,
   PortfolioHoldingResponse,
@@ -44,6 +45,7 @@ import {
   Headers,
   HttpException,
   Inject,
+  Logger,
   Param,
   Put,
   Query,
@@ -62,6 +64,8 @@ import { UpdateHoldingTagsDto } from './update-holding-tags.dto';
 
 @Controller('portfolio')
 export class PortfolioController {
+  private readonly logger = new Logger(PortfolioController.name);
+
   public constructor(
     private readonly apiService: ApiService,
     private readonly configurationService: ConfigurationService,
@@ -103,23 +107,40 @@ export class PortfolioController {
       filterByTags
     });
 
-    const {
-      accounts,
-      createdAt,
-      hasErrors,
-      holdings,
-      markets,
-      marketsAdvanced,
-      platforms,
-      summary
-    } = await this.portfolioService.getDetails({
-      dateRange,
-      filters,
-      impersonationId,
-      withMarkets,
-      userId: this.request.user.id,
-      withSummary: true
-    });
+    let accounts: PortfolioDetails['accounts'] = {};
+    let createdAt: Date;
+    let hasErrors = false;
+    let holdings: PortfolioDetails['holdings'] = {};
+    let markets: PortfolioDetails['markets'];
+    let marketsAdvanced: PortfolioDetails['marketsAdvanced'];
+    let platforms: PortfolioDetails['platforms'] = {};
+    let summary: PortfolioDetails['summary'];
+
+    try {
+      ({
+        accounts,
+        createdAt,
+        hasErrors,
+        holdings,
+        markets,
+        marketsAdvanced,
+        platforms,
+        summary
+      } = await this.portfolioService.getDetails({
+        dateRange,
+        filters,
+        impersonationId,
+        withMarkets,
+        userId: this.request.user.id,
+        withSummary: true
+      }));
+    } catch (error) {
+      this.logger.error(
+        `getDetails failed for user ${this.request.user.id}: ${error instanceof Error ? error.message : error}`,
+        error instanceof Error ? error.stack : undefined
+      );
+      hasErrors = true;
+    }
 
     if (hasErrors || hasNotDefinedValuesInObject(holdings)) {
       hasError = true;
@@ -420,14 +441,148 @@ export class PortfolioController {
       filterByTags
     });
 
-    const holdings = await this.portfolioService.getHoldings({
-      dateRange,
-      filters,
-      impersonationId,
-      userId: this.request.user.id
+    try {
+      const holdings = await this.portfolioService.getHoldings({
+        dateRange,
+        filters,
+        impersonationId,
+        userId: this.request.user.id
+      });
+
+      return { holdings };
+    } catch (error) {
+      this.logger.error(
+        `getHoldings failed for user ${this.request.user.id}: ${error instanceof Error ? error.message : error}`,
+        error instanceof Error ? error.stack : undefined
+      );
+
+      return { holdings: [] };
+    }
+  }
+
+  @Get('holdings-quick')
+  @UseGuards(AuthGuard('jwt'), HasPermissionGuard)
+  @UseInterceptors(RedactValuesInResponseInterceptor)
+  @UseInterceptors(TransformDataSourceInRequestInterceptor)
+  @UseInterceptors(TransformDataSourceInResponseInterceptor)
+  public async getHoldingsQuick(
+    @Headers(HEADER_KEY_IMPERSONATION.toLowerCase()) impersonationId: string,
+    @Query('accounts') filterByAccounts?: string,
+    @Query('assetClasses') filterByAssetClasses?: string,
+    @Query('dataSource') filterByDataSource?: string,
+    @Query('holdingType') filterByHoldingType?: string,
+    @Query('query') filterBySearchQuery?: string,
+    @Query('symbol') filterBySymbol?: string,
+    @Query('tags') filterByTags?: string
+  ): Promise<PortfolioHoldingsResponse> {
+    const filters = this.apiService.buildFiltersFromQueryParams({
+      filterByAccounts,
+      filterByAssetClasses,
+      filterByDataSource,
+      filterByHoldingType,
+      filterBySearchQuery,
+      filterBySymbol,
+      filterByTags
     });
 
-    return { holdings };
+    try {
+      const holdings = await this.portfolioService.getHoldingsQuick({
+        filters,
+        impersonationId,
+        userId: this.request.user.id
+      });
+
+      return { holdings };
+    } catch (error) {
+      this.logger.error(
+        `getHoldingsQuick failed for user ${this.request.user.id}: ${error instanceof Error ? error.message : error}`,
+        error instanceof Error ? error.stack : undefined
+      );
+
+      return { holdings: [] };
+    }
+  }
+
+  @Get('details-quick')
+  @UseGuards(AuthGuard('jwt'), HasPermissionGuard)
+  @UseInterceptors(RedactValuesInResponseInterceptor)
+  @UseInterceptors(TransformDataSourceInRequestInterceptor)
+  @UseInterceptors(TransformDataSourceInResponseInterceptor)
+  public async getDetailsQuick(
+    @Headers(HEADER_KEY_IMPERSONATION.toLowerCase()) impersonationId: string,
+    @Query('accounts') filterByAccounts?: string,
+    @Query('assetClasses') filterByAssetClasses?: string,
+    @Query('dataSource') filterByDataSource?: string,
+    @Query('symbol') filterBySymbol?: string,
+    @Query('tags') filterByTags?: string
+  ): Promise<PortfolioDetails & { hasError: boolean }> {
+    const filters = this.apiService.buildFiltersFromQueryParams({
+      filterByAccounts,
+      filterByAssetClasses,
+      filterByDataSource,
+      filterBySymbol,
+      filterByTags
+    });
+
+    try {
+      const details = await this.portfolioService.getDetailsQuick({
+        filters,
+        impersonationId,
+        userId: this.request.user.id
+      });
+
+      return { ...details, hasError: false };
+    } catch (error) {
+      this.logger.error(
+        `getDetailsQuick failed for user ${this.request.user.id}: ${error instanceof Error ? error.message : error}`,
+        error instanceof Error ? error.stack : undefined
+      );
+
+      return {
+        hasError: true,
+        accounts: {},
+        createdAt: undefined,
+        holdings: {},
+        platforms: {},
+        summary: undefined
+      };
+    }
+  }
+
+  @Get('performance-quick')
+  @UseGuards(AuthGuard('jwt'), HasPermissionGuard)
+  @UseInterceptors(TransformDataSourceInRequestInterceptor)
+  @UseInterceptors(TransformDataSourceInResponseInterceptor)
+  public async getPerformanceQuick(
+    @Headers(HEADER_KEY_IMPERSONATION.toLowerCase()) impersonationId: string
+  ): Promise<PortfolioPerformanceResponse> {
+    try {
+      return await this.portfolioService.getPerformanceQuick({
+        impersonationId,
+        userId: this.request.user.id
+      });
+    } catch (error) {
+      this.logger.error(
+        `getPerformanceQuick failed for user ${this.request.user.id}: ${error instanceof Error ? error.message : error}`,
+        error instanceof Error ? error.stack : undefined
+      );
+
+      return {
+        chart: [],
+        hasErrors: true,
+        firstOrderDate: undefined,
+        performance: {
+          currentNetWorth: 0,
+          currentValueInBaseCurrency: 0,
+          netPerformance: 0,
+          netPerformancePercentage: 0,
+          netPerformancePercentageWithCurrencyEffect: 0,
+          netPerformanceWithCurrencyEffect: 0,
+          totalInvestment: 0,
+          totalInvestmentValueWithCurrencyEffect: 0
+        }
+      };
+    }
   }
 
   @Get('investments')
@@ -451,14 +606,29 @@ export class PortfolioController {
       filterByTags
     });
 
-    let { investments, streaks } = await this.portfolioService.getInvestments({
-      dateRange,
-      filters,
-      groupBy,
-      impersonationId,
-      savingsRate: this.request.user?.settings?.settings.savingsRate,
-      userId: this.request.user.id
-    });
+    let investments: InvestmentItem[];
+    let streaks: PortfolioInvestmentsResponse['streaks'];
+
+    try {
+      ({ investments, streaks } = await this.portfolioService.getInvestments({
+        dateRange,
+        filters,
+        groupBy,
+        impersonationId,
+        savingsRate: this.request.user?.settings?.settings.savingsRate,
+        userId: this.request.user.id
+      }));
+    } catch (error) {
+      this.logger.error(
+        `getInvestments failed for user ${this.request.user.id}: ${error instanceof Error ? error.message : error}`,
+        error instanceof Error ? error.stack : undefined
+      );
+
+      return {
+        investments: [],
+        streaks: { currentStreak: 0, longestStreak: 0 }
+      };
+    }
 
     if (
       hasReadRestrictedAccessPermission({
@@ -526,13 +696,38 @@ export class PortfolioController {
       filterByTags
     });
 
-    const performanceInformation = await this.portfolioService.getPerformance({
-      dateRange,
-      filters,
-      impersonationId,
-      withExcludedAccounts,
-      userId: this.request.user.id
-    });
+    let performanceInformation: PortfolioPerformanceResponse;
+
+    try {
+      performanceInformation = await this.portfolioService.getPerformance({
+        dateRange,
+        filters,
+        impersonationId,
+        withExcludedAccounts,
+        userId: this.request.user.id
+      });
+    } catch (error) {
+      this.logger.error(
+        `getPerformance failed for user ${this.request.user.id}: ${error instanceof Error ? error.message : error}`,
+        error instanceof Error ? error.stack : undefined
+      );
+
+      return {
+        chart: [],
+        hasErrors: true,
+        firstOrderDate: undefined,
+        performance: {
+          currentNetWorth: 0,
+          currentValueInBaseCurrency: 0,
+          netPerformance: 0,
+          netPerformancePercentage: 0,
+          netPerformancePercentageWithCurrencyEffect: 0,
+          netPerformanceWithCurrencyEffect: 0,
+          totalInvestment: 0,
+          totalInvestmentValueWithCurrencyEffect: 0
+        }
+      };
+    }
 
     if (
       hasReadRestrictedAccessPermission({

@@ -95,6 +95,9 @@ export interface TraceLevelSummary {
   /** ISO-8601 timestamp */
   timestamp: string;
 
+  /** How the message was triggered (e.g. 'manual', 'suggested_prompt') */
+  triggerSource?: string;
+
   // ── Extended Metadata (Telemetry Additions) ────────────────────────
 
   /** Shape of the user request */
@@ -188,6 +191,24 @@ export interface ToolSpan {
 
   /** ISO-8601 span end */
   endedAt: string;
+
+  // Optional provider-level fields (additive — populated when known)
+  /** Name of the upstream data provider (e.g. "yahoo-finance") */
+  providerName?: string | null;
+  /** Asset type classification (e.g. "equity", "crypto", "etf") */
+  assetType?: string | null;
+  /** Normalized symbol sent to the provider (e.g. "BTC-USD") */
+  normalizedSymbol?: string | null;
+  /** Correlation ID for cross-referencing provider logs */
+  requestId?: string | null;
+
+  // Dispatch routing fields (MCP integration)
+  /** Which executor ran this tool: local or mcp */
+  executor?: 'local' | 'mcp';
+  /** MCP request correlation ID (only when executor=mcp) */
+  mcpRequestId?: string | null;
+  /** MCP round-trip latency in ms (only when executor=mcp) */
+  mcpLatencyMs?: number | null;
 }
 
 // ---------------------------------------------------------------------------
@@ -254,7 +275,27 @@ export interface ReactIteration {
 }
 
 // ---------------------------------------------------------------------------
-// 5. Derived / Computed Metrics (for Braintrust dashboard filters)
+// 5. Tool Policy & Groundedness Decisions
+// ---------------------------------------------------------------------------
+
+/** Why tools were or were not used in this query */
+export type ToolPolicyDecision =
+  | 'no_tool_needed' // Model decided no tools required
+  | 'tool_selected' // Tools were called successfully
+  | 'tool_failed' // Tools were called but all failed
+  | 'tool_skipped_cost' // Skipped due to cost limit
+  | 'tool_skipped_timeout' // Skipped due to timeout
+  | 'tool_mixed' // Some succeeded, some failed
+  | 'unknown'; // Not yet determined
+
+/** How groundedness was assessed */
+export type GroundednessMode =
+  | 'computed' // Tools were called, groundedness was evaluated
+  | 'no_tools_default' // No tools used, default score applied
+  | 'verification_blocked'; // Verification gate blocked the response
+
+// ---------------------------------------------------------------------------
+// 6. Derived / Computed Metrics (for Braintrust dashboard filters)
 // ---------------------------------------------------------------------------
 
 export interface DerivedMetrics {
@@ -269,6 +310,9 @@ export interface DerivedMetrics {
 
   /** success_count / total_count per tool (computed across multiple traces) */
   toolSuccessRates: Record<string, number>;
+
+  /** Count of tool spans with status === 'error'. Enables quick Braintrust filtering. */
+  failedToolCount: number;
 }
 
 // ---------------------------------------------------------------------------
@@ -281,4 +325,34 @@ export interface TelemetryPayload {
   verification: VerificationSummary;
   reactIterations: ReactIteration[];
   derived: DerivedMetrics;
+
+  /** Why tools were or were not used */
+  toolPolicyDecision: ToolPolicyDecision;
+
+  /** How groundedness was assessed */
+  groundednessMode: GroundednessMode;
+
+  /** Epoch timestamps (seconds) for accurate Braintrust span timing */
+  timing: {
+    startEpochS: number; // request start
+    endEpochS: number; // response complete
+    llmStartEpochS: number;
+    llmEndEpochS: number;
+    /** Verification phase start (0 = not tracked) */
+    verificationStartEpochS?: number;
+    /** Verification phase end (0 = not tracked) */
+    verificationEndEpochS?: number;
+    /** Final response formatting start (0 = not tracked) */
+    responseStartEpochS?: number;
+    /** Final response formatting end (0 = not tracked) */
+    responseEndEpochS?: number;
+  };
+
+  /** Config versioning for debugging regressions */
+  versions: {
+    systemPromptVersion: string;
+    toolSchemaVersion: string;
+    reactEnabled: boolean;
+    verificationEnabled: boolean;
+  };
 }

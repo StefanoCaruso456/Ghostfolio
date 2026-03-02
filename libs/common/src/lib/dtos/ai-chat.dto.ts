@@ -9,6 +9,23 @@ export class AiChatDto {
   conversationId?: string;
 
   @IsOptional()
+  @IsString()
+  traceId?: string;
+
+  @IsOptional()
   @IsArray()
   history?: { content: string; role: 'assistant' | 'user' }[];
+
+  @IsOptional()
+  @IsArray()
+  attachments?: {
+    content: string;
+    fileName: string;
+    mimeType: string;
+    size: number;
+  }[];
+
+  @IsOptional()
+  @IsString()
+  triggerSource?: string;
 }

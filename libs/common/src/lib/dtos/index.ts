@@ -1,4 +1,6 @@
 import { AiChatDto } from './ai-chat.dto';
+import { AiFeedbackDto, AiFeedbackRatingDto } from './ai-feedback.dto';
+import { AiVerificationLabelDto } from './ai-verification-label.dto';
 import { AuthDeviceDto } from './auth-device.dto';
 import { CreateAccessDto } from './create-access.dto';
 import { CreateAccountBalanceDto } from './create-account-balance.dto';
@@ -11,9 +13,11 @@ import { CreatePlatformDto } from './create-platform.dto';
 import { CreateTagDto } from './create-tag.dto';
 import { CreateWatchlistItemDto } from './create-watchlist-item.dto';
 import { DeleteOwnUserDto } from './delete-own-user.dto';
+import { ExchangePlaidTokenDto } from './exchange-plaid-token.dto';
 import { TransferBalanceDto } from './transfer-balance.dto';
 import { UpdateAccessDto } from './update-access.dto';
 import { UpdateAccountDto } from './update-account.dto';
+import { UpdateAiConversationDto } from './update-ai-conversation.dto';
 import { UpdateAssetProfileDto } from './update-asset-profile.dto';
 import { UpdateBulkMarketDataDto } from './update-bulk-market-data.dto';
 import { UpdateMarketDataDto } from './update-market-data.dto';
@@ -26,6 +30,9 @@ import { UpdateUserSettingDto } from './update-user-setting.dto';
 
 export {
   AiChatDto,
+  AiFeedbackDto,
+  AiFeedbackRatingDto,
+  AiVerificationLabelDto,
   AuthDeviceDto,
   CreateAccessDto,
   CreateAccountBalanceDto,
@@ -38,9 +45,11 @@ export {
   CreateTagDto,
   CreateWatchlistItemDto,
   DeleteOwnUserDto,
+  ExchangePlaidTokenDto,
   TransferBalanceDto,
   UpdateAccessDto,
   UpdateAccountDto,
+  UpdateAiConversationDto,
   UpdateAssetProfileDto,
   UpdateBulkMarketDataDto,
   UpdateMarketDataDto,

@@ -1,7 +1,8 @@
 export {
   getMarketDataCacheStats,
   getMarketDataProvider,
-  resetMarketDataCacheHits
+  resetMarketDataCacheHits,
+  resetMarketDataProvider
 } from './market-data.provider';
 export type {
   FundamentalsResult,
@@ -14,3 +15,8 @@ export type {
   QuoteError,
   QuoteResult
 } from './market-data.types';
+export {
+  getQuoteCacheService,
+  resetQuoteCacheService
+} from './quote-cache.service';
+export type { CachedQuote } from './quote-cache.service';

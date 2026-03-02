@@ -16,6 +16,12 @@ if (typeof window !== 'undefined') {
 }
 
 export const internalRoutes: Record<string, InternalRoute> = {
+  aiChat: {
+    excludeFromAssistant: true,
+    path: 'ai-chat',
+    routerLink: ['/ai-chat'],
+    title: 'Ghostfolio AI'
+  },
   account: {
     path: 'account',
     routerLink: ['/account'],
@@ -117,6 +123,16 @@ export const internalRoutes: Record<string, InternalRoute> = {
     path: 'i18n',
     routerLink: ['/i18n'],
     title: $localize`Internationalization`
+  },
+  news: {
+    path: 'news',
+    routerLink: ['/news'],
+    title: $localize`News`
+  },
+  taxIntelligence: {
+    path: 'tax-intelligence',
+    routerLink: ['/tax-intelligence'],
+    title: $localize`Tax Intelligence`
   },
   portfolio: {
     path: 'portfolio',

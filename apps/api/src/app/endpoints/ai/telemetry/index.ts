@@ -5,6 +5,7 @@ export {
 } from './braintrust-telemetry.service';
 export {
   computeAllScores,
+  FAILURE_ACK_PATTERN,
   meetsExcellentThreshold,
   meetsGoodThreshold,
   scoreCost,

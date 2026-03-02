@@ -1,0 +1,199 @@
+:host {
+  display: block;
+}
+
+// ── Inline reasoning (no box, no border, no shadow) ──────────────────
+.reasoning-inline {
+  padding: 0.25rem 0;
+  transition: opacity 0.4s ease;
+
+  &.completed {
+    opacity: 0.7;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+}
+
+// ── Toggle button (the "Thinking..." / "Thought for Xs" line) ────────
+.reasoning-toggle {
+  align-items: center;
+  background: none;
+  border: none;
+  color: rgba(128, 128, 128, 0.6);
+  cursor: pointer;
+  display: flex;
+  font-family: inherit;
+  font-size: 0.8rem;
+  gap: 0.375rem;
+  padding: 0.25rem 0;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: rgba(128, 128, 128, 0.85);
+  }
+
+  .toggle-chevron {
+    font-size: 0.7rem;
+    transition: transform 0.2s ease;
+  }
+
+  &.expanded .toggle-chevron {
+    transform: rotate(90deg);
+  }
+
+  .toggle-label {
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+}
+
+// ── Thinking dots animation ──────────────────────────────────────────
+.thinking-indicator {
+  align-items: center;
+  display: flex;
+  gap: 3px;
+}
+
+.thinking-dot {
+  animation: thinkPulse 1.4s infinite ease-in-out both;
+  background: rgba(var(--gf-theme-primary-500-rgb), 0.5);
+  border-radius: 50%;
+  display: block;
+  height: 4px;
+  width: 4px;
+
+  &:nth-child(1) {
+    animation-delay: 0s;
+  }
+
+  &:nth-child(2) {
+    animation-delay: 0.16s;
+  }
+
+  &:nth-child(3) {
+    animation-delay: 0.32s;
+  }
+}
+
+@keyframes thinkPulse {
+  0%,
+  80%,
+  100% {
+    opacity: 0.3;
+    transform: scale(0.8);
+  }
+
+  40% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+// ── Step list ────────────────────────────────────────────────────────
+.reasoning-steps {
+  animation: fadeInSteps 0.2s ease-out;
+  border-left: 1.5px solid rgba(128, 128, 128, 0.15);
+  display: flex;
+  flex-direction: column;
+  margin-left: 0.375rem;
+  margin-top: 0.25rem;
+  padding-left: 0.75rem;
+}
+
+@keyframes fadeInSteps {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+// ── Individual step ──────────────────────────────────────────────────
+.step-line {
+  align-items: center;
+  color: rgba(128, 128, 128, 0.55);
+  display: flex;
+  font-size: 0.75rem;
+  gap: 0.375rem;
+  opacity: 0;
+  padding: 0.15rem 0;
+  transform: translateY(4px);
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
+
+  &.step-enter {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  &.step-running {
+    color: rgba(var(--gf-theme-primary-500-rgb), 0.65);
+  }
+
+  &.step-error {
+    color: rgba(239, 68, 68, 0.6);
+  }
+}
+
+.step-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.step-time {
+  color: rgba(128, 128, 128, 0.35);
+  flex-shrink: 0;
+  font-size: 0.65rem;
+  font-variant-numeric: tabular-nums;
+}
+
+// ── Running step spinner ─────────────────────────────────────────────
+.step-spinner {
+  animation: spin 1s linear infinite;
+  border: 1.5px solid rgba(var(--gf-theme-primary-500-rgb), 0.2);
+  border-radius: 50%;
+  border-top-color: rgba(var(--gf-theme-primary-500-rgb), 0.6);
+  display: inline-block;
+  flex-shrink: 0;
+  height: 10px;
+  width: 10px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// ── Dark theme ───────────────────────────────────────────────────────
+:host-context(.theme-dark) {
+  .reasoning-toggle {
+    color: rgba(180, 180, 180, 0.5);
+
+    &:hover {
+      color: rgba(180, 180, 180, 0.75);
+    }
+  }
+
+  .step-line {
+    color: rgba(180, 180, 180, 0.4);
+
+    &.step-running {
+      color: rgba(var(--gf-theme-primary-500-rgb), 0.55);
+    }
+  }
+
+  .step-time {
+    color: rgba(180, 180, 180, 0.25);
+  }
+
+  .reasoning-steps {
+    border-left-color: rgba(180, 180, 180, 0.1);
+  }
+}

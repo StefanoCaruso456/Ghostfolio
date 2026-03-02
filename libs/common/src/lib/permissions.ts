@@ -40,6 +40,7 @@ export const permissions = {
   enableSubscriptionInterstitial: 'enableSubscriptionInterstitial',
   enableSystemMessage: 'enableSystemMessage',
   impersonateAllUsers: 'impersonateAllUsers',
+  connectPlaid: 'connectPlaid',
   readAiPrompt: 'readAiPrompt',
   readMarketData: 'readMarketData',
   readMarketDataOfMarkets: 'readMarketDataOfMarkets',
@@ -71,6 +72,7 @@ export function getPermissions(aRole: Role): string[] {
         permissions.accessAdminControl,
         permissions.accessAssistant,
         permissions.accessHoldingsChart,
+        permissions.connectPlaid,
         permissions.createAccess,
         permissions.createAccount,
         permissions.createAccountBalance,
@@ -122,6 +124,7 @@ export function getPermissions(aRole: Role): string[] {
       return [
         permissions.accessAssistant,
         permissions.accessHoldingsChart,
+        permissions.connectPlaid,
         permissions.createAccess,
         permissions.createAccount,
         permissions.createAccountBalance,

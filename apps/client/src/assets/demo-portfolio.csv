@@ -1,101 +1,101 @@
 Date,Code,DataSource,Currency,Price,Quantity,Action,Fee,Note
-02-01-2024,AAPL,MANUAL,USD,185.99,2,buy,4.95,Apple Inc
-09-01-2024,MSFT,MANUAL,USD,382.24,3,buy,0,Microsoft Corporation
-16-01-2024,GOOGL,MANUAL,USD,158.62,3,buy,0,Alphabet Inc
-23-01-2024,AMZN,MANUAL,USD,149.22,9,buy,0,Amazon.com Inc
-30-01-2024,NVDA,MANUAL,USD,668.37,4,buy,4.95,NVIDIA Corporation
-06-02-2024,TSLA,MANUAL,USD,210.43,2,buy,4.95,Tesla Inc
-13-02-2024,META,MANUAL,USD,461.7,6,buy,4.95,Meta Platforms Inc
-20-02-2024,VOO,MANUAL,USD,430.77,3,buy,0,Vanguard S&P 500 ETF
-27-02-2024,VTI,MANUAL,USD,238.3,7,buy,4.95,Vanguard Total Stock Market ETF
-05-03-2024,QQQ,MANUAL,USD,438.43,10,buy,0,Invesco QQQ Trust
-12-03-2024,SPY,MANUAL,USD,518.39,1,buy,4.95,SPDR S&P 500 ETF Trust
-19-03-2024,SCHD,MANUAL,USD,80.29,13,buy,4.95,Schwab US Dividend Equity ETF
-25-03-2024,VTI,MANUAL,USD,0.69,6,dividend,0,Vanguard Total Stock Market ETF
-26-03-2024,VGT,MANUAL,USD,513.41,2,buy,4.95,Vanguard Info Technology ETF
-28-03-2024,PG,MANUAL,USD,0.35,18,dividend,0,Procter & Gamble Co
-02-04-2024,JPM,MANUAL,USD,204.48,3,buy,1.0,JPMorgan Chase & Co
-09-04-2024,V,MANUAL,USD,264.73,4,buy,4.95,Visa Inc
-16-04-2024,JNJ,MANUAL,USD,154.04,10,buy,0,Johnson & Johnson
-23-04-2024,UNH,MANUAL,USD,518.73,5,buy,4.95,UnitedHealth Group Inc
-23-04-2024,HD,MANUAL,USD,0.77,18,dividend,0,The Home Depot Inc
-01-05-2024,HD,MANUAL,USD,319.8,6,buy,4.95,The Home Depot Inc
-07-05-2024,XOM,MANUAL,USD,1.22,13,dividend,0,Exxon Mobil Corporation
-08-05-2024,PG,MANUAL,USD,163.69,3,buy,4.95,Procter & Gamble Co
-09-05-2024,MSFT,MANUAL,USD,0.62,8,dividend,0,Microsoft Corporation
-15-05-2024,MA,MANUAL,USD,459.31,8,buy,4.95,Mastercard Inc
-17-05-2024,JPM,MANUAL,USD,1.07,16,dividend,0,JPMorgan Chase & Co
-22-05-2024,COST,MANUAL,USD,663.24,3,buy,4.95,Costco Wholesale Corp
-23-05-2024,CVX,MANUAL,USD,1.39,18,dividend,0,Chevron Corporation
-29-05-2024,KO,MANUAL,USD,62.24,14,buy,1.0,Coca-Cola Company
-05-06-2024,PEP,MANUAL,USD,164.57,6,buy,4.95,PepsiCo Inc
-12-06-2024,ABBV,MANUAL,USD,177.35,19,buy,4.95,AbbVie Inc
-17-06-2024,PEP,MANUAL,USD,1.35,11,dividend,0,PepsiCo Inc
-19-06-2024,MRK,MANUAL,USD,123.68,15,buy,1.0,Merck & Co Inc
-26-06-2024,LLY,MANUAL,USD,726.7,5,buy,1.0,Eli Lilly and Company
-26-06-2024,SCHD,MANUAL,USD,81.85,5,buy,4.95,Schwab US Dividend Equity ETF
-03-07-2024,AVGO,MANUAL,USD,1063.64,1,buy,4.95,Broadcom Inc
-05-07-2024,NKE,MANUAL,USD,96.04,2,sell,0,Nike Inc
-10-07-2024,AMD,MANUAL,USD,157.65,15,buy,0,Advanced Micro Devices Inc
-10-07-2024,VNQ,MANUAL,USD,78.6,8,buy,0,Vanguard Real Estate ETF
-10-07-2024,IWM,MANUAL,USD,223.63,2,buy,0,iShares Russell 2000 ETF
-15-07-2024,HD,MANUAL,USD,345.7,4,buy,4.95,The Home Depot Inc
-15-07-2024,JNJ,MANUAL,USD,1.01,13,dividend,0,Johnson & Johnson
-17-07-2024,CRM,MANUAL,USD,249.24,10,buy,4.95,Salesforce Inc
-22-07-2024,ABBV,MANUAL,USD,0.27,15,dividend,0,AbbVie Inc
-24-07-2024,NFLX,MANUAL,USD,673.35,1,buy,4.95,Netflix Inc
-26-07-2024,PG,MANUAL,USD,168.83,10,buy,0,Procter & Gamble Co
-31-07-2024,DIS,MANUAL,USD,108.06,12,buy,0,Walt Disney Company
-05-08-2024,BND,MANUAL,USD,70.14,4,buy,0,Vanguard Total Bond Market ETF
-07-08-2024,PYPL,MANUAL,USD,62.99,7,buy,1.0,PayPal Holdings Inc
-07-08-2024,JPM,MANUAL,USD,184.22,8,buy,0,JPMorgan Chase & Co
-12-08-2024,AMZN,MANUAL,USD,157.53,4,buy,0,Amazon.com Inc
-12-08-2024,DIS,MANUAL,USD,111.44,1,sell,0,Walt Disney Company
-13-08-2024,GOOGL,MANUAL,USD,156.45,3,buy,4.95,Alphabet Inc
-14-08-2024,INTC,MANUAL,USD,20.08,10,buy,4.95,Intel Corporation
-21-08-2024,XOM,MANUAL,USD,110.15,5,buy,4.95,Exxon Mobil Corporation
-29-08-2024,CVX,MANUAL,USD,157.15,18,buy,4.95,Chevron Corporation
-02-09-2024,XOM,MANUAL,USD,104.09,6,buy,0,Exxon Mobil Corporation
-02-09-2024,WMT,MANUAL,USD,166.71,5,buy,4.95,Walmart Inc
-02-09-2024,VOO,MANUAL,USD,0.54,12,dividend,0,Vanguard S&P 500 ETF
-02-09-2024,PYPL,MANUAL,USD,60.71,1,sell,4.95,PayPal Holdings Inc
-05-09-2024,BRK-B,MANUAL,USD,385.28,10,buy,0,Berkshire Hathaway Inc
-05-09-2024,AAPL,MANUAL,USD,186.72,4,buy,0,Apple Inc
-06-09-2024,AMD,MANUAL,USD,129.46,9,buy,4.95,Advanced Micro Devices Inc
-09-09-2024,GLD,MANUAL,USD,215.38,9,buy,4.95,SPDR Gold Shares
-12-09-2024,VNQ,MANUAL,USD,85.19,17,buy,0,Vanguard Real Estate ETF
-16-09-2024,MA,MANUAL,USD,465.74,2,buy,0,Mastercard Inc
-19-09-2024,BND,MANUAL,USD,69.67,13,buy,4.95,Vanguard Total Bond Market ETF
-19-09-2024,INTC,MANUAL,USD,39.56,4,sell,0,Intel Corporation
-23-09-2024,MRK,MANUAL,USD,127.02,4,buy,4.95,Merck & Co Inc
-24-09-2024,VTI,MANUAL,USD,239.83,8,buy,0,Vanguard Total Stock Market ETF
-26-09-2024,VXUS,MANUAL,USD,52.68,9,buy,0,Vanguard Total Intl Stock ETF
-03-10-2024,IWM,MANUAL,USD,193.0,17,buy,0,iShares Russell 2000 ETF
-07-10-2024,SPY,MANUAL,USD,503.69,1,buy,0,SPDR S&P 500 ETF Trust
-07-10-2024,V,MANUAL,USD,286.59,3,buy,4.95,Visa Inc
-08-10-2024,VOO,MANUAL,USD,429.52,2,buy,4.95,Vanguard S&P 500 ETF
-10-10-2024,GLD,MANUAL,USD,248.68,4,buy,4.95,SPDR Gold Shares
-11-10-2024,JNJ,MANUAL,USD,159.18,10,buy,4.95,Johnson & Johnson
-17-10-2024,WMT,MANUAL,USD,172.51,19,buy,4.95,Walmart Inc
-17-10-2024,NVDA,MANUAL,USD,742.41,1,buy,0,NVIDIA Corporation
-21-10-2024,COST,MANUAL,USD,774.23,1,buy,0,Costco Wholesale Corp
-24-10-2024,TGT,MANUAL,USD,132.95,15,buy,4.95,Target Corporation
-31-10-2024,SBUX,MANUAL,USD,103.22,8,buy,4.95,Starbucks Corporation
-07-11-2024,NKE,MANUAL,USD,83.17,13,buy,1.0,Nike Inc
-11-11-2024,ABBV,MANUAL,USD,161.39,5,buy,0,AbbVie Inc
-14-11-2024,BA,MANUAL,USD,242.97,3,buy,4.95,Boeing Company
-19-11-2024,MSFT,MANUAL,USD,398.81,4,buy,4.95,Microsoft Corporation
-21-11-2024,GS,MANUAL,USD,384.72,2,buy,4.95,Goldman Sachs Group Inc
-21-11-2024,VXUS,MANUAL,USD,56.15,1,buy,4.95,Vanguard Total Intl Stock ETF
-21-11-2024,KO,MANUAL,USD,61.76,10,buy,0,Coca-Cola Company
-28-11-2024,BAC,MANUAL,USD,34.71,2,buy,0,Bank of America Corp
-29-11-2024,CRM,MANUAL,USD,279.19,9,buy,0,Salesforce Inc
-02-12-2024,TSLA,MANUAL,USD,237.45,2,sell,0,Tesla Inc
-05-12-2024,PANW,MANUAL,USD,326.63,5,buy,0,Palo Alto Networks Inc
-09-12-2024,META,MANUAL,USD,509.89,1,buy,0,Meta Platforms Inc
-09-12-2024,SCHD,MANUAL,USD,0.44,9,dividend,0,Schwab US Dividend Equity ETF
-10-12-2024,AAPL,MANUAL,USD,0.68,8,dividend,0,Apple Inc
-10-12-2024,KO,MANUAL,USD,0.45,14,dividend,0,Coca-Cola Company
-12-12-2024,CRWD,MANUAL,USD,310.54,3,buy,4.95,CrowdStrike Holdings Inc
-16-12-2024,QQQ,MANUAL,USD,429.21,2,buy,0,Invesco QQQ Trust
-16-12-2024,V,MANUAL,USD,0.22,7,dividend,0,Visa Inc
+02-01-2024,AAPL,YAHOO,USD,185.99,2,buy,4.95,Apple Inc
+09-01-2024,MSFT,YAHOO,USD,382.24,3,buy,0,Microsoft Corporation
+16-01-2024,GOOGL,YAHOO,USD,158.62,3,buy,0,Alphabet Inc
+23-01-2024,AMZN,YAHOO,USD,149.22,9,buy,0,Amazon.com Inc
+30-01-2024,NVDA,YAHOO,USD,668.37,4,buy,4.95,NVIDIA Corporation
+06-02-2024,TSLA,YAHOO,USD,210.43,2,buy,4.95,Tesla Inc
+13-02-2024,META,YAHOO,USD,461.7,6,buy,4.95,Meta Platforms Inc
+20-02-2024,VOO,YAHOO,USD,430.77,3,buy,0,Vanguard S&P 500 ETF
+27-02-2024,VTI,YAHOO,USD,238.3,7,buy,4.95,Vanguard Total Stock Market ETF
+05-03-2024,QQQ,YAHOO,USD,438.43,10,buy,0,Invesco QQQ Trust
+12-03-2024,SPY,YAHOO,USD,518.39,1,buy,4.95,SPDR S&P 500 ETF Trust
+19-03-2024,SCHD,YAHOO,USD,80.29,13,buy,4.95,Schwab US Dividend Equity ETF
+25-03-2024,VTI,YAHOO,USD,0.69,6,dividend,0,Vanguard Total Stock Market ETF
+26-03-2024,VGT,YAHOO,USD,513.41,2,buy,4.95,Vanguard Info Technology ETF
+28-03-2024,PG,YAHOO,USD,0.35,18,dividend,0,Procter & Gamble Co
+02-04-2024,JPM,YAHOO,USD,204.48,3,buy,1.0,JPMorgan Chase & Co
+09-04-2024,V,YAHOO,USD,264.73,4,buy,4.95,Visa Inc
+16-04-2024,JNJ,YAHOO,USD,154.04,10,buy,0,Johnson & Johnson
+23-04-2024,UNH,YAHOO,USD,518.73,5,buy,4.95,UnitedHealth Group Inc
+23-04-2024,HD,YAHOO,USD,0.77,18,dividend,0,The Home Depot Inc
+01-05-2024,HD,YAHOO,USD,319.8,6,buy,4.95,The Home Depot Inc
+07-05-2024,XOM,YAHOO,USD,1.22,13,dividend,0,Exxon Mobil Corporation
+08-05-2024,PG,YAHOO,USD,163.69,3,buy,4.95,Procter & Gamble Co
+09-05-2024,MSFT,YAHOO,USD,0.62,8,dividend,0,Microsoft Corporation
+15-05-2024,MA,YAHOO,USD,459.31,8,buy,4.95,Mastercard Inc
+17-05-2024,JPM,YAHOO,USD,1.07,16,dividend,0,JPMorgan Chase & Co
+22-05-2024,COST,YAHOO,USD,663.24,3,buy,4.95,Costco Wholesale Corp
+23-05-2024,CVX,YAHOO,USD,1.39,18,dividend,0,Chevron Corporation
+29-05-2024,KO,YAHOO,USD,62.24,14,buy,1.0,Coca-Cola Company
+05-06-2024,PEP,YAHOO,USD,164.57,6,buy,4.95,PepsiCo Inc
+12-06-2024,ABBV,YAHOO,USD,177.35,19,buy,4.95,AbbVie Inc
+17-06-2024,PEP,YAHOO,USD,1.35,11,dividend,0,PepsiCo Inc
+19-06-2024,MRK,YAHOO,USD,123.68,15,buy,1.0,Merck & Co Inc
+26-06-2024,LLY,YAHOO,USD,726.7,5,buy,1.0,Eli Lilly and Company
+26-06-2024,SCHD,YAHOO,USD,81.85,5,buy,4.95,Schwab US Dividend Equity ETF
+03-07-2024,AVGO,YAHOO,USD,1063.64,1,buy,4.95,Broadcom Inc
+05-07-2024,NKE,YAHOO,USD,96.04,2,sell,0,Nike Inc
+10-07-2024,AMD,YAHOO,USD,157.65,15,buy,0,Advanced Micro Devices Inc
+10-07-2024,VNQ,YAHOO,USD,78.6,8,buy,0,Vanguard Real Estate ETF
+10-07-2024,IWM,YAHOO,USD,223.63,2,buy,0,iShares Russell 2000 ETF
+15-07-2024,HD,YAHOO,USD,345.7,4,buy,4.95,The Home Depot Inc
+15-07-2024,JNJ,YAHOO,USD,1.01,13,dividend,0,Johnson & Johnson
+17-07-2024,CRM,YAHOO,USD,249.24,10,buy,4.95,Salesforce Inc
+22-07-2024,ABBV,YAHOO,USD,0.27,15,dividend,0,AbbVie Inc
+24-07-2024,NFLX,YAHOO,USD,673.35,1,buy,4.95,Netflix Inc
+26-07-2024,PG,YAHOO,USD,168.83,10,buy,0,Procter & Gamble Co
+31-07-2024,DIS,YAHOO,USD,108.06,12,buy,0,Walt Disney Company
+05-08-2024,BND,YAHOO,USD,70.14,4,buy,0,Vanguard Total Bond Market ETF
+07-08-2024,PYPL,YAHOO,USD,62.99,7,buy,1.0,PayPal Holdings Inc
+07-08-2024,JPM,YAHOO,USD,184.22,8,buy,0,JPMorgan Chase & Co
+12-08-2024,AMZN,YAHOO,USD,157.53,4,buy,0,Amazon.com Inc
+12-08-2024,DIS,YAHOO,USD,111.44,1,sell,0,Walt Disney Company
+13-08-2024,GOOGL,YAHOO,USD,156.45,3,buy,4.95,Alphabet Inc
+14-08-2024,INTC,YAHOO,USD,20.08,10,buy,4.95,Intel Corporation
+21-08-2024,XOM,YAHOO,USD,110.15,5,buy,4.95,Exxon Mobil Corporation
+29-08-2024,CVX,YAHOO,USD,157.15,18,buy,4.95,Chevron Corporation
+02-09-2024,XOM,YAHOO,USD,104.09,6,buy,0,Exxon Mobil Corporation
+02-09-2024,WMT,YAHOO,USD,166.71,5,buy,4.95,Walmart Inc
+02-09-2024,VOO,YAHOO,USD,0.54,12,dividend,0,Vanguard S&P 500 ETF
+02-09-2024,PYPL,YAHOO,USD,60.71,1,sell,4.95,PayPal Holdings Inc
+05-09-2024,BRK-B,YAHOO,USD,385.28,10,buy,0,Berkshire Hathaway Inc
+05-09-2024,AAPL,YAHOO,USD,186.72,4,buy,0,Apple Inc
+06-09-2024,AMD,YAHOO,USD,129.46,9,buy,4.95,Advanced Micro Devices Inc
+09-09-2024,GLD,YAHOO,USD,215.38,9,buy,4.95,SPDR Gold Shares
+12-09-2024,VNQ,YAHOO,USD,85.19,17,buy,0,Vanguard Real Estate ETF
+16-09-2024,MA,YAHOO,USD,465.74,2,buy,0,Mastercard Inc
+19-09-2024,BND,YAHOO,USD,69.67,13,buy,4.95,Vanguard Total Bond Market ETF
+19-09-2024,INTC,YAHOO,USD,39.56,4,sell,0,Intel Corporation
+23-09-2024,MRK,YAHOO,USD,127.02,4,buy,4.95,Merck & Co Inc
+24-09-2024,VTI,YAHOO,USD,239.83,8,buy,0,Vanguard Total Stock Market ETF
+26-09-2024,VXUS,YAHOO,USD,52.68,9,buy,0,Vanguard Total Intl Stock ETF
+03-10-2024,IWM,YAHOO,USD,193.0,17,buy,0,iShares Russell 2000 ETF
+07-10-2024,SPY,YAHOO,USD,503.69,1,buy,0,SPDR S&P 500 ETF Trust
+07-10-2024,V,YAHOO,USD,286.59,3,buy,4.95,Visa Inc
+08-10-2024,VOO,YAHOO,USD,429.52,2,buy,4.95,Vanguard S&P 500 ETF
+10-10-2024,GLD,YAHOO,USD,248.68,4,buy,4.95,SPDR Gold Shares
+11-10-2024,JNJ,YAHOO,USD,159.18,10,buy,4.95,Johnson & Johnson
+17-10-2024,WMT,YAHOO,USD,172.51,19,buy,4.95,Walmart Inc
+17-10-2024,NVDA,YAHOO,USD,742.41,1,buy,0,NVIDIA Corporation
+21-10-2024,COST,YAHOO,USD,774.23,1,buy,0,Costco Wholesale Corp
+24-10-2024,TGT,YAHOO,USD,132.95,15,buy,4.95,Target Corporation
+31-10-2024,SBUX,YAHOO,USD,103.22,8,buy,4.95,Starbucks Corporation
+07-11-2024,NKE,YAHOO,USD,83.17,13,buy,1.0,Nike Inc
+11-11-2024,ABBV,YAHOO,USD,161.39,5,buy,0,AbbVie Inc
+14-11-2024,BA,YAHOO,USD,242.97,3,buy,4.95,Boeing Company
+19-11-2024,MSFT,YAHOO,USD,398.81,4,buy,4.95,Microsoft Corporation
+21-11-2024,GS,YAHOO,USD,384.72,2,buy,4.95,Goldman Sachs Group Inc
+21-11-2024,VXUS,YAHOO,USD,56.15,1,buy,4.95,Vanguard Total Intl Stock ETF
+21-11-2024,KO,YAHOO,USD,61.76,10,buy,0,Coca-Cola Company
+28-11-2024,BAC,YAHOO,USD,34.71,2,buy,0,Bank of America Corp
+29-11-2024,CRM,YAHOO,USD,279.19,9,buy,0,Salesforce Inc
+02-12-2024,TSLA,YAHOO,USD,237.45,2,sell,0,Tesla Inc
+05-12-2024,PANW,YAHOO,USD,326.63,5,buy,0,Palo Alto Networks Inc
+09-12-2024,META,YAHOO,USD,509.89,1,buy,0,Meta Platforms Inc
+09-12-2024,SCHD,YAHOO,USD,0.44,9,dividend,0,Schwab US Dividend Equity ETF
+10-12-2024,AAPL,YAHOO,USD,0.68,8,dividend,0,Apple Inc
+10-12-2024,KO,YAHOO,USD,0.45,14,dividend,0,Coca-Cola Company
+12-12-2024,CRWD,YAHOO,USD,310.54,3,buy,4.95,CrowdStrike Holdings Inc
+16-12-2024,QQQ,YAHOO,USD,429.21,2,buy,0,Invesco QQQ Trust
+16-12-2024,V,YAHOO,USD,0.22,7,dividend,0,Visa Inc

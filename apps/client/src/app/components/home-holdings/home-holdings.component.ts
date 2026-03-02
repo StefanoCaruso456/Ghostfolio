@@ -59,6 +59,7 @@ export class GfHomeHoldingsComponent implements OnDestroy, OnInit {
   public hasPermissionToAccessHoldingsChart: boolean;
   public hasPermissionToCreateActivity: boolean;
   public holdings: PortfolioPosition[];
+  public holdingsForTreemap: PortfolioPosition[];
   public holdingType: HoldingType = 'ACTIVE';
   public holdingTypeOptions: ToggleOption[] = [
     { label: $localize`Active`, value: 'ACTIVE' },
@@ -154,17 +155,14 @@ export class GfHomeHoldingsComponent implements OnDestroy, OnInit {
     this.unsubscribeSubject.complete();
   }
 
-  private fetchHoldings() {
+  private fetchHoldingsQuick() {
     const filters = this.userService.getFilters();
 
     if (this.holdingType === 'CLOSED') {
       filters.push({ id: 'CLOSED', type: 'HOLDING_TYPE' });
     }
 
-    return this.dataService.fetchPortfolioHoldings({
-      filters,
-      range: this.user?.settings?.dateRange
-    });
+    return this.dataService.fetchPortfolioHoldingsQuick({ filters });
   }
 
   private initialize() {
@@ -190,14 +188,32 @@ export class GfHomeHoldingsComponent implements OnDestroy, OnInit {
       );
     }
 
-    this.holdings = undefined;
+    // Keep existing holdings visible while refreshing (stale-while-revalidate)
+    const hadPreviousData = this.holdings !== undefined;
 
-    this.fetchHoldings()
+    if (!hadPreviousData) {
+      this.holdings = undefined;
+    }
+
+    // Fetch quick holdings (instant, ~5 seconds with live Yahoo quotes)
+    // Full computation runs via Analysis/Summary pages — not triggered here
+    // to avoid duplicate Bull job submissions on every navigation
+    this.fetchHoldingsQuick()
       .pipe(takeUntil(this.unsubscribeSubject))
       .subscribe(({ holdings }) => {
         this.holdings = holdings;
-
+        this.updateTreemap(holdings);
         this.changeDetectorRef.markForCheck();
       });
+  }
+
+  private updateTreemap(holdings: PortfolioPosition[]) {
+    if (holdings?.length > 50) {
+      this.holdingsForTreemap = [...holdings]
+        .sort((a, b) => b.allocationInPercentage - a.allocationInPercentage)
+        .slice(0, 50);
+    } else {
+      this.holdingsForTreemap = holdings;
+    }
   }
 }

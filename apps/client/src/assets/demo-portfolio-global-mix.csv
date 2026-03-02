@@ -1,70 +1,70 @@
 Date,Code,DataSource,Currency,Price,Quantity,Action,Fee,Note
-03-01-2024,VOO,MANUAL,USD,437.00,8,buy,0,Vanguard S&P 500 ETF
-08-01-2024,VTI,MANUAL,USD,236.00,10,buy,4.95,Vanguard Total Stock Market
-11-01-2024,QQQ,MANUAL,USD,408.00,6,buy,0,Invesco QQQ Trust
-16-01-2024,VXUS,MANUAL,USD,53.50,30,buy,4.95,Vanguard Intl Stock ETF
-19-01-2024,EFA,MANUAL,USD,73.80,20,buy,1.00,iShares MSCI EAFE ETF
-24-01-2024,VWO,MANUAL,USD,40.20,40,buy,0,Vanguard Emerging Markets
-30-01-2024,BND,MANUAL,USD,71.50,25,buy,4.95,Vanguard Total Bond ETF
-05-02-2024,AGG,MANUAL,USD,96.80,18,buy,0,iShares Core US Aggregate Bond
-08-02-2024,GLD,MANUAL,USD,188.00,10,buy,4.95,SPDR Gold Shares
-13-02-2024,VOO,MANUAL,USD,457.00,5,sell,0,S&P 500 ETF - gain
-16-02-2024,QQQ,MANUAL,USD,435.00,4,sell,4.95,QQQ - gain
-21-02-2024,VTI,MANUAL,USD,248.00,6,sell,1.00,Total Stock - gain
-26-02-2024,GLD,MANUAL,USD,193.00,6,sell,0,Gold - gain
-01-03-2024,VXUS,MANUAL,USD,55.00,20,sell,4.95,Intl Stock - gain
-06-03-2024,EWJ,MANUAL,USD,66.50,25,buy,0,iShares MSCI Japan ETF
-11-03-2024,EWG,MANUAL,USD,29.00,40,buy,4.95,iShares MSCI Germany ETF
-14-03-2024,FXI,MANUAL,USD,24.80,50,buy,1.00,iShares China Large-Cap ETF
-19-03-2024,EWZ,MANUAL,USD,33.50,35,buy,0,iShares MSCI Brazil ETF
-22-03-2024,INDA,MANUAL,USD,51.00,25,buy,4.95,iShares MSCI India ETF
-27-03-2024,VWO,MANUAL,USD,0.08,40,dividend,0,Vanguard EM dividend
-02-04-2024,EWJ,MANUAL,USD,62.00,25,sell,0,Japan ETF - sold at loss
-05-04-2024,EWG,MANUAL,USD,27.50,40,sell,4.95,Germany ETF - sold at loss
-10-04-2024,FXI,MANUAL,USD,26.80,30,sell,1.00,China ETF - partial gain
-15-04-2024,EWZ,MANUAL,USD,30.00,35,sell,0,Brazil ETF - sold at loss
-18-04-2024,INDA,MANUAL,USD,48.00,25,sell,4.95,India ETF - sold at loss
-23-04-2024,BND,MANUAL,USD,70.00,25,sell,1.00,Bond ETF - sold at loss
-29-04-2024,IWM,MANUAL,USD,198.00,12,buy,0,iShares Russell 2000
-02-05-2024,DIA,MANUAL,USD,390.00,5,buy,4.95,SPDR Dow Jones ETF
-07-05-2024,SCHD,MANUAL,USD,77.00,20,buy,0,Schwab US Dividend ETF
-10-05-2024,VIG,MANUAL,USD,176.00,10,buy,4.95,Vanguard Dividend Appreciation
-15-05-2024,NOBL,MANUAL,USD,92.50,15,buy,1.00,ProShares Dividend Aristocrats
-20-05-2024,DVY,MANUAL,USD,118.00,12,buy,0,iShares Select Dividend ETF
-24-05-2024,VOO,MANUAL,USD,0.42,3,dividend,0,Vanguard S&P dividend
-28-05-2024,IWM,MANUAL,USD,209.00,12,sell,4.95,Russell 2000 - gain
-03-06-2024,DIA,MANUAL,USD,398.00,5,sell,0,Dow Jones - gain
-06-06-2024,SCHD,MANUAL,USD,80.50,15,sell,4.95,Dividend ETF - gain
-11-06-2024,VIG,MANUAL,USD,184.00,10,sell,1.00,Div Appreciation - gain
-14-06-2024,NOBL,MANUAL,USD,95.00,15,sell,0,Aristocrats - gain
-19-06-2024,DVY,MANUAL,USD,122.00,12,sell,4.95,Select Dividend - gain
-25-06-2024,KWEB,MANUAL,USD,28.50,50,buy,0,KraneShares China Internet ETF
-28-06-2024,ARKK,MANUAL,USD,48.00,30,buy,4.95,ARK Innovation ETF
-03-07-2024,TAN,MANUAL,USD,42.00,30,buy,1.00,Invesco Solar ETF
-08-07-2024,ICLN,MANUAL,USD,13.80,80,buy,0,iShares Global Clean Energy
-11-07-2024,BITO,MANUAL,USD,24.50,50,buy,4.95,ProShares Bitcoin Strategy
-16-07-2024,ARKG,MANUAL,USD,31.50,35,buy,0,ARK Genomic Revolution ETF
-19-07-2024,KWEB,MANUAL,USD,25.00,50,sell,4.95,China Internet - sold at loss
-24-07-2024,ARKK,MANUAL,USD,41.00,30,sell,1.00,ARK Innovation - sold at loss
-29-07-2024,TAN,MANUAL,USD,37.00,30,sell,0,Solar ETF - sold at loss
-01-08-2024,ICLN,MANUAL,USD,12.50,80,sell,4.95,Clean Energy - sold at loss
-06-08-2024,BITO,MANUAL,USD,21.00,50,sell,1.00,Bitcoin ETF - sold at loss
-09-08-2024,ARKG,MANUAL,USD,27.00,35,sell,0,Genomics - sold at loss
-14-08-2024,SPY,MANUAL,USD,540.00,5,buy,4.95,SPDR S&P 500 ETF
-19-08-2024,AAPL,MANUAL,USD,225.00,10,buy,0,Apple Inc
-22-08-2024,MSFT,MANUAL,USD,415.00,6,buy,4.95,Microsoft Corporation
-27-08-2024,NVDA,MANUAL,USD,126.00,15,buy,1.00,NVIDIA Corporation
-02-09-2024,AMZN,MANUAL,USD,177.00,10,buy,0,Amazon.com Inc
-06-09-2024,GOOGL,MANUAL,USD,155.00,12,buy,4.95,Alphabet Inc
-11-09-2024,SPY,MANUAL,USD,552.00,3,sell,0,S&P 500 - gain
-16-09-2024,AAPL,MANUAL,USD,216.00,10,sell,4.95,Apple - sold at loss
-20-09-2024,NVDA,MANUAL,USD,116.00,15,sell,1.00,NVIDIA - sold at loss
-26-09-2024,GOOGL,MANUAL,USD,163.00,12,sell,0,Alphabet - gain
-01-10-2024,AMZN,MANUAL,USD,189.00,10,sell,4.95,Amazon - gain
-07-10-2024,MSFT,MANUAL,USD,410.00,6,sell,1.00,Microsoft - loss
-14-10-2024,GLD,MANUAL,USD,248.00,8,buy,0,SPDR Gold - buying back
-21-10-2024,SLV,MANUAL,USD,31.50,40,buy,4.95,iShares Silver Trust
-28-10-2024,TLT,MANUAL,USD,91.00,15,buy,0,iShares 20+ Year Treasury
-04-11-2024,GLD,MANUAL,USD,252.00,8,sell,4.95,Gold - gain
-11-11-2024,SLV,MANUAL,USD,30.00,40,sell,1.00,Silver - sold at loss
-18-11-2024,TLT,MANUAL,USD,88.00,15,sell,0,Treasury - sold at loss
+03-01-2024,VOO,YAHOO,USD,437.00,8,buy,0,Vanguard S&P 500 ETF
+08-01-2024,VTI,YAHOO,USD,236.00,10,buy,4.95,Vanguard Total Stock Market
+11-01-2024,QQQ,YAHOO,USD,408.00,6,buy,0,Invesco QQQ Trust
+16-01-2024,VXUS,YAHOO,USD,53.50,30,buy,4.95,Vanguard Intl Stock ETF
+19-01-2024,EFA,YAHOO,USD,73.80,20,buy,1.00,iShares MSCI EAFE ETF
+24-01-2024,VWO,YAHOO,USD,40.20,40,buy,0,Vanguard Emerging Markets
+30-01-2024,BND,YAHOO,USD,71.50,25,buy,4.95,Vanguard Total Bond ETF
+05-02-2024,AGG,YAHOO,USD,96.80,18,buy,0,iShares Core US Aggregate Bond
+08-02-2024,GLD,YAHOO,USD,188.00,10,buy,4.95,SPDR Gold Shares
+13-02-2024,VOO,YAHOO,USD,457.00,5,sell,0,S&P 500 ETF - gain
+16-02-2024,QQQ,YAHOO,USD,435.00,4,sell,4.95,QQQ - gain
+21-02-2024,VTI,YAHOO,USD,248.00,6,sell,1.00,Total Stock - gain
+26-02-2024,GLD,YAHOO,USD,193.00,6,sell,0,Gold - gain
+01-03-2024,VXUS,YAHOO,USD,55.00,20,sell,4.95,Intl Stock - gain
+06-03-2024,EWJ,YAHOO,USD,66.50,25,buy,0,iShares MSCI Japan ETF
+11-03-2024,EWG,YAHOO,USD,29.00,40,buy,4.95,iShares MSCI Germany ETF
+14-03-2024,FXI,YAHOO,USD,24.80,50,buy,1.00,iShares China Large-Cap ETF
+19-03-2024,EWZ,YAHOO,USD,33.50,35,buy,0,iShares MSCI Brazil ETF
+22-03-2024,INDA,YAHOO,USD,51.00,25,buy,4.95,iShares MSCI India ETF
+27-03-2024,VWO,YAHOO,USD,0.08,40,dividend,0,Vanguard EM dividend
+02-04-2024,EWJ,YAHOO,USD,62.00,25,sell,0,Japan ETF - sold at loss
+05-04-2024,EWG,YAHOO,USD,27.50,40,sell,4.95,Germany ETF - sold at loss
+10-04-2024,FXI,YAHOO,USD,26.80,30,sell,1.00,China ETF - partial gain
+15-04-2024,EWZ,YAHOO,USD,30.00,35,sell,0,Brazil ETF - sold at loss
+18-04-2024,INDA,YAHOO,USD,48.00,25,sell,4.95,India ETF - sold at loss
+23-04-2024,BND,YAHOO,USD,70.00,25,sell,1.00,Bond ETF - sold at loss
+29-04-2024,IWM,YAHOO,USD,198.00,12,buy,0,iShares Russell 2000
+02-05-2024,DIA,YAHOO,USD,390.00,5,buy,4.95,SPDR Dow Jones ETF
+07-05-2024,SCHD,YAHOO,USD,77.00,20,buy,0,Schwab US Dividend ETF
+10-05-2024,VIG,YAHOO,USD,176.00,10,buy,4.95,Vanguard Dividend Appreciation
+15-05-2024,NOBL,YAHOO,USD,92.50,15,buy,1.00,ProShares Dividend Aristocrats
+20-05-2024,DVY,YAHOO,USD,118.00,12,buy,0,iShares Select Dividend ETF
+24-05-2024,VOO,YAHOO,USD,0.42,3,dividend,0,Vanguard S&P dividend
+28-05-2024,IWM,YAHOO,USD,209.00,12,sell,4.95,Russell 2000 - gain
+03-06-2024,DIA,YAHOO,USD,398.00,5,sell,0,Dow Jones - gain
+06-06-2024,SCHD,YAHOO,USD,80.50,15,sell,4.95,Dividend ETF - gain
+11-06-2024,VIG,YAHOO,USD,184.00,10,sell,1.00,Div Appreciation - gain
+14-06-2024,NOBL,YAHOO,USD,95.00,15,sell,0,Aristocrats - gain
+19-06-2024,DVY,YAHOO,USD,122.00,12,sell,4.95,Select Dividend - gain
+25-06-2024,KWEB,YAHOO,USD,28.50,50,buy,0,KraneShares China Internet ETF
+28-06-2024,ARKK,YAHOO,USD,48.00,30,buy,4.95,ARK Innovation ETF
+03-07-2024,TAN,YAHOO,USD,42.00,30,buy,1.00,Invesco Solar ETF
+08-07-2024,ICLN,YAHOO,USD,13.80,80,buy,0,iShares Global Clean Energy
+11-07-2024,BITO,YAHOO,USD,24.50,50,buy,4.95,ProShares Bitcoin Strategy
+16-07-2024,ARKG,YAHOO,USD,31.50,35,buy,0,ARK Genomic Revolution ETF
+19-07-2024,KWEB,YAHOO,USD,25.00,50,sell,4.95,China Internet - sold at loss
+24-07-2024,ARKK,YAHOO,USD,41.00,30,sell,1.00,ARK Innovation - sold at loss
+29-07-2024,TAN,YAHOO,USD,37.00,30,sell,0,Solar ETF - sold at loss
+01-08-2024,ICLN,YAHOO,USD,12.50,80,sell,4.95,Clean Energy - sold at loss
+06-08-2024,BITO,YAHOO,USD,21.00,50,sell,1.00,Bitcoin ETF - sold at loss
+09-08-2024,ARKG,YAHOO,USD,27.00,35,sell,0,Genomics - sold at loss
+14-08-2024,SPY,YAHOO,USD,540.00,5,buy,4.95,SPDR S&P 500 ETF
+19-08-2024,AAPL,YAHOO,USD,225.00,10,buy,0,Apple Inc
+22-08-2024,MSFT,YAHOO,USD,415.00,6,buy,4.95,Microsoft Corporation
+27-08-2024,NVDA,YAHOO,USD,126.00,15,buy,1.00,NVIDIA Corporation
+02-09-2024,AMZN,YAHOO,USD,177.00,10,buy,0,Amazon.com Inc
+06-09-2024,GOOGL,YAHOO,USD,155.00,12,buy,4.95,Alphabet Inc
+11-09-2024,SPY,YAHOO,USD,552.00,3,sell,0,S&P 500 - gain
+16-09-2024,AAPL,YAHOO,USD,216.00,10,sell,4.95,Apple - sold at loss
+20-09-2024,NVDA,YAHOO,USD,116.00,15,sell,1.00,NVIDIA - sold at loss
+26-09-2024,GOOGL,YAHOO,USD,163.00,12,sell,0,Alphabet - gain
+01-10-2024,AMZN,YAHOO,USD,189.00,10,sell,4.95,Amazon - gain
+07-10-2024,MSFT,YAHOO,USD,410.00,6,sell,1.00,Microsoft - loss
+14-10-2024,GLD,YAHOO,USD,248.00,8,buy,0,SPDR Gold - buying back
+21-10-2024,SLV,YAHOO,USD,31.50,40,buy,4.95,iShares Silver Trust
+28-10-2024,TLT,YAHOO,USD,91.00,15,buy,0,iShares 20+ Year Treasury
+04-11-2024,GLD,YAHOO,USD,252.00,8,sell,4.95,Gold - gain
+11-11-2024,SLV,YAHOO,USD,30.00,40,sell,1.00,Silver - sold at loss
+18-11-2024,TLT,YAHOO,USD,88.00,15,sell,0,Treasury - sold at loss

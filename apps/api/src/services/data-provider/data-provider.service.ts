@@ -212,6 +212,13 @@ export class DataProviderService implements OnModuleInit {
 
     const dataSources = await this.getDataSources();
 
+    // First pass: validate data sources and collect symbols that need API lookup
+    const symbolsToLookup: AssetProfileIdentifier[] = [];
+    const symbolLookupActivities = new Map<
+      string,
+      { currency: string; index: number }
+    >();
+
     for (const [
       index,
       { currency, dataSource, symbol, type }
@@ -267,18 +274,35 @@ export class DataProviderService implements OnModuleInit {
           continue;
         }
 
-        let assetProfile: Partial<SymbolProfile> = { currency };
+        // Collect for batch lookup (only first occurrence per symbol)
+        if (!symbolLookupActivities.has(assetProfileIdentifier)) {
+          symbolsToLookup.push({ dataSource, symbol });
+          symbolLookupActivities.set(assetProfileIdentifier, {
+            currency,
+            index
+          });
+        }
+      }
+    }
 
-        try {
-          assetProfile = (
-            await this.getAssetProfiles([
-              {
-                dataSource,
-                symbol
-              }
-            ])
-          )?.[symbol];
-        } catch {}
+    // Batch fetch all asset profiles in parallel (single call)
+    if (symbolsToLookup.length > 0) {
+      let fetchedProfiles: { [symbol: string]: Partial<SymbolProfile> } = {};
+
+      try {
+        fetchedProfiles = await this.getAssetProfiles(symbolsToLookup);
+      } catch {
+        // Individual symbols may fail; continue with partial results
+      }
+
+      for (const identifier of symbolsToLookup) {
+        const { dataSource, symbol } = identifier;
+        const assetProfileIdentifier = getAssetProfileIdentifier(identifier);
+        const { currency } = symbolLookupActivities.get(assetProfileIdentifier);
+
+        const assetProfile: Partial<SymbolProfile> = fetchedProfiles[
+          symbol
+        ] ?? { currency };
 
         if (!assetProfile?.name) {
           const assetProfileInImport = assetProfilesWithMarketDataDto?.find(
@@ -295,9 +319,18 @@ export class DataProviderService implements OnModuleInit {
         }
 
         if (!assetProfile?.name) {
-          throw new Error(
-            `activities.${index}.symbol ("${symbol}") is not valid for the specified data source ("${dataSource}")`
+          // Data provider lookup failed (e.g. Yahoo Finance API unavailable).
+          // Fall back gracefully: use the symbol as the name so the import
+          // is not blocked by transient API outages.
+          Logger.warn(
+            `Data provider lookup failed for "${symbol}" (${dataSource}) — using symbol as fallback name`,
+            'DataProviderService'
           );
+
+          assetProfile.name = symbol;
+          assetProfile.dataSource = dataSource;
+          assetProfile.symbol = symbol;
+          assetProfile.currency = assetProfile.currency ?? currency;
         }
 
         assetProfiles[assetProfileIdentifier] = assetProfile;

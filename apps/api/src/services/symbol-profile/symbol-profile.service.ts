@@ -10,7 +10,12 @@ import { Country } from '@ghostfolio/common/interfaces/country.interface';
 import { Sector } from '@ghostfolio/common/interfaces/sector.interface';
 
 import { Injectable } from '@nestjs/common';
-import { Prisma, SymbolProfile, SymbolProfileOverrides } from '@prisma/client';
+import {
+  DataSource,
+  Prisma,
+  SymbolProfile,
+  SymbolProfileOverrides
+} from '@prisma/client';
 import { continents, countries } from 'countries-list';
 
 @Injectable()
@@ -19,8 +24,55 @@ export class SymbolProfileService {
 
   public async add(
     assetProfile: Prisma.SymbolProfileCreateInput
-  ): Promise<SymbolProfile | never> {
-    return this.prismaService.symbolProfile.create({ data: assetProfile });
+  ): Promise<SymbolProfile> {
+    try {
+      return await this.prismaService.symbolProfile.create({
+        data: assetProfile
+      });
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        // Unique constraint violation — return the existing record
+        return this.prismaService.symbolProfile.findUnique({
+          where: {
+            dataSource_symbol: {
+              dataSource: assetProfile.dataSource as DataSource,
+              symbol: assetProfile.symbol
+            }
+          }
+        });
+      }
+
+      throw error;
+    }
+  }
+
+  public async addIfNotExists({
+    currency,
+    dataSource,
+    name,
+    symbol,
+    userId
+  }: {
+    currency?: string;
+    dataSource: DataSource;
+    name?: string;
+    symbol: string;
+    userId?: string;
+  }): Promise<SymbolProfile> {
+    return this.prismaService.symbolProfile.upsert({
+      create: {
+        currency,
+        dataSource,
+        name,
+        symbol,
+        user: userId ? { connect: { id: userId } } : undefined
+      },
+      update: {},
+      where: { dataSource_symbol: { dataSource, symbol } }
+    });
   }
 
   public async delete({ dataSource, symbol }: AssetProfileIdentifier) {

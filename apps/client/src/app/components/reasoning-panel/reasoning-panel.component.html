@@ -1,0 +1,52 @@
+@if (preview) {
+  <div
+    class="reasoning-inline"
+    [class.completed]="preview.completedAt !== null"
+    [class.live]="preview.completedAt === null"
+  >
+    <!-- Collapsed summary (shown when completed or manually collapsed) -->
+    <button
+      class="reasoning-toggle"
+      [class.expanded]="!isCollapsed"
+      (click)="onToggleCollapse()"
+    >
+      @if (preview.completedAt === null) {
+        <div class="thinking-indicator">
+          <span class="thinking-dot"></span>
+          <span class="thinking-dot"></span>
+          <span class="thinking-dot"></span>
+        </div>
+        <span class="toggle-label" i18n>Thinking...</span>
+      } @else {
+        <ion-icon class="toggle-chevron" name="chevron-forward-outline" />
+        <span class="toggle-label" i18n>
+          Thought for {{ formatDuration(preview.totalDurationMs) }}
+        </span>
+      }
+    </button>
+
+    <!-- Expanded step list -->
+    @if (!isCollapsed) {
+      <div class="reasoning-steps">
+        @for (step of preview.steps; track trackByStepId($index, step)) {
+          <div
+            class="step-line"
+            [class.step-enter]="isStepVisible(step.id)"
+            [class.step-error]="step.status === 'error'"
+            [class.step-running]="step.status === 'running'"
+          >
+            <span class="step-text">{{ step.title }}</span>
+            @if (step.status === 'running') {
+              <span class="step-spinner"></span>
+            }
+            @if (step.durationMs !== null && step.status !== 'running') {
+              <span class="step-time">{{
+                formatDuration(step.durationMs)
+              }}</span>
+            }
+          </div>
+        }
+      </div>
+    }
+  </div>
+}

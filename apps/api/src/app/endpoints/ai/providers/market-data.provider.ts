@@ -11,6 +11,7 @@ import { Logger } from '@nestjs/common';
 
 import { CachedMarketDataProvider } from './cached-market-data.provider';
 import { CoinGeckoMarketDataProvider } from './coingecko-market-data.provider';
+import { FallbackMarketDataProvider } from './fallback-market-data.provider';
 import type {
   FundamentalsResult,
   HistoryResult,
@@ -22,8 +23,32 @@ import type {
   QuoteError,
   QuoteResult
 } from './market-data.types';
+import { getQuoteCacheService } from './quote-cache.service';
 
 const logger = new Logger('MarketDataProvider');
+
+/** Per-request timeout for Yahoo Finance API calls (15s) */
+const YAHOO_REQUEST_TIMEOUT_MS = 15_000;
+
+/**
+ * Wraps a promise with a timeout. Rejects with a clear message if the
+ * underlying call (e.g. yahoo-finance2 fetch) hangs beyond the limit.
+ */
+function withTimeout<T>(
+  promise: Promise<T>,
+  ms: number,
+  label: string
+): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<never>((_, reject) =>
+      setTimeout(
+        () => reject(new Error(`${label}: timed out after ${ms / 1000}s`)),
+        ms
+      )
+    )
+  ]);
+}
 
 // ─── Range → yahoo-finance2 period mapping ──────────────────────────
 
@@ -52,8 +77,16 @@ function daysAgo(days: number): Date {
 export class YahooMarketDataProvider implements MarketDataProvider {
   public readonly name = 'yahoo' as const;
 
+  // Cached instance — yahoo-finance2 v3 requires `new YahooFinance()`
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private yahooInstance: any = null;
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private async getYahoo(): Promise<any> {
+    if (this.yahooInstance) {
+      return this.yahooInstance;
+    }
+
     // Dynamic import for ESM module — typed as any to avoid TS issues
     // with yahoo-finance2's complex conditional module types
     // eslint-disable-next-line @typescript-eslint/no-implied-eval
@@ -61,7 +94,15 @@ export class YahooMarketDataProvider implements MarketDataProvider {
       s: string
     ) => Promise<any>;
     const mod = await dynamicImport('yahoo-finance2');
-    return mod.default ?? mod;
+    const YahooFinance = mod.default ?? mod;
+
+    // yahoo-finance2 v3: must instantiate the class
+    this.yahooInstance =
+      typeof YahooFinance === 'function' && YahooFinance.prototype
+        ? new YahooFinance({ suppressNotices: ['yahooSurvey'] })
+        : YahooFinance;
+
+    return this.yahooInstance;
   }
 
   public async fetchQuotes(symbols: string[]): Promise<QuoteResult> {
@@ -88,7 +129,11 @@ export class YahooMarketDataProvider implements MarketDataProvider {
 
     for (const symbol of symbols) {
       try {
-        const result = await yahooFinance.quote(symbol);
+        const result: any = await withTimeout(
+          yahooFinance.quote(symbol),
+          YAHOO_REQUEST_TIMEOUT_MS,
+          symbol
+        );
 
         if (!result?.regularMarketPrice) {
           errors.push({ symbol, error: `No quote data for ${symbol}` });
@@ -117,6 +162,20 @@ export class YahooMarketDataProvider implements MarketDataProvider {
         if (msg.includes('429') || msg.toLowerCase().includes('rate limit')) {
           rateLimited = true;
           errors.push({ symbol, error: 'rate_limited' });
+        } else if (
+          msg.includes('fetch failed') ||
+          msg.includes('getaddrinfo') ||
+          msg.includes('ENOTFOUND') ||
+          msg.includes('EAI_AGAIN')
+        ) {
+          logger.warn(`Network error fetching ${symbol}: ${msg}`);
+          errors.push({
+            symbol,
+            error: `Network error: Unable to reach Yahoo Finance API. The server may not have internet access or DNS resolution failed.`
+          });
+        } else if (msg.includes('timed out')) {
+          logger.warn(`Timeout fetching ${symbol}: ${msg}`);
+          errors.push({ symbol, error: msg });
         } else {
           errors.push({ symbol, error: msg });
         }
@@ -155,10 +214,14 @@ export class YahooMarketDataProvider implements MarketDataProvider {
       }
 
       const yahooInterval = INTERVAL_MAP[interval] || '1d';
-      const result = await yahooFinance.chart(symbol, {
-        period1: period1Fn(),
-        interval: yahooInterval as any
-      });
+      const result: any = await withTimeout(
+        yahooFinance.chart(symbol, {
+          period1: period1Fn(),
+          interval: yahooInterval as any
+        }),
+        YAHOO_REQUEST_TIMEOUT_MS,
+        `${symbol} history`
+      );
 
       const rawQuotes = result?.quotes ?? [];
       const maxPoints = 260;
@@ -199,9 +262,13 @@ export class YahooMarketDataProvider implements MarketDataProvider {
 
     try {
       const yahooFinance = await this.getYahoo();
-      const result = await yahooFinance.quoteSummary(symbol, {
-        modules: ['summaryDetail', 'defaultKeyStatistics', 'assetProfile']
-      });
+      const result: any = await withTimeout(
+        yahooFinance.quoteSummary(symbol, {
+          modules: ['summaryDetail', 'defaultKeyStatistics', 'assetProfile']
+        }),
+        YAHOO_REQUEST_TIMEOUT_MS,
+        `${symbol} fundamentals`
+      );
 
       if (!result) {
         return {
@@ -286,25 +353,38 @@ export class YahooMarketDataProvider implements MarketDataProvider {
       const yahooFinance = await this.getYahoo();
 
       // yahoo-finance2 search returns news items
-      const result = await yahooFinance.search(symbol, {
-        newsCount: Math.min(limit, 10)
-      });
+      const result: any = await withTimeout(
+        yahooFinance.search(symbol, {
+          newsCount: Math.min(limit, 10)
+        }),
+        YAHOO_REQUEST_TIMEOUT_MS,
+        `${symbol} news`
+      );
 
       const items: NormalizedNewsItem[] = (result?.news ?? [])
         .slice(0, limit)
-        .map((n: any) => ({
-          title: n.title ?? 'Untitled',
-          publisher: n.publisher ?? null,
-          url: n.link ?? null,
-          publishedAt: n.providerPublishTime
-            ? new Date(
-                typeof n.providerPublishTime === 'number'
-                  ? n.providerPublishTime * 1000
-                  : n.providerPublishTime
-              ).toISOString()
-            : new Date().toISOString(),
-          source: 'yahoo-finance2'
-        }));
+        .map((n: any) => {
+          const resolutions = n.thumbnail?.resolutions ?? [];
+          const thumbnail =
+            resolutions.length > 0
+              ? resolutions[resolutions.length - 1].url
+              : null;
+
+          return {
+            title: n.title ?? 'Untitled',
+            publisher: n.publisher ?? null,
+            url: n.link ?? null,
+            thumbnail,
+            publishedAt: n.providerPublishTime
+              ? new Date(
+                  typeof n.providerPublishTime === 'number'
+                    ? n.providerPublishTime * 1000
+                    : n.providerPublishTime
+                ).toISOString()
+              : new Date().toISOString(),
+            source: 'yahoo-finance2'
+          };
+        });
 
       return {
         items,
@@ -327,34 +407,82 @@ export class YahooMarketDataProvider implements MarketDataProvider {
   }
 }
 
+// ─── Provider name → constructor mapping ─────────────────────────────
+
+function createProviderByName(name: string): MarketDataProvider {
+  switch (name.toLowerCase()) {
+    case 'coingecko':
+      return new CoinGeckoMarketDataProvider();
+    case 'yahoo':
+      return new YahooMarketDataProvider();
+    default:
+      logger.warn(`Unknown provider "${name}", falling back to Yahoo`);
+      return new YahooMarketDataProvider();
+  }
+}
+
 // ─── Factory ────────────────────────────────────────────────────────
 
 let providerInstance: MarketDataProvider | null = null;
 
+/**
+ * Build the provider chain from env vars:
+ *   MARKET_DATA_PRIMARY_PROVIDER   — first choice (default: 'yahoo')
+ *   MARKET_DATA_FALLBACK_PROVIDERS — comma-separated fallback list (default: 'coingecko')
+ *   MARKET_DATA_CACHE_ENABLED      — wrap with TTL cache (default: true)
+ *
+ * Architecture:
+ *   FallbackProvider([CachedProvider(Primary), CachedProvider(Fallback1), ...])
+ *
+ * The FallbackProvider also integrates with QuoteCacheService for
+ * persistent last-known-good quotes when all live providers fail.
+ */
 export function getMarketDataProvider(): MarketDataProvider {
   if (!providerInstance) {
-    const providerName = process.env.MARKET_DATA_PROVIDER || 'yahoo';
+    const primaryName =
+      process.env.MARKET_DATA_PRIMARY_PROVIDER ||
+      process.env.MARKET_DATA_PROVIDER ||
+      'yahoo';
+    const fallbackNames = (
+      process.env.MARKET_DATA_FALLBACK_PROVIDERS || 'coingecko'
+    )
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean);
     const cacheEnabled = process.env.MARKET_DATA_CACHE_ENABLED !== 'false';
 
-    logger.log(`Initializing market data provider: ${providerName}`);
+    // Build provider chain: primary first, then fallbacks
+    const providerNames = [primaryName, ...fallbackNames];
+    // Deduplicate while preserving order
+    const seen = new Set<string>();
+    const uniqueNames: string[] = [];
 
-    let baseProvider: MarketDataProvider;
+    for (const name of providerNames) {
+      const lower = name.toLowerCase();
 
-    switch (providerName) {
-      case 'coingecko':
-        baseProvider = new CoinGeckoMarketDataProvider();
-        break;
-      case 'yahoo':
-      default:
-        baseProvider = new YahooMarketDataProvider();
-        break;
+      if (!seen.has(lower)) {
+        seen.add(lower);
+        uniqueNames.push(lower);
+      }
     }
 
-    if (cacheEnabled) {
-      providerInstance = new CachedMarketDataProvider(baseProvider);
-      logger.log('Market data caching enabled');
+    const providers: MarketDataProvider[] = uniqueNames.map((name) => {
+      const base = createProviderByName(name);
+
+      return cacheEnabled ? new CachedMarketDataProvider(base) : base;
+    });
+
+    logger.log(
+      `Initializing market data provider chain: [${uniqueNames.join(' → ')}], cache=${cacheEnabled}`
+    );
+
+    if (providers.length === 1) {
+      providerInstance = providers[0];
     } else {
-      providerInstance = baseProvider;
+      providerInstance = new FallbackMarketDataProvider(
+        providers,
+        getQuoteCacheService()
+      );
     }
   }
 
@@ -363,6 +491,8 @@ export function getMarketDataProvider(): MarketDataProvider {
 
 /**
  * Get cache stats for telemetry. Returns null if caching is disabled.
+ * Works with both direct CachedMarketDataProvider and FallbackMarketDataProvider
+ * (which wraps CachedMarketDataProviders internally).
  */
 export function getMarketDataCacheStats(): {
   cacheEnabled: boolean;
@@ -372,6 +502,14 @@ export function getMarketDataCacheStats(): {
     return {
       cacheEnabled: true,
       cacheHits: providerInstance.cacheHits
+    };
+  }
+
+  // FallbackMarketDataProvider wraps CachedMarketDataProviders — report cache as enabled
+  if (providerInstance instanceof FallbackMarketDataProvider) {
+    return {
+      cacheEnabled: process.env.MARKET_DATA_CACHE_ENABLED !== 'false',
+      cacheHits: 0
     };
   }
 

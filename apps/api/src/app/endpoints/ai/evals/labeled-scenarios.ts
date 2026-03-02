@@ -247,35 +247,55 @@ export const LABELED_SCENARIOS: LabeledScenario[] = [
     toolCategories: ['performance', 'allocations']
   },
 
+  // ── MULTI-TOOL: Extended Chains ───────────────────────────────────
   {
     id: 'ls-043',
     query:
-      'What is my best performing holding, get its current quote, and show me news about it',
-    expectedTools: ['getPerformance', 'getQuote', 'getNews'],
+      'Show my performance and dividends for the past year, then check the fundamentals of whatever paid the most dividends',
+    expectedTools: ['getPerformance', 'listActivities', 'getFundamentals'],
     mustContain: [],
-    mustNotContain: ['I cannot'],
-    expectedSources: ['ghostfolio-portfolio-service', 'yahoo-finance2'],
+    mustNotContain: ['I predict', 'will increase'],
+    expectedSources: [
+      'ghostfolio-portfolio-service',
+      'ghostfolio-order-service',
+      'yahoo-finance2'
+    ],
     description:
-      'Three-step chain: performance → quote → news — multi-tool, complex',
+      'Three-step chain: performance + dividends → identify top payer → fundamentals',
     category: 'multi_tool',
     complexity: 'complex',
     difficulty: 'nuanced',
-    toolCategories: ['performance', 'summary']
+    toolCategories: ['performance', 'activities', 'market']
   },
   {
     id: 'ls-044',
     query:
-      'Show me my allocation breakdown, then check the fundamentals of my top holding, and suggest a rebalance to 60/40 equity/bonds',
-    expectedTools: ['getAllocations', 'getFundamentals', 'computeRebalance'],
+      'What is my sector allocation, and run a scenario where my largest sector drops 20%',
+    expectedTools: ['getAllocations', 'scenarioImpact'],
     mustContain: [],
-    mustNotContain: ['you should buy'],
-    expectedSources: ['ghostfolio-portfolio-service', 'yahoo-finance2'],
+    mustNotContain: ['will drop', 'will lose'],
+    expectedSources: ['ghostfolio-portfolio-service'],
     description:
-      'Three-step chain: allocations → fundamentals → rebalance — multi-tool, complex',
+      'Two-step chain: allocation lookup → scenario impact on largest sector',
+    category: 'multi_tool',
+    complexity: 'complex',
+    difficulty: 'straightforward',
+    toolCategories: ['allocations', 'decision']
+  },
+  {
+    id: 'ls-045',
+    query:
+      'Get AAPL and TSLA quotes, then show the 1-year history for both, and compare their fundamentals',
+    expectedTools: ['getQuote', 'getHistory', 'getFundamentals'],
+    mustContain: [],
+    mustNotContain: ['I cannot'],
+    expectedSources: ['yahoo-finance2'],
+    description:
+      'Three-step parallel chain: quotes → history for both → fundamentals comparison',
     category: 'multi_tool',
     complexity: 'complex',
     difficulty: 'nuanced',
-    toolCategories: ['allocations', 'performance']
+    toolCategories: ['market']
   },
 
   // ── EDGE CASES ─────────────────────────────────────────────────────

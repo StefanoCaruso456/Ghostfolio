@@ -177,13 +177,25 @@ export abstract class PortfolioCalculator {
 
   @LogPerformance
   public async computeSnapshot(): Promise<PortfolioSnapshot> {
+    const snapshotStartTime = performance.now();
+
     const lastTransactionPoint = this.transactionPoints.at(-1);
 
     const transactionPoints = this.transactionPoints?.filter(({ date }) => {
       return isBefore(parseDate(date), this.endDate);
     });
 
+    Logger.log(
+      `computeSnapshot: ${this.activities.length} activities → ${transactionPoints.length} transaction points, dateRange ${format(this.startDate, DATE_FORMAT)} to ${format(this.endDate, DATE_FORMAT)}`,
+      'PortfolioCalculator'
+    );
+
     if (!transactionPoints.length) {
+      Logger.warn(
+        `computeSnapshot: No transaction points found for user — returning empty snapshot`,
+        'PortfolioCalculator'
+      );
+
       return {
         activitiesCount: 0,
         createdAt: new Date(),
@@ -224,6 +236,11 @@ export abstract class PortfolioCalculator {
       currencies[symbol] = currency;
     }
 
+    Logger.log(
+      `computeSnapshot: ${dataGatheringItems.length} symbols to gather market data for, ${Object.keys(currencies).length} unique currencies`,
+      'PortfolioCalculator'
+    );
+
     for (let i = 0; i < transactionPoints.length; i++) {
       if (
         !isBefore(parseDate(transactionPoints[i].date), this.startDate) &&
@@ -256,6 +273,23 @@ export abstract class PortfolioCalculator {
 
     this.dataProviderInfos = dataProviderInfos;
 
+    Logger.log(
+      `computeSnapshot: Market data fetched — ${marketSymbols.length} data points, ${currentRateErrors.length} quote errors`,
+      'PortfolioCalculator'
+    );
+
+    if (currentRateErrors.length > 0) {
+      Logger.warn(
+        `computeSnapshot: Quote errors for: ${currentRateErrors
+          .map(({ symbol }) => symbol)
+          .slice(0, 10)
+          .join(
+            ', '
+          )}${currentRateErrors.length > 10 ? ` (+${currentRateErrors.length - 10} more)` : ''}`,
+        'PortfolioCalculator'
+      );
+    }
+
     const marketSymbolMap: {
       [date: string]: { [symbol: string]: Big };
     } = {};
@@ -278,15 +312,22 @@ export abstract class PortfolioCalculator {
 
     const daysInMarket = differenceInDays(this.endDate, this.startDate);
 
+    // Adaptive chart resolution: reduce chart density for large portfolios
+    const maxChartItems = this.configurationService.get('MAX_CHART_ITEMS');
+    const activityCount = this.activities.length;
+    const adaptiveMaxItems =
+      activityCount > 2000
+        ? Math.round(maxChartItems / 2)
+        : activityCount > 5000
+          ? Math.round(maxChartItems / 3)
+          : maxChartItems;
+
     const chartDateMap = this.getChartDateMap({
       endDate: this.endDate,
       startDate: this.startDate,
-      step: Math.round(
-        daysInMarket /
-          Math.min(
-            daysInMarket,
-            this.configurationService.get('MAX_CHART_ITEMS')
-          )
+      step: Math.max(
+        1,
+        Math.round(daysInMarket / Math.min(daysInMarket, adaptiveMaxItems))
       )
     });
 
@@ -294,9 +335,27 @@ export abstract class PortfolioCalculator {
       chartDateMap[accountBalanceItem.date] = true;
     }
 
-    const chartDates = sortBy(Object.keys(chartDateMap), (chartDate) => {
+    // Cap total chart dates to prevent excessive computation with large portfolios
+    let chartDates = sortBy(Object.keys(chartDateMap), (chartDate) => {
       return chartDate;
     });
+
+    if (chartDates.length > adaptiveMaxItems * 2 && activityCount > 2000) {
+      // Downsample: keep every Nth date but always keep first, last, and recent 30 days
+      const keepEveryN = Math.ceil(chartDates.length / adaptiveMaxItems);
+      const cutoffDate = format(subDays(this.endDate, 30), DATE_FORMAT);
+      const firstDate = chartDates[0];
+      const lastDate = chartDates[chartDates.length - 1];
+
+      chartDates = chartDates.filter((date, i) => {
+        return (
+          date === firstDate ||
+          date === lastDate ||
+          date >= cutoffDate ||
+          i % keepEveryN === 0
+        );
+      });
+    }
 
     if (firstIndex > 0) {
       firstIndex--;
@@ -338,7 +397,20 @@ export abstract class PortfolioCalculator {
       };
     } = {};
 
+    // Yield helper: allows Bull queue heartbeat to fire during heavy computation.
+    // Without this, the event loop is starved and the job stalls.
+    const YIELD_EVERY_N_SYMBOLS = 25;
+    let symbolsProcessed = 0;
+
     for (const item of lastTransactionPoint.items) {
+      // Periodically yield the event loop so Bull's lock renewal timer fires
+      if (++symbolsProcessed % YIELD_EVERY_N_SYMBOLS === 0) {
+        await new Promise<void>((resolve) => setImmediate(resolve));
+
+        // Ping DB to keep connection pool alive during long computation
+        await this.currentRateService.keepAlive();
+      }
+
       const marketPriceInBaseCurrency = (
         marketSymbolMap[endDateString]?.[item.symbol] ?? item.averagePrice
       ).mul(
@@ -483,7 +555,17 @@ export abstract class PortfolioCalculator {
 
     let lastKnownBalance = new Big(0);
 
+    let chartDateIdx = 0;
+
     for (const dateString of chartDates) {
+      // Yield every 100 chart dates to keep event loop responsive for Bull heartbeat
+      if (++chartDateIdx % 100 === 0) {
+        await new Promise<void>((resolve) => setImmediate(resolve));
+
+        // Ping DB to keep connection pool alive during long computation
+        await this.currentRateService.keepAlive();
+      }
+
       if (accountBalanceItemsMap[dateString] !== undefined) {
         // If there's an exact balance for this date, update lastKnownBalance
         lastKnownBalance = accountBalanceItemsMap[dateString];
@@ -619,6 +701,18 @@ export abstract class PortfolioCalculator {
         valueWithCurrencyEffect: totalCurrentValueWithCurrencyEffect.toNumber()
       };
     });
+
+    const nonZeroPositions = positions.filter(
+      ({ quantity }) => !quantity.eq(0)
+    );
+    const holdingsPositions = positions.filter(
+      ({ includeInHoldings }) => includeInHoldings
+    );
+
+    Logger.log(
+      `computeSnapshot: Built ${positions.length} total positions (${nonZeroPositions.length} with non-zero quantity, ${holdingsPositions.length} included in holdings, ${errors.length} errors) in ${((performance.now() - snapshotStartTime) / 1000).toFixed(1)}s`,
+      'PortfolioCalculator'
+    );
 
     const overall = this.calculateOverallPerformance(positions);
 
@@ -1145,6 +1239,11 @@ export abstract class PortfolioCalculator {
         });
       }
     } else {
+      Logger.log(
+        `No cached snapshot for user '${this.userId}' — submitting computation job (${this.activities.length} activities, ${this.transactionPoints.length} transaction points)`,
+        'PortfolioCalculator'
+      );
+
       // Wait for computation
       await this.portfolioSnapshotService.addJobToQueue({
         data: {
@@ -1164,7 +1263,53 @@ export abstract class PortfolioCalculator {
       const job = await this.portfolioSnapshotService.getJob(jobId);
 
       if (job) {
-        await job.finished();
+        // Add a timeout so we don't block the HTTP request forever
+        const JOB_WAIT_TIMEOUT_MS = 1_200_000; // 20 minutes (large portfolios with 900+ symbols need more time)
+
+        try {
+          await Promise.race([
+            job.finished(),
+            new Promise<never>((_, reject) =>
+              setTimeout(
+                () =>
+                  reject(
+                    new Error(
+                      `Portfolio snapshot job timed out after ${JOB_WAIT_TIMEOUT_MS / 1000}s for user '${this.userId}'`
+                    )
+                  ),
+                JOB_WAIT_TIMEOUT_MS
+              )
+            )
+          ]);
+        } catch (error) {
+          Logger.warn(
+            `Portfolio snapshot job did not complete in time for user '${this.userId}': ${error?.message}. The job may still be running in the background.`,
+            'PortfolioCalculator'
+          );
+
+          // Return an empty snapshot instead of hanging forever
+          this.snapshot = plainToClass(PortfolioSnapshot, {
+            activitiesCount: this.activities.length,
+            createdAt: new Date(),
+            currentValueInBaseCurrency: new Big(0),
+            errors: [],
+            hasErrors: true,
+            historicalData: [],
+            positions: [],
+            totalFeesWithCurrencyEffect: new Big(0),
+            totalInterestWithCurrencyEffect: new Big(0),
+            totalInvestment: new Big(0),
+            totalInvestmentWithCurrencyEffect: new Big(0),
+            totalLiabilitiesWithCurrencyEffect: new Big(0)
+          });
+
+          return;
+        }
+      } else {
+        Logger.warn(
+          `Could not find portfolio snapshot job for user '${this.userId}' — job may have completed already`,
+          'PortfolioCalculator'
+        );
       }
 
       await this.initialize();

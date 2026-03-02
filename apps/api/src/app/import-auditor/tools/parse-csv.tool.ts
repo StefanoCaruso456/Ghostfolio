@@ -1,9 +1,6 @@
 import { parse as csvToJson } from 'papaparse';
 
-import {
-  ParseCsvInput,
-  ParseCsvOutput
-} from '../schemas/parse-csv.schema';
+import { ParseCsvInput, ParseCsvOutput } from '../schemas/parse-csv.schema';
 import { createVerificationResult } from '../schemas/verification.schema';
 
 export function parseCsv(input: ParseCsvInput): ParseCsvOutput {
@@ -84,9 +81,7 @@ export function parseCsv(input: ParseCsvInput): ParseCsvOutput {
       ? 1.0
       : Math.max(0, 1 - parseErrors.length / rowCount);
 
-  const warnings = parseErrors.map(
-    (e) => `Row ${e.row}: ${e.message}`
-  );
+  const warnings = parseErrors.map((e) => `Row ${e.row}: ${e.message}`);
 
   return {
     status: 'success',

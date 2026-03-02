@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import { VerificationResultSchema } from '../../../../import-auditor/schemas/verification.schema';
+import { QuoteMetadataSchema } from './quote-metadata.schema';
 
 // ─── Input ───────────────────────────────────────────────────────────
 
@@ -39,7 +40,8 @@ export const GetPerformanceOutputSchema = z.object({
   status: z.enum(['success', 'error']),
   data: PerformanceDataSchema.optional(),
   message: z.string(),
-  verification: VerificationResultSchema
+  verification: VerificationResultSchema,
+  quoteMetadata: QuoteMetadataSchema
 });
 
 export type GetPerformanceOutput = z.infer<typeof GetPerformanceOutputSchema>;

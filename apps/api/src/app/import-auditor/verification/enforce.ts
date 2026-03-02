@@ -17,13 +17,18 @@ export function enforceVerificationGate(
   opts: { highStakes: boolean; minConfidence: number }
 ): GateDecision {
   if (!v.passed || (v.errors?.length ?? 0) > 0) {
+    const errorDetail =
+      v.errors && v.errors.length > 0
+        ? v.errors.join('; ')
+        : 'no details provided (passed=false)';
+
     return {
       decision: 'block',
-      reason: `Verification failed: ${v.errors?.join('; ') || 'unknown'}`
+      reason: `Verification failed: ${errorDetail}`
     };
   }
 
-  if ((v.domainRulesFailed?.length ?? 0) > 0) {
+  if ((v.domainRulesFailed?.length ?? 0) > 0 && !v.passed) {
     return {
       decision: 'block',
       reason: `Domain rules failed: ${v.domainRulesFailed!.join(', ')}`

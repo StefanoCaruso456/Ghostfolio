@@ -10,7 +10,7 @@ import {
 } from '@ghostfolio/common/interfaces';
 import type { RequestWithUser } from '@ghostfolio/common/types';
 
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { isBefore, isToday } from 'date-fns';
 import { isEmpty, uniqBy } from 'lodash';
@@ -22,6 +22,11 @@ import { GetValuesParams } from './interfaces/get-values-params.interface';
 @Injectable()
 export class CurrentRateService {
   private static readonly MARKET_DATA_PAGE_SIZE = 50000;
+  private static readonly QUOTE_FETCH_TIMEOUT_MS = 120_000; // 120 seconds for all quote fetching (142 YAHOO symbols in 3 batches)
+  private static readonly QUOTE_REQUEST_TIMEOUT_MS = 20_000; // 20 seconds per Yahoo batch request
+  private static readonly FALLBACK_CONCURRENCY = 50; // Parallel fallback DB queries
+
+  private readonly logger = new Logger(CurrentRateService.name);
 
   public constructor(
     private readonly dataProviderService: DataProviderService,
@@ -29,6 +34,10 @@ export class CurrentRateService {
     private readonly orderService: OrderService,
     @Inject(REQUEST) private readonly request: RequestWithUser
   ) {}
+
+  public async keepAlive(): Promise<void> {
+    return this.marketDataService.keepAlive();
+  }
 
   @LogPerformance
   // TODO: Pass user instead of using this.request.user
@@ -48,10 +57,46 @@ export class CurrentRateService {
     const values: GetValueObject[] = [];
 
     if (includesToday) {
-      const quotesBySymbol = await this.dataProviderService.getQuotes({
-        items: dataGatheringItems,
-        user: this.request?.user
-      });
+      let quotesBySymbol: { [symbol: string]: any } = {};
+
+      try {
+        const quoteStartTime = Date.now();
+
+        this.logger.log(
+          `Fetching quotes for ${dataGatheringItems.length} items (timeout: ${CurrentRateService.QUOTE_FETCH_TIMEOUT_MS / 1000}s, per-batch: ${CurrentRateService.QUOTE_REQUEST_TIMEOUT_MS / 1000}s)`
+        );
+
+        // Add a global timeout so slow data providers don't block the entire computation
+        quotesBySymbol = await Promise.race([
+          this.dataProviderService.getQuotes({
+            items: dataGatheringItems,
+            requestTimeout: CurrentRateService.QUOTE_REQUEST_TIMEOUT_MS,
+            user: this.request?.user
+          }),
+          new Promise<{ [symbol: string]: any }>((resolve) =>
+            setTimeout(() => {
+              this.logger.warn(
+                `getQuotes global timeout after ${CurrentRateService.QUOTE_FETCH_TIMEOUT_MS / 1000}s for ${dataGatheringItems.length} items — degrading gracefully`
+              );
+              resolve({});
+            }, CurrentRateService.QUOTE_FETCH_TIMEOUT_MS)
+          )
+        ]);
+
+        const quoteCount = Object.keys(quotesBySymbol).length;
+        const quoteDurationSec = ((Date.now() - quoteStartTime) / 1000).toFixed(
+          1
+        );
+
+        this.logger.log(
+          `Quotes fetched: ${quoteCount}/${dataGatheringItems.length} in ${quoteDurationSec}s`
+        );
+      } catch (error) {
+        this.logger.error(
+          `getQuotes failed: ${error instanceof Error ? error.message : error}`
+        );
+        quotesBySymbol = {};
+      }
 
       for (const { dataSource, symbol } of dataGatheringItems) {
         const quote = quotesBySymbol[symbol];
@@ -81,23 +126,27 @@ export class CurrentRateService {
         return { dataSource, symbol };
       });
 
-    const marketDataCount = await this.marketDataService.getRangeCount({
-      assetProfileIdentifiers,
-      dateQuery
-    });
+    // Retry DB queries in case pool connections were killed during a previous long computation
+    const marketDataCount = await this.retryOnConnectionError(() =>
+      this.marketDataService.getRangeCount({
+        assetProfileIdentifiers,
+        dateQuery
+      })
+    );
 
     for (
       let i = 0;
       i < marketDataCount;
       i += CurrentRateService.MARKET_DATA_PAGE_SIZE
     ) {
-      // Use page size to limit the number of records fetched at once
-      const data = await this.marketDataService.getRange({
-        assetProfileIdentifiers,
-        dateQuery,
-        skip: i,
-        take: CurrentRateService.MARKET_DATA_PAGE_SIZE
-      });
+      const data = await this.retryOnConnectionError(() =>
+        this.marketDataService.getRange({
+          assetProfileIdentifiers,
+          dateQuery,
+          skip: i,
+          take: CurrentRateService.MARKET_DATA_PAGE_SIZE
+        })
+      );
 
       values.push(
         ...data.map(({ dataSource, date, marketPrice, symbol }) => ({
@@ -120,48 +169,74 @@ export class CurrentRateService {
     };
 
     if (!isEmpty(quoteErrors)) {
-      for (const { dataSource, symbol } of quoteErrors) {
-        try {
-          // If missing quote, fallback to the latest available historical market price
-          let value: GetValueObject = response.values.find((currentValue) => {
-            return currentValue.symbol === symbol && isToday(currentValue.date);
-          });
+      this.logger.log(
+        `Resolving ${quoteErrors.length} quote errors via fallback (concurrency: ${CurrentRateService.FALLBACK_CONCURRENCY})`
+      );
 
-          if (!value) {
-            // Fallback to unit price of latest activity
-            const latestActivity = await this.orderService.getLatestOrder({
-              dataSource,
-              symbol
-            });
+      // Process fallback in batches to avoid N sequential DB queries
+      for (
+        let i = 0;
+        i < quoteErrors.length;
+        i += CurrentRateService.FALLBACK_CONCURRENCY
+      ) {
+        const batch = quoteErrors.slice(
+          i,
+          i + CurrentRateService.FALLBACK_CONCURRENCY
+        );
 
-            value = {
-              dataSource,
-              symbol,
-              date: today,
-              marketPrice: latestActivity?.unitPrice ?? 0
-            };
+        await Promise.all(
+          batch.map(async ({ dataSource, symbol }) => {
+            try {
+              // If missing quote, fallback to the latest available historical market price
+              let value: GetValueObject = response.values.find(
+                (currentValue) => {
+                  return (
+                    currentValue.symbol === symbol && isToday(currentValue.date)
+                  );
+                }
+              );
 
-            response.values.push(value);
-          }
+              if (!value) {
+                // Fallback to unit price of latest activity
+                const latestActivity = await this.orderService.getLatestOrder({
+                  dataSource,
+                  symbol
+                });
 
-          const [latestValue] = response.values
-            .filter((currentValue) => {
-              return currentValue.symbol === symbol && currentValue.marketPrice;
-            })
-            .sort((a, b) => {
-              if (a.date < b.date) {
-                return 1;
+                value = {
+                  dataSource,
+                  symbol,
+                  date: today,
+                  marketPrice: latestActivity?.unitPrice ?? 0
+                };
+
+                response.values.push(value);
               }
 
-              if (a.date > b.date) {
-                return -1;
+              const [latestValue] = response.values
+                .filter((currentValue) => {
+                  return (
+                    currentValue.symbol === symbol && currentValue.marketPrice
+                  );
+                })
+                .sort((a, b) => {
+                  if (a.date < b.date) {
+                    return 1;
+                  }
+
+                  if (a.date > b.date) {
+                    return -1;
+                  }
+
+                  return 0;
+                });
+
+              if (latestValue) {
+                value.marketPrice = latestValue.marketPrice;
               }
-
-              return 0;
-            });
-
-          value.marketPrice = latestValue.marketPrice;
-        } catch {}
+            } catch {}
+          })
+        );
       }
     }
 
@@ -175,5 +250,32 @@ export class CurrentRateService {
       }
     }
     return false;
+  }
+
+  /**
+   * Retry a DB operation once if the connection was dropped (stale pool).
+   * Triggers a keepAlive (which reconnects on failure) before the retry.
+   */
+  private async retryOnConnectionError<T>(fn: () => Promise<T>): Promise<T> {
+    try {
+      return await fn();
+    } catch (error) {
+      const message = error?.message ?? '';
+
+      if (
+        message.includes('closed the connection') ||
+        message.includes('Connection refused') ||
+        message.includes('connection timeout') ||
+        message.includes('ECONNRESET')
+      ) {
+        this.logger.warn(
+          `DB connection error, retrying after keepAlive: ${message}`
+        );
+        await this.keepAlive();
+        return await fn();
+      }
+
+      throw error;
+    }
   }
 }

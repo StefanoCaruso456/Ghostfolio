@@ -10,6 +10,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  CUSTOM_ELEMENTS_SCHEMA,
   DOCUMENT,
   HostBinding,
   Inject,
@@ -26,9 +27,10 @@ import {
   RouterLink,
   RouterOutlet
 } from '@angular/router';
+import { IonIcon } from '@ionic/angular/standalone';
 import { DataSource } from '@prisma/client';
 import { addIcons } from 'ionicons';
-import { openOutline } from 'ionicons/icons';
+import { openOutline, sparklesOutline } from 'ionicons/icons';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
@@ -38,6 +40,7 @@ import { GfFooterComponent } from './components/footer/footer.component';
 import { GfHeaderComponent } from './components/header/header.component';
 import { GfHoldingDetailDialogComponent } from './components/holding-detail-dialog/holding-detail-dialog.component';
 import { HoldingDetailDialogParams } from './components/holding-detail-dialog/interfaces/interfaces';
+import { AiSidebarService } from './services/ai-sidebar.service';
 import { ImpersonationStorageService } from './services/impersonation-storage.service';
 import { TokenStorageService } from './services/token-storage.service';
 import { UserService } from './services/user/user.service';
@@ -48,9 +51,11 @@ import { UserService } from './services/user/user.service';
     GfAiChatSidebarComponent,
     GfFooterComponent,
     GfHeaderComponent,
+    IonIcon,
     RouterLink,
     RouterOutlet
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   selector: 'gf-root',
   styleUrls: ['./app.component.scss'],
   templateUrl: './app.component.html'
@@ -68,6 +73,7 @@ export class GfAppComponent implements OnDestroy, OnInit {
   public hasInfoMessage: boolean;
   public hasPermissionToChangeDateRange: boolean;
   public hasPermissionToChangeFilters: boolean;
+  public hasPermissionToAccessAssistant: boolean;
   public hasPromotion = false;
   public hasTabs = false;
   public info: InfoItem;
@@ -80,6 +86,7 @@ export class GfAppComponent implements OnDestroy, OnInit {
   private unsubscribeSubject = new Subject<void>();
 
   public constructor(
+    private aiSidebarService: AiSidebarService,
     private changeDetectorRef: ChangeDetectorRef,
     private dataService: DataService,
     private deviceService: DeviceDetectorService,
@@ -111,12 +118,21 @@ export class GfAppComponent implements OnDestroy, OnInit {
         }
       });
 
-    addIcons({ openOutline });
+    addIcons({ openOutline, sparklesOutline });
   }
 
   public ngOnInit() {
     this.deviceType = this.deviceService.getDeviceInfo().deviceType;
     this.info = this.dataService.fetchInfo();
+
+    this.aiSidebarService.open$
+      .pipe(takeUntil(this.unsubscribeSubject))
+      .subscribe(() => {
+        if (!this.isAiSidebarOpen) {
+          this.isAiSidebarOpen = true;
+          this.changeDetectorRef.markForCheck();
+        }
+      });
 
     this.impersonationStorageService
       .onChangeHasImpersonation()
@@ -133,6 +149,14 @@ export class GfAppComponent implements OnDestroy, OnInit {
         const urlSegments = urlSegmentGroup.segments;
         this.currentRoute = urlSegments[0].path;
         this.currentSubRoute = urlSegments[1]?.path;
+
+        // Auto-close sidebar when navigating to the fullscreen AI chat page
+        if (
+          this.currentRoute === internalRoutes.aiChat.path &&
+          this.isAiSidebarOpen
+        ) {
+          this.isAiSidebarOpen = false;
+        }
 
         if (
           ((this.currentRoute === internalRoutes.home.path &&
@@ -177,7 +201,6 @@ export class GfAppComponent implements OnDestroy, OnInit {
             this.currentRoute === internalRoutes.account.path ||
             this.currentRoute === internalRoutes.adminControl.path ||
             this.currentRoute === internalRoutes.home.path ||
-            this.currentRoute === internalRoutes.portfolio.path ||
             this.currentRoute === internalRoutes.zen.path) &&
           this.deviceType !== 'mobile';
 
@@ -218,6 +241,11 @@ export class GfAppComponent implements OnDestroy, OnInit {
           permissions.createUserAccount
         );
 
+        this.hasPermissionToAccessAssistant = hasPermission(
+          this.user?.permissions,
+          permissions.accessAssistant
+        );
+
         this.hasInfoMessage =
           this.canCreateAccount || !!this.user?.systemMessage;
 
@@ -252,6 +280,12 @@ export class GfAppComponent implements OnDestroy, OnInit {
     this.userService.remove();
 
     document.location.href = `/${document.documentElement.lang}`;
+  }
+
+  public onExpandAiChat() {
+    this.isAiSidebarOpen = false;
+    this.router.navigate(internalRoutes.aiChat.routerLink);
+    this.changeDetectorRef.markForCheck();
   }
 
   public onToggleAiSidebar() {

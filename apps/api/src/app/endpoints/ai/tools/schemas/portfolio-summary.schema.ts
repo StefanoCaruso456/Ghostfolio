@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import { VerificationResultSchema } from '../../../../import-auditor/schemas/verification.schema';
+import { QuoteMetadataSchema } from './quote-metadata.schema';
 
 // ─── Input ───────────────────────────────────────────────────────────
 
@@ -42,7 +43,8 @@ export const GetPortfolioSummaryOutputSchema = z.object({
   status: z.enum(['success', 'error']),
   data: PortfolioSummaryDataSchema.optional(),
   message: z.string(),
-  verification: VerificationResultSchema
+  verification: VerificationResultSchema,
+  quoteMetadata: QuoteMetadataSchema
 });
 
 export type GetPortfolioSummaryOutput = z.infer<

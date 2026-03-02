@@ -119,26 +119,34 @@ export class GfHomeOverviewComponent implements OnDestroy, OnInit {
   }
 
   private update() {
-    this.historicalDataItems = null;
-    this.isLoadingPerformance = true;
+    // Stale-while-revalidate: keep existing data visible while refreshing
+    if (!this.performance) {
+      this.isLoadingPerformance = true;
+    }
 
+    // Phase 1: Quick performance (instant, ~5 seconds with live quotes, no chart)
     this.dataService
-      .fetchPortfolioPerformance({
-        range: this.user?.settings?.dateRange
-      })
+      .fetchPortfolioPerformanceQuick()
       .pipe(takeUntil(this.unsubscribeSubject))
       .subscribe(({ chart, errors, performance }) => {
         this.errors = errors;
         this.performance = performance;
 
-        this.historicalDataItems = chart.map(
-          ({ date, netPerformanceInPercentageWithCurrencyEffect }) => {
-            return {
-              date,
-              value: netPerformanceInPercentageWithCurrencyEffect * 100
-            };
-          }
-        );
+        // Quick endpoint returns empty chart — show empty until full data loads
+        if (chart && chart.length > 0) {
+          this.historicalDataItems = chart.map(
+            ({ date, netPerformanceInPercentageWithCurrencyEffect }) => {
+              return {
+                date,
+                value: netPerformanceInPercentageWithCurrencyEffect * 100
+              };
+            }
+          );
+        } else {
+          // No chart data from quick endpoint — set to empty array (not null)
+          // so the component shows performance numbers without the chart
+          this.historicalDataItems = [];
+        }
 
         if (
           this.deviceType === 'mobile' &&

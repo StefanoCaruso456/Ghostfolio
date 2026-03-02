@@ -17,9 +17,16 @@ import type { NestExpressApplication } from '@nestjs/platform-express';
 import cookieParser from 'cookie-parser';
 import { NextFunction, Request, Response } from 'express';
 import helmet from 'helmet';
+import dns from 'node:dns';
 
 import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
+
+// Force IPv4 for all outgoing connections. Railway's us-west2 region has
+// intermittent IPv6 connectivity issues (ENETUNREACH on Yahoo Finance's
+// IPv6 addresses). This makes Node prefer IPv4 addresses during DNS
+// resolution, bypassing the problem.
+dns.setDefaultResultOrder('ipv4first');
 
 async function bootstrap() {
   const configApp = await NestFactory.create(AppModule);

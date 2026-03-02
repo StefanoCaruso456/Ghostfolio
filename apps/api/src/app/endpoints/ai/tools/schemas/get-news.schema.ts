@@ -28,6 +28,7 @@ const NewsItemSchema = z.object({
   title: z.string(),
   publisher: z.string().nullable(),
   url: z.string().nullable(),
+  thumbnail: z.string().nullable(),
   publishedAt: z.string(),
   source: z.string()
 });

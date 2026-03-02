@@ -1,6 +1,7 @@
 import { GfAccountDetailDialogComponent } from '@ghostfolio/client/components/account-detail-dialog/account-detail-dialog.component';
 import { AccountDetailDialogParams } from '@ghostfolio/client/components/account-detail-dialog/interfaces/interfaces';
 import { ImpersonationStorageService } from '@ghostfolio/client/services/impersonation-storage.service';
+import { PlaidLinkService } from '@ghostfolio/client/services/plaid-link.service';
 import { UserService } from '@ghostfolio/client/services/user/user.service';
 import {
   CreateAccountDto,
@@ -57,6 +58,7 @@ export class GfAccountsPageComponent implements OnDestroy, OnInit {
     private dialog: MatDialog,
     private impersonationStorageService: ImpersonationStorageService,
     private notificationService: NotificationService,
+    private plaidLinkService: PlaidLinkService,
     private route: ActivatedRoute,
     private router: Router,
     private userService: UserService
@@ -146,6 +148,121 @@ export class GfAccountsPageComponent implements OnDestroy, OnInit {
       );
   }
 
+  public async onConnectBroker() {
+    try {
+      // 1. Get a link token from the backend
+      const { linkToken } = await this.dataService
+        .createPlaidLinkToken()
+        .toPromise();
+
+      // 2. Open Plaid Link and wait for user to connect
+      const { publicToken, metadata } =
+        await this.plaidLinkService.open(linkToken);
+
+      const institution = metadata?.institution ?? {};
+
+      // 3. Exchange the public token server-side
+      const plaidItem: any = await this.dataService
+        .exchangePlaidPublicToken({
+          institutionId: institution.institution_id ?? 'unknown',
+          institutionName: institution.name ?? 'Unknown Institution',
+          publicToken
+        })
+        .toPromise();
+
+      // 4. Sync holdings
+      await this.dataService.syncPlaidItem(plaidItem.id).toPromise();
+
+      // 5. Refresh account list
+      this.fetchAccounts();
+
+      this.notificationService.alert({
+        title: $localize`Broker connected successfully!`
+      });
+    } catch (error) {
+      if (error?.message !== 'User exited Plaid Link') {
+        this.notificationService.alert({
+          title: $localize`Oops, broker connection failed.`
+        });
+      }
+    }
+  }
+
+  public async onConnectSnaptrade() {
+    try {
+      // 1. Get the Snaptrade connection portal redirect URI
+      const { redirectUri } = await this.dataService
+        .connectSnaptrade()
+        .toPromise();
+
+      // 2. Open the Snaptrade connection portal in a popup window
+      const popup = window.open(
+        redirectUri,
+        'snaptrade-connect',
+        'width=800,height=700,scrollbars=yes,resizable=yes'
+      );
+
+      // 3. Listen for postMessage events from the popup
+      const result = await new Promise<{ authorizationId: string }>(
+        (resolve, reject) => {
+          const handleMessage = (event: MessageEvent) => {
+            if (event.data?.status === 'SUCCESS') {
+              window.removeEventListener('message', handleMessage);
+              clearInterval(pollTimer);
+              resolve({ authorizationId: event.data.authorizationId });
+            } else if (event.data?.status === 'ERROR') {
+              window.removeEventListener('message', handleMessage);
+              clearInterval(pollTimer);
+              reject(new Error(event.data?.detail || 'Connection failed'));
+            } else if (
+              event.data?.status === 'CLOSE_MODAL' ||
+              event.data?.status === 'ABANDONED'
+            ) {
+              window.removeEventListener('message', handleMessage);
+              clearInterval(pollTimer);
+              reject(new Error('User closed Snaptrade portal'));
+            }
+          };
+
+          window.addEventListener('message', handleMessage);
+
+          // Poll to detect if popup was closed manually
+          const pollTimer = setInterval(() => {
+            if (popup?.closed) {
+              clearInterval(pollTimer);
+              window.removeEventListener('message', handleMessage);
+              reject(new Error('User closed Snaptrade portal'));
+            }
+          }, 1000);
+        }
+      );
+
+      // 4. Send callback with authorizationId to sync accounts
+      await this.dataService
+        .snaptradeCallback(result.authorizationId)
+        .toPromise();
+
+      // 5. Refresh account list
+      this.fetchAccounts();
+
+      this.notificationService.alert({
+        title: $localize`Broker connected via Snaptrade!`
+      });
+    } catch (error) {
+      if (error?.message !== 'User closed Snaptrade portal') {
+        // Surface backend error details from HttpErrorResponse
+        const detail =
+          error?.error?.message || error?.message || 'Unknown error';
+
+        console.error('Snaptrade connection error:', error);
+
+        this.notificationService.alert({
+          title: $localize`Snaptrade connection failed: ${detail}`
+        });
+      }
+    }
+  }
+
   public onDeleteAccount(aId: string) {
     this.reset();
 
@@ -181,6 +298,7 @@ export class GfAccountsPageComponent implements OnDestroy, OnInit {
     id,
     isExcluded,
     name,
+    plaidAccountId,
     platformId
   }: AccountModel) {
     const dialogRef = this.dialog.open<
@@ -195,6 +313,7 @@ export class GfAccountsPageComponent implements OnDestroy, OnInit {
           id,
           isExcluded,
           name,
+          plaidAccountId,
           platformId
         }
       },
@@ -275,6 +394,7 @@ export class GfAccountsPageComponent implements OnDestroy, OnInit {
           id: null,
           isExcluded: false,
           name: null,
+          plaidAccountId: null,
           platformId: null
         }
       },

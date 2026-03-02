@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import { VerificationResultSchema } from '../../../../import-auditor/schemas/verification.schema';
+import { QuoteMetadataSchema } from './quote-metadata.schema';
 
 // ─── Input ───────────────────────────────────────────────────────────
 
@@ -59,6 +60,7 @@ export const ScenarioImpactOutputSchema = z.object({
   data: ScenarioImpactDataSchema.optional(),
   message: z.string(),
   verification: VerificationResultSchema,
+  quoteMetadata: QuoteMetadataSchema,
   meta: z
     .object({
       schemaVersion: z.string(),

@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import { VerificationResultSchema } from '../../../../import-auditor/schemas/verification.schema';
+import { QuoteMetadataSchema } from './quote-metadata.schema';
 
 // ─── Input ───────────────────────────────────────────────────────────
 
@@ -89,6 +90,7 @@ export const ComputeRebalanceOutputSchema = z.object({
   data: ComputeRebalanceDataSchema.optional(),
   message: z.string(),
   verification: VerificationResultSchema,
+  quoteMetadata: QuoteMetadataSchema,
   meta: z
     .object({
       schemaVersion: z.string(),

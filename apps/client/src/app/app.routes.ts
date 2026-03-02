@@ -28,6 +28,11 @@ export const routes: Routes = [
       import('./pages/admin/admin-page.routes').then((m) => m.routes)
   },
   {
+    path: internalRoutes.aiChat.path,
+    loadChildren: () =>
+      import('./pages/ai-chat/ai-chat-page.routes').then((m) => m.routes)
+  },
+  {
     canActivate: [AuthGuard],
     loadComponent: () =>
       import('./pages/api/api-page.component').then(
@@ -89,9 +94,21 @@ export const routes: Routes = [
       import('./pages/markets/markets-page.routes').then((m) => m.routes)
   },
   {
+    path: internalRoutes.news.path,
+    loadChildren: () =>
+      import('./pages/news/news-page.routes').then((m) => m.routes)
+  },
+  {
     path: publicRoutes.openStartup.path,
     loadChildren: () =>
       import('./pages/open/open-page.routes').then((m) => m.routes)
+  },
+  {
+    path: internalRoutes.taxIntelligence.path,
+    loadChildren: () =>
+      import('./pages/tax-intelligence/tax-intelligence-page.routes').then(
+        (m) => m.routes
+      )
   },
   {
     path: internalRoutes.portfolio.path,

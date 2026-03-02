@@ -121,9 +121,13 @@ export class GfAnalysisPageComponent implements OnDestroy, OnInit {
 
   get savingsRate() {
     const savingsRatePerMonth =
-      this.hasImpersonationId || this.user.settings.isRestrictedView
+      this.hasImpersonationId || this.user?.settings?.isRestrictedView
         ? undefined
         : this.user?.settings?.savingsRate;
+
+    if (savingsRatePerMonth == null) {
+      return undefined;
+    }
 
     return this.mode === 'year'
       ? savingsRatePerMonth * 12
@@ -282,11 +286,9 @@ export class GfAnalysisPageComponent implements OnDestroy, OnInit {
   private update() {
     this.isLoadingInvestmentChart = true;
 
+    // Quick performance with chart built from activities + current holdings value
     this.dataService
-      .fetchPortfolioPerformance({
-        filters: this.userService.getFilters(),
-        range: this.user?.settings?.dateRange
-      })
+      .fetchPortfolioPerformanceQuick()
       .pipe(takeUntil(this.unsubscribeSubject))
       .subscribe(({ chart, firstOrderDate, performance }) => {
         this.firstOrderDate = firstOrderDate ?? new Date();
@@ -305,9 +307,8 @@ export class GfAnalysisPageComponent implements OnDestroy, OnInit {
             valueInPercentage,
             valueWithCurrencyEffect
           }
-        ] of chart.entries()) {
-          if (index > 0 || this.user?.settings?.dateRange === 'max') {
-            // Ignore first item where value is 0
+        ] of (chart ?? []).entries()) {
+          if (index > 0 || true) {
             this.investments.push({
               date,
               investment: totalInvestmentValueWithCurrencyEffect
@@ -341,10 +342,10 @@ export class GfAnalysisPageComponent implements OnDestroy, OnInit {
         this.changeDetectorRef.markForCheck();
       });
 
+    // Use quick holdings for top 3 / bottom 3 (instant)
     this.dataService
-      .fetchPortfolioHoldings({
-        filters: this.userService.getFilters(),
-        range: this.user?.settings?.dateRange
+      .fetchPortfolioHoldingsQuick({
+        filters: this.userService.getFilters()
       })
       .pipe(takeUntil(this.unsubscribeSubject))
       .subscribe(({ holdings }) => {

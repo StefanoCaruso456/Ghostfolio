@@ -394,7 +394,72 @@ export function isRootCurrency(aCurrency: string) {
   });
 }
 
-export function parseDate(date: string): Date | undefined {
+/**
+ * Detects the date format used across an array of date strings.
+ * Scans all values to disambiguate DD-MM-YYYY vs MM-DD-YYYY by looking
+ * for values where either slot exceeds 12, making the format unambiguous.
+ * Returns a format hint that parseDate() can use to avoid mis-parsing.
+ */
+export function detectDateFormatFromColumn(
+  dateStrings: string[]
+): string | undefined {
+  // Only applies to dash/slash/dot-separated formats with 3 numeric parts
+  const separatorPattern = /^(\d{1,2})([-/.])(\d{1,2})\2(\d{4})$/;
+
+  let hasFirstSlotAbove12 = false;
+  let hasSecondSlotAbove12 = false;
+  let detectedSeparator: string | undefined;
+
+  for (const dateStr of dateStrings) {
+    if (!dateStr) {
+      continue;
+    }
+
+    const match = separatorPattern.exec(dateStr.toString().trim());
+
+    if (!match) {
+      continue;
+    }
+
+    const [, firstPart, separator, secondPart] = match;
+    const first = parseInt(firstPart, 10);
+    const second = parseInt(secondPart, 10);
+
+    detectedSeparator = separator;
+
+    if (first > 12) {
+      hasFirstSlotAbove12 = true;
+    }
+
+    if (second > 12) {
+      hasSecondSlotAbove12 = true;
+    }
+  }
+
+  if (!detectedSeparator) {
+    return undefined;
+  }
+
+  const sep = detectedSeparator;
+
+  if (hasSecondSlotAbove12 && !hasFirstSlotAbove12) {
+    // Second slot has values > 12, so it must be the day → MM-DD-YYYY
+    return `MM${sep}dd${sep}yyyy`;
+  }
+
+  if (hasFirstSlotAbove12 && !hasSecondSlotAbove12) {
+    // First slot has values > 12, so it must be the day → DD-MM-YYYY
+    return `dd${sep}MM${sep}yyyy`;
+  }
+
+  // Ambiguous (both slots ≤ 12) or contradictory — fall back to default
+  return undefined;
+}
+
+export function parseDate(
+  date: string,
+  detectedFormat?: string
+): Date | undefined {
   if (!date) {
     return undefined;
   }
@@ -406,6 +471,15 @@ export function parseDate(date: string): Date | undefined {
     if (match) {
       const [, year, month, day] = match;
       date = `${year}-${month}-${day}`;
+    }
+  }
+
+  // If a column-level format was detected, try it first
+  if (detectedFormat && isMatch(date, detectedFormat)) {
+    const parsed = parse(date, detectedFormat, new Date());
+
+    if (!isNaN(parsed.getTime())) {
+      return parsed;
     }
   }
 

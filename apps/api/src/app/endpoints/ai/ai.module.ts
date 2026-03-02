@@ -6,6 +6,7 @@ import { CurrentRateService } from '@ghostfolio/api/app/portfolio/current-rate.s
 import { PortfolioService } from '@ghostfolio/api/app/portfolio/portfolio.service';
 import { RulesService } from '@ghostfolio/api/app/portfolio/rules.service';
 import { RedisCacheModule } from '@ghostfolio/api/app/redis-cache/redis-cache.module';
+import { TaxModule } from '@ghostfolio/api/app/tax/tax.module';
 import { UserModule } from '@ghostfolio/api/app/user/user.module';
 import { ApiModule } from '@ghostfolio/api/services/api/api.module';
 import { BenchmarkModule } from '@ghostfolio/api/services/benchmark/benchmark.module';
@@ -21,14 +22,27 @@ import { PropertyModule } from '@ghostfolio/api/services/property/property.modul
 import { PortfolioSnapshotQueueModule } from '@ghostfolio/api/services/queues/portfolio-snapshot/portfolio-snapshot.module';
 import { SymbolProfileModule } from '@ghostfolio/api/services/symbol-profile/symbol-profile.module';
 
-import { Module } from '@nestjs/common';
+import { Module, OnModuleInit } from '@nestjs/common';
 
 import { AiController } from './ai.controller';
 import { AiService } from './ai.service';
+import { AiConversationController } from './conversation/conversation.controller';
+import { AiConversationService } from './conversation/conversation.service';
+import { McpClientService } from './mcp/mcp-client.service';
+import { ToolDispatcherService } from './mcp/tool-dispatcher.service';
+import { AiMetricsController } from './metrics/ai-metrics.controller';
+import { AiMetricsService } from './metrics/ai-metrics.service';
+import { ReasoningTraceService } from './reasoning/reasoning-trace.service';
+import { ReasoningController } from './reasoning/reasoning.controller';
 import { BraintrustTelemetryService } from './telemetry/braintrust-telemetry.service';
 
 @Module({
-  controllers: [AiController],
+  controllers: [
+    AiController,
+    AiConversationController,
+    AiMetricsController,
+    ReasoningController
+  ],
   imports: [
     ApiModule,
     BenchmarkModule,
@@ -44,18 +58,34 @@ import { BraintrustTelemetryService } from './telemetry/braintrust-telemetry.ser
     PropertyModule,
     RedisCacheModule,
     SymbolProfileModule,
+    TaxModule,
     UserModule
   ],
   providers: [
     AccountBalanceService,
     AccountService,
+    AiConversationService,
+    AiMetricsService,
     AiService,
     BraintrustTelemetryService,
     CurrentRateService,
+    ReasoningTraceService,
     MarketDataService,
+    McpClientService,
+    ToolDispatcherService,
     PortfolioCalculatorFactory,
     PortfolioService,
     RulesService
   ]
 })
-export class AiModule {}
+export class AiModule implements OnModuleInit {
+  public constructor(
+    private readonly telemetryService: BraintrustTelemetryService,
+    private readonly metricsService: AiMetricsService
+  ) {}
+
+  public onModuleInit() {
+    // Wire metrics service into telemetry for DB persistence (avoids circular DI)
+    this.telemetryService.setMetricsService(this.metricsService);
+  }
+}
