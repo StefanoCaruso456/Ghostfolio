@@ -66,6 +66,16 @@
           >Ghostfolio AI</a
         >
       }
+      <a
+        i18n
+        mat-flat-button
+        [ngClass]="{
+          'font-weight-bold': currentRoute === routeNews,
+          'text-decoration-underline': currentRoute === routeNews
+        }"
+        [routerLink]="routerLinkNews"
+        >News</a
+      >
     </nav>
     <ul class="align-items-center d-flex header-actions list-inline m-0 px-2">
       <li class="list-inline-item d-none d-sm-block">
