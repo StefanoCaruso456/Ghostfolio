@@ -94,6 +94,11 @@ export const routes: Routes = [
       import('./pages/markets/markets-page.routes').then((m) => m.routes)
   },
   {
+    path: internalRoutes.news.path,
+    loadChildren: () =>
+      import('./pages/news/news-page.routes').then((m) => m.routes)
+  },
+  {
     path: publicRoutes.openStartup.path,
     loadChildren: () =>
       import('./pages/open/open-page.routes').then((m) => m.routes)

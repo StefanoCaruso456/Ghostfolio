@@ -123,6 +123,7 @@ export class GfHeaderComponent implements OnChanges {
   public routeAiChat = internalRoutes.aiChat.path;
   public routeFeatures = publicRoutes.features.path;
   public routeMarkets = publicRoutes.markets.path;
+  public routeNews = internalRoutes.news.path;
   public routePricing = publicRoutes.pricing.path;
   public routeResources = publicRoutes.resources.path;
   public routerLinkAbout = publicRoutes.about.routerLink;
@@ -136,6 +137,7 @@ export class GfHeaderComponent implements OnChanges {
   public routerLinkGuides = publicRoutes.resources.subRoutes.guides.routerLink;
   public routerLinkHoldings = internalRoutes.home.routerLink;
   public routerLinkMarkets = publicRoutes.markets.routerLink;
+  public routerLinkNews = internalRoutes.news.routerLink;
   public routerLinkPortfolio = internalRoutes.portfolio.routerLink;
   public routerLinkPricing = publicRoutes.pricing.routerLink;
   public routerLinkRegister = publicRoutes.register.routerLink;
