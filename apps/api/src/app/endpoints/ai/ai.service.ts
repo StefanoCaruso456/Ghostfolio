@@ -169,14 +169,16 @@ import {
 
 // ─── Production Guardrails (Non-Negotiable) ──────────────────────────
 
-/** MAX_ITERATIONS: 8-10 steps — prevent infinite loops + runaway cost */
-const MAX_ITERATIONS = 10;
+/** MAX_ITERATIONS: 8 steps — prevent infinite loops + runaway cost */
+const MAX_ITERATIONS = 8;
 
-/** TIMEOUT: 90s base — generous budget for multi-step tool chains */
-const TIMEOUT_MS = 90_000;
+/** TIMEOUT: 150s base — generous budget for multi-step tool chains
+ *  (e.g. "sell all NVDA" → getTaxHoldings → simulateSale = 2+ LLM round-trips)
+ */
+const TIMEOUT_MS = 150_000;
 
-/** TIMEOUT_MULTIMODAL: 180s — image/vision requests need more time */
-const TIMEOUT_MULTIMODAL_MS = 180_000;
+/** TIMEOUT_MULTIMODAL: 210s — image/vision requests need more time */
+const TIMEOUT_MULTIMODAL_MS = 210_000;
 
 /** COST_LIMIT: $1/query — prevent bill explosions */
 const COST_LIMIT_USD = 1.0;
@@ -885,6 +887,19 @@ export class AiService {
       }, effectiveTimeoutMs);
     });
 
+    // ── Per-request cache for portfolio data ──────────────────────────
+    // Multiple tools (getPortfolioSummary, getHoldingDetail, getAllocations,
+    // etc.) call safeGetDetails() within the same request. Without caching,
+    // each tool re-fetches holdings + live quotes, adding 5-15s per call.
+    // This Map caches by withSummary flag so the second call is instant.
+    const detailsCache = new Map<
+      string,
+      Awaited<ReturnType<typeof this.portfolioService.getDetails>> & {
+        hasErrors: boolean;
+        _degraded?: boolean;
+      }
+    >();
+
     // ── Safe portfolio data fetcher ─────────────────────────────────
     // Prefers getDetailsQuick() which computes holdings directly from
     // activities + live quotes — no Redis cache or BullMQ job queue
@@ -899,6 +914,18 @@ export class AiService {
         _degraded?: boolean;
       }
     > => {
+      // Per-request cache: skip re-fetch if same opts were used earlier
+      const cacheKey = opts.withSummary ? 'summary' : 'default';
+      const cached = detailsCache.get(cacheKey);
+
+      if (cached) {
+        Logger.debug(
+          `safeGetDetails() cache HIT (key=${cacheKey}) for userId=${userId}`,
+          'AiService'
+        );
+        return cached;
+      }
+
       // 1. Try getDetailsQuick — computes holdings in-process from
       //    activities + live quotes. No Redis/BullMQ dependency.
       try {
@@ -914,6 +941,7 @@ export class AiService {
           'AiService'
         );
 
+        detailsCache.set(cacheKey, result);
         return result;
       } catch (quickErr) {
         Logger.warn(
@@ -937,6 +965,7 @@ export class AiService {
           'AiService'
         );
 
+        detailsCache.set(cacheKey, result);
         return result;
       } catch (err) {
         Logger.error(
@@ -947,13 +976,17 @@ export class AiService {
         // Return a minimal result so tools can produce a meaningful "unavailable" response
         // instead of crashing the entire tool call.
         // Tools check hasErrors to distinguish this from a genuine empty portfolio.
-        return {
+        const degraded = {
           holdings: {},
           accounts: {},
           platforms: {},
           hasErrors: true,
           _degraded: true
         } as any;
+
+        // Cache even degraded results to avoid re-hitting failing services
+        detailsCache.set(cacheKey, degraded);
+        return degraded;
       }
     };
 
@@ -1942,7 +1975,7 @@ export class AiService {
       if (isGuardrail) {
         const isTimeout = errorMessage.includes('timed out');
         const friendlyMessage = isTimeout
-          ? 'Your request took too long to process. This can happen with complex portfolio analysis, large files, or when market data providers are slow. Try a more specific question or ask about fewer symbols at once.'
+          ? 'Your request took too long to process. This can happen with complex multi-step analysis or when market data providers are slow. Please try again — retries are often faster because data gets cached.'
           : 'I had to stop processing your request due to a safety guardrail. Please try rephrasing your question or ask something simpler.';
 
         return {

@@ -2,7 +2,7 @@
 
 ## Overview
 
-The AI chat system uses **23 production tools** registered with the Vercel AI SDK's `tool()` function. All tools are fully implemented (no stubs). Each tool has:
+The AI chat system uses **26 production tools** registered with the Vercel AI SDK's `tool()` function. All tools are fully implemented (no stubs). Each tool has:
 
 - **Input schema** (Zod) -- validates arguments from the LLM
 - **Output schema** (Zod) -- validates the ToolResult envelope at runtime
@@ -38,21 +38,24 @@ The AI chat system uses **23 production tools** registered with the Vercel AI SD
 | `computeRebalance` | Current vs target allocation deltas, suggested moves with rationale, constraint violations. NOT trade advice. | PortfolioService |
 | `scenarioImpact`   | "What if" portfolio impact simulation with shock scenarios (1-20 shocks)                                      | PortfolioService |
 
-### Tax Intelligence Tools (9)
+### Tax Intelligence Tools (12)
 
-| Tool Name               | Description                                                                         | Data Source | Verification Type  |
-| ----------------------- | ----------------------------------------------------------------------------------- | ----------- | ------------------ |
-| `listConnectedAccounts` | List all connected brokerage (SnapTrade) and bank (Plaid) accounts                  | TaxService  | confidence_scoring |
-| `syncAccount`           | Trigger a sync for a specific connected account to refresh data                     | TaxService  | confidence_scoring |
-| `getTaxHoldings`        | Cross-account holdings with cost basis, unrealized gain/loss, market prices         | TaxService  | confidence_scoring |
-| `getTaxTransactions`    | Tax-relevant transaction history with symbol/date/limit filtering                   | TaxService  | confidence_scoring |
-| `getTaxLots`            | FIFO-derived tax lots with holding periods (short/long term) and open/closed status | TaxService  | confidence_scoring |
-| `simulateSale`          | Estimate tax impact of selling shares — FIFO lot consumption + federal brackets     | TaxService  | human_in_the_loop  |
-| `createAdjustment`      | Create a cost basis adjustment (override, add lot, remove lot)                      | TaxService  | confidence_scoring |
-| `updateAdjustment`      | Update an existing cost basis adjustment                                            | TaxService  | confidence_scoring |
-| `deleteAdjustment`      | Delete a cost basis adjustment                                                      | TaxService  | confidence_scoring |
+| Tool Name               | Description                                                                                                  | Data Source | Verification Type  |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------ | ----------- | ------------------ |
+| `listConnectedAccounts` | List all connected brokerage (SnapTrade) and bank (Plaid) accounts                                           | TaxService  | confidence_scoring |
+| `syncAccount`           | Trigger a sync for a specific connected account to refresh data                                              | TaxService  | confidence_scoring |
+| `getTaxHoldings`        | Cross-account holdings with cost basis, unrealized gain/loss, market prices                                  | TaxService  | confidence_scoring |
+| `getTaxTransactions`    | Tax-relevant transaction history with symbol/date/limit filtering                                            | TaxService  | confidence_scoring |
+| `getTaxLots`            | FIFO-derived tax lots with holding periods (short/long term) and open/closed status                          | TaxService  | confidence_scoring |
+| `simulateSale`          | Estimate tax impact of selling shares — FIFO lots, federal + state + NIIT 4-layer breakdown                  | TaxService  | human_in_the_loop  |
+| `portfolioLiquidation`  | Simulate liquidating ALL holdings — per-holding tax breakdown, total liability. Self-contained               | TaxService  | human_in_the_loop  |
+| `taxLossHarvest`        | Find tax-loss harvesting candidates — unrealized losses, potential savings, wash sale risk flags             | TaxService  | human_in_the_loop  |
+| `washSaleCheck`         | Scan for IRS wash sale violations — 30-day window before/after loss sales, flags confirmed and at-risk items | TaxService  | human_in_the_loop  |
+| `createAdjustment`      | Create a cost basis adjustment (override, add lot, remove lot)                                               | TaxService  | confidence_scoring |
+| `updateAdjustment`      | Update an existing cost basis adjustment                                                                     | TaxService  | confidence_scoring |
+| `deleteAdjustment`      | Delete a cost basis adjustment                                                                               | TaxService  | confidence_scoring |
 
-> **Note:** `simulateSale` uses `human_in_the_loop` verification with confidence capped at 0.8. Tax estimates are informational only — not tax advice.
+> **Note:** `simulateSale`, `portfolioLiquidation`, `taxLossHarvest`, and `washSaleCheck` use `human_in_the_loop` verification with confidence capped at 0.8. All are **self-contained** — they fetch market prices, lots, and holdings internally. Do NOT call prerequisite tools before them. Tax estimates are informational only — not tax advice.
 
 ### Web Search Tools (1)
 
@@ -254,9 +257,42 @@ The AI chat system uses **23 production tools** registered with the Vercel AI SD
 ```typescript
 {
   symbol: string,                  // Ticker to simulate selling
-  quantity: number,                // Number of shares to sell
+  quantity: number,                // Shares to sell (must be positive)
   pricePerShare?: number,          // Sale price (defaults to current market price)
-  taxBracketPct?: number           // Federal marginal rate (default 24%)
+  taxBracketPct?: number,          // Federal short-term rate, 0-50 (default 24)
+  longTermBracketPct?: number,     // Federal long-term rate, 0/15/20 (default 15)
+  stateTaxPct?: number,            // State income tax rate, 0-15 (default 0)
+  includeNIIT?: boolean            // Include 3.8% NIIT (default true)
+}
+```
+
+### portfolioLiquidation
+
+```typescript
+{
+  taxBracketPct?: number,          // Federal short-term rate, 0-50 (default 24)
+  longTermBracketPct?: number,     // Federal long-term rate, 0/15/20 (default 15)
+  stateTaxPct?: number,            // State income tax rate, 0-15 (default 0)
+  includeNIIT?: boolean,           // Include 3.8% NIIT (default true)
+  topN?: number                    // Limit to top N holdings by value, 1-100
+}
+```
+
+### taxLossHarvest
+
+```typescript
+{
+  minLoss?: number,                // Min unrealized loss threshold in $ (default 100)
+  taxBracketPct?: number           // Federal bracket for savings estimate, 0-50 (default 24)
+}
+```
+
+### washSaleCheck
+
+```typescript
+{
+  symbol?: string,                 // Specific symbol; omit to scan all holdings
+  lookbackDays?: number            // Wash sale window in days, 1-90 (default 61)
 }
 ```
 
@@ -347,6 +383,7 @@ Located in `tools/index.ts`. Maps every tool name to its Zod output schema for r
 
 ```typescript
 export const OUTPUT_SCHEMA_REGISTRY: Record<string, z.ZodType> = {
+  // Portfolio (7)
   getPortfolioSummary: GetPortfolioSummaryOutputSchema,
   getHoldingDetail: GetHoldingDetailOutputSchema,
   getPortfolioChart: GetPortfolioChartOutputSchema,
@@ -354,23 +391,28 @@ export const OUTPUT_SCHEMA_REGISTRY: Record<string, z.ZodType> = {
   listActivities: ListActivitiesOutputSchema,
   getAllocations: GetAllocationsOutputSchema,
   getPerformance: GetPerformanceOutputSchema,
+  // Market (4)
   getQuote: GetQuoteOutputSchema,
   getHistory: GetHistoryOutputSchema,
   getFundamentals: GetFundamentalsOutputSchema,
   getNews: GetNewsOutputSchema,
+  // Decision-Support (2)
   computeRebalance: ComputeRebalanceOutputSchema,
   scenarioImpact: ScenarioImpactOutputSchema,
-  // Tax Intelligence tools
+  // Tax Intelligence (12)
   listConnectedAccounts: ListConnectedAccountsOutputSchema,
   syncAccount: SyncAccountOutputSchema,
   getTaxHoldings: GetTaxHoldingsOutputSchema,
   getTaxTransactions: GetTaxTransactionsOutputSchema,
   getTaxLots: GetTaxLotsOutputSchema,
   simulateSale: SimulateSaleOutputSchema,
+  portfolioLiquidation: PortfolioLiquidationOutputSchema,
+  taxLossHarvest: TaxLossHarvestOutputSchema,
+  washSaleCheck: WashSaleOutputSchema,
   createAdjustment: CreateAdjustmentOutputSchema,
   updateAdjustment: UpdateAdjustmentOutputSchema,
   deleteAdjustment: DeleteAdjustmentOutputSchema,
-  // Web Search
+  // Web Search (1)
   webSearch: WebSearchOutputSchema
 };
 ```

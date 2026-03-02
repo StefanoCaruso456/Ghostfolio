@@ -81,7 +81,7 @@ import {
 import { format, parseISO } from 'date-fns';
 import { cloneDeep, groupBy, isNumber } from 'lodash';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, timeout } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -109,14 +109,20 @@ export class DataService {
     traceId?: string;
     triggerSource?: string;
   }) {
-    return this.http.post<AiChatResponse>('/api/v1/ai/chat', {
-      attachments,
-      conversationId,
-      history,
-      message,
-      traceId,
-      triggerSource
-    });
+    return this.http
+      .post<AiChatResponse>('/api/v1/ai/chat', {
+        attachments,
+        conversationId,
+        history,
+        message,
+        traceId,
+        triggerSource
+      })
+      .pipe(
+        // 180s frontend safety net — slightly longer than backend's 150s
+        // so the backend timeout error propagates cleanly first.
+        timeout(180_000)
+      );
   }
 
   public deleteAiConversation(id: string) {
