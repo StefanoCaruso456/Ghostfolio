@@ -153,8 +153,22 @@ export class TaxService {
     opts?: { symbol?: string; accountId?: string }
   ): Promise<TaxHolding[]> {
     // Derive tax lots to compute cost basis
-    const lots = await this.deriveTaxLotsForUser(userId);
+    const lots = await this.deriveTaxLotsForUser(userId, {
+      symbol: opts?.symbol
+    });
 
+    return this.buildTaxHoldingsFromLots(userId, lots, opts);
+  }
+
+  /**
+   * Build TaxHolding[] from pre-computed lots. Extracted so that
+   * simulatePortfolioLiquidation can reuse lots without re-deriving.
+   */
+  private async buildTaxHoldingsFromLots(
+    userId: string,
+    lots: DerivedTaxLot[],
+    opts?: { symbol?: string; accountId?: string }
+  ): Promise<TaxHolding[]> {
     // Get current market prices
     const openLots = lots.filter(
       (lot) =>
@@ -329,13 +343,24 @@ export class TaxService {
 
   // ─── Tax Lots ────────────────────────────────────────────────────
 
-  public async deriveTaxLotsForUser(userId: string): Promise<DerivedTaxLot[]> {
+  public async deriveTaxLotsForUser(
+    userId: string,
+    opts?: { symbol?: string }
+  ): Promise<DerivedTaxLot[]> {
+    const where: any = {
+      userId,
+      isDraft: false,
+      type: { in: ['BUY', 'SELL'] }
+    };
+
+    // When a symbol filter is provided, query only orders for that symbol.
+    // This avoids deriving lots for all 100+ symbols when we only need one.
+    if (opts?.symbol) {
+      where.SymbolProfile = { symbol: opts.symbol };
+    }
+
     const orders = await this.prismaService.order.findMany({
-      where: {
-        userId,
-        isDraft: false,
-        type: { in: ['BUY', 'SELL'] }
-      },
+      where,
       include: {
         SymbolProfile: {
           select: { symbol: true, dataSource: true, currency: true }
@@ -364,7 +389,9 @@ export class TaxService {
     userId: string,
     opts?: { symbol?: string; status?: 'OPEN' | 'CLOSED' | 'ALL' }
   ): Promise<DerivedTaxLot[]> {
-    const allLots = await this.deriveTaxLotsForUser(userId);
+    const allLots = await this.deriveTaxLotsForUser(userId, {
+      symbol: opts?.symbol
+    });
 
     return allLots.filter((lot) => {
       if (opts?.symbol && lot.symbol !== opts.symbol) {
@@ -389,11 +416,14 @@ export class TaxService {
     userId: string,
     input: SaleSimulationInput
   ): Promise<SaleSimulationResult> {
-    // Get open lots for the symbol
-    const openLots = await this.getTaxLots(userId, {
-      symbol: input.symbol,
-      status: 'OPEN'
+    // Get open lots for this symbol only — filtered at the DB level
+    // to avoid deriving lots for the entire portfolio.
+    const allSymbolLots = await this.deriveTaxLotsForUser(userId, {
+      symbol: input.symbol
     });
+    const openLots = allSymbolLots.filter(
+      (lot) => lot.status === 'OPEN' || lot.status === 'PARTIAL'
+    );
 
     // Get current market price if not provided
     let currentMarketPrice = input.pricePerShare ?? 0;
@@ -433,8 +463,10 @@ export class TaxService {
     userId: string,
     input: PortfolioLiquidationInput
   ): Promise<PortfolioLiquidationResult> {
-    const holdings = await this.getTaxHoldings(userId);
+    // Derive lots once and reuse — getTaxHoldings was calling
+    // deriveTaxLotsForUser internally, causing a redundant second call.
     const allLots = await this.deriveTaxLotsForUser(userId);
+    const holdings = await this.buildTaxHoldingsFromLots(userId, allLots);
 
     const shortTermRate = input.taxBracketPct
       ? input.taxBracketPct / 100
@@ -558,8 +590,9 @@ export class TaxService {
     userId: string,
     opts?: { minLoss?: number; taxBracketPct?: number }
   ): Promise<TaxLossHarvestResult> {
-    const holdings = await this.getTaxHoldings(userId);
+    // Derive lots once and reuse for both holdings and lot analysis
     const allLots = await this.deriveTaxLotsForUser(userId);
+    const holdings = await this.buildTaxHoldingsFromLots(userId, allLots);
     const minLoss = opts?.minLoss ?? 100;
     const shortTermRate = opts?.taxBracketPct
       ? opts.taxBracketPct / 100
@@ -708,8 +741,10 @@ export class TaxService {
 
     const transactions = txResult.transactions;
 
-    // Find loss sales
-    const allLots = await this.deriveTaxLotsForUser(userId);
+    // Find loss sales — filter by symbol at DB level when provided
+    const allLots = await this.deriveTaxLotsForUser(userId, {
+      symbol: opts?.symbol
+    });
     const closedLots = allLots.filter(
       (lot) =>
         lot.status === 'CLOSED' &&
