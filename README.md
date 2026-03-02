@@ -36,14 +36,16 @@ A conversational sidebar powered by a ReAct agent loop with **10 specialized fin
 | `getQuote`            | Real-time price lookups (up to 25 symbols)          |
 | `getHistory`          | Historical price data and charts                    |
 | `getFundamentals`     | P/E ratio, market cap, dividend yield               |
-| `getNews`             | Market news and headlines                           |
+| `getNews`             | Live news with AI summarization for market context  |
 | `computeRebalance`    | Target allocation rebalancing suggestions           |
-| `scenarioImpact`      | What-if analysis for hypothetical portfolio changes |
+| `scenarioImpact`      | Capital gains / what-if shock analysis on portfolio |
 
 **Key capabilities:**
 
 - Natural language queries against your actual portfolio data
 - Multi-step reasoning (ask about performance, then drill into news for top holdings)
+- **AI-summarized news** — fetches live headlines via Yahoo Finance, then the agent contextualizes and summarizes them relative to your holdings
+- **Tax and capital gains scenario analysis** — model sell-off impacts, sector shocks, and hypothetical liquidations to understand potential capital gains exposure; complex tax questions are safely escalated to a professional
 - Model-agnostic via OpenRouter (Claude, GPT-4o, Gemini — switch with one config change)
 - File attachments (images and CSV) with thumbnail previews
 - Thumbs up/down feedback on responses
