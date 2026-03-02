@@ -5,14 +5,8 @@ import { VerificationResultSchema } from '../../../../import-auditor/schemas/ver
 // ─── Input ───────────────────────────────────────────────────────────
 
 export const GetTaxHoldingsInputSchema = z.object({
-  accountId: z
-    .string()
-    .optional()
-    .describe('Filter by account ID'),
-  symbol: z
-    .string()
-    .optional()
-    .describe('Filter by ticker symbol')
+  accountId: z.string().optional().describe('Filter by account ID'),
+  symbol: z.string().optional().describe('Filter by ticker symbol')
 });
 
 export type GetTaxHoldingsInput = z.infer<typeof GetTaxHoldingsInputSchema>;

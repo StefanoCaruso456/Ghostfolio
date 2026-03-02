@@ -6,9 +6,8 @@
  * Error-handled: returns ToolResult(status=error), never throws
  * Verified: includes confidence scoring + source attribution
  */
-import type { SyncResult } from '../../../tax/interfaces/tax.interfaces';
-
 import { createVerificationResult } from '../../../import-auditor/schemas/verification.schema';
+import type { SyncResult } from '../../../tax/interfaces/tax.interfaces';
 import type {
   SyncAccountData,
   SyncAccountOutput
@@ -60,9 +59,7 @@ export function buildSyncAccountResult(
     return {
       status: 'error',
       message:
-        error instanceof Error
-          ? error.message
-          : 'Failed to sync account',
+        error instanceof Error ? error.message : 'Failed to sync account',
       verification: createVerificationResult({
         passed: false,
         confidence: 0,

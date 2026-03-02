@@ -30,9 +30,7 @@ export class SnaptradeController {
   @HasPermission(permissions.connectPlaid)
   @UseGuards(AuthGuard('jwt'), HasPermissionGuard)
   public async getConnectionPortalUri() {
-    return this.snaptradeService.getConnectionPortalUri(
-      this.request.user.id
-    );
+    return this.snaptradeService.getConnectionPortalUri(this.request.user.id);
   }
 
   @Post('callback')
@@ -59,9 +57,6 @@ export class SnaptradeController {
   @UseGuards(AuthGuard('jwt'), HasPermissionGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   public async disconnectConnection(@Param('id') id: string) {
-    return this.snaptradeService.disconnectConnection(
-      this.request.user.id,
-      id
-    );
+    return this.snaptradeService.disconnectConnection(this.request.user.id, id);
   }
 }

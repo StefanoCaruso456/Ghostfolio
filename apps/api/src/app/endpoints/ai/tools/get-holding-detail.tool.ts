@@ -169,9 +169,7 @@ export function buildHoldingDetailResult(
     return {
       status: 'error',
       message:
-        error instanceof Error
-          ? error.message
-          : 'Failed to get holding detail',
+        error instanceof Error ? error.message : 'Failed to get holding detail',
       verification: createVerificationResult({
         passed: false,
         confidence: 0,

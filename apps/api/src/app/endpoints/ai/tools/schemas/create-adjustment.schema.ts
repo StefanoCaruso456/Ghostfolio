@@ -18,9 +18,7 @@ export const CreateAdjustmentInputSchema = z.object({
     .describe('Adjustment data')
 });
 
-export type CreateAdjustmentInput = z.infer<
-  typeof CreateAdjustmentInputSchema
->;
+export type CreateAdjustmentInput = z.infer<typeof CreateAdjustmentInputSchema>;
 
 // ─── Data ────────────────────────────────────────────────────────────
 export const CreateAdjustmentDataSchema = z.object({
@@ -31,9 +29,7 @@ export const CreateAdjustmentDataSchema = z.object({
   createdAt: z.string()
 });
 
-export type CreateAdjustmentData = z.infer<
-  typeof CreateAdjustmentDataSchema
->;
+export type CreateAdjustmentData = z.infer<typeof CreateAdjustmentDataSchema>;
 
 // ─── Output ──────────────────────────────────────────────────────────
 export const CreateAdjustmentOutputSchema = z.object({

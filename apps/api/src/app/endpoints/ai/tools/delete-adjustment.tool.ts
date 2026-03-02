@@ -12,10 +12,7 @@ import type {
   DeleteAdjustmentOutput
 } from './schemas/delete-adjustment.schema';
 
-const DOMAIN_RULES_CHECKED = [
-  'adjustment-exists',
-  'adjustment-deleted'
-];
+const DOMAIN_RULES_CHECKED = ['adjustment-exists', 'adjustment-deleted'];
 
 export function buildDeleteAdjustmentResult(
   id: string
@@ -42,9 +39,7 @@ export function buildDeleteAdjustmentResult(
     return {
       status: 'error',
       message:
-        error instanceof Error
-          ? error.message
-          : 'Failed to delete adjustment',
+        error instanceof Error ? error.message : 'Failed to delete adjustment',
       verification: createVerificationResult({
         passed: false,
         confidence: 0,

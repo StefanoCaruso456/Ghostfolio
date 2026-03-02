@@ -9,9 +9,9 @@ import {
 import type { AiChatResponse, Filter } from '@ghostfolio/common/interfaces';
 import type { AiPromptMode, DateRange } from '@ghostfolio/common/types';
 
-import { DataSource } from '@prisma/client';
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { createOpenRouter } from '@openrouter/ai-sdk-provider';
+import { DataSource } from '@prisma/client';
 import { generateText, tool } from 'ai';
 import { randomUUID } from 'node:crypto';
 import type { ColumnDescriptor } from 'tablemark';
@@ -37,6 +37,8 @@ import { ReasoningTraceService } from './reasoning/reasoning-trace.service';
 import { TraceContext } from './reasoning/trace-context';
 import { BraintrustTelemetryService } from './telemetry/braintrust-telemetry.service';
 import { buildRebalanceResult } from './tools/compute-rebalance.tool';
+import { buildCreateAdjustmentResult } from './tools/create-adjustment.tool';
+import { buildDeleteAdjustmentResult } from './tools/delete-adjustment.tool';
 import { buildAllocationsResult } from './tools/get-allocations.tool';
 import { buildDividendSummaryResult } from './tools/get-dividend-summary.tool';
 import { buildFundamentalsResult } from './tools/get-fundamentals.tool';
@@ -47,38 +49,29 @@ import { buildPerformanceResult } from './tools/get-performance.tool';
 import { buildPortfolioChartResult } from './tools/get-portfolio-chart.tool';
 import { buildPortfolioSummary } from './tools/get-portfolio-summary.tool';
 import { buildQuoteResult } from './tools/get-quote.tool';
-import { buildActivitiesResult } from './tools/list-activities.tool';
-import { buildScenarioImpactResult } from './tools/scenario-impact.tool';
-import { buildCreateAdjustmentResult } from './tools/create-adjustment.tool';
-import { buildDeleteAdjustmentResult } from './tools/delete-adjustment.tool';
 import { buildTaxHoldingsResult } from './tools/get-tax-holdings.tool';
 import { buildTaxLotsResult } from './tools/get-tax-lots.tool';
 import { buildTaxTransactionsResult } from './tools/get-tax-transactions.tool';
+import { buildActivitiesResult } from './tools/list-activities.tool';
 import { buildListConnectedAccountsResult } from './tools/list-connected-accounts.tool';
-import { buildSimulateSaleResult } from './tools/simulate-sale.tool';
-import { buildSyncAccountResult } from './tools/sync-account.tool';
-import { buildUpdateAdjustmentResult } from './tools/update-adjustment.tool';
-import {
-  buildWebSearchResult,
-  executeWebSearch
-} from './tools/web-search.tool';
+import { buildScenarioImpactResult } from './tools/scenario-impact.tool';
 import { GetAllocationsOutputSchema } from './tools/schemas/allocations.schema';
 import {
   ComputeRebalanceInputSchema,
   ComputeRebalanceOutputSchema
 } from './tools/schemas/compute-rebalance.schema';
 import {
+  CreateAdjustmentInputSchema,
+  CreateAdjustmentOutputSchema
+} from './tools/schemas/create-adjustment.schema';
+import {
+  DeleteAdjustmentInputSchema,
+  DeleteAdjustmentOutputSchema
+} from './tools/schemas/delete-adjustment.schema';
+import {
   GetDividendSummaryInputSchema,
   GetDividendSummaryOutputSchema
 } from './tools/schemas/get-dividend-summary.schema';
-import {
-  GetHoldingDetailInputSchema,
-  GetHoldingDetailOutputSchema
-} from './tools/schemas/get-holding-detail.schema';
-import {
-  GetPortfolioChartInputSchema,
-  GetPortfolioChartOutputSchema
-} from './tools/schemas/get-portfolio-chart.schema';
 import {
   GetFundamentalsInputSchema,
   GetFundamentalsOutputSchema
@@ -88,37 +81,21 @@ import {
   GetHistoryOutputSchema
 } from './tools/schemas/get-history.schema';
 import {
+  GetHoldingDetailInputSchema,
+  GetHoldingDetailOutputSchema
+} from './tools/schemas/get-holding-detail.schema';
+import {
   GetNewsInputSchema,
   GetNewsOutputSchema
 } from './tools/schemas/get-news.schema';
 import {
+  GetPortfolioChartInputSchema,
+  GetPortfolioChartOutputSchema
+} from './tools/schemas/get-portfolio-chart.schema';
+import {
   GetQuoteInputSchema,
   GetQuoteOutputSchema
 } from './tools/schemas/get-quote.schema';
-import {
-  ListActivitiesInputSchema,
-  ListActivitiesOutputSchema
-} from './tools/schemas/list-activities.schema';
-import {
-  GetPerformanceInputSchema,
-  GetPerformanceOutputSchema
-} from './tools/schemas/performance.schema';
-import {
-  GetPortfolioSummaryInputSchema,
-  GetPortfolioSummaryOutputSchema
-} from './tools/schemas/portfolio-summary.schema';
-import {
-  ScenarioImpactInputSchema,
-  ScenarioImpactOutputSchema
-} from './tools/schemas/scenario-impact.schema';
-import {
-  CreateAdjustmentInputSchema,
-  CreateAdjustmentOutputSchema
-} from './tools/schemas/create-adjustment.schema';
-import {
-  DeleteAdjustmentInputSchema,
-  DeleteAdjustmentOutputSchema
-} from './tools/schemas/delete-adjustment.schema';
 import {
   GetTaxHoldingsInputSchema,
   GetTaxHoldingsOutputSchema
@@ -132,9 +109,25 @@ import {
   GetTaxTransactionsOutputSchema
 } from './tools/schemas/get-tax-transactions.schema';
 import {
+  ListActivitiesInputSchema,
+  ListActivitiesOutputSchema
+} from './tools/schemas/list-activities.schema';
+import {
   ListConnectedAccountsInputSchema,
   ListConnectedAccountsOutputSchema
 } from './tools/schemas/list-connected-accounts.schema';
+import {
+  GetPerformanceInputSchema,
+  GetPerformanceOutputSchema
+} from './tools/schemas/performance.schema';
+import {
+  GetPortfolioSummaryInputSchema,
+  GetPortfolioSummaryOutputSchema
+} from './tools/schemas/portfolio-summary.schema';
+import {
+  ScenarioImpactInputSchema,
+  ScenarioImpactOutputSchema
+} from './tools/schemas/scenario-impact.schema';
 import {
   SimulateSaleInputSchema,
   SimulateSaleOutputSchema
@@ -151,6 +144,13 @@ import {
   WebSearchInputSchema,
   WebSearchOutputSchema
 } from './tools/schemas/web-search.schema';
+import { buildSimulateSaleResult } from './tools/simulate-sale.tool';
+import { buildSyncAccountResult } from './tools/sync-account.tool';
+import { buildUpdateAdjustmentResult } from './tools/update-adjustment.tool';
+import {
+  buildWebSearchResult,
+  executeWebSearch
+} from './tools/web-search.tool';
 
 // ─── Production Guardrails (Non-Negotiable) ──────────────────────────
 
@@ -959,6 +959,11 @@ export class AiService {
     };
 
     // ── Safe holding detail fetcher ────────────────────────────────
+    // Quick path: synthesize a PortfolioHoldingResponse-like object from
+    // the PortfolioPosition already available via safeGetDetails (uses
+    // getDetailsQuick → getHoldingsQuick under the hood, no Redis/BullMQ).
+    // Falls back to the full portfolioService.getHolding() if quick path
+    // fails. This mirrors the pattern used by safeGetDetails/safeGetPerformance.
     const safeGetHolding = async (
       symbol: string,
       dataSource: DataSource
@@ -968,6 +973,88 @@ export class AiService {
         | undefined;
       hasErrors: boolean;
     }> => {
+      // 1. Try quick path: extract from safeGetDetails holdings
+      try {
+        const details = await safeGetDetails();
+        const pos = Object.values(details.holdings).find(
+          (h) => h.symbol?.toUpperCase() === symbol.toUpperCase()
+        );
+
+        if (pos) {
+          // Synthesize a PortfolioHoldingResponse-compatible object from
+          // the PortfolioPosition. Fields not available in the quick path
+          // are set to null/0/empty — buildHoldingDetailResult handles
+          // these gracefully with ?? fallbacks.
+          const investmentNum =
+            (pos as any).investment ?? (pos as any).valueInBaseCurrency ?? 0;
+          const avgPrice = pos.quantity > 0 ? investmentNum / pos.quantity : 0;
+
+          const synthesized = {
+            activitiesCount: pos.activitiesCount ?? 0,
+            averagePrice: avgPrice,
+            dataProviderInfo: undefined,
+            dateOfFirstActivity: pos.dateOfFirstActivity
+              ? typeof pos.dateOfFirstActivity === 'string'
+                ? pos.dateOfFirstActivity
+                : new Date(pos.dateOfFirstActivity).toISOString().split('T')[0]
+              : null,
+            dividendInBaseCurrency: (pos as any).dividend ?? 0,
+            dividendYieldPercent: null,
+            dividendYieldPercentWithCurrencyEffect: null,
+            feeInBaseCurrency: 0, // not available in quick path
+            grossPerformance: pos.grossPerformance ?? null,
+            grossPerformancePercent: pos.grossPerformancePercent ?? null,
+            grossPerformancePercentWithCurrencyEffect:
+              pos.grossPerformancePercentWithCurrencyEffect ?? null,
+            grossPerformanceWithCurrencyEffect:
+              pos.grossPerformanceWithCurrencyEffect ?? null,
+            historicalData: [], // not available in quick path
+            investmentInBaseCurrencyWithCurrencyEffect: investmentNum,
+            marketPrice: pos.marketPrice ?? 0,
+            marketPriceMax: null, // not available in quick path
+            marketPriceMin: null, // not available in quick path
+            netPerformance: pos.netPerformance ?? null,
+            netPerformancePercent: pos.netPerformancePercent ?? null,
+            netPerformancePercentWithCurrencyEffect:
+              pos.netPerformancePercentWithCurrencyEffect ?? null,
+            netPerformanceWithCurrencyEffect:
+              pos.netPerformanceWithCurrencyEffect ?? null,
+            performances: null, // allTimeHigh not available in quick path
+            quantity: pos.quantity ?? 0,
+            SymbolProfile: {
+              symbol: pos.symbol,
+              name: pos.name ?? null,
+              currency: pos.currency ?? null,
+              assetClass: (pos as any).assetClass ?? null,
+              assetSubClass: (pos as any).assetSubClass ?? null
+            },
+            tags: (pos as any).tags ?? [],
+            value: (pos as any).valueInBaseCurrency ?? 0
+          } as any;
+
+          Logger.debug(
+            `safeGetHolding quick path: synthesized holding for ${symbol} from getDetailsQuick`,
+            'AiService'
+          );
+
+          return {
+            holding: synthesized,
+            hasErrors: details.hasErrors ?? false
+          };
+        }
+
+        Logger.debug(
+          `safeGetHolding quick path: symbol ${symbol} not found in details holdings`,
+          'AiService'
+        );
+      } catch (quickErr) {
+        Logger.warn(
+          `safeGetHolding quick path failed for ${symbol}: ${quickErr instanceof Error ? quickErr.message : String(quickErr)}`,
+          'AiService'
+        );
+      }
+
+      // 2. Fallback: full portfolioService.getHolding (uses Redis/BullMQ snapshot pipeline)
       try {
         const holding = await this.portfolioService.getHolding({
           dataSource,
@@ -976,10 +1063,15 @@ export class AiService {
           impersonationId: undefined
         });
 
+        Logger.debug(
+          `safeGetHolding fallback: portfolioService.getHolding() succeeded for ${symbol}`,
+          'AiService'
+        );
+
         return { holding, hasErrors: false };
       } catch (err) {
         Logger.warn(
-          `portfolioService.getHolding() failed for ${symbol}: ${err instanceof Error ? err.message : String(err)}`,
+          `portfolioService.getHolding() fallback also failed for ${symbol}: ${err instanceof Error ? err.message : String(err)}`,
           'AiService'
         );
 
@@ -1228,34 +1320,14 @@ export class AiService {
                 'getHoldingDetail',
                 args as unknown as Record<string, unknown>,
                 async () => {
-                  // Resolve DataSource if not provided
-                  let resolvedDataSource = args.dataSource as
-                    | DataSource
-                    | undefined;
+                  const resolvedDataSource =
+                    (args.dataSource as DataSource | undefined) ??
+                    DataSource.YAHOO;
 
-                  if (!resolvedDataSource) {
-                    const details = await safeGetDetails();
-                    const holdingEntry = Object.values(
-                      details.holdings
-                    ).find(
-                      (h) =>
-                        h.symbol.toUpperCase() === args.symbol.toUpperCase()
-                    );
-
-                    if (!holdingEntry) {
-                      return buildHoldingDetailResult(
-                        undefined,
-                        args.symbol,
-                        'UNKNOWN',
-                        false
-                      ) as ToolOutput<
-                        ReturnType<typeof buildHoldingDetailResult>
-                      >;
-                    }
-
-                    resolvedDataSource = holdingEntry.dataSource;
-                  }
-
+                  // safeGetHolding tries quick path (safeGetDetails) first,
+                  // then falls back to portfolioService.getHolding().
+                  // No need to call safeGetDetails separately for dataSource
+                  // resolution — the quick path handles symbol lookup internally.
                   const { holding, hasErrors } = await safeGetHolding(
                     args.symbol,
                     resolvedDataSource
@@ -1266,9 +1338,7 @@ export class AiService {
                     args.symbol,
                     resolvedDataSource,
                     hasErrors
-                  ) as ToolOutput<
-                    ReturnType<typeof buildHoldingDetailResult>
-                  >;
+                  ) as ToolOutput<ReturnType<typeof buildHoldingDetailResult>>;
                 }
               );
             }
@@ -1283,8 +1353,7 @@ export class AiService {
                 'getPortfolioChart',
                 args as unknown as Record<string, unknown>,
                 async () => {
-                  const dateRange =
-                    (args.dateRange as DateRange) || '1y';
+                  const dateRange = (args.dateRange as DateRange) || '1y';
                   const perf = await safeGetPerformance(dateRange);
 
                   return buildPortfolioChartResult(
@@ -1296,9 +1365,7 @@ export class AiService {
                       maxPoints: args.maxPoints
                     },
                     userCurrency
-                  ) as ToolOutput<
-                    ReturnType<typeof buildPortfolioChartResult>
-                  >;
+                  ) as ToolOutput<ReturnType<typeof buildPortfolioChartResult>>;
                 }
               );
             }
@@ -1313,14 +1380,13 @@ export class AiService {
                 'getDividendSummary',
                 args as unknown as Record<string, unknown>,
                 async () => {
-                  const { activities } =
-                    await this.orderService.getOrders({
-                      userId,
-                      userCurrency,
-                      types: ['DIVIDEND'] as any,
-                      take: Number.MAX_SAFE_INTEGER,
-                      sortDirection: 'desc'
-                    });
+                  const { activities } = await this.orderService.getOrders({
+                    userId,
+                    userCurrency,
+                    types: ['DIVIDEND'] as any,
+                    take: Number.MAX_SAFE_INTEGER,
+                    sortDirection: 'desc'
+                  });
 
                   return buildDividendSummaryResult(
                     activities,
@@ -1423,14 +1489,10 @@ export class AiService {
                       limit: args.limit
                     });
 
-                  return buildTaxTransactionsResult(
-                    transactions,
-                    totalCount,
-                    {
-                      from: args.startDate ?? null,
-                      to: args.endDate ?? null
-                    }
-                  ) as ToolOutput<
+                  return buildTaxTransactionsResult(transactions, totalCount, {
+                    from: args.startDate ?? null,
+                    to: args.endDate ?? null
+                  }) as ToolOutput<
                     ReturnType<typeof buildTaxTransactionsResult>
                   >;
                 }
@@ -1469,17 +1531,17 @@ export class AiService {
                 'simulateSale',
                 args as unknown as Record<string, unknown>,
                 async () => {
-                  const simulation =
-                    await this.taxService.simulateSaleForUser(userId, {
+                  const simulation = await this.taxService.simulateSaleForUser(
+                    userId,
+                    {
                       symbol: args.symbol,
                       quantity: args.quantity,
                       pricePerShare: args.pricePerShare,
                       taxBracketPct: args.taxBracketPct
-                    });
+                    }
+                  );
 
-                  return buildSimulateSaleResult(
-                    simulation
-                  ) as ToolOutput<
+                  return buildSimulateSaleResult(simulation) as ToolOutput<
                     ReturnType<typeof buildSimulateSaleResult>
                   >;
                 }
@@ -1496,17 +1558,17 @@ export class AiService {
                 'createAdjustment',
                 args as unknown as Record<string, unknown>,
                 async () => {
-                  const adjustment =
-                    await this.taxService.createAdjustment(userId, {
+                  const adjustment = await this.taxService.createAdjustment(
+                    userId,
+                    {
                       symbol: args.symbol,
                       adjustmentType: args.adjustmentType as any,
                       data: args.data,
                       note: args.data.note
-                    });
+                    }
+                  );
 
-                  return buildCreateAdjustmentResult(
-                    adjustment
-                  ) as ToolOutput<
+                  return buildCreateAdjustmentResult(adjustment) as ToolOutput<
                     ReturnType<typeof buildCreateAdjustmentResult>
                   >;
                 }
@@ -1523,16 +1585,13 @@ export class AiService {
                 'updateAdjustment',
                 args as unknown as Record<string, unknown>,
                 async () => {
-                  const adjustment =
-                    await this.taxService.updateAdjustment(
-                      userId,
-                      args.adjustmentId,
-                      { data: args.data, note: args.data.note }
-                    );
+                  const adjustment = await this.taxService.updateAdjustment(
+                    userId,
+                    args.adjustmentId,
+                    { data: args.data, note: args.data.note }
+                  );
 
-                  return buildUpdateAdjustmentResult(
-                    adjustment
-                  ) as ToolOutput<
+                  return buildUpdateAdjustmentResult(adjustment) as ToolOutput<
                     ReturnType<typeof buildUpdateAdjustmentResult>
                   >;
                 }
@@ -1576,7 +1635,9 @@ export class AiService {
                   const tavilyApiKey = process.env.TAVILY_API_KEY;
 
                   if (!tavilyApiKey) {
-                    return buildWebSearchResult(undefined, args,
+                    return buildWebSearchResult(
+                      undefined,
+                      args,
                       'Web search is not configured — TAVILY_API_KEY environment variable is missing.'
                     ) as ToolOutput<ReturnType<typeof buildWebSearchResult>>;
                   }

@@ -1,5 +1,5 @@
-import { validateTransactions } from '../tools/validate-transactions.tool';
 import type { MappedActivity } from '../schemas/validate-transactions.schema';
+import { validateTransactions } from '../tools/validate-transactions.tool';
 
 describe('validateTransactions Tool', () => {
   const validActivity: MappedActivity = {
@@ -37,9 +37,7 @@ describe('validateTransactions Tool', () => {
     expect(result.status).toBe('fail');
     expect(result.data.totalErrors).toBeGreaterThan(0);
 
-    const feeError = result.data.errors.find(
-      (e) => e.field === 'fee'
-    );
+    const feeError = result.data.errors.find((e) => e.field === 'fee');
     expect(feeError).toBeDefined();
     expect(feeError.code).toBe('NEGATIVE_VALUE');
     expect(result.verification.passed).toBe(false);
@@ -52,9 +50,7 @@ describe('validateTransactions Tool', () => {
 
     expect(result.status).toBe('fail');
 
-    const qtyError = result.data.errors.find(
-      (e) => e.field === 'quantity'
-    );
+    const qtyError = result.data.errors.find((e) => e.field === 'quantity');
     expect(qtyError).toBeDefined();
     expect(qtyError.code).toBe('NEGATIVE_VALUE');
   });
@@ -66,9 +62,7 @@ describe('validateTransactions Tool', () => {
 
     expect(result.status).toBe('fail');
 
-    const priceError = result.data.errors.find(
-      (e) => e.field === 'unitPrice'
-    );
+    const priceError = result.data.errors.find((e) => e.field === 'unitPrice');
     expect(priceError).toBeDefined();
     expect(priceError.code).toBe('NEGATIVE_VALUE');
   });
@@ -78,16 +72,12 @@ describe('validateTransactions Tool', () => {
     futureDate.setFullYear(futureDate.getFullYear() + 1);
 
     const result = validateTransactions({
-      activities: [
-        { ...validActivity, date: futureDate.toISOString() }
-      ]
+      activities: [{ ...validActivity, date: futureDate.toISOString() }]
     });
 
     expect(result.status).toBe('fail');
 
-    const dateError = result.data.errors.find(
-      (e) => e.field === 'date'
-    );
+    const dateError = result.data.errors.find((e) => e.field === 'date');
     expect(dateError).toBeDefined();
     expect(dateError.code).toBe('FUTURE_DATE');
   });
@@ -99,9 +89,7 @@ describe('validateTransactions Tool', () => {
 
     expect(result.status).toBe('fail');
 
-    const dateError = result.data.errors.find(
-      (e) => e.field === 'date'
-    );
+    const dateError = result.data.errors.find((e) => e.field === 'date');
     expect(dateError).toBeDefined();
     expect(dateError.code).toBe('INVALID_DATE');
   });
@@ -140,9 +128,7 @@ describe('validateTransactions Tool', () => {
 
     expect(result.status).toBe('fail');
 
-    const typeError = result.data.errors.find(
-      (e) => e.field === 'type'
-    );
+    const typeError = result.data.errors.find((e) => e.field === 'type');
     expect(typeError).toBeDefined();
     expect(typeError.code).toBe('INVALID_TYPE');
   });
@@ -210,11 +196,7 @@ describe('validateTransactions Tool', () => {
     });
 
     expect(result.verification.sources.length).toBeGreaterThan(0);
-    expect(result.verification.sources).toContain(
-      'required-fields'
-    );
-    expect(result.verification.sources).toContain(
-      'valid-activity-type'
-    );
+    expect(result.verification.sources).toContain('required-fields');
+    expect(result.verification.sources).toContain('valid-activity-type');
   });
 });

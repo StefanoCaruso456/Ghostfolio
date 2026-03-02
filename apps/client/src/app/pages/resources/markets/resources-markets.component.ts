@@ -11,8 +11,8 @@ import { ColorScheme } from '@ghostfolio/common/types';
 import { GfLineChartComponent } from '@ghostfolio/ui/line-chart';
 import { DataService } from '@ghostfolio/ui/services';
 
-import { HttpErrorResponse } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -31,9 +31,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { IonIcon } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
@@ -120,7 +120,8 @@ export class ResourcesMarketsComponent implements OnInit, OnDestroy {
   public tableLoading = false;
   public tableError = '';
   public showNewsFeatureTip = true;
-  private static readonly NEWS_TIP_STORAGE_KEY = 'gf-markets-news-feature-tip-dismissed';
+  private static readonly NEWS_TIP_STORAGE_KEY =
+    'gf-markets-news-feature-tip-dismissed';
 
   // Chart view
   private stockConfigs: ChartConfig[] = [
@@ -195,9 +196,8 @@ export class ResourcesMarketsComponent implements OnInit, OnDestroy {
   public ngOnInit() {
     try {
       this.showNewsFeatureTip =
-        localStorage.getItem(
-          ResourcesMarketsComponent.NEWS_TIP_STORAGE_KEY
-        ) !== 'true';
+        localStorage.getItem(ResourcesMarketsComponent.NEWS_TIP_STORAGE_KEY) !==
+        'true';
     } catch {
       this.showNewsFeatureTip = true;
     }

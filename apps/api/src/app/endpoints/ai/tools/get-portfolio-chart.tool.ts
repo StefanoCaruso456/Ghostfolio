@@ -117,8 +117,7 @@ export function buildPortfolioChartResult(
       }
     }
 
-    const startValue =
-      fullChart[0].netWorth ?? fullChart[0].value ?? null;
+    const startValue = fullChart[0].netWorth ?? fullChart[0].value ?? null;
     const endValue =
       fullChart[fullChart.length - 1].netWorth ??
       fullChart[fullChart.length - 1].value ??

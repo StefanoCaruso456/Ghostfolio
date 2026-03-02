@@ -6,9 +6,8 @@
  * Error-handled: returns ToolResult(status=error), never throws
  * Verified: includes confidence scoring + source attribution
  */
-import type { TaxTransaction } from '../../../tax/interfaces/tax.interfaces';
-
 import { createVerificationResult } from '../../../import-auditor/schemas/verification.schema';
+import type { TaxTransaction } from '../../../tax/interfaces/tax.interfaces';
 import type {
   GetTaxTransactionsData,
   GetTaxTransactionsOutput
@@ -19,7 +18,7 @@ const DOMAIN_RULES_CHECKED = ['transactions-data-available'];
 export function buildTaxTransactionsResult(
   transactions: TaxTransaction[],
   totalCount: number,
-  _input: { from: string | null; to: string | null }
+  _input: { from: string | null; to: string | null } // eslint-disable-line @typescript-eslint/no-unused-vars
 ): GetTaxTransactionsOutput {
   try {
     const data: GetTaxTransactionsData = {

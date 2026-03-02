@@ -651,8 +651,7 @@ export class ImportService {
                         name,
                         symbol,
                         currency: assetProfile.currency,
-                        userId:
-                          dataSource === 'MANUAL' ? user.id : undefined
+                        userId: dataSource === 'MANUAL' ? user.id : undefined
                       },
                       where: {
                         dataSource_symbol: {
@@ -672,8 +671,7 @@ export class ImportService {
                 break;
               } catch (retryError) {
                 if (
-                  retryError instanceof
-                    Prisma.PrismaClientKnownRequestError &&
+                  retryError instanceof Prisma.PrismaClientKnownRequestError &&
                   retryError.code === 'P2002' &&
                   attempt === 0
                 ) {

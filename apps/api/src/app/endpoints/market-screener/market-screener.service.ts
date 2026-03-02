@@ -5,12 +5,7 @@ import {
   MarketScreenerResponse
 } from '@ghostfolio/common/interfaces';
 
-import {
-  HttpException,
-  HttpStatus,
-  Injectable,
-  Logger
-} from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import ms from 'ms';
 
 type ScreenerCategory =
@@ -43,8 +38,7 @@ export class MarketScreenerService {
       const cached = await this.redisCacheService.get(cacheKey);
 
       if (cached) {
-        const parsed =
-          typeof cached === 'string' ? JSON.parse(cached) : cached;
+        const parsed = typeof cached === 'string' ? JSON.parse(cached) : cached;
 
         return { ...parsed, cached: true };
       }
@@ -83,8 +77,7 @@ export class MarketScreenerService {
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       const isRateLimit =
-        message.includes('429') ||
-        message.toLowerCase().includes('rate limit');
+        message.includes('429') || message.toLowerCase().includes('rate limit');
       const isNetwork =
         message.includes('fetch') ||
         message.includes('ECONNREFUSED') ||
@@ -139,7 +132,7 @@ export class MarketScreenerService {
     const quotes = await this.yahooFinance.quote(this.topCryptoSymbols);
     const quotesArray = Array.isArray(quotes) ? quotes : [quotes];
 
-    let items: MarketScreenerItem[] = quotesArray
+    const items: MarketScreenerItem[] = quotesArray
       .filter((q: any) => q?.regularMarketPrice != null)
       .map((q: any) => ({
         symbol: q?.symbol ?? '',
@@ -204,7 +197,9 @@ export class MarketScreenerService {
     }
 
     const quoteResult = await this.yahooFinance.quote(symbols);
-    const quotesArray = Array.isArray(quoteResult) ? quoteResult : [quoteResult];
+    const quotesArray = Array.isArray(quoteResult)
+      ? quoteResult
+      : [quoteResult];
 
     return quotesArray.map((q: any) => ({
       symbol: q.symbol,

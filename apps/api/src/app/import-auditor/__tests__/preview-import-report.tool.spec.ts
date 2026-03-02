@@ -1,9 +1,7 @@
-import { previewImportReport } from '../tools/preview-import-report.tool';
 import type { MappedActivity } from '../schemas/validate-transactions.schema';
+import { previewImportReport } from '../tools/preview-import-report.tool';
 
-function makeActivity(
-  overrides: Partial<MappedActivity> = {}
-): MappedActivity {
+function makeActivity(overrides: Partial<MappedActivity> = {}): MappedActivity {
   return {
     symbol: 'MSFT',
     date: '2023-09-16T00:00:00.000Z',
@@ -41,10 +39,30 @@ describe('previewImportReport', () => {
 
   it('should generate a report with mixed activity types', () => {
     const activities = [
-      makeActivity({ type: 'BUY', symbol: 'MSFT', quantity: 5, unitPrice: 300 }),
-      makeActivity({ type: 'BUY', symbol: 'AAPL', quantity: 10, unitPrice: 150 }),
-      makeActivity({ type: 'SELL', symbol: 'GOOG', quantity: 3, unitPrice: 120 }),
-      makeActivity({ type: 'DIVIDEND', symbol: 'MSFT', quantity: 5, unitPrice: 0.62 })
+      makeActivity({
+        type: 'BUY',
+        symbol: 'MSFT',
+        quantity: 5,
+        unitPrice: 300
+      }),
+      makeActivity({
+        type: 'BUY',
+        symbol: 'AAPL',
+        quantity: 10,
+        unitPrice: 150
+      }),
+      makeActivity({
+        type: 'SELL',
+        symbol: 'GOOG',
+        quantity: 3,
+        unitPrice: 120
+      }),
+      makeActivity({
+        type: 'DIVIDEND',
+        symbol: 'MSFT',
+        quantity: 5,
+        unitPrice: 0.62
+      })
     ];
 
     const result = previewImportReport({ activities });

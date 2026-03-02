@@ -6,9 +6,8 @@
  * Error-handled: returns ToolResult(status=error), never throws
  * Verified: includes confidence scoring + source attribution
  */
-import type { DerivedTaxLot } from '../../../tax/interfaces/tax.interfaces';
-
 import { createVerificationResult } from '../../../import-auditor/schemas/verification.schema';
+import type { DerivedTaxLot } from '../../../tax/interfaces/tax.interfaces';
 import type {
   GetTaxLotsData,
   GetTaxLotsOutput
@@ -20,9 +19,7 @@ const DOMAIN_RULES_CHECKED = [
   'holding-period-computed'
 ];
 
-export function buildTaxLotsResult(
-  lots: DerivedTaxLot[]
-): GetTaxLotsOutput {
+export function buildTaxLotsResult(lots: DerivedTaxLot[]): GetTaxLotsOutput {
   try {
     // Compute summary
     const openLots = lots.filter(
@@ -82,16 +79,12 @@ export function buildTaxLotsResult(
     return {
       status: 'error',
       message:
-        error instanceof Error
-          ? error.message
-          : 'Failed to get tax lots',
+        error instanceof Error ? error.message : 'Failed to get tax lots',
       verification: createVerificationResult({
         passed: false,
         confidence: 0,
         errors: [
-          error instanceof Error
-            ? error.message
-            : 'Unknown error in getTaxLots'
+          error instanceof Error ? error.message : 'Unknown error in getTaxLots'
         ],
         sources: ['tax-service']
       })

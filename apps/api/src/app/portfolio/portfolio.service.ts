@@ -518,13 +518,16 @@ export class PortfolioService {
     }
 
     // Get symbol profiles for asset details
-    const assetProfileIdentifiers = openPositions.map(({ dataSource, symbol }) => ({
-      dataSource,
-      symbol
-    }));
+    const assetProfileIdentifiers = openPositions.map(
+      ({ dataSource, symbol }) => ({
+        dataSource,
+        symbol
+      })
+    );
 
-    const symbolProfiles =
-      await this.symbolProfileService.getSymbolProfiles(assetProfileIdentifiers);
+    const symbolProfiles = await this.symbolProfileService.getSymbolProfiles(
+      assetProfileIdentifiers
+    );
 
     const symbolProfileMap: { [symbol: string]: EnhancedSymbolProfile } = {};
     for (const profile of symbolProfiles) {
@@ -536,7 +539,7 @@ export class PortfolioService {
       .filter((p) => p.dataSource === DataSource.YAHOO)
       .map(({ dataSource, symbol }) => ({ dataSource, symbol }));
 
-    let quotesBySymbol: { [symbol: string]: { marketPrice: number } } = {};
+    const quotesBySymbol: { [symbol: string]: { marketPrice: number } } = {};
 
     if (yahooItems.length > 0) {
       try {
@@ -591,14 +594,12 @@ export class PortfolioService {
           });
 
           const fmpResponse = await Promise.race([
-              fetch(
-                `https://financialmodelingprep.com/stable/batch-quote-short?${queryParams.toString()}`,
-                { signal: AbortSignal.timeout(10_000) }
-              ).then((res) => res.json()),
-              new Promise<[]>((resolve) =>
-                setTimeout(() => resolve([]), 12_000)
-              )
-            ]);
+            fetch(
+              `https://financialmodelingprep.com/stable/batch-quote-short?${queryParams.toString()}`,
+              { signal: AbortSignal.timeout(10_000) }
+            ).then((res) => res.json()),
+            new Promise<[]>((resolve) => setTimeout(() => resolve([]), 12_000))
+          ]);
 
           let fmpCount = 0;
 
@@ -629,10 +630,10 @@ export class PortfolioService {
 
     // Build PortfolioPosition[] response
     let totalValueInBaseCurrency = new Big(0);
-    const holdingsPreAlloc: Array<{
+    const holdingsPreAlloc: {
       position: PortfolioPosition;
       valueInBaseCurrency: Big;
-    }> = [];
+    }[] = [];
 
     for (const pos of openPositions) {
       const profile = symbolProfileMap[pos.symbol];
@@ -690,15 +691,14 @@ export class PortfolioService {
           grossPerformancePercent: netPerfPercent,
           grossPerformancePercentWithCurrencyEffect: netPerfPercent,
           grossPerformanceWithCurrencyEffect: netPerf,
-          holdings: profile.holdings?.map(
-            ({ allocationInPercentage, name }) => ({
+          holdings:
+            profile.holdings?.map(({ allocationInPercentage, name }) => ({
               allocationInPercentage,
               name,
               valueInBaseCurrency: valueInBaseBig
                 .mul(allocationInPercentage)
                 .toNumber()
-            })
-          ) ?? [],
+            })) ?? [],
           investment: investmentNum,
           name: profile.name,
           netPerformance: netPerf,
@@ -727,7 +727,9 @@ export class PortfolioService {
     // Apply search filter if present
     let holdings = holdingsPreAlloc.map((item) => item.position);
 
-    const searchQuery = filters?.find(({ type }) => type === 'SEARCH_QUERY')?.id;
+    const searchQuery = filters?.find(
+      ({ type }) => type === 'SEARCH_QUERY'
+    )?.id;
     if (searchQuery) {
       const fuse = new Fuse(holdings, {
         keys: ['isin', 'name', 'symbol'],
@@ -813,7 +815,9 @@ export class PortfolioService {
       totalFees = totalFees.plus(feeInBase ?? 0);
 
       if (activity.type === 'DIVIDEND') {
-        const dividendValue = new Big(activity.quantity).mul(activity.unitPrice);
+        const dividendValue = new Big(activity.quantity).mul(
+          activity.unitPrice
+        );
         const dividendInBase = this.exchangeRateDataService.toCurrency(
           dividendValue.toNumber(),
           activity.currency ?? activity.SymbolProfile?.currency,
@@ -823,7 +827,9 @@ export class PortfolioService {
       }
 
       if (activity.type === 'INTEREST') {
-        const interestValue = new Big(activity.quantity).mul(activity.unitPrice);
+        const interestValue = new Big(activity.quantity).mul(
+          activity.unitPrice
+        );
         const interestInBase = this.exchangeRateDataService.toCurrency(
           interestValue.toNumber(),
           activity.currency ?? activity.SymbolProfile?.currency,
@@ -891,12 +897,11 @@ export class PortfolioService {
       : 0;
 
     // 8. Excluded accounts
-    const cashDetailsWithExcluded =
-      await this.accountService.getCashDetails({
-        userId,
-        currency: userCurrency,
-        withExcludedAccounts: true
-      });
+    const cashDetailsWithExcluded = await this.accountService.getCashDetails({
+      userId,
+      currency: userCurrency,
+      withExcludedAccounts: true
+    });
 
     const excludedBalanceInBaseCurrency = new Big(
       cashDetailsWithExcluded.balanceInBaseCurrency
@@ -946,7 +951,8 @@ export class PortfolioService {
     const summary: PortfolioSummary = {
       activityCount,
       annualizedPerformancePercent,
-      annualizedPerformancePercentWithCurrencyEffect: annualizedPerformancePercent,
+      annualizedPerformancePercentWithCurrencyEffect:
+        annualizedPerformancePercent,
       cash,
       committedFunds: committedFunds.toNumber(),
       currentValueInBaseCurrency: currentValueInBaseCurrency.toNumber(),
@@ -1094,12 +1100,13 @@ export class PortfolioService {
         const investmentVal = cumInvestment.toNumber();
         // For historical points, we only know the investment amount, not the value
         // Estimate value by linear interpolation between investment and current value
-        const progressRatio = totalInvestmentFinal > 0
-          ? investmentVal / totalInvestmentFinal
-          : 0;
-        const estimatedValue = investmentVal + (currentValue - totalInvestmentFinal) * progressRatio;
+        const progressRatio =
+          totalInvestmentFinal > 0 ? investmentVal / totalInvestmentFinal : 0;
+        const estimatedValue =
+          investmentVal + (currentValue - totalInvestmentFinal) * progressRatio;
         const netPerfAtPoint = estimatedValue - investmentVal;
-        const netPerfPercent = investmentVal > 0 ? netPerfAtPoint / Math.abs(investmentVal) : 0;
+        const netPerfPercent =
+          investmentVal > 0 ? netPerfAtPoint / Math.abs(investmentVal) : 0;
 
         chart.push({
           date: dateStr,
@@ -1115,9 +1122,10 @@ export class PortfolioService {
       // Add today's data point with actual current value
       const todayStr = format(new Date(), DATE_FORMAT);
       const todayNetPerf = currentValue - totalInvestmentFinal;
-      const todayNetPerfPercent = totalInvestmentFinal > 0
-        ? todayNetPerf / Math.abs(totalInvestmentFinal)
-        : 0;
+      const todayNetPerfPercent =
+        totalInvestmentFinal > 0
+          ? todayNetPerf / Math.abs(totalInvestmentFinal)
+          : 0;
 
       chart.push({
         date: todayStr,

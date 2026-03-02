@@ -36,9 +36,7 @@ describe('parseCSV Tool', () => {
     expect(result.data.rowCount).toBe(0);
     expect(result.verification.passed).toBe(false);
     expect(result.verification.confidence).toBe(0);
-    expect(result.verification.errors).toContain(
-      'CSV content is empty'
-    );
+    expect(result.verification.errors).toContain('CSV content is empty');
   });
 
   it('should return error for whitespace-only CSV', () => {

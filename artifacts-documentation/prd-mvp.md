@@ -2,12 +2,12 @@
 
 ---
 
-| Field | Value |
-|-------|-------|
-| **Title** | Tax Intelligence (Connected Accounts) |
-| **Author** | Stefano |
-| **Status** | Draft |
-| **PM Epic** | TBD |
+| Field       | Value                                 |
+| ----------- | ------------------------------------- |
+| **Title**   | Tax Intelligence (Connected Accounts) |
+| **Author**  | Stefano                               |
+| **Status**  | Draft                                 |
+| **PM Epic** | TBD                                   |
 
 ---
 
@@ -43,7 +43,7 @@ High-income multi-broker investors lack cross-account after-tax visibility befor
 
 1. Connect brokerage + bank accounts
 2. View cross-account tax exposure
-3. Ask AI: *"If I sell 100 shares of NVDA today, what is my estimated tax impact?"*
+3. Ask AI: _"If I sell 100 shares of NVDA today, what is my estimated tax impact?"_
 4. Adjust missing transaction and re-run simulation
 
 ---
@@ -68,30 +68,30 @@ High-income multi-broker investors lack cross-account after-tax visibility befor
 
 #### 3. Tax Simulation Engine
 
-| Component | Detail |
-|-----------|--------|
-| Lot Selection | FIFO (MVP) |
+| Component      | Detail                        |
+| -------------- | ----------------------------- |
+| Lot Selection  | FIFO (MVP)                    |
 | Holding Period | Short-term vs long-term split |
-| Tax Rate | Federal bracket assumption |
-| Pricing | Yahoo pipeline |
-| Computation | Deterministic |
+| Tax Rate       | Federal bracket assumption    |
+| Pricing        | Yahoo pipeline                |
+| Computation    | Deterministic                 |
 
 #### 4. Agent Tool Access (Bounty Requirement)
 
 Agent must call Ghostfolio API tools — agent **cannot** call SnapTrade, Plaid, or Yahoo directly.
 
-| # | Tool | Purpose |
-|---|------|---------|
-| 1 | `listConnectedAccounts()` | List all linked brokerage/bank accounts |
-| 2 | `syncAccount()` | Trigger data sync for a connected account |
-| 3 | `getHoldings()` | Retrieve normalized cross-account holdings |
-| 4 | `getTransactions()` | Retrieve normalized transaction history |
-| 5 | `getTaxLots()` | Get FIFO-derived tax lots with holding period |
-| 6 | `simulateSale()` | Run deterministic sell simulation with tax estimate |
-| 7 | `createAdjustment()` | Add manual cost-basis adjustment |
-| 8 | `updateAdjustment()` | Modify existing adjustment |
-| 9 | `deleteAdjustment()` | Remove an adjustment |
-| 10 | `webSearch()` | Search the web for real-time news, analysis, and general knowledge (Tavily API) |
+| #   | Tool                      | Purpose                                                                         |
+| --- | ------------------------- | ------------------------------------------------------------------------------- |
+| 1   | `listConnectedAccounts()` | List all linked brokerage/bank accounts                                         |
+| 2   | `syncAccount()`           | Trigger data sync for a connected account                                       |
+| 3   | `getHoldings()`           | Retrieve normalized cross-account holdings                                      |
+| 4   | `getTransactions()`       | Retrieve normalized transaction history                                         |
+| 5   | `getTaxLots()`            | Get FIFO-derived tax lots with holding period                                   |
+| 6   | `simulateSale()`          | Run deterministic sell simulation with tax estimate                             |
+| 7   | `createAdjustment()`      | Add manual cost-basis adjustment                                                |
+| 8   | `updateAdjustment()`      | Modify existing adjustment                                                      |
+| 9   | `deleteAdjustment()`      | Remove an adjustment                                                            |
+| 10  | `webSearch()`             | Search the web for real-time news, analysis, and general knowledge (Tavily API) |
 
 ### Features Out
 
@@ -121,12 +121,12 @@ Agent must call Ghostfolio API tools — agent **cannot** call SnapTrade, Plaid,
 
 ### Operational Metrics
 
-| Metric | Target |
-|--------|--------|
-| Broker connect success | >= 85% |
-| Sync reliability | >= 90% |
-| Tool schema validation | >= 95% |
-| Simulation failures (missing price) | < 5% |
+| Metric                              | Target |
+| ----------------------------------- | ------ |
+| Broker connect success              | >= 85% |
+| Sync reliability                    | >= 90% |
+| Tool schema validation              | >= 95% |
+| Simulation failures (missing price) | < 5%   |
 
 ---
 
@@ -147,8 +147,8 @@ Agent must call Ghostfolio API tools — agent **cannot** call SnapTrade, Plaid,
 
 ## Timeline
 
-| Phase | Scope |
-|-------|-------|
-| **Phase 1** | Connectivity + normalization |
-| **Phase 2** | Tax Intelligence tab + simulation |
+| Phase       | Scope                                   |
+| ----------- | --------------------------------------- |
+| **Phase 1** | Connectivity + normalization            |
+| **Phase 2** | Tax Intelligence tab + simulation       |
 | **Phase 3** | Agent tooling hardening + observability |

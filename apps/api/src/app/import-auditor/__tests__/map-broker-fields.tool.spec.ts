@@ -32,9 +32,7 @@ describe('mapBrokerFields Tool', () => {
     expect(result.status).toBe('success');
     expect(result.verification.passed).toBe(true);
 
-    const mappedFields = result.data.mappings.map(
-      (m) => m.targetField
-    );
+    const mappedFields = result.data.mappings.map((m) => m.targetField);
     expect(mappedFields).toContain('date');
     expect(mappedFields).toContain('symbol');
     expect(mappedFields).toContain('currency');
@@ -76,9 +74,7 @@ describe('mapBrokerFields Tool', () => {
     expect(result.status).toBe('success');
     expect(result.verification.passed).toBe(true);
 
-    const mappedFields = result.data.mappings.map(
-      (m) => m.targetField
-    );
+    const mappedFields = result.data.mappings.map((m) => m.targetField);
     expect(mappedFields).toContain('currency');
     expect(mappedFields).toContain('symbol');
     expect(mappedFields).toContain('date');
@@ -91,12 +87,7 @@ describe('mapBrokerFields Tool', () => {
   });
 
   it('should return partial status for unknown headers', () => {
-    const headers = [
-      'TransactionDate',
-      'StockTicker',
-      'Amount',
-      'TotalCost'
-    ];
+    const headers = ['TransactionDate', 'StockTicker', 'Amount', 'TotalCost'];
     const sampleRows = [
       {
         TransactionDate: '2023-01-15',
@@ -109,9 +100,7 @@ describe('mapBrokerFields Tool', () => {
     const result = mapBrokerFields({ headers, sampleRows });
 
     expect(result.status).toBe('error');
-    expect(result.data.unmappedRequiredFields.length).toBeGreaterThan(
-      0
-    );
+    expect(result.data.unmappedRequiredFields.length).toBeGreaterThan(0);
     expect(result.data.unmappedHeaders.length).toBeGreaterThan(0);
     expect(result.verification.passed).toBe(false);
   });
@@ -128,7 +117,15 @@ describe('mapBrokerFields Tool', () => {
   });
 
   it('should have confidence 1.0 for all mapped headers', () => {
-    const headers = ['Date', 'Symbol', 'Currency', 'Price', 'Qty', 'Action', 'Fee'];
+    const headers = [
+      'Date',
+      'Symbol',
+      'Currency',
+      'Price',
+      'Qty',
+      'Action',
+      'Fee'
+    ];
     const sampleRows = [
       {
         Date: '2023-01-15',

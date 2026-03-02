@@ -26,7 +26,6 @@
  *   # On Railway:
  *   railway run npx ts-node scripts/repair-market-data.ts --fix
  */
-
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
@@ -54,7 +53,9 @@ function formatDate(date: Date): string {
 
 /** Dynamically import yahoo-finance2 (ESM package) */
 async function getYahooFinance() {
-  const yf = await (Function('return import("yahoo-finance2")')() as Promise<any>);
+  const yf = await (Function(
+    'return import("yahoo-finance2")'
+  )() as Promise<any>);
   return yf.default || yf;
 }
 
@@ -150,9 +151,7 @@ async function diagnose() {
   );
   if (orphanedManualRows.length > 0) {
     for (const row of orphanedManualRows) {
-      console.log(
-        `    - ${row.symbol}: ${Number(row.rowCount)} rows`
-      );
+      console.log(`    - ${row.symbol}: ${Number(row.rowCount)} rows`);
     }
   }
 
@@ -228,7 +227,9 @@ async function repair(diagResult: {
 
   for (const symbol of Array.from(allConvertibleSymbols)) {
     if (!yahooSymbolSet.has(symbol)) {
-      console.log(`⏭  ${symbol}: No YAHOO SymbolProfile, skipping MANUAL MarketData`);
+      console.log(
+        `⏭  ${symbol}: No YAHOO SymbolProfile, skipping MANUAL MarketData`
+      );
       continue;
     }
 
@@ -325,11 +326,7 @@ async function repair(diagResult: {
           interval: '1d'
         });
 
-        if (
-          !result ||
-          !result.quotes ||
-          result.quotes.length === 0
-        ) {
+        if (!result || !result.quotes || result.quotes.length === 0) {
           console.warn(`  ⚠️  ${symbol}: No data returned from Yahoo Finance`);
           continue;
         }
@@ -366,7 +363,9 @@ async function repair(diagResult: {
           await prisma.$transaction(batch);
         }
 
-        console.log(`  ✅ ${symbol}: Inserted ${upsertOps.length} MarketData rows`);
+        console.log(
+          `  ✅ ${symbol}: Inserted ${upsertOps.length} MarketData rows`
+        );
         fetchedCount += upsertOps.length;
       } catch (error) {
         console.error(
@@ -389,7 +388,9 @@ async function repair(diagResult: {
 async function main() {
   console.log('╔═══════════════════════════════════════════════════╗');
   console.log('║    MarketData Repair Script                      ║');
-  console.log(`║    Mode: ${FIX_MODE ? '🔧 FIX (will modify data)' : '🔍 DRY RUN (diagnose only)'}        ║`);
+  console.log(
+    `║    Mode: ${FIX_MODE ? '🔧 FIX (will modify data)' : '🔍 DRY RUN (diagnose only)'}        ║`
+  );
   console.log('╚═══════════════════════════════════════════════════╝\n');
 
   const diagResult = await diagnose();
@@ -408,7 +409,9 @@ async function main() {
     console.log('\n══════════════════════════════════════════════════');
     console.log('  DRY RUN — No changes made.');
     console.log('  Run with --fix to apply repairs:');
-    console.log('    npx ts-node --compiler-options \'{"module":"commonjs"}\' scripts/repair-market-data.ts --fix');
+    console.log(
+      '    npx ts-node --compiler-options \'{"module":"commonjs"}\' scripts/repair-market-data.ts --fix'
+    );
     console.log('══════════════════════════════════════════════════');
     return;
   }

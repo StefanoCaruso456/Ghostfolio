@@ -1,7 +1,6 @@
 /**
  * TaxController — REST endpoints for Tax Intelligence.
  */
-
 import { HasPermission } from '@ghostfolio/api/decorators/has-permission.decorator';
 import { HasPermissionGuard } from '@ghostfolio/api/guards/has-permission.guard';
 import { permissions } from '@ghostfolio/common/permissions';
@@ -19,8 +18,8 @@ import {
   Query,
   UseGuards
 } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
 import { REQUEST } from '@nestjs/core';
+import { AuthGuard } from '@nestjs/passport';
 import { TaxAdjustmentType } from '@prisma/client';
 
 import { TaxService } from './tax.service';

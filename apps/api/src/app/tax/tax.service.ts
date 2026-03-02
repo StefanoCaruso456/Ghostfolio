@@ -4,7 +4,6 @@
  * Provides: tax lot derivation, sale simulation, connected account
  * aggregation, normalized holdings/transactions, and adjustment CRUD.
  */
-
 import { PlaidService } from '@ghostfolio/api/app/plaid/plaid.service';
 import { SnaptradeService } from '@ghostfolio/api/app/snaptrade/snaptrade.service';
 import { DataProviderService } from '@ghostfolio/api/services/data-provider/data-provider.service';
@@ -59,8 +58,8 @@ export class TaxService {
     const result: ConnectedAccountSummary[] = [];
 
     for (const conn of snapConnections) {
-      const accountCount = accounts.filter(
-        (a) => a.comment?.startsWith('snaptrade:')
+      const accountCount = accounts.filter((a) =>
+        a.comment?.startsWith('snaptrade:')
       ).length;
 
       result.push({
@@ -185,7 +184,7 @@ export class TaxService {
     const profileMap = new Map(profiles.map((p) => [p.symbol, p]));
 
     // Fetch current prices
-    let quoteMap: Record<string, number> = {};
+    const quoteMap: Record<string, number> = {};
 
     try {
       const items = profiles.map((p) => ({
@@ -227,14 +226,12 @@ export class TaxService {
         marketValue != null ? marketValue - data.totalCostBasis : null;
       const unrealizedGainLossPct =
         unrealizedGainLoss != null && data.totalCostBasis > 0
-          ? Math.round(
-              (unrealizedGainLoss / data.totalCostBasis) * 10000
-            ) / 100
+          ? Math.round((unrealizedGainLoss / data.totalCostBasis) * 10000) / 100
           : null;
 
       // Use the first lot's accountId for account name
       const accountName = data.lots[0]?.accountId
-        ? accountMap.get(data.lots[0].accountId) ?? null
+        ? (accountMap.get(data.lots[0].accountId) ?? null)
         : null;
 
       holdings.push({
@@ -345,8 +342,7 @@ export class TaxService {
       quantity: order.quantity,
       unitPrice: order.unitPrice,
       fee: order.fee,
-      currency:
-        order.currency ?? order.SymbolProfile?.currency ?? 'USD',
+      currency: order.currency ?? order.SymbolProfile?.currency ?? 'USD',
       accountId: order.accountId ?? undefined
     }));
 
@@ -408,8 +404,7 @@ export class TaxService {
             ]
           });
 
-          currentMarketPrice =
-            quotes[profile.symbol]?.marketPrice ?? 0;
+          currentMarketPrice = quotes[profile.symbol]?.marketPrice ?? 0;
         }
       } catch (error) {
         this.logger.warn(
@@ -465,10 +460,7 @@ export class TaxService {
     });
   }
 
-  public async getAdjustments(
-    userId: string,
-    opts?: { symbol?: string }
-  ) {
+  public async getAdjustments(userId: string, opts?: { symbol?: string }) {
     return this.prismaService.taxAdjustment.findMany({
       where: {
         userId,

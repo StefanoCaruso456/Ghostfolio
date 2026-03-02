@@ -9,8 +9,11 @@
  *
  * Tax estimates are informational only. Users must consult a tax professional.
  */
-import type { ConsumedLot, SaleSimulationResult } from '../../../tax/interfaces/tax.interfaces';
 import { createVerificationResult } from '../../../import-auditor/schemas/verification.schema';
+import type {
+  ConsumedLot,
+  SaleSimulationResult
+} from '../../../tax/interfaces/tax.interfaces';
 import type {
   SimulateSaleData,
   SimulateSaleInput,
@@ -44,8 +47,7 @@ export function buildSimulateSaleResult(
           domainRulesFailed: ['sufficient-lots-available'],
           verificationType: 'human_in_the_loop',
           requiresHumanReview: true,
-          escalationReason:
-            'No open lots available — cannot simulate sale'
+          escalationReason: 'No open lots available — cannot simulate sale'
         })
       };
     }
@@ -53,10 +55,7 @@ export function buildSimulateSaleResult(
     const warnings: string[] = [];
 
     // Partial fill warning
-    if (
-      input &&
-      simulation.quantitySold < input.quantity
-    ) {
+    if (input && simulation.quantitySold < input.quantity) {
       warnings.push(
         `Partial fill: only ${simulation.quantitySold} of ${input.quantity} requested shares could be sold from available lots`
       );
@@ -124,9 +123,7 @@ export function buildSimulateSaleResult(
     return {
       status: 'error',
       message:
-        error instanceof Error
-          ? error.message
-          : 'Failed to simulate sale',
+        error instanceof Error ? error.message : 'Failed to simulate sale',
       verification: createVerificationResult({
         passed: false,
         confidence: 0,

@@ -5,18 +5,9 @@ import { VerificationResultSchema } from '../../../../import-auditor/schemas/ver
 // ─── Input ───────────────────────────────────────────────────────────
 
 export const GetTaxTransactionsInputSchema = z.object({
-  symbol: z
-    .string()
-    .optional()
-    .describe('Filter by ticker symbol'),
-  startDate: z
-    .string()
-    .optional()
-    .describe('ISO date string'),
-  endDate: z
-    .string()
-    .optional()
-    .describe('ISO date string'),
+  symbol: z.string().optional().describe('Filter by ticker symbol'),
+  startDate: z.string().optional().describe('ISO date string'),
+  endDate: z.string().optional().describe('ISO date string'),
   limit: z
     .number()
     .optional()

@@ -578,7 +578,11 @@
 }
 
 .implication-highlight {
-  background: linear-gradient(135deg, rgba(54, 207, 204, 0.1), rgba(54, 134, 207, 0.08));
+  background: linear-gradient(
+    135deg,
+    rgba(54, 207, 204, 0.1),
+    rgba(54, 134, 207, 0.08)
+  );
   border: 1px solid rgba(54, 207, 204, 0.25);
   border-radius: 14px;
   box-shadow:
@@ -661,7 +665,11 @@
   }
 
   .implication-highlight {
-    background: linear-gradient(135deg, rgba(54, 207, 204, 0.12), rgba(54, 134, 207, 0.1));
+    background: linear-gradient(
+      135deg,
+      rgba(54, 207, 204, 0.12),
+      rgba(54, 134, 207, 0.1)
+    );
     border-color: rgba(54, 207, 204, 0.3);
     box-shadow:
       4px 4px 10px rgba(0, 0, 0, 0.3),

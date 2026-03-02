@@ -1,12 +1,12 @@
 import { AccountBalanceService } from '@ghostfolio/api/app/account-balance/account-balance.service';
 import { AccountService } from '@ghostfolio/api/app/account/account.service';
 import { OrderModule } from '@ghostfolio/api/app/order/order.module';
-import { TaxModule } from '@ghostfolio/api/app/tax/tax.module';
 import { PortfolioCalculatorFactory } from '@ghostfolio/api/app/portfolio/calculator/portfolio-calculator.factory';
 import { CurrentRateService } from '@ghostfolio/api/app/portfolio/current-rate.service';
 import { PortfolioService } from '@ghostfolio/api/app/portfolio/portfolio.service';
 import { RulesService } from '@ghostfolio/api/app/portfolio/rules.service';
 import { RedisCacheModule } from '@ghostfolio/api/app/redis-cache/redis-cache.module';
+import { TaxModule } from '@ghostfolio/api/app/tax/tax.module';
 import { UserModule } from '@ghostfolio/api/app/user/user.module';
 import { ApiModule } from '@ghostfolio/api/services/api/api.module';
 import { BenchmarkModule } from '@ghostfolio/api/services/benchmark/benchmark.module';

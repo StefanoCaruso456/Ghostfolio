@@ -81,7 +81,9 @@ export function buildAllocationsResult(
               ]
             : ['Portfolio has zero holdings'],
           errors: isDegraded
-            ? ['Portfolio service returned an error — empty result is not reliable']
+            ? [
+                'Portfolio service returned an error — empty result is not reliable'
+              ]
             : undefined,
           sources: ['ghostfolio-portfolio-service'],
           domainRulesChecked: DOMAIN_RULES_CHECKED,

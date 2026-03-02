@@ -25,7 +25,6 @@
  *   # Fix mode:
  *   DATABASE_URL="..." npx ts-node --compiler-options '{"module":"commonjs"}' scripts/revert-uuid-symbols.ts --fix
  */
-
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
@@ -42,7 +41,9 @@ function isUuid(symbol: string): boolean {
 async function main() {
   console.log('╔═══════════════════════════════════════════════════╗');
   console.log('║    Revert UUID Symbols to MANUAL                 ║');
-  console.log(`║    Mode: ${FIX_MODE ? '🔧 FIX (will modify data)' : '🔍 DRY RUN (preview only) '}        ║`);
+  console.log(
+    `║    Mode: ${FIX_MODE ? '🔧 FIX (will modify data)' : '🔍 DRY RUN (preview only) '}        ║`
+  );
   console.log('╚═══════════════════════════════════════════════════╝\n');
 
   // 1. Find all YAHOO SymbolProfiles
@@ -92,7 +93,7 @@ async function main() {
     console.log('  DRY RUN — No changes made.');
     console.log('  Run with --fix to revert UUID symbols to MANUAL:');
     console.log(
-      "    DATABASE_URL=\"...\" npx ts-node --compiler-options '{\"module\":\"commonjs\"}' scripts/revert-uuid-symbols.ts --fix"
+      '    DATABASE_URL="..." npx ts-node --compiler-options \'{"module":"commonjs"}\' scripts/revert-uuid-symbols.ts --fix'
     );
     console.log('══════════════════════════════════════════════════');
     return;
@@ -143,7 +144,9 @@ async function main() {
   console.log(
     '\n✅ Done! UUID symbols reverted to MANUAL. Portfolio should load correctly.'
   );
-  console.log('   Do a hard refresh in your browser: Cmd+Shift+R (Mac) or Ctrl+Shift+R');
+  console.log(
+    '   Do a hard refresh in your browser: Cmd+Shift+R (Mac) or Ctrl+Shift+R'
+  );
 }
 
 main()
