@@ -225,7 +225,267 @@
       </div>
 
       <!-- PRD & MVP Tab -->
-      <div *ngIf="activeTab === 'prd'" class="tax-intelligence-card"></div>
+      <div *ngIf="activeTab === 'prd'" class="tax-intelligence-card">
+        <div class="prd-header">
+          <h2 class="section-title" style="margin-top: 0">
+            PRD &mdash; Tax Intelligence (Connected Accounts)
+          </h2>
+          <div class="info-table compact-meta">
+            <div class="info-row">
+              <span class="info-label">Author</span>
+              <span class="info-value">Stefano</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Status</span>
+              <span class="info-value">Draft</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">PM Epic</span>
+              <span class="info-value">TBD</span>
+            </div>
+          </div>
+        </div>
+
+        <h2 class="section-title">One Pager</h2>
+
+        <h3 class="subsection-title">Overview</h3>
+        <p>
+          Tax Intelligence connects brokerage (SnapTrade) and bank (Plaid)
+          accounts, stores normalized portfolio data, streams live pricing via
+          Yahoo, and enables tax impact simulation through structured API tools
+          accessible by Ghostfolio AI.
+        </p>
+
+        <h3 class="subsection-title">Problem</h3>
+        <p>
+          High-income multi-broker investors lack cross-account after-tax
+          visibility before trading. Selling decisions are made without
+          deterministic exposure modeling.
+        </p>
+
+        <h3 class="subsection-title">Objectives</h3>
+        <ol class="approach-list">
+          <li>Enable brokerage + bank connectivity</li>
+          <li>Store normalized holdings + transactions</li>
+          <li>Provide deterministic sell simulation</li>
+          <li>Allow AI agent to access data via structured CRUD tools</li>
+        </ol>
+
+        <h3 class="subsection-title">Constraints</h3>
+        <ul class="styled-list">
+          <li>SnapTrade coverage variability</li>
+          <li>Yahoo data reliability</li>
+          <li>No tax advisory claims</li>
+          <li>Limited MVP scope (federal estimates only)</li>
+        </ul>
+
+        <h3 class="subsection-title">Persona</h3>
+        <div class="persona-card">
+          <h3>High-Income Multi-Broker Investor</h3>
+          <p>$500K+ portfolio, 2+ brokerages, active allocator.</p>
+        </div>
+
+        <h3 class="subsection-title">Use Cases</h3>
+        <div class="use-case-grid">
+          <div class="use-case-item">
+            <span class="use-case-num">1</span>
+            <span>Connect brokerage + bank accounts</span>
+          </div>
+          <div class="use-case-item">
+            <span class="use-case-num">2</span>
+            <span>View cross-account tax exposure</span>
+          </div>
+          <div class="use-case-item">
+            <span class="use-case-num">3</span>
+            <span
+              >Ask AI: &ldquo;If I sell 100 shares of NVDA today, what is my
+              estimated tax impact?&rdquo;</span
+            >
+          </div>
+          <div class="use-case-item">
+            <span class="use-case-num">4</span>
+            <span>Adjust missing transaction and re-run simulation</span>
+          </div>
+        </div>
+
+        <h2 class="section-title">PRD Details</h2>
+
+        <h3 class="subsection-title">Features In</h3>
+
+        <div class="challenge-grid">
+          <div class="challenge-block">
+            <h4>1. Account Connectivity</h4>
+            <ul class="styled-list compact">
+              <li>SnapTrade broker connect</li>
+              <li>Plaid bank connect</li>
+              <li>Store linked account state</li>
+              <li>Sync metadata</li>
+            </ul>
+          </div>
+          <div class="challenge-block">
+            <h4>2. Data Normalization</h4>
+            <ul class="styled-list compact">
+              <li>Holdings table</li>
+              <li>Transactions table</li>
+              <li>Derived tax lots</li>
+              <li>Sync status logs</li>
+            </ul>
+          </div>
+        </div>
+
+        <h3 class="subsection-title">3. Tax Simulation Engine</h3>
+        <div class="info-table">
+          <div class="info-row">
+            <span class="info-label">Lot Selection</span>
+            <span class="info-value">FIFO (MVP)</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Holding Period</span>
+            <span class="info-value">Short-term vs long-term split</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Tax Rate</span>
+            <span class="info-value">Federal bracket assumption</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Pricing</span>
+            <span class="info-value">Yahoo pipeline</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Computation</span>
+            <span class="info-value">Deterministic</span>
+          </div>
+        </div>
+
+        <h3 class="subsection-title">
+          4. Agent Tool Access (Bounty Requirement)
+        </h3>
+        <p class="tool-note">
+          Agent must call Ghostfolio API tools &mdash; agent cannot call
+          SnapTrade, Plaid, or Yahoo directly.
+        </p>
+        <div class="tool-grid">
+          <div class="tool-item">
+            <code>listConnectedAccounts()</code>
+            <span>List all linked brokerage/bank accounts</span>
+          </div>
+          <div class="tool-item">
+            <code>syncAccount()</code>
+            <span>Trigger data sync for a connected account</span>
+          </div>
+          <div class="tool-item">
+            <code>getHoldings()</code>
+            <span>Retrieve normalized cross-account holdings</span>
+          </div>
+          <div class="tool-item">
+            <code>getTransactions()</code>
+            <span>Retrieve normalized transaction history</span>
+          </div>
+          <div class="tool-item">
+            <code>getTaxLots()</code>
+            <span>Get FIFO-derived tax lots with holding period</span>
+          </div>
+          <div class="tool-item">
+            <code>simulateSale()</code>
+            <span>Run deterministic sell simulation with tax estimate</span>
+          </div>
+          <div class="tool-item">
+            <code>createAdjustment()</code>
+            <span>Add manual cost-basis adjustment</span>
+          </div>
+          <div class="tool-item">
+            <code>updateAdjustment()</code>
+            <span>Modify existing adjustment</span>
+          </div>
+          <div class="tool-item">
+            <code>deleteAdjustment()</code>
+            <span>Remove an adjustment</span>
+          </div>
+          <div class="tool-item">
+            <code>webSearch()</code>
+            <span>Search the web for real-time news and analysis (Tavily)</span>
+          </div>
+        </div>
+
+        <h3 class="subsection-title">Features Out</h3>
+        <ul class="styled-list features-out">
+          <li>Wash sale detection</li>
+          <li>State taxes</li>
+          <li>Tax filing support</li>
+          <li>Trade execution</li>
+          <li>Optimization recommendations</li>
+        </ul>
+
+        <h2 class="section-title">Technical Considerations</h2>
+        <ul class="styled-list">
+          <li>Canonical ledger schema</li>
+          <li>Encryption for connection tokens</li>
+          <li>Price caching + fallback</li>
+          <li>Audit logs for sync + simulations</li>
+          <li>Tool schema validation</li>
+        </ul>
+
+        <h2 class="section-title">Success Metrics</h2>
+
+        <div class="metric-card north-star">
+          <h4>North Star</h4>
+          <p>&ge; 20% of connected users run simulation within 30 days.</p>
+        </div>
+
+        <div class="info-table">
+          <div class="info-row">
+            <span class="info-label">Broker connect success</span>
+            <span class="info-value">&ge; 85%</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Sync reliability</span>
+            <span class="info-value">&ge; 90%</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Tool schema validation</span>
+            <span class="info-value">&ge; 95%</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Simulation failures (missing price)</span>
+            <span class="info-value">&lt; 5%</span>
+          </div>
+        </div>
+
+        <h2 class="section-title">GTM Approach</h2>
+        <div class="gtm-card">
+          <p>
+            <strong>Messaging:</strong> &ldquo;Simulate your tax impact before
+            you trade &mdash; across every connected account.&rdquo;
+          </p>
+          <p>
+            <strong>Positioning:</strong> Privacy-first, connected,
+            deterministic financial intelligence.
+          </p>
+        </div>
+
+        <h2 class="section-title">Open Issues</h2>
+        <ul class="styled-list">
+          <li>Confirm SnapTrade lot granularity</li>
+          <li>Confirm Plaid investment vs bank scope</li>
+          <li>Finalize minimal tax profile input</li>
+        </ul>
+
+        <h2 class="section-title">Timeline</h2>
+        <div class="timeline">
+          <div class="timeline-phase">
+            <span class="phase-label">Phase 1</span>
+            <span>Connectivity + normalization</span>
+          </div>
+          <div class="timeline-phase">
+            <span class="phase-label">Phase 2</span>
+            <span>Tax Intelligence tab + simulation</span>
+          </div>
+          <div class="timeline-phase">
+            <span class="phase-label">Phase 3</span>
+            <span>Agent tooling hardening + observability</span>
+          </div>
+        </div>
+      </div>
 
       <!-- Impact Tab -->
       <div *ngIf="activeTab === 'impact'" class="tax-intelligence-card">
