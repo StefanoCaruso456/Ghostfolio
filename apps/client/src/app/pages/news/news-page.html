@@ -1,8 +1,44 @@
 <div class="container">
   <div class="row">
     <div class="col">
-      <h1 class="d-none d-sm-block mb-4" i18n>News</h1>
-      <p i18n>News content coming soon.</p>
+      <h1 class="d-none d-sm-block h3 mb-4 text-center" i18n>Market News</h1>
+
+      <div *ngIf="isLoading" class="loading-container">
+        <div class="loading-spinner"></div>
+        <p class="loading-text" i18n>Loading latest news...</p>
+      </div>
+
+      <div *ngIf="!isLoading && newsItems.length === 0" class="empty-state">
+        <p i18n>No news articles available at this time.</p>
+      </div>
+
+      <div *ngIf="!isLoading && newsItems.length > 0" class="news-grid">
+        <a
+          *ngFor="let item of newsItems"
+          class="news-card"
+          rel="noopener noreferrer"
+          target="_blank"
+          [href]="item.url"
+        >
+          <div
+            *ngIf="item.thumbnail"
+            class="news-thumbnail"
+            [style.background-image]="'url(' + item.thumbnail + ')'"
+          ></div>
+          <div *ngIf="!item.thumbnail" class="news-thumbnail placeholder">
+            <span class="placeholder-icon">&#x1F4F0;</span>
+          </div>
+          <div class="news-body">
+            <h3 class="news-title">{{ item.title }}</h3>
+            <div class="news-meta">
+              <span *ngIf="item.publisher" class="news-publisher">{{
+                item.publisher
+              }}</span>
+              <span class="news-time">{{ getTimeAgo(item.publishedAt) }}</span>
+            </div>
+          </div>
+        </a>
+      </div>
     </div>
   </div>
 </div>

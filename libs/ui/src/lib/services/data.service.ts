@@ -440,6 +440,29 @@ export class DataService {
     });
   }
 
+  public fetchNews(symbols?: string[], limit?: number) {
+    const params: any = {};
+
+    if (symbols?.length) {
+      params.symbols = symbols.join(',');
+    }
+
+    if (limit) {
+      params.limit = limit.toString();
+    }
+
+    return this.http.get<{
+      items: {
+        title: string;
+        publisher: string | null;
+        url: string | null;
+        thumbnail: string | null;
+        publishedAt: string;
+        source: string;
+      }[];
+    }>('/api/v1/news', { params });
+  }
+
   public fetchMarketScreener(
     category: string,
     count: number = 20,
