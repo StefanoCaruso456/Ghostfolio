@@ -326,6 +326,46 @@
           }
         </div>
       }
+      <!-- Tool Discovery Popover -->
+      @if (showToolDiscovery) {
+        <div class="tool-discovery-popover">
+          <div class="tool-discovery-header">
+            <div class="tool-discovery-title-row">
+              <ion-icon class="tool-discovery-icon" name="bulb-outline" />
+              <span class="tool-discovery-title" i18n>Tool Discovery</span>
+            </div>
+            <span class="tool-discovery-subtitle" i18n
+              >Click a prompt to test a specific tool</span
+            >
+          </div>
+          <div class="tool-discovery-body">
+            @for (category of toolCatalog; track category.label) {
+              <div class="tool-category">
+                <div class="tool-category-header">
+                  <ion-icon class="tool-category-icon" [name]="category.icon" />
+                  <span class="tool-category-label">{{ category.label }}</span>
+                </div>
+                <div class="tool-category-items">
+                  @for (tool of category.tools; track tool.name) {
+                    <button
+                      class="tool-item"
+                      (click)="onSelectToolPrompt(tool.name, tool.prompt)"
+                    >
+                      <div class="tool-item-header">
+                        <code class="tool-name">{{ tool.name }}</code>
+                      </div>
+                      <span class="tool-description">{{
+                        tool.description
+                      }}</span>
+                      <span class="tool-prompt-preview">{{ tool.prompt }}</span>
+                    </button>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      }
       <div class="input-wrapper">
         <input
           #fileInput
@@ -370,6 +410,15 @@
                 }
               </button>
             }
+            <button
+              class="tool-discovery-btn"
+              matTooltip="Tool Discovery"
+              [class.active]="showToolDiscovery"
+              [disabled]="isGenerating"
+              (click)="onToggleToolDiscovery()"
+            >
+              <ion-icon name="bulb-outline" />
+            </button>
           </div>
           <button
             class="send-btn"
