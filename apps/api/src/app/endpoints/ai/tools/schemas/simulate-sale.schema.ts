@@ -18,10 +18,43 @@ export const SimulateSaleInputSchema = z.object({
     .optional()
     .describe(
       'Federal tax bracket percentage for short-term gains (default 24%)'
+    ),
+  stateTaxPct: z
+    .number()
+    .min(0)
+    .max(15)
+    .optional()
+    .describe(
+      'State income tax rate percentage (e.g. 13.3 for California). Default 0.'
+    ),
+  includeNIIT: z
+    .boolean()
+    .optional()
+    .describe(
+      'Include 3.8% Net Investment Income Tax (NIIT) for AGI > $200K/$250K. Default true for HNW.'
     )
 });
 
 export type SimulateSaleInput = z.infer<typeof SimulateSaleInputSchema>;
+
+// ─── Shared Summary Schema ──────────────────────────────────────────
+export const TaxSummarySchema = z.object({
+  totalCostBasis: z.number(),
+  totalProceeds: z.number(),
+  totalGainLoss: z.number(),
+  shortTermGain: z.number(),
+  longTermGain: z.number(),
+  estimatedFederalTax: z.number(),
+  estimatedStateTax: z.number(),
+  estimatedNIIT: z.number(),
+  estimatedTotalTax: z.number(),
+  effectiveTaxRate: z.number(),
+  shortTermTaxRate: z.number(),
+  longTermTaxRate: z.number(),
+  stateTaxRate: z.number(),
+  niitRate: z.number(),
+  currency: z.string()
+});
 
 // ─── Data ────────────────────────────────────────────────────────────
 export const SimulateSaleLotSchema = z.object({
@@ -35,22 +68,9 @@ export const SimulateSaleLotSchema = z.object({
   holdingPeriod: z.enum(['SHORT_TERM', 'LONG_TERM'])
 });
 
-export const SimulateSaleSummarySchema = z.object({
-  totalCostBasis: z.number(),
-  totalProceeds: z.number(),
-  totalGainLoss: z.number(),
-  shortTermGain: z.number(),
-  longTermGain: z.number(),
-  estimatedFederalTax: z.number(),
-  effectiveTaxRate: z.number(),
-  shortTermTaxRate: z.number(),
-  longTermTaxRate: z.number(),
-  currency: z.string()
-});
-
 export const SimulateSaleDataSchema = z.object({
   lotsConsumed: z.array(SimulateSaleLotSchema),
-  summary: SimulateSaleSummarySchema,
+  summary: TaxSummarySchema,
   assumptions: z.array(z.string())
 });
 

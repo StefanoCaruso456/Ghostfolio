@@ -31,6 +31,8 @@ export interface SaleSimulationInput {
   quantity: number;
   pricePerShare?: number;
   taxBracketPct?: number;
+  stateTaxPct?: number;
+  includeNIIT?: boolean;
 }
 
 export interface SaleSimulationResult {
@@ -61,9 +63,14 @@ export interface TaxSummary {
   shortTermGain: number;
   longTermGain: number;
   estimatedFederalTax: number;
+  estimatedStateTax: number;
+  estimatedNIIT: number;
+  estimatedTotalTax: number;
   effectiveTaxRate: number;
   shortTermTaxRate: number;
   longTermTaxRate: number;
+  stateTaxRate: number;
+  niitRate: number;
   currency: string;
 }
 
@@ -128,8 +135,89 @@ export const FEDERAL_BRACKETS_2024 = [
   { min: 609350, max: Infinity, rate: 0.37 }
 ];
 
+// ─── Portfolio Liquidation ───────────────────────────────────────────
+
+export interface PortfolioLiquidationInput {
+  taxBracketPct?: number;
+  stateTaxPct?: number;
+  includeNIIT?: boolean;
+  topN?: number;
+}
+
+export interface PortfolioLiquidationResult {
+  holdings: PortfolioLiquidationHolding[];
+  summary: TaxSummary;
+  assumptions: string[];
+  holdingsCount: number;
+}
+
+export interface PortfolioLiquidationHolding {
+  symbol: string;
+  name: string | null;
+  quantity: number;
+  marketPrice: number;
+  totalProceeds: number;
+  totalCostBasis: number;
+  gainLoss: number;
+  shortTermGain: number;
+  longTermGain: number;
+  estimatedTax: number;
+}
+
+// ─── Tax-Loss Harvesting ────────────────────────────────────────────
+
+export interface TaxLossHarvestCandidate {
+  symbol: string;
+  name: string | null;
+  quantity: number;
+  marketPrice: number | null;
+  costBasis: number;
+  marketValue: number | null;
+  unrealizedLoss: number;
+  unrealizedLossPct: number;
+  holdingPeriod: 'SHORT_TERM' | 'LONG_TERM' | 'MIXED';
+  washSaleRisk: boolean;
+  washSaleDetail: string | null;
+}
+
+export interface TaxLossHarvestResult {
+  candidates: TaxLossHarvestCandidate[];
+  totalHarvestableShortTerm: number;
+  totalHarvestableLongTerm: number;
+  totalHarvestable: number;
+  potentialTaxSavings: number;
+  assumptions: string[];
+}
+
+// ─── Wash Sale Detection ────────────────────────────────────────────
+
+export interface WashSaleCheck {
+  symbol: string;
+  status: 'CLEAR' | 'WASH_SALE' | 'AT_RISK';
+  detail: string;
+  conflictingTransactions: WashSaleConflict[];
+}
+
+export interface WashSaleConflict {
+  type: 'BUY' | 'SELL';
+  date: string;
+  quantity: number;
+  unitPrice: number;
+  daysFromSale: number;
+}
+
+export interface WashSaleResult {
+  checks: WashSaleCheck[];
+  assumptions: string[];
+}
+
+// ─── Constants ──────────────────────────────────────────────────────
+
 /** Default long-term capital gains rate for most high-income investors */
 export const LONG_TERM_CAPITAL_GAINS_RATE = 0.15;
 
 /** Default short-term rate (ordinary income) for high-income assumption */
 export const DEFAULT_SHORT_TERM_RATE = 0.24;
+
+/** Net Investment Income Tax rate (3.8%) for AGI > $200K single / $250K married */
+export const NIIT_RATE = 0.038;

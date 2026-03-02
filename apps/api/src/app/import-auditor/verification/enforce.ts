@@ -28,7 +28,7 @@ export function enforceVerificationGate(
     };
   }
 
-  if ((v.domainRulesFailed?.length ?? 0) > 0) {
+  if ((v.domainRulesFailed?.length ?? 0) > 0 && !v.passed) {
     return {
       decision: 'block',
       reason: `Domain rules failed: ${v.domainRulesFailed!.join(', ')}`

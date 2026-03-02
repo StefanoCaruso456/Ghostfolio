@@ -1,5 +1,6 @@
 /**
- * tax-simulation.engine.ts — Pure FIFO sell simulation with federal tax estimation.
+ * tax-simulation.engine.ts — Pure FIFO sell simulation with federal, state,
+ * and NIIT tax estimation.
  *
  * Atomic: simulation only, no mutations
  * Idempotent: same inputs → same output
@@ -8,6 +9,7 @@
 import {
   DEFAULT_SHORT_TERM_RATE,
   LONG_TERM_CAPITAL_GAINS_RATE,
+  NIIT_RATE,
   type ConsumedLot,
   type DerivedTaxLot,
   type SaleSimulationInput,
@@ -16,10 +18,11 @@ import {
 } from './interfaces/tax.interfaces';
 
 /**
- * Simulate a sale using FIFO lot selection and estimate federal tax impact.
+ * Simulate a sale using FIFO lot selection and estimate tax impact
+ * (federal + optional state + optional NIIT).
  *
  * @param openLots - Open (unsold) tax lots for the symbol, sorted acquiredDate ASC
- * @param input    - Sale parameters (symbol, quantity, optional price/bracket)
+ * @param input    - Sale parameters (symbol, quantity, optional price/bracket/state/NIIT)
  * @param currentMarketPrice - Live market price from Yahoo Finance
  */
 export function simulateSale(
@@ -32,6 +35,8 @@ export function simulateSale(
     ? input.taxBracketPct / 100
     : DEFAULT_SHORT_TERM_RATE;
   const longTermRate = LONG_TERM_CAPITAL_GAINS_RATE;
+  const stateTaxRate = (input.stateTaxPct ?? 0) / 100;
+  const includeNIIT = input.includeNIIT ?? true;
 
   const assumptions: string[] = [];
 
@@ -54,10 +59,22 @@ export function simulateSale(
   assumptions.push(
     `Using long-term capital gains rate of ${(longTermRate * 100).toFixed(0)}%`
   );
+
+  if (stateTaxRate > 0) {
+    assumptions.push(
+      `State tax rate: ${(stateTaxRate * 100).toFixed(1)}% applied to all gains`
+    );
+  } else {
+    assumptions.push('No state tax included (set stateTaxPct to add)');
+  }
+
+  if (includeNIIT) {
+    assumptions.push(
+      `NIIT (${(NIIT_RATE * 100).toFixed(1)}%) included — applies to net investment income for AGI > $200K single / $250K married`
+    );
+  }
+
   assumptions.push('FIFO (First In, First Out) lot selection method');
-  assumptions.push(
-    'Federal tax estimate only — does not include state or local taxes'
-  );
   assumptions.push(
     'This is an informational estimate, not tax advice. Consult a tax professional.'
   );
@@ -125,26 +142,17 @@ export function simulateSale(
     remainingToSell -= quantityFromLot;
   }
 
-  // Calculate estimated federal tax
-  const shortTermTax = Math.max(0, shortTermGain) * shortTermRate;
-  const longTermTax = Math.max(0, longTermGain) * longTermRate;
-  const estimatedFederalTax = round2(shortTermTax + longTermTax);
-  const totalGainLoss = round2(shortTermGain + longTermGain);
-  const effectiveTaxRate =
-    totalGainLoss > 0 ? round2((estimatedFederalTax / totalGainLoss) * 100) : 0;
-
-  const summary: TaxSummary = {
-    totalCostBasis: round2(totalCostBasis),
-    totalProceeds: round2(totalProceeds),
-    totalGainLoss,
-    shortTermGain: round2(shortTermGain),
-    longTermGain: round2(longTermGain),
-    estimatedFederalTax,
-    effectiveTaxRate,
-    shortTermTaxRate: round2(shortTermRate * 100),
-    longTermTaxRate: round2(longTermRate * 100),
+  const summary = computeTaxSummary({
+    shortTermGain,
+    longTermGain,
+    totalCostBasis,
+    totalProceeds,
+    shortTermRate,
+    longTermRate,
+    stateTaxRate,
+    includeNIIT,
     currency: openLots[0]?.currency ?? 'USD'
-  };
+  });
 
   return {
     symbol: input.symbol,
@@ -154,6 +162,73 @@ export function simulateSale(
     lotsConsumed,
     summary,
     assumptions
+  };
+}
+
+/**
+ * Compute tax summary from gains. Exported for reuse by portfolio
+ * liquidation without duplicating logic.
+ */
+export function computeTaxSummary(params: {
+  shortTermGain: number;
+  longTermGain: number;
+  totalCostBasis: number;
+  totalProceeds: number;
+  shortTermRate: number;
+  longTermRate: number;
+  stateTaxRate: number;
+  includeNIIT: boolean;
+  currency: string;
+}): TaxSummary {
+  const {
+    shortTermGain,
+    longTermGain,
+    totalCostBasis,
+    totalProceeds,
+    shortTermRate,
+    longTermRate,
+    stateTaxRate,
+    includeNIIT,
+    currency
+  } = params;
+
+  // Federal tax
+  const shortTermTax = Math.max(0, shortTermGain) * shortTermRate;
+  const longTermTax = Math.max(0, longTermGain) * longTermRate;
+  const estimatedFederalTax = round2(shortTermTax + longTermTax);
+
+  // State tax (applies to all gains)
+  const totalGainLoss = round2(shortTermGain + longTermGain);
+  const estimatedStateTax =
+    stateTaxRate > 0 ? round2(Math.max(0, totalGainLoss) * stateTaxRate) : 0;
+
+  // NIIT (3.8% on net investment income — assumes HNW over threshold)
+  const estimatedNIIT =
+    includeNIIT && totalGainLoss > 0 ? round2(totalGainLoss * NIIT_RATE) : 0;
+
+  const estimatedTotalTax = round2(
+    estimatedFederalTax + estimatedStateTax + estimatedNIIT
+  );
+
+  const effectiveTaxRate =
+    totalGainLoss > 0 ? round2((estimatedTotalTax / totalGainLoss) * 100) : 0;
+
+  return {
+    totalCostBasis: round2(totalCostBasis),
+    totalProceeds: round2(totalProceeds),
+    totalGainLoss,
+    shortTermGain: round2(shortTermGain),
+    longTermGain: round2(longTermGain),
+    estimatedFederalTax,
+    estimatedStateTax,
+    estimatedNIIT,
+    estimatedTotalTax,
+    effectiveTaxRate,
+    shortTermTaxRate: round2(shortTermRate * 100),
+    longTermTaxRate: round2(longTermRate * 100),
+    stateTaxRate: round2(stateTaxRate * 100),
+    niitRate: includeNIIT ? round2(NIIT_RATE * 100) : 0,
+    currency
   };
 }
 

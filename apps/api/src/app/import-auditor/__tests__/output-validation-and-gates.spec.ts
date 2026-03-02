@@ -73,10 +73,10 @@ describe('Gate block resets canCommit', () => {
     expect(gate.decision).toBe('block');
   });
 
-  it('V002: gate block returns "block" when domain rules fail', () => {
+  it('V002: gate block returns "block" when domain rules fail and passed=false', () => {
     const v = createVerificationResult({
-      passed: true,
-      confidence: 1.0,
+      passed: false,
+      confidence: 0,
       domainRulesFailed: ['dto-normalization-gate']
     });
 
@@ -86,6 +86,21 @@ describe('Gate block resets canCommit', () => {
     });
 
     expect(gate.decision).toBe('block');
+  });
+
+  it('V002b: gate allows continue when domain rules fail but passed=true (degraded)', () => {
+    const v = createVerificationResult({
+      passed: true,
+      confidence: 0.8,
+      domainRulesFailed: ['market-prices-fetched']
+    });
+
+    const gate = enforceVerificationGate(v, {
+      highStakes: false,
+      minConfidence: 0.7
+    });
+
+    expect(gate.decision).toBe('continue');
   });
 
   it('V003: preview without DTOs blocks canCommit and fails dto-normalization-gate', () => {
