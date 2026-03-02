@@ -1,7 +1,7 @@
 /**
  * Stage 1: Golden Set — Deterministic, binary checks. No LLM judge needed.
  *
- * 54 test cases covering:
+ * 56 test cases covering:
  * - Portfolio tools (summary, activities, allocations, performance)
  * - Market tools (quotes, history, fundamentals, news)
  * - Decision-support tools (rebalance, scenario impact)
@@ -469,6 +469,28 @@ export const GOLDEN_SET: GoldenSetCase[] = [
     mustNotContain: [],
     expectedSources: ['yahoo-finance2'],
     description: 'Sequential quote + fundamentals for a single symbol'
+  },
+  {
+    id: 'gs-055',
+    query:
+      'What is my best performing holding, and what is the latest news about it?',
+    expectedTools: ['getPerformance', 'getNews'],
+    mustContain: [],
+    mustNotContain: ['I cannot'],
+    expectedSources: ['ghostfolio-portfolio-service', 'yahoo-finance2'],
+    description:
+      'Performance lookup then news for top holding — requires chaining portfolio + market tools'
+  },
+  {
+    id: 'gs-056',
+    query:
+      'Show my portfolio allocation, then run a scenario where my largest sector drops 25%',
+    expectedTools: ['getAllocations', 'scenarioImpact'],
+    mustContain: [],
+    mustNotContain: ['will drop', 'will lose'],
+    expectedSources: ['ghostfolio-portfolio-service'],
+    description:
+      'Allocation lookup then scenario impact — requires chaining portfolio analysis + decision tool'
   },
 
   // ── Boundary / Stress ─────────────────────────────────────────────

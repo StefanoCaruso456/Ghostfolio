@@ -34,6 +34,8 @@ import {
   refreshOutline,
   sparklesOutline,
   stopCircleOutline,
+  thumbsDownOutline,
+  thumbsUpOutline,
   trashOutline
 } from 'ionicons/icons';
 import { MarkdownModule } from 'ngx-markdown';
@@ -50,6 +52,7 @@ interface Attachment {
 interface ChatMessage {
   attachments?: Attachment[];
   content: string;
+  feedback?: 'down' | 'up';
   isCopied?: boolean;
   isError?: boolean;
   isLoading?: boolean;
@@ -148,6 +151,8 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
       refreshOutline,
       sparklesOutline,
       stopCircleOutline,
+      thumbsDownOutline,
+      thumbsUpOutline,
       trashOutline
     });
   }
@@ -292,6 +297,12 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
           this.scrollToBottom();
         }
       });
+  }
+
+  public onFeedback(message: ChatMessage, rating: 'down' | 'up') {
+    message.feedback = message.feedback === rating ? undefined : rating;
+    this.saveConversations();
+    this.changeDetectorRef.markForCheck();
   }
 
   public onCopyMessage(message: ChatMessage) {

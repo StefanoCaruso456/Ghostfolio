@@ -151,6 +151,22 @@
                     <span class="action-label" i18n>Copied</span>
                   }
                 </button>
+                <button
+                  class="action-btn"
+                  matTooltip="Good response"
+                  [class.feedback-active]="message.feedback === 'up'"
+                  (click)="onFeedback(message, 'up')"
+                >
+                  <ion-icon name="thumbs-up-outline" />
+                </button>
+                <button
+                  class="action-btn"
+                  matTooltip="Bad response"
+                  [class.feedback-active]="message.feedback === 'down'"
+                  (click)="onFeedback(message, 'down')"
+                >
+                  <ion-icon name="thumbs-down-outline" />
+                </button>
                 @if (message.isError) {
                   <button
                     class="action-btn"

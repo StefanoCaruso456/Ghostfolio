@@ -408,6 +408,11 @@
         color: inherit;
       }
 
+      &.feedback-active {
+        background: rgba(var(--gf-theme-primary-500-rgb), 0.12);
+        color: rgba(var(--gf-theme-primary-500-rgb), 1);
+      }
+
       .action-label {
         font-size: 0.7rem;
       }

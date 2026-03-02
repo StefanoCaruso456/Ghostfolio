@@ -247,6 +247,37 @@ export const LABELED_SCENARIOS: LabeledScenario[] = [
     toolCategories: ['performance', 'allocations']
   },
 
+  {
+    id: 'ls-043',
+    query:
+      'What is my best performing holding, get its current quote, and show me news about it',
+    expectedTools: ['getPerformance', 'getQuote', 'getNews'],
+    mustContain: [],
+    mustNotContain: ['I cannot'],
+    expectedSources: ['ghostfolio-portfolio-service', 'yahoo-finance2'],
+    description:
+      'Three-step chain: performance → quote → news — multi-tool, complex',
+    category: 'multi_tool',
+    complexity: 'complex',
+    difficulty: 'nuanced',
+    toolCategories: ['performance', 'summary']
+  },
+  {
+    id: 'ls-044',
+    query:
+      'Show me my allocation breakdown, then check the fundamentals of my top holding, and suggest a rebalance to 60/40 equity/bonds',
+    expectedTools: ['getAllocations', 'getFundamentals', 'computeRebalance'],
+    mustContain: [],
+    mustNotContain: ['you should buy'],
+    expectedSources: ['ghostfolio-portfolio-service', 'yahoo-finance2'],
+    description:
+      'Three-step chain: allocations → fundamentals → rebalance — multi-tool, complex',
+    category: 'multi_tool',
+    complexity: 'complex',
+    difficulty: 'nuanced',
+    toolCategories: ['allocations', 'performance']
+  },
+
   // ── EDGE CASES ─────────────────────────────────────────────────────
   {
     id: 'ls-050',
