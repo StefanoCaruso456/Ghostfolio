@@ -147,7 +147,15 @@
           <div class="chart-body">
             @if (errorMap.get(config.symbol)) {
               <div class="chart-error">
-                {{ errorMap.get(config.symbol) }}
+                <span>{{ errorMap.get(config.symbol) }}</span>
+                <button
+                  class="chart-retry-btn"
+                  mat-button
+                  (click)="onRetryChart(config.symbol)"
+                >
+                  <ion-icon name="refresh-outline" />
+                  <span i18n>Retry</span>
+                </button>
               </div>
             } @else {
               <gf-line-chart
