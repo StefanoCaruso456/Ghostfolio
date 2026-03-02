@@ -270,6 +270,14 @@ export class ResourcesMarketsComponent implements OnInit, OnDestroy {
     this.loadTableData();
   }
 
+  public onRetryChart(symbol: string) {
+    this.loadChart(symbol);
+  }
+
+  public onRetryAllCharts() {
+    this.loadAllVisibleCharts();
+  }
+
   public onRetryTable() {
     this.loadTableData();
   }
@@ -527,8 +535,8 @@ export class ResourcesMarketsComponent implements OnInit, OnDestroy {
           this.loadingMap.set(symbol, false);
           this.changeDetectorRef.markForCheck();
         },
-        error: () => {
-          this.errorMap.set(symbol, 'Failed to load data');
+        error: (err: HttpErrorResponse) => {
+          this.errorMap.set(symbol, this.getMarketDataErrorMessage(err));
           this.loadingMap.set(symbol, false);
           this.changeDetectorRef.markForCheck();
         }
