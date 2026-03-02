@@ -289,16 +289,24 @@ function buildReActSystemPrompt(
     '## Tax Intelligence Tools',
     '- **listConnectedAccounts**: List connected brokerage/bank accounts (SnapTrade + Plaid).',
     '- **syncAccount**: Trigger a sync for a connected account to refresh data.',
-    '- **getTaxHoldings**: Cross-account holdings with cost basis and unrealized gain/loss.',
+    '- **getTaxHoldings**: Cross-account holdings with cost basis and unrealized gain/loss. Accepts optional symbol filter.',
     '- **getTaxTransactions**: Tax-relevant transaction history with filtering.',
     '- **getTaxLots**: FIFO-derived tax lots with holding periods (short/long term) and status.',
-    '- **simulateSale**: Estimate tax impact of selling shares — FIFO lot selection, federal + state tax + NIIT (3.8%).',
-    '- **portfolioLiquidation**: Simulate selling ALL holdings — total tax liability with per-holding breakdown.',
-    '- **taxLossHarvest**: Find holdings with unrealized losses for tax-loss harvesting — shows potential tax savings and wash sale risk.',
-    '- **washSaleCheck**: Detect IRS wash sale violations — scans for repurchases within 30-day window around loss sales.',
+    '- **simulateSale**: Estimate tax impact of selling shares — FIFO lot selection, federal + state tax + NIIT (3.8%). Auto-fetches market price and lots.',
+    '- **portfolioLiquidation**: Simulate selling ALL holdings — total tax liability with per-holding breakdown. Auto-fetches everything.',
+    '- **taxLossHarvest**: Find holdings with unrealized losses for tax-loss harvesting — shows potential tax savings and wash sale risk. Auto-fetches everything.',
+    '- **washSaleCheck**: Detect IRS wash sale violations — scans for repurchases within 30-day window around loss sales. Auto-fetches everything.',
     '- **createAdjustment / updateAdjustment / deleteAdjustment**: Manage cost basis corrections.',
     '',
     'IMPORTANT: Tax simulations are estimates only — not tax advice. Always include a disclaimer.',
+    '',
+    '# Tool Call Optimization (CRITICAL — reduces timeout risk)',
+    '- **simulateSale, portfolioLiquidation, taxLossHarvest, washSaleCheck** are SELF-CONTAINED.',
+    '  They fetch market prices, tax lots, and holdings internally. Do NOT call getQuote, getTaxHoldings, or getTaxLots before them.',
+    '- For "sell ALL my shares of X": call getTaxHoldings(symbol=X) FIRST to learn the quantity, then call simulateSale.',
+    '- For "what is my tax if I sell N shares of X": call simulateSale DIRECTLY with the quantity. No other tool needed.',
+    '- For "liquidate everything" / "sell everything": call portfolioLiquidation DIRECTLY. No other tool needed.',
+    '- Minimize tool calls to avoid timeouts. Every extra tool call adds 10-30s latency.',
     '',
     '## Web Search Tools',
     '- **webSearch**: Search the web for real-time information — news, analysis, company data, market events, or any general knowledge.',
@@ -1545,7 +1553,7 @@ export class AiService {
 
           simulateSale: tool({
             description:
-              'Simulate selling shares and estimate tax impact using FIFO lot selection. Returns lots consumed, short-term vs long-term gains, estimated federal + state tax + NIIT (3.8%). Use when user asks "what if I sell X shares of Y" or tax impact questions. Supports stateTaxPct and includeNIIT parameters. IMPORTANT: Always include the disclaimer that this is an estimate, not tax advice.',
+              'Simulate selling shares and estimate tax impact using FIFO lot selection. Returns lots consumed, short-term vs long-term gains, estimated federal + state tax + NIIT (3.8%). SELF-CONTAINED: automatically fetches current market price and tax lots — do NOT call getQuote or getTaxLots first. If user says "sell all my X shares", call getTaxHoldings with symbol filter FIRST to get quantity, then call simulateSale. Supports stateTaxPct (e.g. 13.3 for California) and includeNIIT. IMPORTANT: Always include the disclaimer that this is an estimate, not tax advice.',
             parameters: SimulateSaleInputSchema,
             execute: async (args) => {
               return executeWithGuardrails(
@@ -1574,7 +1582,7 @@ export class AiService {
 
           portfolioLiquidation: tool({
             description:
-              'Simulate liquidating ALL portfolio holdings at current market prices and estimate total tax liability across the entire portfolio. Shows per-holding breakdown with gains, losses, and tax. Supports federal, state, and NIIT. Use when user asks "what if I sell everything" or "total tax if I liquidate". IMPORTANT: This is a high-stakes estimate — always include disclaimer.',
+              'Simulate liquidating ALL portfolio holdings at current market prices and estimate total tax liability across the entire portfolio. SELF-CONTAINED: fetches all holdings, market prices, and tax lots internally — do NOT call getTaxHoldings, getQuote, or any other tool first. Shows per-holding breakdown with gains, losses, and tax. Supports federal, state, and NIIT. Use when user asks "what if I sell everything" or "total tax if I liquidate". IMPORTANT: High-stakes estimate — always include disclaimer.',
             parameters: PortfolioLiquidationInputSchema,
             execute: async (args) => {
               return executeWithGuardrails(
@@ -1599,7 +1607,7 @@ export class AiService {
 
           taxLossHarvest: tool({
             description:
-              'Find tax-loss harvesting candidates — holdings with unrealized losses that could be sold to offset capital gains. Shows potential tax savings, flags wash sale risk. Use when user asks about tax-loss harvesting, reducing tax bill, or offsetting gains.',
+              'Find tax-loss harvesting candidates — holdings with unrealized losses that could be sold to offset capital gains. SELF-CONTAINED: fetches holdings, market prices, and lots internally — do NOT call other tools first. Shows potential tax savings, flags wash sale risk. Use when user asks about tax-loss harvesting, reducing tax bill, or offsetting gains.',
             parameters: TaxLossHarvestInputSchema,
             execute: async (args) => {
               return executeWithGuardrails(
@@ -1622,7 +1630,7 @@ export class AiService {
 
           washSaleCheck: tool({
             description:
-              'Check for IRS wash sale violations by scanning for substantially identical purchases within 30 days before/after a loss sale. Flags confirmed wash sales and at-risk positions. Use when user asks about wash sales, or before recommending tax-loss harvesting.',
+              'Check for IRS wash sale violations by scanning for substantially identical purchases within 30 days before/after a loss sale. SELF-CONTAINED: fetches transaction history and lots internally — do NOT call other tools first. Flags confirmed wash sales and at-risk positions. Use when user asks about wash sales, or before recommending tax-loss harvesting.',
             parameters: WashSaleCheckInputSchema,
             execute: async (args) => {
               return executeWithGuardrails(
