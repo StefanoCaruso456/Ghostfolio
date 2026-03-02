@@ -39,6 +39,7 @@ import { GhostfolioModule } from './endpoints/data-providers/ghostfolio/ghostfol
 import { MarketChartModule } from './endpoints/market-chart/market-chart.module';
 import { MarketDataModule } from './endpoints/market-data/market-data.module';
 import { MarketScreenerModule } from './endpoints/market-screener/market-screener.module';
+import { NewsModule } from './endpoints/news/news.module';
 import { PlatformsModule } from './endpoints/platforms/platforms.module';
 import { PublicModule } from './endpoints/public/public.module';
 import { SitemapModule } from './endpoints/sitemap/sitemap.module';
@@ -104,6 +105,7 @@ import { UserModule } from './user/user.module';
     MarketChartModule,
     MarketScreenerModule,
     MarketDataModule,
+    NewsModule,
     OrderModule,
     PlaidModule,
     SnaptradeModule,

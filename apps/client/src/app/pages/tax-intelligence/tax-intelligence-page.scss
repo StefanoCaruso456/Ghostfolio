@@ -500,6 +500,20 @@
   &:hover {
     background: rgba(54, 207, 204, 0.03);
   }
+
+  &.highlight-row {
+    background: rgba(220, 53, 69, 0.15);
+    border-left: 3px solid #dc3545;
+
+    &:hover {
+      background: rgba(220, 53, 69, 0.22);
+    }
+
+    .impact-metric {
+      color: rgba(var(--palette-foreground-text), 0.95);
+      font-weight: 600;
+    }
+  }
 }
 
 .impact-metric {
@@ -749,6 +763,18 @@
 
     &:hover {
       background: rgba(54, 207, 204, 0.05);
+    }
+
+    &.highlight-row {
+      background: rgba(220, 53, 69, 0.2);
+
+      &:hover {
+        background: rgba(220, 53, 69, 0.28);
+      }
+
+      .impact-metric {
+        color: rgba(255, 255, 255, 0.98);
+      }
     }
   }
 
