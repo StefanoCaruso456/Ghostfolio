@@ -1152,6 +1152,256 @@
   }
 }
 
+// ── Tool Discovery Button ────────────────────────────────────────────
+.tool-discovery-btn {
+  align-items: center;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  color: rgba(128, 128, 128, 0.5);
+  cursor: pointer;
+  display: flex;
+  flex-shrink: 0;
+  height: 32px;
+  justify-content: center;
+  transition: all 0.15s ease;
+  width: 32px;
+
+  ion-icon {
+    font-size: 1.1rem;
+  }
+
+  &:hover:not(:disabled) {
+    color: rgba(var(--gf-theme-primary-500-rgb), 0.8);
+  }
+
+  &.active {
+    background: rgba(var(--gf-theme-primary-500-rgb), 0.12);
+    color: rgba(var(--gf-theme-primary-500-rgb), 1);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.35;
+  }
+}
+
+// ── Tool Discovery Popover ──────────────────────────────────────────
+.tool-discovery-popover {
+  background: var(--mat-app-background-color);
+  border: 1px solid rgba(128, 128, 128, 0.15);
+  border-radius: 14px;
+  box-shadow:
+    6px 6px 14px rgba(0, 0, 0, 0.07),
+    -4px -4px 10px rgba(255, 255, 255, 0.7);
+  margin-bottom: 0.5rem;
+  max-height: 360px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+
+  .tool-discovery-header {
+    border-bottom: 1px solid rgba(128, 128, 128, 0.1);
+    flex-shrink: 0;
+    padding: 0.75rem 1rem 0.625rem;
+
+    .tool-discovery-title-row {
+      align-items: center;
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 0.2rem;
+    }
+
+    .tool-discovery-icon {
+      color: rgba(var(--gf-theme-primary-500-rgb), 1);
+      font-size: 1.1rem;
+    }
+
+    .tool-discovery-title {
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+
+    .tool-discovery-subtitle {
+      color: rgba(128, 128, 128, 0.6);
+      font-size: 0.7rem;
+    }
+  }
+
+  .tool-discovery-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0.5rem;
+
+    &::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: rgba(128, 128, 128, 0.2);
+      border-radius: 2px;
+    }
+  }
+
+  .tool-category {
+    margin-bottom: 0.5rem;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .tool-category-header {
+    align-items: center;
+    display: flex;
+    gap: 0.375rem;
+    padding: 0.375rem 0.5rem 0.25rem;
+
+    .tool-category-icon {
+      color: rgba(var(--gf-theme-primary-500-rgb), 0.7);
+      font-size: 0.85rem;
+    }
+
+    .tool-category-label {
+      color: rgba(128, 128, 128, 0.7);
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+  }
+
+  .tool-category-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .tool-item {
+    background: var(--mat-app-background-color);
+    border: 1px solid rgba(128, 128, 128, 0.1);
+    border-radius: 10px;
+    box-shadow:
+      3px 3px 6px rgba(0, 0, 0, 0.04),
+      -2px -2px 5px rgba(255, 255, 255, 0.6);
+    color: inherit;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    font-family: inherit;
+    gap: 0.2rem;
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+    transition: all 0.15s ease;
+    width: 100%;
+
+    &:hover {
+      border-color: rgba(var(--gf-theme-primary-500-rgb), 0.3);
+      box-shadow:
+        1px 1px 3px rgba(0, 0, 0, 0.03),
+        -1px -1px 3px rgba(255, 255, 255, 0.5);
+      transform: translateY(1px);
+    }
+
+    .tool-item-header {
+      align-items: center;
+      display: flex;
+      gap: 0.375rem;
+    }
+
+    .tool-name {
+      background: rgba(var(--gf-theme-primary-500-rgb), 0.1);
+      border-radius: 4px;
+      color: rgba(var(--gf-theme-primary-500-rgb), 1);
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.1rem 0.375rem;
+    }
+
+    .tool-description {
+      color: rgba(128, 128, 128, 0.7);
+      font-size: 0.7rem;
+      line-height: 1.3;
+    }
+
+    .tool-prompt-preview {
+      border-top: 1px dashed rgba(128, 128, 128, 0.12);
+      color: rgba(128, 128, 128, 0.55);
+      font-size: 0.65rem;
+      font-style: italic;
+      line-height: 1.4;
+      margin-top: 0.15rem;
+      overflow: hidden;
+      padding-top: 0.25rem;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+}
+
+// ── Fullscreen Tool Discovery overrides ─────────────────────────────
+.sidebar-container.fullscreen {
+  .tool-discovery-btn {
+    height: 36px;
+    width: 36px;
+
+    ion-icon {
+      font-size: 1.15rem;
+    }
+  }
+
+  .tool-discovery-popover {
+    border-radius: 18px;
+    box-shadow:
+      8px 8px 18px rgba(0, 0, 0, 0.06),
+      -6px -6px 14px rgba(255, 255, 255, 0.75);
+    max-height: 440px;
+
+    .tool-discovery-header {
+      padding: 1rem 1.25rem 0.75rem;
+
+      .tool-discovery-title {
+        font-size: 0.95rem;
+      }
+
+      .tool-discovery-subtitle {
+        font-size: 0.75rem;
+      }
+    }
+
+    .tool-discovery-body {
+      padding: 0.75rem;
+    }
+
+    .tool-item {
+      border-radius: 12px;
+      box-shadow:
+        4px 4px 8px rgba(0, 0, 0, 0.05),
+        -3px -3px 6px rgba(255, 255, 255, 0.7);
+      padding: 0.625rem 1rem;
+
+      .tool-name {
+        font-size: 0.75rem;
+      }
+
+      .tool-description {
+        font-size: 0.75rem;
+      }
+
+      .tool-prompt-preview {
+        font-size: 0.7rem;
+      }
+
+      &:hover {
+        box-shadow:
+          2px 2px 4px rgba(0, 0, 0, 0.04),
+          -2px -2px 4px rgba(255, 255, 255, 0.6);
+      }
+    }
+  }
+}
+
 // ── Dark Theme ──────────────────────────────────────────────────────
 :host-context(.theme-dark) {
   .attachment-thumbnail {
@@ -1165,7 +1415,43 @@
     border-color: rgba(var(--gf-theme-primary-500-rgb), 0.3);
   }
 
+  .tool-discovery-popover {
+    box-shadow:
+      6px 6px 14px rgba(0, 0, 0, 0.3),
+      -4px -4px 10px rgba(255, 255, 255, 0.03);
+
+    .tool-item {
+      box-shadow:
+        3px 3px 6px rgba(0, 0, 0, 0.25),
+        -2px -2px 5px rgba(255, 255, 255, 0.03);
+
+      &:hover {
+        box-shadow:
+          1px 1px 3px rgba(0, 0, 0, 0.2),
+          -1px -1px 3px rgba(255, 255, 255, 0.02);
+      }
+    }
+  }
+
   .sidebar-container.fullscreen {
+    .tool-discovery-popover {
+      box-shadow:
+        8px 8px 18px rgba(0, 0, 0, 0.35),
+        -6px -6px 14px rgba(255, 255, 255, 0.03);
+
+      .tool-item {
+        box-shadow:
+          4px 4px 8px rgba(0, 0, 0, 0.3),
+          -3px -3px 6px rgba(255, 255, 255, 0.03);
+
+        &:hover {
+          box-shadow:
+            2px 2px 4px rgba(0, 0, 0, 0.25),
+            -2px -2px 4px rgba(255, 255, 255, 0.02);
+        }
+      }
+    }
+
     .history-sidebar {
       box-shadow: inset -4px 0 8px rgba(0, 0, 0, 0.15);
     }

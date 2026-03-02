@@ -27,6 +27,7 @@ import { addIcons } from 'ionicons';
 import {
   arrowUpOutline,
   attachOutline,
+  bulbOutline,
   chatbubbleEllipsesOutline,
   checkmarkOutline,
   chevronBackOutline,
@@ -74,6 +75,18 @@ interface Conversation {
   title: string;
 }
 
+interface ToolEntry {
+  description: string;
+  name: string;
+  prompt: string;
+}
+
+interface ToolCategory {
+  icon: string;
+  label: string;
+  tools: ToolEntry[];
+}
+
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
@@ -113,6 +126,7 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
   public isRecording = false;
   public isSpeechSupported = false;
   public showHistory = false;
+  public showToolDiscovery = false;
 
   private dragCounter = 0;
   private speechRecognition: any = null;
@@ -151,6 +165,190 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
     }
   ];
 
+  public readonly toolCatalog: ToolCategory[] = [
+    {
+      icon: 'sparkles-outline',
+      label: $localize`Portfolio Analysis`,
+      tools: [
+        {
+          description: 'Holdings overview, top positions, accounts',
+          name: 'getPortfolioSummary',
+          prompt:
+            'Give me a summary of my portfolio including top holdings and account breakdown.'
+        },
+        {
+          description: 'Deep-dive on a specific holding',
+          name: 'getHoldingDetail',
+          prompt:
+            'Show me detailed information for my largest holding including performance, dividends, and fees.'
+        },
+        {
+          description: 'Portfolio value chart over time',
+          name: 'getPortfolioChart',
+          prompt:
+            'Show my portfolio performance chart for the last 12 months with peak and trough analysis.'
+        },
+        {
+          description: 'Allocation by asset class, sector, currency',
+          name: 'getAllocations',
+          prompt:
+            'Break down my portfolio allocations by asset class, sector, and currency.'
+        },
+        {
+          description: 'Dividend income breakdown',
+          name: 'getDividendSummary',
+          prompt:
+            'Summarize my dividend income with a breakdown by symbol and period.'
+        },
+        {
+          description: 'Portfolio transactions and trades',
+          name: 'listActivities',
+          prompt:
+            'List my recent portfolio transactions including trades, dividends, and fees.'
+        }
+      ]
+    },
+    {
+      icon: 'chatbubble-ellipses-outline',
+      label: $localize`Market Data`,
+      tools: [
+        {
+          description: 'Real-time price quotes',
+          name: 'getQuote',
+          prompt: 'Get me the current quotes for AAPL, MSFT, and GOOGL.'
+        },
+        {
+          description: 'Historical price data with analytics',
+          name: 'getHistory',
+          prompt:
+            'Show me the price history of AAPL for the last 6 months with volatility and drawdown metrics.'
+        },
+        {
+          description: 'Valuation metrics (P/E, EPS, market cap)',
+          name: 'getFundamentals',
+          prompt:
+            'What are the fundamental valuation metrics for NVDA including P/E, EPS, and dividend yield?'
+        },
+        {
+          description: 'Recent news and articles',
+          name: 'getNews',
+          prompt: 'What is the latest news on TSLA?'
+        },
+        {
+          description: 'Portfolio returns and net worth',
+          name: 'getPerformance',
+          prompt:
+            'Show my portfolio performance metrics including total returns, net worth, and total investment.'
+        }
+      ]
+    },
+    {
+      icon: 'sparkles-outline',
+      label: $localize`Decision Support`,
+      tools: [
+        {
+          description: 'Compare current vs target allocation',
+          name: 'computeRebalance',
+          prompt:
+            'Rebalance my portfolio to a target of 60% stocks, 30% bonds, and 10% cash. Show the deltas.'
+        },
+        {
+          description: 'What-if scenario analysis',
+          name: 'scenarioImpact',
+          prompt:
+            'What if the market drops 20%? Simulate the impact on my portfolio.'
+        }
+      ]
+    },
+    {
+      icon: 'chatbubble-ellipses-outline',
+      label: $localize`Tax Intelligence`,
+      tools: [
+        {
+          description: 'Connected brokerage and bank accounts',
+          name: 'listConnectedAccounts',
+          prompt: 'List all my connected brokerage and bank accounts.'
+        },
+        {
+          description: 'Trigger sync for a connected account',
+          name: 'syncAccount',
+          prompt: 'Sync my connected brokerage account to pull the latest data.'
+        },
+        {
+          description: 'Holdings with cost basis and unrealized gains',
+          name: 'getTaxHoldings',
+          prompt:
+            'Show my cross-account holdings with cost basis and unrealized gain/loss for tax purposes.'
+        },
+        {
+          description: 'Tax-relevant transaction history',
+          name: 'getTaxTransactions',
+          prompt: 'Show my tax-relevant transactions from this year.'
+        },
+        {
+          description: 'FIFO-derived tax lots',
+          name: 'getTaxLots',
+          prompt:
+            'Show my tax lots with holding periods and short-term vs long-term classification.'
+        },
+        {
+          description: 'Simulate selling shares with tax impact',
+          name: 'simulateSale',
+          prompt:
+            'Simulate selling 50 shares of my largest holding and show the estimated tax impact including federal, state, and NIIT.'
+        },
+        {
+          description: 'Liquidate all holdings tax estimate',
+          name: 'portfolioLiquidation',
+          prompt:
+            'Simulate liquidating my entire portfolio and show the total tax liability breakdown.'
+        },
+        {
+          description: 'Find tax-loss harvesting candidates',
+          name: 'taxLossHarvest',
+          prompt:
+            'Find tax-loss harvesting opportunities in my portfolio and flag any wash sale risks.'
+        },
+        {
+          description: 'Detect IRS wash sale violations',
+          name: 'washSaleCheck',
+          prompt:
+            'Check my recent trades for any potential IRS wash sale violations within the 30-day window.'
+        },
+        {
+          description: 'Create cost basis correction',
+          name: 'createAdjustment',
+          prompt:
+            'Help me create a cost basis adjustment for a position that has an incorrect cost basis.'
+        },
+        {
+          description: 'Modify existing adjustment',
+          name: 'updateAdjustment',
+          prompt:
+            'Show my existing cost basis adjustments and help me update one.'
+        },
+        {
+          description: 'Remove cost basis adjustment',
+          name: 'deleteAdjustment',
+          prompt:
+            'List my cost basis adjustments and help me remove one that is no longer needed.'
+        }
+      ]
+    },
+    {
+      icon: 'chatbubble-ellipses-outline',
+      label: $localize`Web Search`,
+      tools: [
+        {
+          description: 'Real-time web search for news and analysis',
+          name: 'webSearch',
+          prompt:
+            'Search the web for the latest Federal Reserve interest rate decisions and summarize the market impact.'
+        }
+      ]
+    }
+  ];
+
   private unsubscribeSubject = new Subject<void>();
 
   public constructor(
@@ -163,6 +361,7 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
     addIcons({
       arrowUpOutline,
       attachOutline,
+      bulbOutline,
       chatbubbleEllipsesOutline,
       checkmarkOutline,
       chevronBackOutline,
@@ -339,6 +538,17 @@ export class GfAiChatSidebarComponent implements OnDestroy, OnInit {
   public onToggleHistory() {
     this.showHistory = !this.showHistory;
     this.changeDetectorRef.markForCheck();
+  }
+
+  public onToggleToolDiscovery() {
+    this.showToolDiscovery = !this.showToolDiscovery;
+    this.changeDetectorRef.markForCheck();
+  }
+
+  public onSelectToolPrompt(toolName: string, prompt: string) {
+    this.showToolDiscovery = false;
+    this.inputValue = prompt;
+    this.onSendMessage(`tool_discovery:${toolName}`);
   }
 
   public onUseSuggestedPrompt(prompt: string) {
