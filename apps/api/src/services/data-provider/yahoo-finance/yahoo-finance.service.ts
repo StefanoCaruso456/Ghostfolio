@@ -9,6 +9,7 @@ import {
   GetQuotesParams,
   GetSearchParams
 } from '@ghostfolio/api/services/data-provider/interfaces/data-provider.interface';
+import { getYahooCircuitBreaker } from '@ghostfolio/api/services/data-provider/yahoo-finance/yahoo-finance-circuit-breaker';
 import { DEFAULT_CURRENCY } from '@ghostfolio/common/config';
 import { DATE_FORMAT } from '@ghostfolio/common/helper';
 import {
@@ -188,6 +189,18 @@ export class YahooFinanceService implements DataProviderInterface {
       return response;
     }
 
+    // Circuit breaker: if Yahoo is known to be down, fail fast
+    const breaker = getYahooCircuitBreaker();
+
+    if (!breaker.canExecute()) {
+      Logger.warn(
+        `Circuit breaker OPEN — skipping ${symbols.length} Yahoo quote requests`,
+        'YahooFinanceService'
+      );
+
+      return response;
+    }
+
     const yahooFinanceSymbols = symbols.map((symbol) =>
       this.yahooFinanceDataEnhancerService.convertToYahooFinanceSymbol(symbol)
     );
@@ -206,6 +219,10 @@ export class YahooFinanceService implements DataProviderInterface {
         );
 
         quotes = await this.getQuotesWithQuoteSummary(yahooFinanceSymbols);
+      }
+
+      if (quotes.length > 0) {
+        breaker.recordSuccess();
       }
 
       for (const quote of quotes) {
@@ -229,6 +246,7 @@ export class YahooFinanceService implements DataProviderInterface {
 
       return response;
     } catch (error) {
+      breaker.recordFailure();
       Logger.error(error, 'YahooFinanceService');
 
       return {};
@@ -355,16 +373,21 @@ export class YahooFinanceService implements DataProviderInterface {
   }
 
   private async getQuotesWithQuoteSummary(aYahooFinanceSymbols: string[]) {
+    const breaker = getYahooCircuitBreaker();
+
     const quoteSummaryPromises = aYahooFinanceSymbols.map((symbol) => {
       return this.yahooFinance.quoteSummary(symbol);
     });
 
     const settledResults = await Promise.allSettled(quoteSummaryPromises);
 
-    return settledResults
+    let failureCount = 0;
+
+    const results = settledResults
       .filter(
         (result): result is PromiseFulfilledResult<QuoteSummaryResult> => {
           if (result.status === 'rejected') {
+            failureCount++;
             Logger.error(
               `Could not get quote summary: ${result.reason}`,
               'YahooFinanceService'
@@ -379,5 +402,12 @@ export class YahooFinanceService implements DataProviderInterface {
       .map(({ value }) => {
         return value.price;
       });
+
+    // If ALL quoteSummary calls failed, record a failure on the circuit breaker
+    if (failureCount > 0 && results.length === 0) {
+      breaker.recordFailure();
+    }
+
+    return results;
   }
 }

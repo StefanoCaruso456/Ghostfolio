@@ -582,6 +582,13 @@ export class PortfolioService {
 
       const fmpApiKey = process.env.API_KEY_FINANCIAL_MODELING_PREP;
 
+      if (missingSymbols.length > 0 && !fmpApiKey) {
+        this.logger.warn(
+          'HoldingsQuick: API_KEY_FINANCIAL_MODELING_PREP is not set — FMP fallback is disabled. ' +
+            'Set this environment variable in Railway to enable the fallback data provider.'
+        );
+      }
+
       if (missingSymbols.length > 0 && fmpApiKey) {
         this.logger.log(
           `HoldingsQuick: trying FMP fallback for ${missingSymbols.length} symbols`
@@ -612,9 +619,17 @@ export class PortfolioService {
               }
             }
           } else {
-            this.logger.warn(
-              `HoldingsQuick: FMP returned non-array response: ${JSON.stringify(fmpResponse).slice(0, 200)}`
-            );
+            const responseStr = JSON.stringify(fmpResponse).slice(0, 200);
+
+            if (responseStr.includes('Invalid API KEY')) {
+              this.logger.error(
+                'HoldingsQuick: FMP API key is INVALID — update API_KEY_FINANCIAL_MODELING_PREP in Railway Variables'
+              );
+            } else {
+              this.logger.warn(
+                `HoldingsQuick: FMP returned non-array response: ${responseStr}`
+              );
+            }
           }
 
           this.logger.log(
