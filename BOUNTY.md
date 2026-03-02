@@ -331,3 +331,61 @@ The agent reads AND writes to the database:
 5. **Privacy**: All data stays on the user's own infrastructure. No third-party analytics, no data selling, no vendor lock-in. Plaid/SnapTrade tokens stored locally, all AI conversations stored in the user's own PostgreSQL instance.
 
 6. **Market size**: 875K addressable FIRE pursuers (primary), 1.45M dividend investors (secondary). Open-source Ghostfolio already has 5K+ GitHub stars as a distribution base.
+
+---
+
+## References — Where to Find Everything
+
+> For evaluators: the documents below provide deep-dive evidence for every claim in this bounty submission.
+
+### Tax Intelligence (Strategy, PRD, Implementation)
+
+| Document                       | Path                                                                                         | What It Covers                                                                                                                              |
+| ------------------------------ | -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Product Strategy**           | [`artifacts-documentation/product-strategy.md`](artifacts-documentation/product-strategy.md) | Product vision, competitive landscape, market insight, differentiators (connected accounts + deterministic tax simulation + AI tool access) |
+| **PRD (MVP)**                  | [`artifacts-documentation/prd-mvp.md`](artifacts-documentation/prd-mvp.md)                   | Tax Intelligence one-pager, objectives, constraints, persona, user stories, API contracts, acceptance criteria                              |
+| **Tax Intelligence Page (UI)** | [`apps/client/src/app/pages/tax-intelligence/`](apps/client/src/app/pages/tax-intelligence/) | Frontend implementation — neomorphic tax dashboard with holdings table, lot viewer, sale simulator, and harvesting panel                    |
+| **Tax Service (Backend)**      | [`apps/api/src/app/tax/tax.service.ts`](apps/api/src/app/tax/tax.service.ts)                 | FIFO lot derivation, sale simulation, tax-loss harvesting, wash sale detection, connected account aggregation, adjustment CRUD              |
+
+### Agent Architecture & Tools
+
+| Document                     | Path                                                                                                                     | What It Covers                                                                                  |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------- |
+| **Tool Registry**            | [`artifacts-documentation/tool-registry.md`](artifacts-documentation/tool-registry.md)                                   | Complete catalog of all 26 tools with input/output schemas, data sources, and descriptions      |
+| **ReAct Agent Architecture** | [`artifacts-documentation/ReAct-Agent-Architecture.md`](artifacts-documentation/ReAct-Agent-Architecture.md)             | Agent loop, system prompt, tool dispatch, guardrails, verification layer                        |
+| **AI Service (Source)**      | [`apps/api/src/app/endpoints/ai/ai.service.ts`](apps/api/src/app/endpoints/ai/ai.service.ts)                             | Full implementation — all 26 tools, system prompt, ReAct loop, streaming, telemetry integration |
+| **MCP Tool Dispatch**        | [`artifacts-documentation/MCP_TOOL_DISPATCH_ARCHITECTURE.md`](artifacts-documentation/MCP_TOOL_DISPATCH_ARCHITECTURE.md) | How tools route between local execution and external MCP server (local / mcp / hybrid modes)    |
+
+### Data Sources & Providers
+
+| Document                    | Path                                                                                                 | What It Covers                                                                                                          |
+| --------------------------- | ---------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| **Market Data Providers**   | [`apps/api/src/app/endpoints/ai/providers/`](apps/api/src/app/endpoints/ai/providers/)               | Yahoo Finance, CoinGecko, FallbackMarketDataProvider, CachedMarketDataProvider, QuoteCacheService                       |
+| **Plaid Service**           | [`apps/api/src/app/plaid/plaid.service.ts`](apps/api/src/app/plaid/plaid.service.ts)                 | Plaid OAuth, account linking, transaction sync, encrypted token storage                                                 |
+| **SnapTrade Service**       | [`apps/api/src/app/snaptrade/snaptrade.service.ts`](apps/api/src/app/snaptrade/snaptrade.service.ts) | SnapTrade connection flow, international brokerage support                                                              |
+| **Original Data Providers** | [`apps/api/src/services/data-provider/`](apps/api/src/services/data-provider/)                       | Alpha Vantage, EOD Historical Data, Financial Modeling Prep, Rapid API, Google Sheets, Manual, CoinGecko, Yahoo Finance |
+
+### Testing & Evaluation
+
+| Document                   | Path                                                                                                         | What It Covers                                                                                          |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------- |
+| **Test Suite Overview**    | [`artifacts-documentation/golden-set-tests.md`](artifacts-documentation/golden-set-tests.md)                 | 143 tests across 6 files: golden set (28), telemetry (77), fallback provider, quote cache, tool schemas |
+| **Hard Gate Audit**        | [`artifacts-documentation/hard-gate-audit-evidence.md`](artifacts-documentation/hard-gate-audit-evidence.md) | Pass/fail verdicts for all 8 hard gate requirements with evidence                                       |
+| **Requirements Checklist** | [`artifacts-documentation/requirements-checklist.md`](artifacts-documentation/requirements-checklist.md)     | Full checklist: UI/UX, agent tools, guardrails, verification, telemetry, evaluation — all with status   |
+
+### Observability & Cost
+
+| Document                   | Path                                                                                                               | What It Covers                                                                     |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------- |
+| **Telemetry (Braintrust)** | [`artifacts-documentation/telemetry.md`](artifacts-documentation/telemetry.md)                                     | Trace-level logging, tool spans, verification data, degradation-safe design        |
+| **Telemetry Schema**       | [`artifacts-documentation/braintrust-telemetry-schema.md`](artifacts-documentation/braintrust-telemetry-schema.md) | Full schema: trace summary, tool spans, verification payloads                      |
+| **Cost Analysis**          | [`artifacts-documentation/cost-analysis.md`](artifacts-documentation/cost-analysis.md)                             | Per-query cost ($0.0112), projections at 100-100K users, cost reduction strategies |
+
+### Frontend & UX
+
+| Document                    | Path                                                                                                                   | What It Covers                                                                                                               |
+| --------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| **AI Chat Sidebar**         | [`apps/client/src/app/components/ai-chat-sidebar/`](apps/client/src/app/components/ai-chat-sidebar/)                   | Full chat UI: sidebar/fullscreen modes, conversation history, voice input, file attachments, tool discovery, reasoning panel |
+| **News Page**               | [`apps/client/src/app/pages/news/`](apps/client/src/app/pages/news/)                                                   | Market news card grid with thumbnails, publisher info, clickable source links                                                |
+| **Architecture (E2E Flow)** | [`artifacts-documentation/architecture.md`](artifacts-documentation/architecture.md)                                   | End-to-end request flow from Angular frontend through NestJS API to tool execution and back                                  |
+| **CSV Import Auditor**      | [`artifacts-documentation/CSV-Import-Auditor-ReAct-Loop.md`](artifacts-documentation/CSV-Import-Auditor-ReAct-Loop.md) | Second ReAct agent: parses, validates, normalizes, deduplicates, and commits CSV brokerage transactions (6 tools)            |
