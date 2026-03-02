@@ -2,6 +2,8 @@
  * simulateSale — Highest-stakes tool: simulates selling shares and estimates
  * capital gains tax impact using FIFO lot consumption.
  *
+ * Includes: federal tax, state tax, NIIT (3.8%).
+ *
  * Atomic: tax simulation only (no trades executed)
  * Idempotent: same simulation input → same result
  * Error-handled: structured error, never throws
@@ -73,24 +75,23 @@ export function buildSimulateSaleResult(
         gainLoss: lot.gainLoss,
         holdingPeriod: lot.holdingPeriod
       })),
-      summary: {
-        totalCostBasis: simulation.summary.totalCostBasis,
-        totalProceeds: simulation.summary.totalProceeds,
-        totalGainLoss: simulation.summary.totalGainLoss,
-        shortTermGain: simulation.summary.shortTermGain,
-        longTermGain: simulation.summary.longTermGain,
-        estimatedFederalTax: simulation.summary.estimatedFederalTax,
-        effectiveTaxRate: simulation.summary.effectiveTaxRate,
-        shortTermTaxRate: simulation.summary.shortTermTaxRate,
-        longTermTaxRate: simulation.summary.longTermTaxRate,
-        currency: simulation.summary.currency
-      },
+      summary: simulation.summary,
       assumptions: simulation.assumptions
     };
 
     // Build message
     const { summary } = simulation;
-    let message = `Simulated selling ${simulation.quantitySold} shares of ${simulation.symbol} at $${simulation.pricePerShare}. Estimated tax: $${summary.estimatedFederalTax} (${summary.effectiveTaxRate}% effective rate).`;
+    let message = `Simulated selling ${simulation.quantitySold} shares of ${simulation.symbol} at $${simulation.pricePerShare}.`;
+    message += ` Total estimated tax: $${summary.estimatedTotalTax} (${summary.effectiveTaxRate}% effective).`;
+    message += ` Federal: $${summary.estimatedFederalTax}.`;
+
+    if (summary.estimatedStateTax > 0) {
+      message += ` State: $${summary.estimatedStateTax}.`;
+    }
+
+    if (summary.estimatedNIIT > 0) {
+      message += ` NIIT: $${summary.estimatedNIIT}.`;
+    }
 
     if (summary.shortTermGain > 0) {
       message += ` Short-term gain: $${summary.shortTermGain}.`;

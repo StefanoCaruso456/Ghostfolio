@@ -54,6 +54,7 @@ import { buildTaxLotsResult } from './tools/get-tax-lots.tool';
 import { buildTaxTransactionsResult } from './tools/get-tax-transactions.tool';
 import { buildActivitiesResult } from './tools/list-activities.tool';
 import { buildListConnectedAccountsResult } from './tools/list-connected-accounts.tool';
+import { buildPortfolioLiquidationResult } from './tools/portfolio-liquidation.tool';
 import { buildScenarioImpactResult } from './tools/scenario-impact.tool';
 import { GetAllocationsOutputSchema } from './tools/schemas/allocations.schema';
 import {
@@ -121,6 +122,10 @@ import {
   GetPerformanceOutputSchema
 } from './tools/schemas/performance.schema';
 import {
+  PortfolioLiquidationInputSchema,
+  PortfolioLiquidationOutputSchema
+} from './tools/schemas/portfolio-liquidation.schema';
+import {
   GetPortfolioSummaryInputSchema,
   GetPortfolioSummaryOutputSchema
 } from './tools/schemas/portfolio-summary.schema';
@@ -137,16 +142,26 @@ import {
   SyncAccountOutputSchema
 } from './tools/schemas/sync-account.schema';
 import {
+  TaxLossHarvestInputSchema,
+  TaxLossHarvestOutputSchema
+} from './tools/schemas/tax-loss-harvest.schema';
+import {
   UpdateAdjustmentInputSchema,
   UpdateAdjustmentOutputSchema
 } from './tools/schemas/update-adjustment.schema';
+import {
+  WashSaleCheckInputSchema,
+  WashSaleOutputSchema
+} from './tools/schemas/wash-sale-check.schema';
 import {
   WebSearchInputSchema,
   WebSearchOutputSchema
 } from './tools/schemas/web-search.schema';
 import { buildSimulateSaleResult } from './tools/simulate-sale.tool';
 import { buildSyncAccountResult } from './tools/sync-account.tool';
+import { buildTaxLossHarvestResult } from './tools/tax-loss-harvest.tool';
 import { buildUpdateAdjustmentResult } from './tools/update-adjustment.tool';
+import { buildWashSaleCheckResult } from './tools/wash-sale-check.tool';
 import {
   buildWebSearchResult,
   executeWebSearch
@@ -192,6 +207,9 @@ const OUTPUT_SCHEMA_REGISTRY: Record<string, ZodType> = {
   getTaxTransactions: GetTaxTransactionsOutputSchema,
   getTaxLots: GetTaxLotsOutputSchema,
   simulateSale: SimulateSaleOutputSchema,
+  portfolioLiquidation: PortfolioLiquidationOutputSchema,
+  taxLossHarvest: TaxLossHarvestOutputSchema,
+  washSaleCheck: WashSaleOutputSchema,
   createAdjustment: CreateAdjustmentOutputSchema,
   updateAdjustment: UpdateAdjustmentOutputSchema,
   deleteAdjustment: DeleteAdjustmentOutputSchema,
@@ -274,7 +292,10 @@ function buildReActSystemPrompt(
     '- **getTaxHoldings**: Cross-account holdings with cost basis and unrealized gain/loss.',
     '- **getTaxTransactions**: Tax-relevant transaction history with filtering.',
     '- **getTaxLots**: FIFO-derived tax lots with holding periods (short/long term) and status.',
-    '- **simulateSale**: Estimate tax impact of selling shares — uses FIFO lot selection and federal tax brackets.',
+    '- **simulateSale**: Estimate tax impact of selling shares — FIFO lot selection, federal + state tax + NIIT (3.8%).',
+    '- **portfolioLiquidation**: Simulate selling ALL holdings — total tax liability with per-holding breakdown.',
+    '- **taxLossHarvest**: Find holdings with unrealized losses for tax-loss harvesting — shows potential tax savings and wash sale risk.',
+    '- **washSaleCheck**: Detect IRS wash sale violations — scans for repurchases within 30-day window around loss sales.',
     '- **createAdjustment / updateAdjustment / deleteAdjustment**: Manage cost basis corrections.',
     '',
     'IMPORTANT: Tax simulations are estimates only — not tax advice. Always include a disclaimer.',
@@ -1524,7 +1545,7 @@ export class AiService {
 
           simulateSale: tool({
             description:
-              'Simulate selling shares and estimate tax impact using FIFO lot selection. Returns lots consumed, short-term vs long-term gains, and estimated federal tax. Use when user asks "what if I sell X shares of Y" or tax impact questions. IMPORTANT: Always include the disclaimer that this is an estimate, not tax advice.',
+              'Simulate selling shares and estimate tax impact using FIFO lot selection. Returns lots consumed, short-term vs long-term gains, estimated federal + state tax + NIIT (3.8%). Use when user asks "what if I sell X shares of Y" or tax impact questions. Supports stateTaxPct and includeNIIT parameters. IMPORTANT: Always include the disclaimer that this is an estimate, not tax advice.',
             parameters: SimulateSaleInputSchema,
             execute: async (args) => {
               return executeWithGuardrails(
@@ -1537,12 +1558,84 @@ export class AiService {
                       symbol: args.symbol,
                       quantity: args.quantity,
                       pricePerShare: args.pricePerShare,
-                      taxBracketPct: args.taxBracketPct
+                      taxBracketPct: args.taxBracketPct,
+                      stateTaxPct: args.stateTaxPct,
+                      includeNIIT: args.includeNIIT
                     }
                   );
 
                   return buildSimulateSaleResult(simulation) as ToolOutput<
                     ReturnType<typeof buildSimulateSaleResult>
+                  >;
+                }
+              );
+            }
+          }),
+
+          portfolioLiquidation: tool({
+            description:
+              'Simulate liquidating ALL portfolio holdings at current market prices and estimate total tax liability across the entire portfolio. Shows per-holding breakdown with gains, losses, and tax. Supports federal, state, and NIIT. Use when user asks "what if I sell everything" or "total tax if I liquidate". IMPORTANT: This is a high-stakes estimate — always include disclaimer.',
+            parameters: PortfolioLiquidationInputSchema,
+            execute: async (args) => {
+              return executeWithGuardrails(
+                'portfolioLiquidation',
+                args as unknown as Record<string, unknown>,
+                async () => {
+                  const result =
+                    await this.taxService.simulatePortfolioLiquidation(userId, {
+                      taxBracketPct: args.taxBracketPct,
+                      stateTaxPct: args.stateTaxPct,
+                      includeNIIT: args.includeNIIT,
+                      topN: args.topN
+                    });
+
+                  return buildPortfolioLiquidationResult(result) as ToolOutput<
+                    ReturnType<typeof buildPortfolioLiquidationResult>
+                  >;
+                }
+              );
+            }
+          }),
+
+          taxLossHarvest: tool({
+            description:
+              'Find tax-loss harvesting candidates — holdings with unrealized losses that could be sold to offset capital gains. Shows potential tax savings, flags wash sale risk. Use when user asks about tax-loss harvesting, reducing tax bill, or offsetting gains.',
+            parameters: TaxLossHarvestInputSchema,
+            execute: async (args) => {
+              return executeWithGuardrails(
+                'taxLossHarvest',
+                args as unknown as Record<string, unknown>,
+                async () => {
+                  const result =
+                    await this.taxService.findTaxLossHarvestCandidates(userId, {
+                      minLoss: args.minLoss,
+                      taxBracketPct: args.taxBracketPct
+                    });
+
+                  return buildTaxLossHarvestResult(result) as ToolOutput<
+                    ReturnType<typeof buildTaxLossHarvestResult>
+                  >;
+                }
+              );
+            }
+          }),
+
+          washSaleCheck: tool({
+            description:
+              'Check for IRS wash sale violations by scanning for substantially identical purchases within 30 days before/after a loss sale. Flags confirmed wash sales and at-risk positions. Use when user asks about wash sales, or before recommending tax-loss harvesting.',
+            parameters: WashSaleCheckInputSchema,
+            execute: async (args) => {
+              return executeWithGuardrails(
+                'washSaleCheck',
+                args as unknown as Record<string, unknown>,
+                async () => {
+                  const result = await this.taxService.checkWashSales(userId, {
+                    symbol: args.symbol,
+                    lookbackDays: args.lookbackDays
+                  });
+
+                  return buildWashSaleCheckResult(result) as ToolOutput<
+                    ReturnType<typeof buildWashSaleCheckResult>
                   >;
                 }
               );
