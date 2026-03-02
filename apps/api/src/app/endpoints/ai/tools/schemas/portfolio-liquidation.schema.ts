@@ -11,7 +11,15 @@ export const PortfolioLiquidationInputSchema = z.object({
     .max(50)
     .optional()
     .describe(
-      'Federal tax bracket percentage for short-term gains (default 24%)'
+      'Federal tax bracket percentage for short-term gains (ordinary income rate). Default 24%.'
+    ),
+  longTermBracketPct: z
+    .number()
+    .min(0)
+    .max(20)
+    .optional()
+    .describe(
+      'Federal long-term capital gains rate: 0% (income ≤$47K), 15% (≤$518K), 20% (>$518K). Default 15%.'
     ),
   stateTaxPct: z
     .number()
@@ -19,7 +27,7 @@ export const PortfolioLiquidationInputSchema = z.object({
     .max(15)
     .optional()
     .describe(
-      'State income tax rate percentage (e.g. 13.3 for California). Default 0.'
+      'State income tax rate percentage (e.g. 13.3 for California, 0 for Texas/Florida). Default 0.'
     ),
   includeNIIT: z
     .boolean()

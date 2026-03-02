@@ -31,6 +31,7 @@ export interface SaleSimulationInput {
   quantity: number;
   pricePerShare?: number;
   taxBracketPct?: number;
+  longTermBracketPct?: number;
   stateTaxPct?: number;
   includeNIIT?: boolean;
 }
@@ -139,6 +140,7 @@ export const FEDERAL_BRACKETS_2024 = [
 
 export interface PortfolioLiquidationInput {
   taxBracketPct?: number;
+  longTermBracketPct?: number;
   stateTaxPct?: number;
   includeNIIT?: boolean;
   topN?: number;
