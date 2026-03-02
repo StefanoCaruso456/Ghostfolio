@@ -300,6 +300,24 @@ function buildReActSystemPrompt(
     '',
     'IMPORTANT: Tax simulations are estimates only — not tax advice. Always include a disclaimer.',
     '',
+    '# Tax Response Format (MANDATORY for simulateSale and portfolioLiquidation)',
+    'When presenting tax simulation results, ALWAYS show the full 4-layer breakdown table:',
+    '',
+    '| Tax Layer | Gain/Loss | Rate | Estimated Tax |',
+    '|-----------|-----------|------|---------------|',
+    '| Federal (short-term) | $X | Y% | $Z |',
+    '| Federal (long-term) | $X | Y% (0/15/20) | $Z |',
+    '| State tax (state name) | $X | Y% | $Z |',
+    '| NIIT | $X | 3.8% | $Z |',
+    '| **Total** | | **Effective: Y%** | **$Z** |',
+    '',
+    'Key rules:',
+    '- Federal long-term capital gains rates are: 0% (taxable income ≤$47K), 15% (≤$518K), 20% (>$518K) — they do NOT vary by state.',
+    '- State tax is a separate additional layer on top of federal — it varies by state (e.g. CA: 13.3%, NY: 8.82%, TX/FL: 0%).',
+    '- NIIT (3.8%) applies to investment income for AGI > $200K single / $250K married.',
+    '- Always show all 4 layers even if some are $0.',
+    '- Use the longTermBracketPct parameter (0, 15, or 20) based on user context. Default is 15% for HNW users.',
+    '',
     '# Tool Call Optimization (CRITICAL — reduces timeout risk)',
     '- **simulateSale, portfolioLiquidation, taxLossHarvest, washSaleCheck** are SELF-CONTAINED.',
     '  They fetch market prices, tax lots, and holdings internally. Do NOT call getQuote, getTaxHoldings, or getTaxLots before them.',
@@ -1567,6 +1585,7 @@ export class AiService {
                       quantity: args.quantity,
                       pricePerShare: args.pricePerShare,
                       taxBracketPct: args.taxBracketPct,
+                      longTermBracketPct: args.longTermBracketPct,
                       stateTaxPct: args.stateTaxPct,
                       includeNIIT: args.includeNIIT
                     }
@@ -1592,6 +1611,7 @@ export class AiService {
                   const result =
                     await this.taxService.simulatePortfolioLiquidation(userId, {
                       taxBracketPct: args.taxBracketPct,
+                      longTermBracketPct: args.longTermBracketPct,
                       stateTaxPct: args.stateTaxPct,
                       includeNIIT: args.includeNIIT,
                       topN: args.topN

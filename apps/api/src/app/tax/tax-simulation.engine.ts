@@ -34,7 +34,10 @@ export function simulateSale(
   const shortTermRate = input.taxBracketPct
     ? input.taxBracketPct / 100
     : DEFAULT_SHORT_TERM_RATE;
-  const longTermRate = LONG_TERM_CAPITAL_GAINS_RATE;
+  const longTermRate =
+    input.longTermBracketPct != null
+      ? input.longTermBracketPct / 100
+      : LONG_TERM_CAPITAL_GAINS_RATE;
   const stateTaxRate = (input.stateTaxPct ?? 0) / 100;
   const includeNIIT = input.includeNIIT ?? true;
 
