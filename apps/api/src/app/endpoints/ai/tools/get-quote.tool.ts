@@ -37,9 +37,12 @@ export async function buildQuoteResult(
 
     const allFailed = result.quotes.length === 0 && result.errors.length > 0;
 
-    const verificationErrors = allFailed
-      ? result.errors.map((e) => `${e.symbol}: ${e.error}`)
-      : [];
+    // When all providers fail (e.g. network issue), pass verification with
+    // low confidence + warnings so the AI can explain gracefully instead of
+    // the verification gate hard-blocking the response.
+    if (allFailed) {
+      warnings.push(...result.errors.map((e) => `${e.symbol}: ${e.error}`));
+    }
 
     return {
       status: allFailed ? 'error' : 'success',
@@ -50,13 +53,13 @@ export async function buildQuoteResult(
         returnedCount: result.quotes.length
       },
       message: allFailed
-        ? `Failed to fetch quotes for all ${input.symbols.length} symbols (${result.errors.map((e) => `${e.symbol}: ${e.error}`).join(', ')})`
+        ? `Unable to fetch live quotes for ${input.symbols.join(', ')}. The market data provider may be temporarily unavailable. Please try again shortly.`
         : `Fetched ${result.quotes.length} of ${input.symbols.length} quotes.`,
       verification: createVerificationResult({
-        passed: !allFailed,
-        confidence: allFailed ? 0.1 : result.errors.length > 0 ? 0.7 : 0.95,
+        passed: true,
+        confidence: allFailed ? 0.15 : result.errors.length > 0 ? 0.7 : 0.95,
         warnings,
-        errors: verificationErrors,
+        errors: [],
         sources: ['yahoo-finance2'],
         domainRulesChecked: DOMAIN_RULES_CHECKED,
         domainRulesFailed:
